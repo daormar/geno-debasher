@@ -34,26 +34,13 @@ usage()
 ########
 init_bash_shebang_var()
 {
-    local_bash_location=`whereis -b bash | awk '{print $2}'`
-    echo "#!${local_bash_location}"
-}
-
-########
-init_sbatch_var()
-{
-    local_sbatch_available=0
-    sbatch --version >/dev/null 2>&1 && local_sbatch_available=1
-    if [ ${local_sbatch_available} -eq 0 ]; then
-        echo ""
-    else
-        echo "sbatch"
-    fi
+    echo "#!${BASH}"
 }
 
 ########
 exclude_readonly_vars()
 {
-    awk -F "=" 'BEGIN{
+    $AWK -F "=" 'BEGIN{
                          readonlyvars["BASHOPTS"]=1
                          readonlyvars["BASH_VERSINFO"]=1
                          readonlyvars["EUID"]=1
@@ -69,13 +56,13 @@ exclude_readonly_vars()
 ########
 exclude_bashisms()
 {
-    awk '{if(index($1,"=(")==0) printf"%s\n",$0}'
+    $AWK '{if(index($1,"=(")==0) printf"%s\n",$0}'
 }
 
 ########
 write_functions()
 {
-    for f in `awk '{if(index($1,"()")!=0) printf"%s\n",$1}' $0`; do
+    for f in `$AWK '{if(index($1,"()")!=0) printf"%s\n",$1}' $0`; do
         sed -n /^$f/,/^}/p $0
     done
 }
@@ -103,7 +90,7 @@ create_script()
     set | exclude_readonly_vars | exclude_bashisms >> ${local_name}
 
     # Write functions if necessary
-    grep "()" ${local_name} -A1 | grep "{" > /dev/null || write_functions >> ${local_name}
+    $GREP "()" ${local_name} -A1 | $GREP "{" > /dev/null || write_functions >> ${local_name}
     
     # Write command to be executed
     echo "${local_command}" >> ${local_name}
@@ -409,7 +396,5 @@ check_pars || exit 1
 create_dirs || exit 1
 
 BASH_SHEBANG=`init_bash_shebang_var`
-
-SBATCH=`init_sbatch_var`
 
 process_pars

@@ -1,7 +1,7 @@
 # *- bash -*
 
 if [ $# -ne 3 ]; then
-    echo "convert_snppos_to_snpgcc.sh ref.fa snpposfile.tsv outfile" >&2
+    echo "convert_snppos_to_snpgcc <ref.fa> <snpposfile.tsv> <outfile>" >&2
 else
     # Initialize variables
     ref=$1
@@ -13,7 +13,7 @@ else
     mkdir ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
 
     # Split file
-    split --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
+    $SPLIT --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
     
     # Process fragments
     conda activate ascatngs
@@ -26,8 +26,8 @@ else
     wait
     
     # Merge solutions
-    head -n 1 ${TMPDIR}/splitGc/snpPos.00 > ${outfile}
-    cat ${TMPDIR}/splitGc/snpPos.* | grep -vP 'Chr\tPosition' >> ${outfile}
+    $HEAD -n 1 ${TMPDIR}/splitGc/snpPos.00 > ${outfile}
+    cat ${TMPDIR}/splitGc/snpPos.* | $GREP -vP 'Chr\tPosition' >> ${outfile}
     
     # Remove temporary directories
     rm -rf ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs

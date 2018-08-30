@@ -407,6 +407,22 @@ AC_COMPILE_IFELSE(
 # Checks for doxygen
 AC_PATH_PROG(DOXYGEN,doxygen)
 
+# Adds an extra argument to configure (enable use of Platypus)
+AC_MSG_CHECKING(whether to enable platypus library)
+AC_ARG_WITH([platypus],
+ [AS_HELP_STRING([--with-platypus=DIR],
+   [installs thot with the necessary code to combine it with the platypus library @<:@default=no@:>@])],
+ [with_platypus=$withval],
+ [with_platypus=no])
+if test "$with_platypus" = "no"; then
+ enable_platypus_lib="no"
+ AC_MSG_RESULT(no)
+else
+ enable_platypus_lib="yes"
+ AC_MSG_RESULT(yes)
+fi
+AC_SUBST(PLATYPUS_BUILD_DIR,$with_platypus)
+
 # Process options given in shell variables
 
 # Change path of distribution include directory

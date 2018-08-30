@@ -1,3 +1,5 @@
+# *- python -*
+
 import gzip
 import sys
 

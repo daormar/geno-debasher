@@ -1,5 +1,4 @@
-#!/bin/bash
-#
+# *- bash -*
 
 ########
 print_desc()
@@ -11,7 +10,7 @@ print_desc()
 ########
 usage()
 {
-    echo "submit_bam_analysis.sh    -r <string> -n <string> -t <string> -o <string>"
+    echo "submit_bam_analysis       -r <string> -n <string> -t <string> -o <string>"
     echo "                          -a <int> [-c <int>] [-m <int>]"
     echo "                          [-debug] [--help]"
     echo ""

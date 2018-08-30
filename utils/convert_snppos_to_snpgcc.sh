@@ -1,5 +1,4 @@
-#!/bin/bash
-#
+# *- bash -*
 
 if [ $# -ne 3 ]; then
     echo "convert_snppos_to_snpgcc.sh ref.fa snpposfile.tsv outfile" >&2

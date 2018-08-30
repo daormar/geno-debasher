@@ -20,6 +20,7 @@ usage()
     echo "-o <string>               Output directory."
     echo "-a <int>                  Analysis type:"
     echo "                           1 -> Basic analysis (Manta, Strelka2 and MSIsensor)"
+    echo "                           2 -> Complementary analysis (CNVkit)"
     echo "-c <int>                  Number of CPUs used to execute each analysis"
     echo "                          (default: 1)."
     echo "                          NOTE: only 1 CPU will be used for those analyses not"
@@ -340,6 +341,22 @@ execute_msisensor()
 }
 
 ########
+execute_cnvkit()
+{
+    # Initialize variables
+    CNVKIT_OUTD=`get_step_dirname ${stepname}`
+    
+    # Activate conda environment
+    conda activate cnvkit
+
+    # Run cnvkit
+    cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${CNVKIT_OUTD} -p ${cpus} > ${CNVKIT_OUTD}/cnvkit.log 2>&1 || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${CNVKIT_OUTD}/finished
+}
+
+########
 execute_step()
 {
     # Initialize variables
@@ -374,10 +391,20 @@ perform_basic_analysis()
 }
 
 ########
+perform_compl_analysis()
+{
+    # Execute CNVkit
+    stepname="cnvkit"
+    execute_step ${stepname} ${cpus} ${mem}
+}
+
+########
 process_pars()
 {
     case ${atype} in
         "1") perform_basic_analysis
+             ;;
+        "2") perform_compl_analysis
              ;;
     esac
 }

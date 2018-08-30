@@ -15,6 +15,7 @@ SUFFIXES= .sh .py .r .R
 	echo "pkgname=\""$(PACKAGE_NAME)"\"" >> $@
 	echo "version=\""$(PACKAGE_VERSION)"\"" >> $@
 	echo "bindir="$(prefix)/bin/ >> $@
+	echo "BASH="$(BASH) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "SORT="$(SORT) >> $@
 	echo "sortpars=\""$(sortpars)"\"" >> $@

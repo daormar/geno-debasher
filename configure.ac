@@ -41,10 +41,10 @@ AC_PATH_PROGS(QSUB, qsub)
 AC_PATH_PROGS(QSTAT, qstat)
 AC_PATH_PROGS(QRLS, qrls)
 AC_PATH_PROGS(SBATCH, sbatch)
+AC_PATH_PROGS(SRUN, srun)
 AC_PATH_PROGS(WGET, wget)
 AC_PATH_PROGS(PANDOC, pandoc)
 AC_PATH_PROGS(SAMTOOLS, samtools)
-AC_PATH_PROGS(CONDA, conda)
 
 # check that qsub works
 if test ! -z "$QSUB"; then

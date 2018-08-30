@@ -411,7 +411,7 @@ AC_PATH_PROG(DOXYGEN,doxygen)
 AC_MSG_CHECKING(whether to enable platypus library)
 AC_ARG_WITH([platypus],
  [AS_HELP_STRING([--with-platypus=DIR],
-   [installs thot with the necessary code to combine it with the platypus library @<:@default=no@:>@])],
+   [installs the package with the necessary code to combine it with the platypus library @<:@default=no@:>@])],
  [with_platypus=$withval],
  [with_platypus=no])
 if test "$with_platypus" = "no"; then

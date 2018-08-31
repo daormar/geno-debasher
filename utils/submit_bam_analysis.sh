@@ -267,7 +267,7 @@ reset_outdir_for_step()
 }
 
 ########
-execute_manta()
+execute_manta_somatic()
 {
     # Initialize variables
     MANTA_OUTD=`get_step_dirname ${stepname}`

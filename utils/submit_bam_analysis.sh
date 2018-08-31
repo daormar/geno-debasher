@@ -292,6 +292,26 @@ execute_cnvkit()
 }
 
 ########
+execute_step()
+{
+    # Initialize variables
+    local_dirname=$1
+    local_stepname=$2
+    local_cpus=$3
+    local_mem=$4
+    local_time=$5
+
+    # Execute step
+    create_script ${local_dirname}/scripts/execute_${local_stepname} execute_${local_stepname}
+    status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
+    echo "STEP: ${local_stepname} ; STATUS: ${status}" >&2
+    if [ "$status" != "FINISHED" ]; then
+        reset_outdir_for_step ${local_dirname} ${local_stepname} || exit 1
+        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_cpus} ${local_mem} ${local_time}
+    fi
+}
+
+########
 execute_steps_in_afile()
 {
     local_dirname=$1

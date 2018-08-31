@@ -170,6 +170,9 @@ execute_manta_somatic()
     # Execute Manta
     ${MANTA_OUTD}/runWorkflow.py -m local -j ${cpus} > ${MANTA_OUTD}/runWorkflow.log 2>&1 || exit 1
 
+    # Deactivate conda environment
+    conda deactivate
+
     # Create file indicating that execution was finished
     touch ${MANTA_OUTD}/finished
 }
@@ -198,7 +201,10 @@ execute_strelka_somatic()
 
     # Execute Strelka
     ${STRELKA_OUTD}/runWorkflow.py -m local -j ${cpus} > ${STRELKA_OUTD}/runWorkflow.log 2>&1 || exit 1
-    
+
+    # Deactivate conda environment
+    conda deactivate
+
     # Create file indicating that execution was finished
     touch ${STRELKA_OUTD}/finished
 }
@@ -227,6 +233,9 @@ execute_msisensor()
 
     # Run MSIsensor analysis
     msisensor msi -d ${MSISENSOR_OUTD}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${MSISENSOR_OUTD}/output -l 1 -q 1 -b ${cpus} > ${MSISENSOR_OUTD}/msisensor_msi.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
     
     # Create file indicating that execution was finished
     touch ${MSISENSOR_OUTD}/finished
@@ -274,6 +283,9 @@ execute_cnvkit()
 
     # Run cnvkit
     cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${CNVKIT_OUTD} -p ${cpus} > ${CNVKIT_OUTD}/cnvkit.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
 
     # Create file indicating that execution was finished
     touch ${CNVKIT_OUTD}/finished

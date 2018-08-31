@@ -236,23 +236,6 @@ get_step_dirname()
 }
 
 ########
-get_step_status()
-{
-    local_stepname=$1
-    local_outd=`get_step_dirname ${local_stepname}`
-    
-    if [ -d ${local_outd} ]; then
-        if [ -f ${local_outd}/finished ]; then
-            echo "FINISHED"
-        else
-            echo "UNFINISHED"
-        fi
-    else
-        echo "TO-DO"
-    fi
-}
-
-########
 reset_outdir_for_step() 
 {
     local_stepname=$1
@@ -366,7 +349,7 @@ execute_step()
 
     # Execute step
     create_script ${outd}/scripts/execute_${local_stepname} execute_${local_stepname}
-    status=`get_step_status "${local_stepname}"`
+    status=`${bindir}/get_analysis_status -d ${outd} -s "${local_stepname}"`
     echo "STEP: ${local_stepname} ; STATUS: ${status}" >&2
     if [ "$status" != "FINISHED" ]; then
         reset_outdir_for_step ${local_stepname} || exit 1

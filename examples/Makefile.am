@@ -1,4 +1,5 @@
 examplesdir = $(datadir)/$(PACKAGE)/examples
-examples_DATA= basic_analysis.csv basic_analysis_test.csv
+examples_DATA= basic_analysis_test.csv basic_analysis.csv	\
+extended_analysis.csv
 
 EXTRA_DIST= $(examples_DATA)

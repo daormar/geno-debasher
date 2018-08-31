@@ -140,7 +140,7 @@ process_afile()
             status=`get_step_status $stepname`
 
             # Print status
-            echo "$stepname : $status"
+            echo "STEP: $stepname ; STATUS: $status"
         fi
     done < ${afile}
 }

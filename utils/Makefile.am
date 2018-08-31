@@ -1,10 +1,13 @@
-bin_SCRIPTS = submit_bam_analysis get_analysis_status	\
+SCRIPTS_TO_BE_BUILT= submit_bam_analysis get_analysis_status	\
 convert_snppos_to_snpgcc create_snv_pos_ascat
 
-CLEANFILES = $(bin_SCRIPTS)
+bin_SCRIPTS = bam_utils_lib.sh $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = submit_bam_analysis.sh get_analysis_status.sh	\
-convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py
+CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
+
+EXTRA_DIST = bam_utils_lib.sh submit_bam_analysis.sh	\
+get_analysis_status.sh convert_snppos_to_snpgcc.sh	\
+create_snv_pos_ascat.py
 
 # Build using suffix rules (portable)
 SUFFIXES= .sh .py .r .R

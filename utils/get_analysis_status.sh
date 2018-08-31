@@ -1,5 +1,8 @@
 # *- bash -*
 
+# INCLUDE BASH LIBRARY
+. ${bindir}/bam_utils_lib.sh
+
 ########
 print_desc()
 {
@@ -89,60 +92,23 @@ check_pars()
 }
 
 ########
-get_step_dirname()
-{
-    local_stepname=$1
-    echo ${adir}/${local_stepname}
-}
-
-########
-get_step_status()
-{
-    local_stepname=$1
-    local_stepdirname=`get_step_dirname ${local_stepname}`
-    
-    if [ -d ${local_stepdirname} ]; then
-        if [ -f ${local_stepdirname}/finished ]; then
-            echo "FINISHED"
-        else
-            echo "UNFINISHED"
-        fi
-    else
-        echo "TO-DO"
-    fi
-}
-
-########
-entry_is_ok()
-{
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{if(NF>=4) print"yes\n"; else print"no\n"}'
-}
-
-########
-extract_stepname_from_entry()
-{
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print $1}'
-}
-
-########
 get_status_for_afile()
 {
-    local_afile=$1
+    local_dirname=$1
+    local_afile=$2
     
     # Read information about the steps to be executed
     while read entry; do
         entry_ok=`entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract entry information
-            stepname=`extract_stepname_from_entry "$entry"`
+            local_stepname=`extract_stepname_from_entry "$entry"`
 
             # Check step status
-            status=`get_step_status $stepname`
+            local_status=`get_step_status ${local_dirname} ${local_stepname}`
 
             # Print status
-            echo "STEP: $stepname ; STATUS: $status"
+            echo "STEP: $local_stepname ; STATUS: $local_status"
         fi
     done < ${local_afile}
 }
@@ -151,11 +117,11 @@ get_status_for_afile()
 process_pars()
 {
     if [ ${s_given} -eq 1 ]; then
-        get_step_status $stepname
+        get_step_status ${adir} ${stepname}
     fi
 
     if [ ${a_given} -eq 1 ]; then
-        get_status_for_afile ${afile}
+        get_status_for_afile ${adir} ${afile}
     fi
 }
 

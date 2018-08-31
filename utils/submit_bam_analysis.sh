@@ -11,14 +11,14 @@ print_desc()
 usage()
 {
     echo "submit_bam_analysis       -r <string> -n <string> -t <string> -o <string>"
-    echo "                          -s <string>"
+    echo "                          -a <string>"
     echo "                          [-debug] [--help]"
     echo ""
     echo "-r <string>               File with reference genome."
     echo "-n <string>               File with normal bam."
     echo "-t <string>               File with tumor bam."
     echo "-o <string>               Output directory."
-    echo "-s <string>               File with steps to be performed. Expected format:"
+    echo "-a <string>               File with analysis steps to be performed. Expected format:"
     echo "                          <stepname> <cpus> <mem> <time>"
     echo "-debug                    After ending, do not delete temporary files"
     echo "                          (for debugging purposes)."
@@ -119,7 +119,7 @@ read_pars()
     n_given=0
     t_given=0
     o_given=0
-    s_given=0
+    a_given=0
     debug=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -153,10 +153,10 @@ read_pars()
                       o_given=1
                   fi
                   ;;
-            "-s") shift
+            "-a") shift
                   if [ $# -ne 0 ]; then
-                      sfile=$1
-                      s_given=1
+                      afile=$1
+                      a_given=1
                   fi
                   ;;
             "-debug") debug=1
@@ -209,12 +209,12 @@ check_pars()
         fi
     fi
 
-    if [ ${s_given} -eq 0 ]; then   
+    if [ ${a_given} -eq 0 ]; then   
         echo "Error! -s parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${sfile} ]; then
-            echo "Error! file ${sfile} does not exist" >&2
+        if [ ! -f ${afile} ]; then
+            echo "Error! file ${afile} does not exist" >&2
             exit 1
         fi
     fi
@@ -410,7 +410,7 @@ extract_time_from_entry()
 }
 
 ########
-process_sfile()
+process_afile()
 {
     # Read information about the steps to be executed
     while read entry; do
@@ -425,7 +425,7 @@ process_sfile()
             # Execute step
             execute_step ${stepname} ${cpus} ${mem} ${time}
         fi
-    done < ${sfile}
+    done < ${afile}
 }
 
 ########
@@ -443,4 +443,4 @@ create_dirs || exit 1
 
 BASH_SHEBANG=`init_bash_shebang_var`
 
-process_sfile
+process_afile

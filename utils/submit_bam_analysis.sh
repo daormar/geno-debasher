@@ -208,9 +208,6 @@ execute_platypus_germline()
     # Initialize variables
     PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
     
-    # # Activate conda environment
-    # conda activate platypus
-
     # Run Platypus
     python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=$3 --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
 

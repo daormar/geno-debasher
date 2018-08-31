@@ -127,8 +127,10 @@ extract_stepname_from_entry()
 }
 
 ########
-process_afile()
+get_status_for_afile()
 {
+    local_afile=$1
+    
     # Read information about the steps to be executed
     while read entry; do
         entry_ok=`entry_is_ok "$entry"`
@@ -142,7 +144,7 @@ process_afile()
             # Print status
             echo "STEP: $stepname ; STATUS: $status"
         fi
-    done < ${afile}
+    done < ${local_afile}
 }
 
 ########
@@ -153,7 +155,7 @@ process_pars()
     fi
 
     if [ ${a_given} -eq 1 ]; then
-        process_afile ${afile}
+        get_status_for_afile ${afile}
     fi
 }
 

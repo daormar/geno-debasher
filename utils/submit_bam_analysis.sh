@@ -148,6 +148,16 @@ create_dirs()
 ########
 execute_manta_somatic()
 {
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - ref: reference genome file
+    # - normalbam: bam file for normal sample
+    # - tumorbam: bam file for tumor sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+    # - cpus: number of cpus used to execute the step
+    
     # Initialize variables
     MANTA_OUTD=`get_step_dirname ${outd} ${stepname}`
 
@@ -167,6 +177,16 @@ execute_manta_somatic()
 ########
 execute_strelka_somatic()
 {
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - ref: reference genome file
+    # - normalbam: bam file for normal sample
+    # - tumorbam: bam file for tumor sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+    # - cpus: number of cpus used to execute the step
+
     # Initialize variables
     STRELKA_OUTD=`get_step_dirname ${outd} ${stepname}`
 
@@ -186,6 +206,16 @@ execute_strelka_somatic()
 ########
 execute_msisensor()
 {
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - ref: reference genome file
+    # - normalbam: bam file for normal sample
+    # - tumorbam: bam file for tumor sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+    # - cpus: number of cpus used to execute the step
+
     # Initialize variables
     MSISENSOR_OUTD=`get_step_dirname ${outd} ${stepname}`
     
@@ -205,6 +235,14 @@ execute_msisensor()
 ########
 execute_platypus_germline()
 {
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - ref: reference genome file
+    # - normalbam: bam file for normal sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+    
     # Initialize variables
     PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
     
@@ -218,6 +256,16 @@ execute_platypus_germline()
 ########
 execute_cnvkit()
 {
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - ref: reference genome file
+    # - normalbam: bam file for normal sample
+    # - tumorbam: bam file for tumor sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+    # - cpus: number of cpus used to execute the step
+
     # Initialize variables
     CNVKIT_OUTD=`get_step_dirname ${outd} ${stepname}`
     

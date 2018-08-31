@@ -286,7 +286,7 @@ execute_manta()
 }
 
 ########
-execute_strelka()
+execute_strelka_somatic()
 {
     # Initialize variables
     STRELKA_OUTD=`get_step_dirname ${stepname}`

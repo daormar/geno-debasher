@@ -428,4 +428,4 @@ AC_SUBST(PLATYPUS_BUILD_DIR,$with_platypus)
 # Change path of distribution include directory
 includedir=${prefix}/include/bam-utils
 
-AC_OUTPUT(Makefile m4/Makefile utils/Makefile)
+AC_OUTPUT(Makefile m4/Makefile utils/Makefile examples/Makefile)

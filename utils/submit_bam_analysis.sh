@@ -394,8 +394,10 @@ extract_time_from_entry()
 }
 
 ########
-process_afile()
+execute_steps_in_afile()
 {
+    local_afile=$1
+    
     # Read information about the steps to be executed
     while read entry; do
         entry_ok=`entry_is_ok "$entry"`
@@ -409,7 +411,7 @@ process_afile()
             # Execute step
             execute_step ${stepname} ${cpus} ${mem} ${time}
         fi
-    done < ${afile}
+    done < ${local_afile}
 }
 
 ########
@@ -427,4 +429,4 @@ create_dirs || exit 1
 
 BASH_SHEBANG=`init_bash_shebang_var`
 
-process_afile
+execute_steps_in_afile ${afile}

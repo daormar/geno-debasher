@@ -242,6 +242,38 @@ execute_msisensor()
 }
 
 ########
+execute_platypus_germline_conda()
+{
+    # Initialize variables
+    PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
+
+    # Activate conda environment
+    conda activate platypus
+
+    # Run Platypus
+    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=$3 --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
+
+    # Create file indicating that execution was finished
+    touch ${PLATYPUS_OUTD}/finished        
+}
+
+########
+execute_platypus_germline_local()
+{
+    # Initialize variables
+    PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
+    
+    # Run Platypus
+    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=$3 --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${PLATYPUS_OUTD}/finished    
+}
+
+########
 execute_platypus_germline()
 {
     # WARNING: for this function to work successfully, it is necessary
@@ -251,15 +283,12 @@ execute_platypus_germline()
     # - normalbam: bam file for normal sample
     # - stepname: name of step to be executed
     # - outd: output directory
-    
-    # Initialize variables
-    PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
-    
-    # Run Platypus
-    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=$3 --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
 
-    # Create file indicating that execution was finished
-    touch ${PLATYPUS_OUTD}/finished
+    if [ -z "${PLATYPUS_BUILD_DIR}" ]; then
+        execute_platypus_germline_conda
+    else
+        execute_platypus_germline_local
+    fi
 }
 
 ########

@@ -7,8 +7,8 @@ import io, sys, getopt
 class sample_data:
     def __init__(self):
         self.sample_alias=None
-        self.sample_filename=None
-        self.sample_fileaccession=None
+        self.filename=None
+        self.fileaccession=None
 
 ##################################################
 class analysis_data:
@@ -80,7 +80,7 @@ def print_help():
     print >> sys.stderr, "-a <string>    File with analysis information"
     print >> sys.stderr, "-t <string>    File with study information"
     print >> sys.stderr, "-f <int>       Output format:"
-    print >> sys.stderr, "                1: SAMPLE_ACCESSION EGA_SAMPLE_ID FILE_ACCESSION DONOR_ID PHENOTYPE GENDER"
+    print >> sys.stderr, "                1: SAMPLE_ACCESSION EGA_SAMPLE_ID FILE_ACCESSION FILENAME DONOR_ID PHENOTYPE GENDER"
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
@@ -147,11 +147,12 @@ def print_info(format,sample_info_map,analysis_info_map,study_info_map):
     if(format==1):
         for sample_accession in study_info_map:
             ega_sample_id=study_info_map[sample_accession].ega_sample_id
-            file_accession=sample_info_map[sample_accession].fileaccession
+            fileaccession=sample_info_map[sample_accession].fileaccession
+            filename=sample_info_map[sample_accession].filename
             donor_id=analysis_info_map[ega_sample_id].donor_id
             phenotype=analysis_info_map[ega_sample_id].phenotype
             gender=analysis_info_map[ega_sample_id].gender
-            print sample_accession,ega_sample_id,file_accession,donor_id,phenotype,gender
+            print sample_accession,ega_sample_id,fileaccession,filename,donor_id,phenotype,gender
     
 ##################################################
 def process_pars(flags,values):

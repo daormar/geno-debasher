@@ -1,7 +1,7 @@
 # *- python -*
 
 # import modules
-import io, sys, getopt
+import io, sys, getopt, operator
 
 ##################################################
 class sample_data:
@@ -81,6 +81,7 @@ def print_help():
     print >> sys.stderr, "-t <string>    File with study information"
     print >> sys.stderr, "-f <int>       Output format:"
     print >> sys.stderr, "                1: SAMPLE_ACCESSION EGA_SAMPLE_ID FILE_ACCESSION FILENAME DONOR_ID PHENOTYPE GENDER"
+    print >> sys.stderr, "                2: The same as 1 but sorted by donor_id"
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
@@ -143,17 +144,40 @@ def extract_study_info(filename):
     return study_info_map
 
 ##################################################
-def print_info(format,sample_info_map,analysis_info_map,study_info_map):
+def get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map):
+    formatted_info=[]
+
+    # Populate formatted_info structure
+    for sample_accession in study_info_map:
+        ega_sample_id=study_info_map[sample_accession].ega_sample_id
+        fileaccession=sample_info_map[sample_accession].fileaccession
+        filename=sample_info_map[sample_accession].filename
+        donor_id=analysis_info_map[ega_sample_id].donor_id
+        phenotype=analysis_info_map[ega_sample_id].phenotype
+        gender=analysis_info_map[ega_sample_id].gender
+        formatted_info.append((sample_accession,ega_sample_id,fileaccession,filename,donor_id,phenotype,gender))
+
+    return formatted_info
+
+##################################################
+def format_info(format,sample_info_map,analysis_info_map,study_info_map):
     if(format==1):
-        for sample_accession in study_info_map:
-            ega_sample_id=study_info_map[sample_accession].ega_sample_id
-            fileaccession=sample_info_map[sample_accession].fileaccession
-            filename=sample_info_map[sample_accession].filename
-            donor_id=analysis_info_map[ega_sample_id].donor_id
-            phenotype=analysis_info_map[ega_sample_id].phenotype
-            gender=analysis_info_map[ega_sample_id].gender
-            print sample_accession,ega_sample_id,fileaccession,filename,donor_id,phenotype,gender
+        return get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map)
+    elif(format==2):
+        formatted_info=get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map)
+        return sorted(formatted_info, key=operator.itemgetter(4))
     
+##################################################
+def print_info(formatted_info):
+    for elem in formatted_info:
+        row=""
+        for i in range(len(elem)):
+            if(i==0):
+                row=elem[i]
+            else:
+                row=row+" "+elem[i]
+        print row
+
 ##################################################
 def process_pars(flags,values):
     # Extract info from files
@@ -161,8 +185,11 @@ def process_pars(flags,values):
     analysis_info_map=extract_analysis_info(values["analysisinfofile"])
     study_info_map=extract_study_info(values["studyinfofile"])
 
+    # Format information
+    formatted_info=format_info(values["format"],sample_info_map,analysis_info_map,study_info_map)
+    
     # Print information
-    print_info(values["format"],sample_info_map,analysis_info_map,study_info_map)
+    print_info(formatted_info)
 
 ##################################################
 def main(argv):

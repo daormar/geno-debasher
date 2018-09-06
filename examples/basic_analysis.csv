@@ -1,3 +1,3 @@
-manta_somatic      8 2048 4:00:00
-strelka_somatic    8 2048 5:00:00
-msisensor          8 3072 5:00:00
+manta_somatic         8 2048 4:00:00 mutex=no
+strelka_somatic       8 2048 5:00:00 mutex=no
+msisensor             8 3072 5:00:00 mutex=no

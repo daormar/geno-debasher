@@ -74,17 +74,34 @@ create_script()
 }
 
 ########
+get_dependency_opt()
+{
+    local_jobdeps=$1
+
+    if [ -z "${local_jobdeps}" ]; then
+        echo ""
+    else
+        echo "--dependency=afterany${local_jobdeps}"
+    fi
+}
+
+########
 launch()
 {
     local_file=$1
     local_cpus=$2
     local_mem=$3
     local_time=$4
+    local_jobdeps=$5
+    local_outvar=$6
     
     if [ -z "${SBATCH}" ]; then
         $local_file
+        eval "${outvar}=\"\""
     else
-        $SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} $local_file
+        dependency_opt=`get_dependency_opt "${local_jobdeps}"`
+        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${dependency_opt} $local_file)
+        eval "${local_outvar}='${local_jid}'"
     fi
 }
 
@@ -121,6 +138,13 @@ extract_time_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $4}'
+}
+
+########
+extract_mutex_from_entry()
+{
+    local_entry=$1
+    echo "${local_entry}" | $AWK '{print substr($5,7)}'
 }
 
 ########

@@ -1,5 +1,5 @@
-pre_analysis_actions  2 1024 0 mutex=yes
-manta_somatic         2 2048 0 mutex=no
-strelka_somatic       2 2048 0 mutex=no
-msisensor             2 3072 0 mutex=no
-post_analysis_actions 1 1024 0 mutex=yes
+pre_analysis_actions  2 1024 0 jobdeps=all
+manta_somatic         2 2048 0 jobdeps=pre_analysis_actions
+strelka_somatic       2 2048 0 jobdeps=pre_analysis_actions
+msisensor             2 3072 0 jobdeps=pre_analysis_actions
+post_analysis_actions 1 1024 0 jobdeps=all

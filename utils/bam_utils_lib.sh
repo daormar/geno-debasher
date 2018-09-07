@@ -100,7 +100,7 @@ launch()
         eval "${outvar}=\"\""
     else
         dependency_opt=`get_dependency_opt "${local_jobdeps}"`
-        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${dependency_opt} $local_file)
+        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${dependency_opt} ${local_file})
         eval "${local_outvar}='${local_jid}'"
     fi
 }
@@ -141,10 +141,10 @@ extract_time_from_entry()
 }
 
 ########
-extract_mutex_from_entry()
+extract_jobdeps_spec_from_entry()
 {
     local_entry=$1
-    echo "${local_entry}" | $AWK '{print substr($5,7)}'
+    echo "${local_entry}" | $AWK '{print substr($5,9)}'
 }
 
 ########

@@ -349,14 +349,22 @@ execute_post_analysis_actions()
 }
 
 ########
-get_local_jobdeps()
+get_jobdeps()
 {
-    local_mutex=$1
-    if [ ${local_mutex} = "yes" ]; then
-        echo ${step_jids}
-    else
-        echo ${mutex_jids}
-    fi
+    local_jobdeps_spec=$1
+    case ${local_jobdeps_spec} in
+            "all") echo ${step_jids}
+                   ;;
+            "none") echo ""
+                    ;;
+            *) local_jdeps=""
+               for dep in `echo ${local_jobdeps_spec} | $SED 's/:/ /g'`; do
+                   dep_jid=${dep}_jid
+                   local_jdeps=${local_jdeps}":"${!dep_jid}
+               done
+               echo ${local_jdeps}
+               ;;
+    esac
 }
 
 ########
@@ -368,7 +376,7 @@ execute_step()
     local_cpus=$3
     local_mem=$4
     local_time=$5
-    local_mutex=$6
+    local_jobdeps_spec=$6
 
     # Execute step
     create_script ${local_dirname}/scripts/execute_${local_stepname} execute_${local_stepname}
@@ -376,14 +384,12 @@ execute_step()
     echo "STEP: ${local_stepname} ; STATUS: ${status}" >&2
     if [ "$status" != "FINISHED" ]; then
         reset_outdir_for_step ${local_dirname} ${local_stepname} || exit 1
-        local_jobdeps="`get_local_jobdeps ${local_mutex}`"
-        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" job_id
+        local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
+        local_stepname_jid=${local_stepname}_jid
+        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid}
         
         # Update variables storing jids
-        step_jids="${step_jids}:${job_id}"
-        if [ ${local_mutex} = "yes" ]; then
-            mutex_jids="${mutex_jids}:${job_id}"
-        fi
+        step_jids="${step_jids}:${!local_stepname_jid}"
     fi
 }
 
@@ -396,10 +402,6 @@ execute_steps_in_afile()
 
     # step_jids will store the job ids of the analysis steps
     step_jids=""
-
-    # mutex_jids will store the job ids of those analysis steps that are
-    # mutually exclusive
-    mutex_jids=""
     
     # Read information about the steps to be executed
     while read entry; do
@@ -410,10 +412,10 @@ execute_steps_in_afile()
             cpus=`extract_cpus_from_entry "$entry"`
             mem=`extract_mem_from_entry "$entry"`
             time=`extract_time_from_entry "$entry"`
-            mutex=`extract_mutex_from_entry "$entry"`
+            jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
 
             # Execute step
-            execute_step ${local_dirname} ${stepname} ${cpus} ${mem} ${time} ${mutex} || exit 1
+            execute_step ${local_dirname} ${stepname} ${cpus} ${mem} ${time} ${jobdeps_spec} || exit 1
         fi
     done < ${local_afile}
 }

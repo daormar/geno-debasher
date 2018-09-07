@@ -22,6 +22,7 @@ class study_data:
     def __init__(self):
         self.study_ega_id=None
         self.ega_sample_id=None
+        self.filename=None
 
 ##################################################
 def take_pars():
@@ -140,6 +141,7 @@ def extract_study_info(filename):
         sample_accession=fields[len(fields)-3]
         sd=study_data()
         sd.study_ega_id=fields[0]
+        sd.filename=fields[len(fields)-4]
         sd.ega_sample_id=fields[len(fields)-1]
         study_info_map[sample_accession]=sd
     return study_info_map
@@ -151,8 +153,8 @@ def get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map):
     # Populate formatted_info structure
     for sample_accession in study_info_map:
         ega_sample_id=study_info_map[sample_accession].ega_sample_id
+        filename=study_info_map[sample_accession].filename
         fileaccession=sample_info_map[sample_accession].fileaccession
-        filename=sample_info_map[sample_accession].filename
         donor_id=analysis_info_map[ega_sample_id].donor_id
         phenotype=analysis_info_map[ega_sample_id].phenotype
         gender=analysis_info_map[ega_sample_id].gender

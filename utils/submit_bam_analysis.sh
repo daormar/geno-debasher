@@ -13,20 +13,20 @@ print_desc()
 ########
 usage()
 {
-    echo "submit_bam_analysis       -r <string> -n <string> -t <string> -o <string>"
-    echo "                          -a <string>"
-    echo "                          [-debug] [--help]"
+    echo "submit_bam_analysis  -r <string> -n <string> -t <string> -o <string>"
+    echo "                     -a <string>"
+    echo "                     [-debug] [--help]"
     echo ""
-    echo "-r <string>               File with reference genome."
-    echo "-n <string>               Normal bam file."
-    echo "-t <string>               Tumor bam file."
-    echo "-o <string>               Output directory."
-    echo "-a <string>               File with analysis steps to be performed."
-    echo "                          Expected format:"
-    echo "                          <stepname> <cpus> <mem> <time>"
-    echo "-debug                    After ending, do not delete temporary files"
-    echo "                          (for debugging purposes)."
-    echo "--help                    Display this help and exit."
+    echo "-r <string>          File with reference genome."
+    echo "-n <string>          Normal bam file."
+    echo "-t <string>          Tumor bam file."
+    echo "-o <string>          Output directory."
+    echo "-a <string>          File with analysis steps to be performed."
+    echo "                     Expected format:"
+    echo "                      <stepname> <cpus> <mem> <time> <jobdeps=stepname1:...>"
+    echo "-debug               After ending, do not delete temporary files"
+    echo "                     (for debugging purposes)."
+    echo "--help               Display this help and exit."
 }
 
 ########

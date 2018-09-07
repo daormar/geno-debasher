@@ -81,7 +81,7 @@ get_dependency_opt()
     if [ -z "${local_jobdeps}" ]; then
         echo ""
     else
-        echo "--dependency=afterany${local_jobdeps}"
+        echo "--dependency=afterok${local_jobdeps}"
     fi
 }
 

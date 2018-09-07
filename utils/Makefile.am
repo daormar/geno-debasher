@@ -44,6 +44,7 @@ SUFFIXES= .sh .py .r .R
 	echo "PANDOC="$(PANDOC) >> $@
 	echo "SAMTOOLS="$(SAMTOOLS) >> $@
 	echo "PLATYPUS_BUILD_DIR="$(PLATYPUS_BUILD_DIR) >> $@
+	echo "PYEGA_BUILD_DIR="$(PYEGA_BUILD_DIR) >> $@
 	cat $< >> $@
 	chmod ugo+x $@
 

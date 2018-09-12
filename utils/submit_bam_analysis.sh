@@ -221,12 +221,16 @@ print_pars()
         echo "-egat is ${egaid_tumorbam}" >&2
     fi
 
-    if [ ${o_given} -eq 1 ]; then
-        echo "-o is ${outd}" >&2
-    fi
-
     if [ ${a_given} -eq 1 ]; then
         echo "-a is ${afile}" >&2
+    fi
+
+    if [ ${g_given} -eq 1 ]; then
+        echo "-g is ${gender}" >&2
+    fi
+
+    if [ ${o_given} -eq 1 ]; then
+        echo "-o is ${outd}" >&2
     fi
 }
 

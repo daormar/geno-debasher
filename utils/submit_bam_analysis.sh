@@ -15,7 +15,7 @@ usage()
 {
     echo "submit_bam_analysis  -r <string>"
     echo "                     -n <string>|-egan <string> -t <string>|-egat <string>"
-    echo "                     -a <string> -o <string>"
+    echo "                     -a <string> -g <string> -o <string>"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-debug] [--help]"
     echo ""
@@ -27,6 +27,7 @@ usage()
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
     echo "                      <stepname> <cpus> <mem> <time> <jobdeps=stepname1:...>"
+    echo "-g <string>          Sample gender (XX|XY)"
     echo "-o <string>          Output directory"
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
@@ -45,6 +46,8 @@ read_pars()
     egan_given=0
     egat_given=0
     a_given=0
+    g_given=0
+    gender="XX"
     o_given=0
     egastr_given=0
     egastr=50
@@ -93,6 +96,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       afile=$1
                       a_given=1
+                  fi
+                  ;;
+            "-g") shift
+                  if [ $# -ne 0 ]; then
+                      gender=$1
+                      g_given=1
                   fi
                   ;;
             "-o") shift
@@ -172,6 +181,11 @@ check_pars()
             echo "Error! file ${afile} does not exist" >&2
             exit 1
         fi
+    fi
+
+    if [ ${g_given} -eq 0 ]; then   
+        echo "Error! -g parameter not given!" >&2
+        exit 1
     fi
 
     if [ ${o_given} -eq 0 ]; then

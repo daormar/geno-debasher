@@ -13,20 +13,27 @@ print_desc()
 ########
 usage()
 {
-    echo "submit_bam_analysis  -r <string> -n <string> -t <string> -o <string>"
-    echo "                     -a <string>"
+    echo "submit_bam_analysis  -r <string>"
+    echo "                     -n <string>|-egan <string> -t <string>|-egat <string>"
+    echo "                     -a <string> -o <string>"
+    echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-debug] [--help]"
     echo ""
-    echo "-r <string>          File with reference genome."
-    echo "-n <string>          Normal bam file."
-    echo "-t <string>          Tumor bam file."
-    echo "-o <string>          Output directory."
+    echo "-r <string>          File with reference genome"
+    echo "-n <string>          Normal bam file"
+    echo "-t <string>          Tumor bam file"
+    echo "-egan <string>       EGA id of normal bam file to download"
+    echo "-egat <string>       EGA id of tumor bam file to download"
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
     echo "                      <stepname> <cpus> <mem> <time> <jobdeps=stepname1:...>"
+    echo "-o <string>          Output directory"
+    echo "-egastr <int>        Number of streams used by the EGA download client"
+    echo "                     (50 by default)"
+    echo "-egacred <string>    File with EGA download client credentials"
     echo "-debug               After ending, do not delete temporary files"
-    echo "                     (for debugging purposes)."
-    echo "--help               Display this help and exit."
+    echo "                     (for debugging purposes)"
+    echo "--help               Display this help and exit"
 }
 
 ########
@@ -35,8 +42,14 @@ read_pars()
     r_given=0
     n_given=0
     t_given=0
-    o_given=0
+    egan_given=0
+    egat_given=0
     a_given=0
+    o_given=0
+    egastr_given=0
+    egastr=50
+    egacred_given=0
+    egacred="cred.json"
     debug=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -64,16 +77,40 @@ read_pars()
                       t_given=1
                   fi
                   ;;
-            "-o") shift
+            "-egan") shift
                   if [ $# -ne 0 ]; then
-                      outd=$1
-                      o_given=1
+                      egaid_normalbam=$1
+                      egan_given=1
+                  fi
+                  ;;
+            "-egat") shift
+                  if [ $# -ne 0 ]; then
+                      egaid_tumorbam=$1
+                      egat_given=1
                   fi
                   ;;
             "-a") shift
                   if [ $# -ne 0 ]; then
                       afile=$1
                       a_given=1
+                  fi
+                  ;;
+            "-o") shift
+                  if [ $# -ne 0 ]; then
+                      outd=$1
+                      o_given=1
+                  fi
+                  ;;
+            "-egastr") shift
+                  if [ $# -ne 0 ]; then
+                      egastr=$1
+                      egastr_given=1
+                  fi
+                  ;;
+            "-egacred") shift
+                  if [ $# -ne 0 ]; then
+                      egacred=$1
+                      egacred_given=1
                   fi
                   ;;
             "-debug") debug=1
@@ -97,22 +134,42 @@ check_pars()
         fi
     fi
 
-    if [ ${n_given} -eq 0 ]; then   
-        echo "Error! -n parameter not given!" >&2
-        exit 1
-    else
+    if [ ${n_given} -eq 0 -a ${egan_given} -eq 0 ]; then
+        echo "Error, -n or -egan options should be given" >&2
+    fi
+
+    if [ ${n_given} -eq 1 -a ${egan_given} -eq 1 ]; then
+        echo "Error, -n and -egan options cannot be given simultaneously" >&2
+    fi
+
+    if [ ${t_given} -eq 0 -a ${egat_given} -eq 0 ]; then
+        echo "Error, -t or -egat options should be given" >&2
+    fi
+
+    if [ ${t_given} -eq 1 -a ${egat_given} -eq 1 ]; then
+        echo "Error, -t and -egat options cannot be given simultaneously" >&2
+    fi
+
+    if [ ${n_given} -eq 1 ]; then
         if [ ! -f ${normalbam} ]; then
             echo "Error! file ${normalbam} does not exist" >&2
             exit 1
         fi
     fi
 
-    if [ ${t_given} -eq 0 ]; then
-        echo "Error! -t parameter not given!" >&2
+    if [ ${t_given} -eq 1 ]; then
+        if [ -a ! -f ${tumorbam} ]; then
+            echo "Error! file ${tumorbam} does not exist" >&2
+            exit 1
+        fi
+    fi
+    
+    if [ ${a_given} -eq 0 ]; then   
+        echo "Error! -a parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${tumorbam} ]; then
-            echo "Error! file ${tumorbam} does not exist" >&2
+        if [ ! -f ${afile} ]; then
+            echo "Error! file ${afile} does not exist" >&2
             exit 1
         fi
     fi
@@ -125,15 +182,37 @@ check_pars()
             echo "Warning! output directory does exist" >&2 
         fi
     fi
+}
 
-    if [ ${a_given} -eq 0 ]; then   
-        echo "Error! -s parameter not given!" >&2
-        exit 1
-    else
-        if [ ! -f ${afile} ]; then
-            echo "Error! file ${afile} does not exist" >&2
-            exit 1
-        fi
+########
+print_pars()
+{
+    if [ ${r_given} -eq 1 ]; then
+        echo "-r is ${ref}" >&2
+    fi
+
+    if [ ${n_given} -eq 1 ]; then
+        echo "-n is ${normalbam}" >&2
+    fi
+
+    if [ ${t_given} -eq 1 ]; then
+        echo "-t is ${tumorbam}" >&2
+    fi
+
+    if [ ${egan_given} -eq 1 ]; then
+        echo "-egan is ${egaid_normalbam}" >&2
+    fi
+
+    if [ ${egat_given} -eq 1 ]; then
+        echo "-egat is ${egaid_tumorbam}" >&2
+    fi
+
+    if [ ${o_given} -eq 1 ]; then
+        echo "-o is ${outd}" >&2
+    fi
+
+    if [ ${a_given} -eq 1 ]; then
+        echo "-a is ${afile}" >&2
     fi
 }
 
@@ -143,6 +222,18 @@ create_dirs()
     mkdir -p ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
 
     mkdir -p ${outd}/scripts || { echo "Error! cannot create scripts directory" >&2; return 1; }
+}
+
+########
+set_bam_filenames()
+{
+    if [ ${egan_given} -eq 1 ]; then
+        normalbam=${outd}/normal.bam
+    fi
+
+    if [ ${egat_given} -eq 1 ]; then
+        tumorbam=${outd}/tumor.bam
+    fi
 }
 
 ########
@@ -244,6 +335,14 @@ execute_msisensor()
 ########
 execute_platypus_germline_conda()
 {
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - ref: reference genome file
+    # - normalbam: bam file for normal sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+
     # Initialize variables
     PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
 
@@ -251,7 +350,7 @@ execute_platypus_germline_conda()
     conda activate platypus
 
     # Run Platypus
-    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=$3 --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -263,11 +362,19 @@ execute_platypus_germline_conda()
 ########
 execute_platypus_germline_local()
 {
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - ref: reference genome file
+    # - normalbam: bam file for normal sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+
     # Initialize variables
     PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
     
     # Run Platypus
-    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=$3 --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${PLATYPUS_OUTD}/finished    
@@ -321,31 +428,133 @@ execute_cnvkit()
 }
 
 ########
-execute_pre_analysis_actions()
+execute_download_ega_norm_bam()
 {
-    # Initialize variables
-    PRE_ANALYSIS_ACTIONS_OUTD=`get_step_dirname ${outd} ${stepname}`
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - normalbam: bam file for normal sample
+    # - egaid_normalbam: EGA id of normal bam file
+    # - stepname: name of step to be executed
+    # - egastr: number of streams used by EGA download client
+    # - egacred: file containing ega credentials
+    # - outd: output directory
 
-    # TBD
-    echo "TBD"
-    sleep 20
+    # Initialize variables
+    DOWNLOAD_EGA_NORM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+
+    # Download file
+    ${PYEGA_BUILD_DIR}/pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid_normalbam} ${normalbam} > ${DOWNLOAD_EGA_NORM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${PRE_ANALYSIS_ACTIONS_OUTD}/finished
+    touch ${DOWNLOAD_EGA_NORM_BAM_OUTD}/finished
 }
 
 ########
-execute_post_analysis_actions()
+execute_download_ega_tum_bam()
 {
-    # Initialize variables
-    POST_ANALYSIS_ACTIONS_OUTD=`get_step_dirname ${outd} ${stepname}`
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - tumorbam: bam file for tumor sample
+    # - egaid_tumorbam: EGA id of tumor bam file
+    # - stepname: name of step to be executed
+    # - egastr: number of streams used by EGA download client
+    # - egacred: file containing ega credentials
+    # - outd: output directory
 
-    # TBD
-    echo "TBD"
-    sleep 10
+    # Initialize variables
+    DOWNLOAD_EGA_TUM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+
+    # Download file
+    ${PYEGA_BUILD_DIR}/pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid_tumorbam} ${tumorbam} > ${DOWNLOAD_EGA_TUM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${POST_ANALYSIS_ACTIONS_OUTD}/finished
+    touch ${DOWNLOAD_EGA_TUM_BAM_OUTD}/finished
+}
+
+########
+execute_index_norm_bam()
+{
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - normalbam: bam file for normal sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+
+    # Initialize variables
+    INDEX_NORM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+
+    # Index normal bam file if necessary
+    if [ ! -f ${normalbam}.bai ]; then
+
+        # Activate conda environment
+        conda activate base
+
+        # Execute samtools
+        samtools index ${normalbam} > ${INDEX_NORM_BAM_OUTD}/samtools.log 2>&1 || exit 1
+
+        # Deactivate conda environment
+        conda deactivate
+    fi
+    
+    # Create file indicating that execution was finished
+    touch ${INDEX_NORM_BAM_OUTD}/finished
+}
+
+########
+execute_index_tum_bam()
+{
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - tumorbam: bam file for tumor sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+
+    # Initialize variables
+    INDEX_TUM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+
+    # Index tumor bam file if necessary
+    if [ ! -f ${tumorbam}.bai ]; then
+
+        # Activate conda environment
+        conda activate base
+
+        # Execute samtools
+        samtools index ${tumorbam} > ${INDEX_TUM_BAM_OUTD}/samtools.log 2>&1 || exit 1
+
+        # Deactivate conda environment
+        conda deactivate
+    fi
+    
+    # Create file indicating that execution was finished
+    touch ${INDEX_TUM_BAM_OUTD}/finished
+}
+
+########
+execute_delete_bam_files()
+{
+    # WARNING: for this function to work successfully, it is necessary
+    # to define the following global variables:
+    #
+    # - normalbam: bam file for normal sample
+    # - tumorbam: bam file for tumor sample
+    # - stepname: name of step to be executed
+    # - outd: output directory
+
+    # Initialize variables
+    DELETE_BAM_FILES_OUTD=`get_step_dirname ${outd} ${stepname}`
+
+    # Delete normal bam file
+    rm ${normalbam} > ${DELETE_BAM_FILES_OUTD}/rm_norm.log 2>&1 || exit 1
+    
+    # Delete tumor bam file
+    rm ${tumorbam} > ${DELETE_BAM_FILES_OUTD}/rm_tum.log 2>&1 || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${DELETE_BAM_FILES_OUTD}/finished
 }
 
 ########
@@ -431,6 +640,10 @@ read_pars $@ || exit 1
 
 check_pars || exit 1
 
+print_pars || exit 1
+
 create_dirs || exit 1
+
+set_bam_filenames || exit 1
 
 execute_steps_in_afile ${outd} ${afile} || exit 1

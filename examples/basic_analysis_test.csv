@@ -1,7 +1,7 @@
 download_ega_norm_bam 1 1024 0 jobdeps=none
 download_ega_tum_bam  1 1024 0 jobdeps=none
-index_norm_bam        1 1024 0 jobdeps=download_norm_bam
-index_tum_bam         1 1024 0 jobdeps=download_tum_bam
+index_norm_bam        1 1024 0 jobdeps=download_ega_norm_bam
+index_tum_bam         1 1024 0 jobdeps=download_ega_tum_bam
 manta_somatic         2 2048 0 jobdeps=download_ega_norm_bam:download_ega_tum_bam:index_norm_bam:index_tum_bam
 strelka_somatic       2 2048 0 jobdeps=download_ega_norm_bam:download_ega_tum_bam:index_norm_bam:index_tum_bam
 msisensor             2 3072 0 jobdeps=download_ega_norm_bam:download_ega_tum_bam:index_norm_bam:index_tum_bam

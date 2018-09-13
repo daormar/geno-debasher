@@ -202,24 +202,22 @@ execute_manta_somatic()
     local_tumorbam=$3
     local_outd=$4
     local_cpus=$5
-    
-    # Initialize variables
-    MANTA_OUTD=`get_step_dirname ${local_outd} manta_somatic`
+    local_step_outd=`get_step_dirname ${local_outd} manta_somatic`
 
     # Activate conda environment
     conda activate manta
     
     # Configure Manta
-    configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${MANTA_OUTD} > ${MANTA_OUTD}/configManta.log 2>&1 || exit 1
+    configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${local_step_outd} > ${local_step_outd}/configManta.log 2>&1 || exit 1
 
     # Execute Manta
-    ${MANTA_OUTD}/runWorkflow.py -m local -j ${local_cpus} > ${MANTA_OUTD}/runWorkflow.log 2>&1 || exit 1
+    ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
 
     # Create file indicating that execution was finished
-    touch ${MANTA_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -231,24 +229,22 @@ execute_strelka_somatic()
     local_tumorbam=$3
     local_outd=$4
     local_cpus=$5
-
-    # Initialize variables
-    STRELKA_OUTD=`get_step_dirname ${local_outd} strelka_somatic`
+    local_step_outd=`get_step_dirname ${local_outd} strelka_somatic`
 
     # Activate conda environment
     conda activate strelka
 
     # Configure Strelka
-    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${STRELKA_OUTD} > ${STRELKA_OUTD}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
+    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
 
     # Execute Strelka
-    ${STRELKA_OUTD}/runWorkflow.py -m local -j ${local_cpus} > ${STRELKA_OUTD}/runWorkflow.log 2>&1 || exit 1
+    ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
 
     # Create file indicating that execution was finished
-    touch ${STRELKA_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -260,24 +256,22 @@ execute_msisensor()
     local_tumorbam=$3
     local_outd=$4
     local_cpus=$5
-
-    # Initialize variables
-    MSISENSOR_OUTD=`get_step_dirname ${local_outd} msisensor`
+    local_step_outd=`get_step_dirname ${local_outd} msisensor`
     
     # Activate conda environment
     conda activate msisensor
 
     # Create homopolymer and microsatellites file
-    msisensor scan -d ${local_ref} -o ${MSISENSOR_OUTD}/msisensor.list > ${MSISENSOR_OUTD}/msisensor_scan.log 2>&1 || exit 1
+    msisensor scan -d ${local_ref} -o ${local_step_outd}/msisensor.list > ${local_step_outd}/msisensor_scan.log 2>&1 || exit 1
 
     # Run MSIsensor analysis
-    msisensor msi -d ${MSISENSOR_OUTD}/msisensor.list -n ${local_normalbam} -t ${local_tumorbam} -o ${MSISENSOR_OUTD}/output -l 1 -q 1 -b ${local_cpus} > ${MSISENSOR_OUTD}/msisensor_msi.log 2>&1 || exit 1
+    msisensor msi -d ${local_step_outd}/msisensor.list -n ${local_normalbam} -t ${local_tumorbam} -o ${local_step_outd}/output -l 1 -q 1 -b ${local_cpus} > ${local_step_outd}/msisensor_msi.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
     
     # Create file indicating that execution was finished
-    touch ${MSISENSOR_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -287,21 +281,19 @@ execute_platypus_germline_conda()
     local_ref=$1
     local_normalbam=$2
     local_outd=$3
-
-    # Initialize variables
-    PLATYPUS_OUTD=`get_step_dirname ${local_outd} platypus_germline_conda`
+    local_step_outd=`get_step_dirname ${local_outd} platypus_germline_conda`
 
     # Activate conda environment
     conda activate platypus
 
     # Run Platypus
-    Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+    Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
 
     # Create file indicating that execution was finished
-    touch ${PLATYPUS_OUTD}/finished        
+    touch ${local_step_outd}/finished        
 }
 
 ########
@@ -311,15 +303,13 @@ execute_platypus_germline_local()
     local_ref=$1
     local_normalbam=$2
     local_outd=$3
-
-    # Initialize variables
-    PLATYPUS_OUTD=`get_step_dirname ${local_outd} platypus_germline_local`
+    local_step_outd=`get_step_dirname ${local_outd} platypus_germline_local`
     
     # Run Platypus
-    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${PLATYPUS_OUTD}/finished    
+    touch ${local_step_outd}/finished    
 }
 
 ########
@@ -346,21 +336,19 @@ execute_cnvkit()
     local_tumorbam=$3
     local_outd=$4
     local_cpus=$5
-
-    # Initialize variables
-    CNVKIT_OUTD=`get_step_dirname ${local_outd} cnvkit`
+    local_step_outd=`get_step_dirname ${local_outd} cnvkit`
     
     # Activate conda environment
     conda activate cnvkit
 
     # Run cnvkit
-    cnvkit.py batch ${local_tumorbam} -n ${local_normalbam} -m wgs -f ${local_ref}  -d ${CNVKIT_OUTD} -p ${local_cpus} > ${CNVKIT_OUTD}/cnvkit.log 2>&1 || exit 1
+    cnvkit.py batch ${local_tumorbam} -n ${local_normalbam} -m wgs -f ${local_ref}  -d ${local_step_outd} -p ${local_cpus} > ${local_step_outd}/cnvkit.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
 
     # Create file indicating that execution was finished
-    touch ${CNVKIT_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -371,25 +359,23 @@ execute_wisecondorx()
     local_tumorbam=$2
     local_outd=$3
     local_cpus=$4
-
-    # Initialize variables
-    WISECONDORX_OUTD=`get_step_dirname ${local_outd} cnvkit`
+    local_step_outd=`get_step_dirname ${local_outd} cnvkit`
     
     # Activate conda environment
     conda activate wisecondorx
 
     # Convert tumor bam file into npz
     BINSIZE=5000
-    WisecondorX convert ${local_tumorbam} ${WISECONDORX_OUTD}/tumor.npz --binsize $BINSIZE > ${WISECONDORX_OUTD}/wisecondorx_convert.log 2>&1 || exit 1
+    WisecondorX convert ${local_tumorbam} ${local_step_outd}/tumor.npz --binsize $BINSIZE > ${local_step_outd}/wisecondorx_convert.log 2>&1 || exit 1
     
     # Use WisecondorX for prediction
-    WisecondorX predict ${WISECONDORX_OUTD}/tumor.npz ${local_wcref} ${WISECONDORX_OUTD}/out > ${WISECONDORX_OUTD}/wisecondorx_predict.log 2>&1 || exit 1
+    WisecondorX predict ${local_step_outd}/tumor.npz ${local_wcref} ${local_step_outd}/out > ${local_step_outd}/wisecondorx_predict.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
 
     # Create file indicating that execution was finished
-    touch ${WISECONDORX_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -404,21 +390,19 @@ execute_ascatngs()
     local_snpgccorr=$6
     local_outd=$7
     local_cpus=$8
-
-    # Initialize variables
-    ASCATNGS_OUTD=`get_step_dirname ${local_outd} ascatngs`
+    local_step_outd=`get_step_dirname ${local_outd} ascatngs`
     
     # Activate conda environment
     conda activate ascatngs
 
     # Run cnvkit
-    ascat.pl -n ${local_normalbam} -t ${local_tumbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} > ${ASCATNGS_OUTD}/ascat.log 2>&1 || exit 1
+    ascat.pl -n ${local_normalbam} -t ${local_tumbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} > ${local_step_outd}/ascat.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
 
     # Create file indicating that execution was finished
-    touch ${ASCATNGS_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -430,15 +414,13 @@ execute_download_ega_norm_bam()
     local_egastr=$3
     local_egacred=$4
     local_outd=$5
-
-    # Initialize variables
-    DOWNLOAD_EGA_NORM_BAM_OUTD=`get_step_dirname ${local_outd} download_ega_norm_bam`
+    local_step_outd=`get_step_dirname ${local_outd} download_ega_norm_bam`
 
     # Download file
-    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_normalbam} > ${DOWNLOAD_EGA_NORM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
+    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_normalbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${DOWNLOAD_EGA_NORM_BAM_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -450,15 +432,13 @@ execute_download_ega_tum_bam()
     local_egastr=$3
     local_egacred=$4
     local_outd=$5
-
-    # Initialize variables
-    DOWNLOAD_EGA_TUM_BAM_OUTD=`get_step_dirname ${local_outd} download_ega_tum_bam`
+    local_step_outd=`get_step_dirname ${local_outd} download_ega_tum_bam`
 
     # Download file
-    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${DOWNLOAD_EGA_TUM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
+    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${DOWNLOAD_EGA_TUM_BAM_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -467,9 +447,7 @@ execute_index_norm_bam()
     # Initialize variables
     local_normalbam=$1
     local_outd=$2
-
-    # Initialize variables
-    INDEX_NORM_BAM_OUTD=`get_step_dirname ${local_outd} index_norm_bam`
+    local_step_outd=`get_step_dirname ${local_outd} index_norm_bam`
 
     # Index normal bam file if necessary
     if [ ! -f ${local_normalbam}.bai ]; then
@@ -478,14 +456,14 @@ execute_index_norm_bam()
         conda activate base
 
         # Execute samtools
-        samtools index ${local_normalbam} > ${INDEX_NORM_BAM_OUTD}/samtools.log 2>&1 || exit 1
+        samtools index ${local_normalbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
         conda deactivate
     fi
     
     # Create file indicating that execution was finished
-    touch ${INDEX_NORM_BAM_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -494,24 +472,22 @@ execute_sort_norm_bam()
     # Initialize variables
     local_normalbam=$1
     local_outd=$2
-
-    # Initialize variables
-    SORT_NORM_BAM_OUTD=`get_step_dirname ${local_outd} sort_norm_bam`
+    local_step_outd=`get_step_dirname ${local_outd} sort_norm_bam`
 
     # Activate conda environment
     conda activate base
 
     # Execute samtools
-    samtools sort ${local_normalbam} > ${SORT_NORM_BAM_OUTD}/sorted.bam 2> ${SORT_NORM_BAM_OUTD}/samtools.log || exit 1
+    samtools sort ${local_normalbam} > ${local_step_outd}/sorted.bam 2> ${local_step_outd}/samtools.log || exit 1
     
     # Deactivate conda environment
     conda deactivate
 
     # Replace initial bam file by the sorted one
-    mv ${SORT_NORM_BAM_OUTD}/sorted.bam ${local_normalbam} 2> ${SORT_NORM_BAM_OUTD}/mv.log || exit 1
+    mv ${local_step_outd}/sorted.bam ${local_normalbam} 2> ${local_step_outd}/mv.log || exit 1
 
     # Create file indicating that execution was finished
-    touch ${SORT_NORM_BAM_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -520,24 +496,22 @@ execute_sort_tum_bam()
     # Initialize variables
     local_tumorbam=$1
     local_outd=$2
-
-    # Initialize variables
-    SORT_TUM_BAM_OUTD=`get_step_dirname ${local_outd} sort_tum_bam`
+    local_step_outd=`get_step_dirname ${local_outd} sort_tum_bam`
 
     # Activate conda environment
     conda activate base
 
     # Execute samtools
-    samtools sort ${local_tumorbam} > ${SORT_TUM_BAM_OUTD}/sorted.bam 2> ${SORT_TUM_BAM_OUTD}/samtools.log || exit 1
+    samtools sort ${local_tumorbam} > ${local_step_outd}/sorted.bam 2> ${local_step_outd}/samtools.log || exit 1
     
     # Deactivate conda environment
     conda deactivate
 
     # Replace initial bam file by the sorted one
-    mv ${SORT_TUM_BAM_OUTD}/sorted.bam ${local_tumorbam} 2> ${SORT_TUM_BAM_OUTD}/mv.log || exit 1
+    mv ${local_step_outd}/sorted.bam ${local_tumorbam} 2> ${local_step_outd}/mv.log || exit 1
 
     # Create file indicating that execution was finished
-    touch ${SORT_TUM_BAM_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -546,9 +520,7 @@ execute_index_tum_bam()
     # Initialize variables
     local_tumorbam=$1
     local_outd=$2
-
-    # Initialize variables
-    INDEX_TUM_BAM_OUTD=`get_step_dirname ${local_outd} index_tum_bam`
+    local_step_outd=`get_step_dirname ${local_outd} index_tum_bam`
 
     # Index tumor bam file if necessary
     if [ ! -f ${local_tumorbam}.bai ]; then
@@ -557,14 +529,14 @@ execute_index_tum_bam()
         conda activate base
 
         # Execute samtools
-        samtools index ${local_tumorbam} > ${INDEX_TUM_BAM_OUTD}/samtools.log 2>&1 || exit 1
+        samtools index ${local_tumorbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
         conda deactivate
     fi
     
     # Create file indicating that execution was finished
-    touch ${INDEX_TUM_BAM_OUTD}/finished
+    touch ${local_step_outd}/finished
 }
 
 ########
@@ -574,16 +546,14 @@ execute_delete_bam_files()
     local_normalbam=$1
     local_tumorbam=$2
     local_outd=$3
-
-    # Initialize variables
-    DELETE_BAM_FILES_OUTD=`get_step_dirname ${local_outd} delete_bam_files`
+    local_step_outd=`get_step_dirname ${local_outd} delete_bam_files`
 
     # Delete normal bam file
-    rm ${local_normalbam} > ${DELETE_BAM_FILES_OUTD}/rm_norm.log 2>&1 || exit 1
+    rm ${local_normalbam} > ${local_step_outd}/rm_norm.log 2>&1 || exit 1
     
     # Delete tumor bam file
-    rm ${local_tumorbam} > ${DELETE_BAM_FILES_OUTD}/rm_tum.log 2>&1 || exit 1
+    rm ${local_tumorbam} > ${local_step_outd}/rm_tum.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${DELETE_BAM_FILES_OUTD}/finished
+    touch ${local_step_outd}/finished
 }

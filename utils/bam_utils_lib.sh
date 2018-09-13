@@ -205,7 +205,7 @@ execute_manta_somatic()
     local_step_outd=`get_step_dirname ${local_outd} manta_somatic`
 
     # Activate conda environment
-    conda activate manta
+    conda activate manta 2> ${local_step_outd}/conda_activate.log || exit 1
     
     # Configure Manta
     configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${local_step_outd} > ${local_step_outd}/configManta.log 2>&1 || exit 1
@@ -232,7 +232,7 @@ execute_strelka_somatic()
     local_step_outd=`get_step_dirname ${local_outd} strelka_somatic`
 
     # Activate conda environment
-    conda activate strelka
+    conda activate strelka 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Configure Strelka
     configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
@@ -259,7 +259,7 @@ execute_msisensor()
     local_step_outd=`get_step_dirname ${local_outd} msisensor`
     
     # Activate conda environment
-    conda activate msisensor
+    conda activate msisensor 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Create homopolymer and microsatellites file
     msisensor scan -d ${local_ref} -o ${local_step_outd}/msisensor.list > ${local_step_outd}/msisensor_scan.log 2>&1 || exit 1
@@ -284,7 +284,7 @@ execute_platypus_germline_conda()
     local_step_outd=`get_step_dirname ${local_outd} platypus_germline_conda`
 
     # Activate conda environment
-    conda activate platypus
+    conda activate platypus 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Run Platypus
     Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
@@ -339,7 +339,7 @@ execute_cnvkit()
     local_step_outd=`get_step_dirname ${local_outd} cnvkit`
     
     # Activate conda environment
-    conda activate cnvkit
+    conda activate cnvkit 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Run cnvkit
     cnvkit.py batch ${local_tumorbam} -n ${local_normalbam} -m wgs -f ${local_ref}  -d ${local_step_outd} -p ${local_cpus} > ${local_step_outd}/cnvkit.log 2>&1 || exit 1
@@ -362,7 +362,7 @@ execute_wisecondorx()
     local_step_outd=`get_step_dirname ${local_outd} cnvkit`
     
     # Activate conda environment
-    conda activate wisecondorx
+    conda activate wisecondorx 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Convert tumor bam file into npz
     BINSIZE=5000
@@ -393,7 +393,7 @@ execute_ascatngs()
     local_step_outd=`get_step_dirname ${local_outd} ascatngs`
     
     # Activate conda environment
-    conda activate ascatngs
+    conda activate ascatngs 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Run cnvkit
     ascat.pl -n ${local_normalbam} -t ${local_tumbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} > ${local_step_outd}/ascat.log 2>&1 || exit 1
@@ -417,7 +417,7 @@ execute_download_ega_norm_bam()
     local_step_outd=`get_step_dirname ${local_outd} download_ega_norm_bam`
 
     # Activate conda environment
-    conda activate pyega3
+    conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Download file
     pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_normalbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
@@ -441,7 +441,7 @@ execute_download_ega_tum_bam()
     local_step_outd=`get_step_dirname ${local_outd} download_ega_tum_bam`
 
     # Activate conda environment
-    conda activate pyega3
+    conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Download file
     pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
@@ -465,7 +465,7 @@ execute_index_norm_bam()
     if [ ! -f ${local_normalbam}.bai ]; then
 
         # Activate conda environment
-        conda activate base
+        conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
         # Execute samtools
         samtools index ${local_normalbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1
@@ -487,7 +487,7 @@ execute_sort_norm_bam()
     local_step_outd=`get_step_dirname ${local_outd} sort_norm_bam`
 
     # Activate conda environment
-    conda activate base
+    conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Execute samtools
     samtools sort ${local_normalbam} > ${local_step_outd}/sorted.bam 2> ${local_step_outd}/samtools.log || exit 1
@@ -511,7 +511,7 @@ execute_sort_tum_bam()
     local_step_outd=`get_step_dirname ${local_outd} sort_tum_bam`
 
     # Activate conda environment
-    conda activate base
+    conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Execute samtools
     samtools sort ${local_tumorbam} > ${local_step_outd}/sorted.bam 2> ${local_step_outd}/samtools.log || exit 1
@@ -538,7 +538,7 @@ execute_index_tum_bam()
     if [ ! -f ${local_tumorbam}.bai ]; then
 
         # Activate conda environment
-        conda activate base
+        conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
         # Execute samtools
         samtools index ${local_tumorbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1

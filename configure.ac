@@ -413,8 +413,8 @@ AC_ARG_WITH([platypus],
  [AS_HELP_STRING([--with-platypus=DIR],
    [installs the package with the necessary code to combine it with the platypus library @<:@default=no@:>@])],
  [with_platypus=$withval],
- [with_platypus=no])
-if test "$with_platypus" = "no"; then
+ [with_platypus=""])
+if test "$with_platypus" = ""; then
  enable_platypus_lib="no"
  AC_MSG_RESULT(no)
 else
@@ -429,8 +429,8 @@ AC_ARG_WITH([facets],
  [AS_HELP_STRING([--with-facets=DIR],
    [installs the package with the necessary code to combine it with the facets library @<:@default=no@:>@])],
  [with_facets=$withval],
- [with_facets=no])
-if test "$with_facets" = "no"; then
+ [with_facets=""])
+if test "$with_facets" = ""; then
  enable_facets_lib="no"
  AC_MSG_RESULT(no)
 else

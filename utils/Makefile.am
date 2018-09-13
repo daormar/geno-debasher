@@ -43,8 +43,8 @@ SUFFIXES= .sh .py .r .R
 	echo "WGET="$(WGET) >> $@
 	echo "PANDOC="$(PANDOC) >> $@
 	echo "SAMTOOLS="$(SAMTOOLS) >> $@
-	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_BUILD_DIR) >> $@
-	echo "FACETS_HOME_DIR="$(FACETS_BUILD_DIR) >> $@
+	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@
 	cat $< >> $@
 	chmod ugo+x $@
 

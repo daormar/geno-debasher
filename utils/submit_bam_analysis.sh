@@ -255,29 +255,32 @@ set_bam_filenames()
 }
 
 ########
+get_pars_manta_somatic()
+{
+    echo "$ref $normalbam $tumorbam $outd $cpus"
+}
+
+########
 execute_manta_somatic()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - ref: reference genome file
-    # - normalbam: bam file for normal sample
-    # - tumorbam: bam file for tumor sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
-    # - cpus: number of cpus used to execute the step
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_tumorbam=$3
+    local_outd=$4
+    local_cpus=$5
     
     # Initialize variables
-    MANTA_OUTD=`get_step_dirname ${outd} ${stepname}`
+    MANTA_OUTD=`get_step_dirname ${local_outd} manta_somatic`
 
     # Activate conda environment
     conda activate manta
     
     # Configure Manta
-    configManta.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} --runDir ${MANTA_OUTD} > ${MANTA_OUTD}/configManta.log 2>&1 || exit 1
+    configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${MANTA_OUTD} > ${MANTA_OUTD}/configManta.log 2>&1 || exit 1
 
     # Execute Manta
-    ${MANTA_OUTD}/runWorkflow.py -m local -j ${cpus} > ${MANTA_OUTD}/runWorkflow.log 2>&1 || exit 1
+    ${MANTA_OUTD}/runWorkflow.py -m local -j ${local_cpus} > ${MANTA_OUTD}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -287,29 +290,32 @@ execute_manta_somatic()
 }
 
 ########
+get_pars_strelka_somatic()
+{
+    echo "$ref $normalbam $tumorbam $outd $cpus"
+}
+
+########
 execute_strelka_somatic()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - ref: reference genome file
-    # - normalbam: bam file for normal sample
-    # - tumorbam: bam file for tumor sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
-    # - cpus: number of cpus used to execute the step
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_tumorbam=$3
+    local_outd=$4
+    local_cpus=$5
 
     # Initialize variables
-    STRELKA_OUTD=`get_step_dirname ${outd} ${stepname}`
+    STRELKA_OUTD=`get_step_dirname ${outd} strelka_somatic`
 
     # Activate conda environment
     conda activate strelka
 
     # Configure Strelka
-    configureStrelkaSomaticWorkflow.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} --runDir ${STRELKA_OUTD} > ${STRELKA_OUTD}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
+    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${STRELKA_OUTD} > ${STRELKA_OUTD}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
 
     # Execute Strelka
-    ${STRELKA_OUTD}/runWorkflow.py -m local -j ${cpus} > ${STRELKA_OUTD}/runWorkflow.log 2>&1 || exit 1
+    ${STRELKA_OUTD}/runWorkflow.py -m local -j ${local_cpus} > ${STRELKA_OUTD}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -319,29 +325,32 @@ execute_strelka_somatic()
 }
 
 ########
+get_pars_msisensor()
+{
+    echo "$ref $normalbam $tumorbam $outd $cpus"
+}
+
+########
 execute_msisensor()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - ref: reference genome file
-    # - normalbam: bam file for normal sample
-    # - tumorbam: bam file for tumor sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
-    # - cpus: number of cpus used to execute the step
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_tumorbam=$3
+    local_outd=$4
+    local_cpus=$5
 
     # Initialize variables
-    MSISENSOR_OUTD=`get_step_dirname ${outd} ${stepname}`
+    MSISENSOR_OUTD=`get_step_dirname ${outd} msisensor`
     
     # Activate conda environment
     conda activate msisensor
 
     # Create homopolymer and microsatellites file
-    msisensor scan -d ${ref} -o ${MSISENSOR_OUTD}/msisensor.list > ${MSISENSOR_OUTD}/msisensor_scan.log 2>&1 || exit 1
+    msisensor scan -d ${local_ref} -o ${MSISENSOR_OUTD}/msisensor.list > ${MSISENSOR_OUTD}/msisensor_scan.log 2>&1 || exit 1
 
     # Run MSIsensor analysis
-    msisensor msi -d ${MSISENSOR_OUTD}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${MSISENSOR_OUTD}/output -l 1 -q 1 -b ${cpus} > ${MSISENSOR_OUTD}/msisensor_msi.log 2>&1 || exit 1
+    msisensor msi -d ${MSISENSOR_OUTD}/msisensor.list -n ${local_normalbam} -t ${local_tumorbam} -o ${MSISENSOR_OUTD}/output -l 1 -q 1 -b ${local_cpus} > ${MSISENSOR_OUTD}/msisensor_msi.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -353,22 +362,19 @@ execute_msisensor()
 ########
 execute_platypus_germline_conda()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - ref: reference genome file
-    # - normalbam: bam file for normal sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_outd=$3
 
     # Initialize variables
-    PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
+    PLATYPUS_OUTD=`get_step_dirname ${outd} platypus_germline_conda`
 
     # Activate conda environment
     conda activate platypus
 
     # Run Platypus
-    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+    Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -380,63 +386,66 @@ execute_platypus_germline_conda()
 ########
 execute_platypus_germline_local()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - ref: reference genome file
-    # - normalbam: bam file for normal sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_outd=$3
 
     # Initialize variables
-    PLATYPUS_OUTD=`get_step_dirname ${outd} ${stepname}`
+    PLATYPUS_OUTD=`get_step_dirname ${outd} platypus_germline_local`
     
     # Run Platypus
-    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
+    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${PLATYPUS_OUTD}/finished    
 }
 
 ########
+get_pars_platypus_germline()
+{
+    echo "$ref $normalbam $outd"
+}
+
+########
 execute_platypus_germline()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - ref: reference genome file
-    # - normalbam: bam file for normal sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_outd=$3
 
     if [ -z "${PLATYPUS_BUILD_DIR}" ]; then
-        execute_platypus_germline_conda
+        execute_platypus_germline_conda ${local_ref} ${local_normalbam} ${local_outd}
     else
-        execute_platypus_germline_local
+        execute_platypus_germline_local ${local_ref} ${local_normalbam} ${local_outd}
     fi
+}
+
+########
+get_pars_cnvkit()
+{
+    echo "$ref $normalbam $tumorbam $outd $cpus"
 }
 
 ########
 execute_cnvkit()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - ref: reference genome file
-    # - normalbam: bam file for normal sample
-    # - tumorbam: bam file for tumor sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
-    # - cpus: number of cpus used to execute the step
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_tumorbam=$3
+    local_outd=$4
+    local_cpus=$5
 
     # Initialize variables
-    CNVKIT_OUTD=`get_step_dirname ${outd} ${stepname}`
+    CNVKIT_OUTD=`get_step_dirname ${outd} cnvkit`
     
     # Activate conda environment
     conda activate cnvkit
 
     # Run cnvkit
-    cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${CNVKIT_OUTD} -p ${cpus} > ${CNVKIT_OUTD}/cnvkit.log 2>&1 || exit 1
+    cnvkit.py batch ${local_tumorbam} -n ${local_normalbam} -m wgs -f ${local_ref}  -d ${CNVKIT_OUTD} -p ${local_cpus} > ${CNVKIT_OUTD}/cnvkit.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -446,72 +455,81 @@ execute_cnvkit()
 }
 
 ########
+get_pars_download_ega_norm_bam()
+{
+    echo "$normalbam ${egaid_normalbam} $egastr $egacred $outd"
+}
+
+########
 execute_download_ega_norm_bam()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - normalbam: bam file for normal sample
-    # - egaid_normalbam: EGA id of normal bam file
-    # - stepname: name of step to be executed
-    # - egastr: number of streams used by EGA download client
-    # - egacred: file containing ega credentials
-    # - outd: output directory
+    # Initialize variables
+    local_normalbam=$1
+    local_egaid_normalbam=$2
+    local_egastr=$3
+    local_egacred=$4
+    local_outd=$5
 
     # Initialize variables
-    DOWNLOAD_EGA_NORM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+    DOWNLOAD_EGA_NORM_BAM_OUTD=`get_step_dirname ${local_outd} download_ega_norm_bam`
 
     # Download file
-    ${PYEGA_BUILD_DIR}/pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid_normalbam} ${normalbam} > ${DOWNLOAD_EGA_NORM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
+    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_normalbam} > ${DOWNLOAD_EGA_NORM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${DOWNLOAD_EGA_NORM_BAM_OUTD}/finished
 }
 
 ########
+get_pars_download_ega_tum_bam()
+{
+    echo "$tumorbam ${egaid_tumorbam} $egastr $egacred $outd"
+}
+
+########
 execute_download_ega_tum_bam()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - tumorbam: bam file for tumor sample
-    # - egaid_tumorbam: EGA id of tumor bam file
-    # - stepname: name of step to be executed
-    # - egastr: number of streams used by EGA download client
-    # - egacred: file containing ega credentials
-    # - outd: output directory
+    # Initialize variables
+    local_tumorbam=$1
+    local_egaid_tumorbam=$2
+    local_egastr=$3
+    local_egacred=$4
+    local_outd=$5
 
     # Initialize variables
-    DOWNLOAD_EGA_TUM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+    DOWNLOAD_EGA_TUM_BAM_OUTD=`get_step_dirname ${outd} download_ega_tum_bam`
 
     # Download file
-    ${PYEGA_BUILD_DIR}/pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid_tumorbam} ${tumorbam} > ${DOWNLOAD_EGA_TUM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
+    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${DOWNLOAD_EGA_TUM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${DOWNLOAD_EGA_TUM_BAM_OUTD}/finished
 }
 
 ########
+get_pars_index_norm_bam()
+{
+    echo "$normalbam $outd"
+}
+
+########
 execute_index_norm_bam()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - normalbam: bam file for normal sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
+    # Initialize variables
+    local_normalbam=$1
+    local_outd=$2
 
     # Initialize variables
-    INDEX_NORM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+    INDEX_NORM_BAM_OUTD=`get_step_dirname ${outd} index_norm_bam`
 
     # Index normal bam file if necessary
-    if [ ! -f ${normalbam}.bai ]; then
+    if [ ! -f ${local_normalbam}.bai ]; then
 
         # Activate conda environment
         conda activate base
 
         # Execute samtools
-        samtools index ${normalbam} > ${INDEX_NORM_BAM_OUTD}/samtools.log 2>&1 || exit 1
+        samtools index ${local_normalbam} > ${INDEX_NORM_BAM_OUTD}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
         conda deactivate
@@ -522,26 +540,29 @@ execute_index_norm_bam()
 }
 
 ########
+get_pars_index_tum_bam()
+{
+    echo "$tumorbam $outd"
+}
+
+########
 execute_index_tum_bam()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - tumorbam: bam file for tumor sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
+    # Initialize variables
+    local_tumorbam=$1
+    local_outd=$2
 
     # Initialize variables
-    INDEX_TUM_BAM_OUTD=`get_step_dirname ${outd} ${stepname}`
+    INDEX_TUM_BAM_OUTD=`get_step_dirname ${outd} index_tum_bam`
 
     # Index tumor bam file if necessary
-    if [ ! -f ${tumorbam}.bai ]; then
+    if [ ! -f ${local_tumorbam}.bai ]; then
 
         # Activate conda environment
         conda activate base
 
         # Execute samtools
-        samtools index ${tumorbam} > ${INDEX_TUM_BAM_OUTD}/samtools.log 2>&1 || exit 1
+        samtools index ${local_tumorbam} > ${INDEX_TUM_BAM_OUTD}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
         conda deactivate
@@ -552,24 +573,27 @@ execute_index_tum_bam()
 }
 
 ########
+get_pars_delete_bam_files()
+{
+    echo "$normalbam $tumorbam $outd"
+}
+
+########
 execute_delete_bam_files()
 {
-    # WARNING: for this function to work successfully, it is necessary
-    # to define the following global variables:
-    #
-    # - normalbam: bam file for normal sample
-    # - tumorbam: bam file for tumor sample
-    # - stepname: name of step to be executed
-    # - outd: output directory
+    # Initialize variables
+    local_normalbam=$1
+    local_tumorbam=$2
+    local_outd=$3
 
     # Initialize variables
-    DELETE_BAM_FILES_OUTD=`get_step_dirname ${outd} ${stepname}`
+    DELETE_BAM_FILES_OUTD=`get_step_dirname ${outd} delete_bam_files`
 
     # Delete normal bam file
-    rm ${normalbam} > ${DELETE_BAM_FILES_OUTD}/rm_norm.log 2>&1 || exit 1
+    rm ${local_normalbam} > ${DELETE_BAM_FILES_OUTD}/rm_norm.log 2>&1 || exit 1
     
     # Delete tumor bam file
-    rm ${tumorbam} > ${DELETE_BAM_FILES_OUTD}/rm_tum.log 2>&1 || exit 1
+    rm ${local_tumorbam} > ${DELETE_BAM_FILES_OUTD}/rm_tum.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${DELETE_BAM_FILES_OUTD}/finished
@@ -606,10 +630,11 @@ execute_step()
     local_jobdeps_spec=$6
 
     # Execute step
-    create_script ${local_dirname}/scripts/execute_${local_stepname} execute_${local_stepname}
-    status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
-    echo "STEP: ${local_stepname} ; STATUS: ${status}" >&2
-    if [ "$status" != "FINISHED" ]; then
+    local_script_pars=`get_pars_${local_stepname}`
+    create_script ${local_dirname}/scripts/execute_${local_stepname} execute_${local_stepname} "${local_script_pars}"
+    local_status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
+    echo "STEP: ${local_stepname} ; STATUS: ${local_status}" >&2
+    if [ "${local_status}" != "FINISHED" ]; then
         reset_outdir_for_step ${local_dirname} ${local_stepname} || exit 1
         local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
         local_stepname_jid=${local_stepname}_jid
@@ -635,14 +660,14 @@ execute_steps_in_afile()
         entry_ok=`entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract entry information
-            stepname=`extract_stepname_from_entry "$entry"`
+            local_stepname=`extract_stepname_from_entry "$entry"`
             cpus=`extract_cpus_from_entry "$entry"`
-            mem=`extract_mem_from_entry "$entry"`
-            time=`extract_time_from_entry "$entry"`
-            jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
+            local_mem=`extract_mem_from_entry "$entry"`
+            local_time=`extract_time_from_entry "$entry"`
+            local_jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
 
             # Execute step
-            execute_step ${local_dirname} ${stepname} ${cpus} ${mem} ${time} ${jobdeps_spec} || exit 1
+            execute_step ${local_dirname} ${local_stepname} ${cpus} ${local_mem} ${local_time} ${local_jobdeps_spec} || exit 1
         fi
     done < ${local_afile}
 }

@@ -42,6 +42,7 @@ create_script()
     # Init variables
     local_name=$1
     local_command=$2
+    local_script_pars=$3
 
     # Save previous file (if any)
     if [ -f ${local_name} ]; then
@@ -63,7 +64,7 @@ create_script()
     $GREP "()" ${local_name} -A1 | $GREP "{" > /dev/null || write_functions >> ${local_name}
     
     # Write command to be executed
-    echo "${local_command}" >> ${local_name}
+    echo "${local_command} ${local_script_pars}" >> ${local_name}
 
     # Give execution permission
     chmod u+x ${local_name}

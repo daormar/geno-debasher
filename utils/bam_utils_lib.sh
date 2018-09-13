@@ -416,8 +416,14 @@ execute_download_ega_norm_bam()
     local_outd=$5
     local_step_outd=`get_step_dirname ${local_outd} download_ega_norm_bam`
 
+    # Activate conda environment
+    conda activate pyega3
+
     # Download file
-    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_normalbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_normalbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -434,8 +440,14 @@ execute_download_ega_tum_bam()
     local_outd=$5
     local_step_outd=`get_step_dirname ${local_outd} download_ega_tum_bam`
 
+    # Activate conda environment
+    conda activate pyega3
+
     # Download file
-    ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished

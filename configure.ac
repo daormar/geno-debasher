@@ -423,22 +423,6 @@ else
 fi
 AC_SUBST(PLATYPUS_BUILD_DIR,$with_platypus)
 
-# Adds an extra argument to configure (enable EGA Python download client)
-AC_MSG_CHECKING(whether to enable EGA Python download client)
-AC_ARG_WITH([pyega],
- [AS_HELP_STRING([--with-pyega=DIR],
-   [installs the package with the necessary code to combine it with the pyega library @<:@default=no@:>@])],
- [with_pyega=$withval],
- [with_pyega=no])
-if test "$with_pyega" = "no"; then
- enable_pyega_lib="no"
- AC_MSG_RESULT(no)
-else
- enable_pyega_lib="yes"
- AC_MSG_RESULT(yes)
-fi
-AC_SUBST(PYEGA_BUILD_DIR,$with_pyega)
-
 # Process options given in shell variables
 
 # Change path of distribution include directory

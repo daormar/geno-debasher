@@ -359,7 +359,7 @@ execute_wisecondorx()
     local_tumorbam=$2
     local_outd=$3
     local_cpus=$4
-    local_step_outd=`get_step_dirname ${local_outd} cnvkit`
+    local_step_outd=`get_step_dirname ${local_outd} wisecondorx`
     
     # Activate conda environment
     conda activate wisecondorx 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -373,6 +373,27 @@ execute_wisecondorx()
 
     # Deactivate conda environment
     conda deactivate
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+}
+
+########
+execute_facets()
+{
+    # Initialize variables
+    local_normalbam=$1
+    local_tumorbam=$2
+    local_snpvcf=$3
+    local_outd=$4
+    local_step_outd=`get_step_dirname ${local_outd} facets`
+
+    # Execute snp-pileup
+    ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${local_step_outd}/snp-pileup-counts.csv ${local_normalbam} ${local_tumorbam} > ${local_step_outd}/snp-pileup.log 2>&1 || exit 1
+    
+    # Execute facets
+    # TO-BE-DONE
+    # ${bindir}/run_facets > ${local_step_outd}/run_facets.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished

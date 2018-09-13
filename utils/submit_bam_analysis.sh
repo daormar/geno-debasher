@@ -333,6 +333,12 @@ get_pars_cnvkit()
 }
 
 ########
+get_pars_facets()
+{
+    echo "$normalbam $tumorbam $snpvcf outd$"
+}
+
+########
 get_pars_wisecondorx()
 {
     echo "$wcref $tumorbam $outd $cpus"

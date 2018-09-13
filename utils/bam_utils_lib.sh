@@ -306,7 +306,7 @@ execute_platypus_germline_local()
     local_step_outd=`get_step_dirname ${local_outd} platypus_germline_local`
     
     # Run Platypus
-    python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
+    python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished    
@@ -320,7 +320,7 @@ execute_platypus_germline()
     local_normalbam=$2
     local_outd=$3
 
-    if [ -z "${PLATYPUS_BUILD_DIR}" ]; then
+    if [ -z "${PLATYPUS_HOME_DIR}" ]; then
         execute_platypus_germline_conda ${local_ref} ${local_normalbam} ${local_outd}
     else
         execute_platypus_germline_local ${local_ref} ${local_normalbam} ${local_outd}

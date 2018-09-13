@@ -421,7 +421,7 @@ else
  enable_platypus_lib="yes"
  AC_MSG_RESULT(yes)
 fi
-AC_SUBST(PLATYPUS_BUILD_DIR,$with_platypus)
+AC_SUBST(PLATYPUS_HOME_DIR,$with_platypus)
 
 # Adds an extra argument to configure (enable use of Facets)
 AC_MSG_CHECKING(whether to enable facets library)

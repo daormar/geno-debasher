@@ -281,7 +281,7 @@ execute_platypus_germline_conda()
     local_ref=$1
     local_normalbam=$2
     local_outd=$3
-    local_step_outd=`get_step_dirname ${local_outd} platypus_germline_conda`
+    local_step_outd=`get_step_dirname ${local_outd} platypus_germline`
 
     # Activate conda environment
     conda activate platypus 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -303,7 +303,7 @@ execute_platypus_germline_local()
     local_ref=$1
     local_normalbam=$2
     local_outd=$3
-    local_step_outd=`get_step_dirname ${local_outd} platypus_germline_local`
+    local_step_outd=`get_step_dirname ${local_outd} platypus_germline`
     
     # Run Platypus
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1

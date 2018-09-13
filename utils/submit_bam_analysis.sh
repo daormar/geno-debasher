@@ -15,8 +15,9 @@ usage()
 {
     echo "submit_bam_analysis  -r <string>"
     echo "                     -n <string>|-egan <string> -t <string>|-egat <string>"
-    echo "                     -a <string> -g <string> -o <string>"
-    echo "                     [-sg <string>] [-mc <string>] [-wcr <string>]"
+    echo "                     -g <string> -a <string> -o <string>"
+    echo "                     [-wcr <string>] [-sv <string>]"
+    echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-debug] [--help]"
     echo ""
@@ -25,14 +26,15 @@ usage()
     echo "-t <string>          Tumor bam file"
     echo "-egan <string>       EGA id of normal bam file to download"
     echo "-egat <string>       EGA id of tumor bam file to download"
+    echo "-g <string>          Sample gender (XX|XY)"
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
     echo "                      <stepname> <cpus> <mem> <time> <jobdeps=stepname1:...>"
-    echo "-g <string>          Sample gender (XX|XY)"
     echo "-o <string>          Output directory"
-    echo "-sg <string>         SNP GC correction file (for ASCATNGS)"
-    echo "-mc <string>         Name of male sex chromosome (for ASCATNGS)"
     echo "-wcr <string>        Reference file in npz format for WisecondorX"
+    echo "-sv <string>         SNP vcf file required by Facets"
+    echo "-sg <string>         SNP GC correction file required by AscatNGS"
+    echo "-mc <string>         Name of male sex chromosome required by AscatNGS"
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
@@ -53,12 +55,14 @@ read_pars()
     g_given=0
     gender="XX"
     o_given=0
+    wcr_given=0
+    wcref="NONE"
+    sv_given=0
+    snpvcf="NONE"
     sg_given=0
     snpgccorr="NONE"
     mc_given=0
     malesexchr="Y"
-    wcr_given=0
-    wcref="NONE"
     egastr_given=0
     egastr=50
     egacred_given=0
@@ -102,22 +106,34 @@ read_pars()
                       egat_given=1
                   fi
                   ;;
-            "-a") shift
-                  if [ $# -ne 0 ]; then
-                      afile=$1
-                      a_given=1
-                  fi
-                  ;;
             "-g") shift
                   if [ $# -ne 0 ]; then
                       gender=$1
                       g_given=1
                   fi
                   ;;
+            "-a") shift
+                  if [ $# -ne 0 ]; then
+                      afile=$1
+                      a_given=1
+                  fi
+                  ;;
             "-o") shift
                   if [ $# -ne 0 ]; then
                       outd=$1
                       o_given=1
+                  fi
+                  ;;
+            "-wcr") shift
+                  if [ $# -ne 0 ]; then
+                      wcref=$1
+                      wcr_given=1
+                  fi
+                  ;;
+            "-sv") shift
+                  if [ $# -ne 0 ]; then
+                      snpvcf=$1
+                      sv_given=1
                   fi
                   ;;
             "-sg") shift
@@ -130,12 +146,6 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       malesexchr=$1
                       mc_given=1
-                  fi
-                  ;;
-            "-wcr") shift
-                  if [ $# -ne 0 ]; then
-                      wcref=$1
-                      wcr_given=1
                   fi
                   ;;
             "-egastr") shift
@@ -200,7 +210,12 @@ check_pars()
             exit 1
         fi
     fi
-    
+
+    if [ ${g_given} -eq 0 ]; then   
+        echo "Error! -g parameter not given!" >&2
+        exit 1
+    fi
+
     if [ ${a_given} -eq 0 ]; then   
         echo "Error! -a parameter not given!" >&2
         exit 1
@@ -209,11 +224,6 @@ check_pars()
             echo "Error! file ${afile} does not exist" >&2
             exit 1
         fi
-    fi
-
-    if [ ${g_given} -eq 0 ]; then   
-        echo "Error! -g parameter not given!" >&2
-        exit 1
     fi
 
     if [ ${o_given} -eq 0 ]; then
@@ -333,15 +343,15 @@ get_pars_cnvkit()
 }
 
 ########
-get_pars_facets()
-{
-    echo "$normalbam $tumorbam $snpvcf outd$"
-}
-
-########
 get_pars_wisecondorx()
 {
     echo "$wcref $tumorbam $outd $cpus"
+}
+
+########
+get_pars_facets()
+{
+    echo "$normalbam $tumorbam $snpvcf outd$"
 }
 
 ########

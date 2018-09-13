@@ -349,6 +349,18 @@ get_pars_index_tum_bam()
 }
 
 ########
+get_pars_sort_norm_bam()
+{
+    echo "$normalbam $outd"
+}
+
+########
+get_pars_sort_tum_bam()
+{
+    echo "$tumorbam $outd"
+}
+
+########
 get_pars_delete_bam_files()
 {
     echo "$normalbam $tumorbam $outd"

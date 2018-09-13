@@ -489,6 +489,58 @@ execute_index_norm_bam()
 }
 
 ########
+execute_sort_norm_bam()
+{
+    # Initialize variables
+    local_normalbam=$1
+    local_outd=$2
+
+    # Initialize variables
+    SORT_NORM_BAM_OUTD=`get_step_dirname ${local_outd} sort_norm_bam`
+
+    # Activate conda environment
+    conda activate base
+
+    # Execute samtools
+    samtools sort ${local_normalbam} > ${SORT_NORM_BAM_OUTD}/sorted.bam 2> ${SORT_NORM_BAM_OUTD}/samtools.log || exit 1
+    
+    # Deactivate conda environment
+    conda deactivate
+
+    # Replace initial bam file by the sorted one
+    mv ${SORT_NORM_BAM_OUTD}/sorted.bam ${local_normalbam} 2> ${SORT_NORM_BAM_OUTD}/mv.log || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${SORT_NORM_BAM_OUTD}/finished
+}
+
+########
+execute_sort_tum_bam()
+{
+    # Initialize variables
+    local_tumorbam=$1
+    local_outd=$2
+
+    # Initialize variables
+    SORT_TUM_BAM_OUTD=`get_step_dirname ${local_outd} sort_tum_bam`
+
+    # Activate conda environment
+    conda activate base
+
+    # Execute samtools
+    samtools sort ${local_tumorbam} > ${SORT_TUM_BAM_OUTD}/sorted.bam 2> ${SORT_TUM_BAM_OUTD}/samtools.log || exit 1
+    
+    # Deactivate conda environment
+    conda deactivate
+
+    # Replace initial bam file by the sorted one
+    mv ${SORT_TUM_BAM_OUTD}/sorted.bam ${local_tumorbam} 2> ${SORT_TUM_BAM_OUTD}/mv.log || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${SORT_TUM_BAM_OUTD}/finished
+}
+
+########
 execute_index_tum_bam()
 {
     # Initialize variables

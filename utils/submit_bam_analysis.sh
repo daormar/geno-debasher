@@ -260,6 +260,26 @@ print_pars()
     if [ ${o_given} -eq 1 ]; then
         echo "-o is ${outd}" >&2
     fi
+
+    if [ ${sg_given} -eq 1 ]; then
+        echo "-sg is ${snpgccorr}" >&2
+    fi
+
+    if [ ${mc_given} -eq 1 ]; then
+        echo "-mc is ${malesexchr}" >&2
+    fi
+
+    if [ ${wcr_given} -eq 1 ]; then
+        echo "-wcr is ${wcref}" >&2
+    fi
+
+    if [ ${egastr_given} -eq 1 ]; then
+        echo "-egastr is ${egastr}" >&2
+    fi
+
+    if [ ${egacred_given} -eq 1 ]; then
+        echo "-egacred is ${egacred}" >&2
+    fi
 }
 
 ########

@@ -233,7 +233,7 @@ execute_strelka_somatic()
     local_cpus=$5
 
     # Initialize variables
-    STRELKA_OUTD=`get_step_dirname ${outd} strelka_somatic`
+    STRELKA_OUTD=`get_step_dirname ${local_outd} strelka_somatic`
 
     # Activate conda environment
     conda activate strelka
@@ -262,7 +262,7 @@ execute_msisensor()
     local_cpus=$5
 
     # Initialize variables
-    MSISENSOR_OUTD=`get_step_dirname ${outd} msisensor`
+    MSISENSOR_OUTD=`get_step_dirname ${local_outd} msisensor`
     
     # Activate conda environment
     conda activate msisensor
@@ -289,7 +289,7 @@ execute_platypus_germline_conda()
     local_outd=$3
 
     # Initialize variables
-    PLATYPUS_OUTD=`get_step_dirname ${outd} platypus_germline_conda`
+    PLATYPUS_OUTD=`get_step_dirname ${local_outd} platypus_germline_conda`
 
     # Activate conda environment
     conda activate platypus
@@ -313,7 +313,7 @@ execute_platypus_germline_local()
     local_outd=$3
 
     # Initialize variables
-    PLATYPUS_OUTD=`get_step_dirname ${outd} platypus_germline_local`
+    PLATYPUS_OUTD=`get_step_dirname ${local_outd} platypus_germline_local`
     
     # Run Platypus
     python ${PLATYPUS_BUILD_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${PLATYPUS_OUTD}/output.vcf --verbosity=1 > ${PLATYPUS_OUTD}/platypus.log 2>&1 || exit 1
@@ -348,7 +348,7 @@ execute_cnvkit()
     local_cpus=$5
 
     # Initialize variables
-    CNVKIT_OUTD=`get_step_dirname ${outd} cnvkit`
+    CNVKIT_OUTD=`get_step_dirname ${local_outd} cnvkit`
     
     # Activate conda environment
     conda activate cnvkit
@@ -361,6 +361,35 @@ execute_cnvkit()
 
     # Create file indicating that execution was finished
     touch ${CNVKIT_OUTD}/finished
+}
+
+########
+execute_ascatngs()
+{
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_tumorbam=$3
+    local_gender=$4
+    local_malesexchr=$5
+    local_snpgccorr=$6
+    local_outd=$7
+    local_cpus=$8
+
+    # Initialize variables
+    ASCATNGS_OUTD=`get_step_dirname ${local_outd} ascatngs`
+    
+    # Activate conda environment
+    conda activate ascatngs
+
+    # Run cnvkit
+    ascat.pl -n ${local_normalbam} -t ${local_tumbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} > ${ASCATNGS_OUTD}/ascat.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
+
+    # Create file indicating that execution was finished
+    touch ${ASCATNGS_OUTD}/finished
 }
 
 ########
@@ -394,7 +423,7 @@ execute_download_ega_tum_bam()
     local_outd=$5
 
     # Initialize variables
-    DOWNLOAD_EGA_TUM_BAM_OUTD=`get_step_dirname ${outd} download_ega_tum_bam`
+    DOWNLOAD_EGA_TUM_BAM_OUTD=`get_step_dirname ${local_outd} download_ega_tum_bam`
 
     # Download file
     ${PYEGA_BUILD_DIR}/pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${DOWNLOAD_EGA_TUM_BAM_OUTD}/pyega3.log 2>&1 || exit 1
@@ -411,7 +440,7 @@ execute_index_norm_bam()
     local_outd=$2
 
     # Initialize variables
-    INDEX_NORM_BAM_OUTD=`get_step_dirname ${outd} index_norm_bam`
+    INDEX_NORM_BAM_OUTD=`get_step_dirname ${local_outd} index_norm_bam`
 
     # Index normal bam file if necessary
     if [ ! -f ${local_normalbam}.bai ]; then
@@ -438,7 +467,7 @@ execute_index_tum_bam()
     local_outd=$2
 
     # Initialize variables
-    INDEX_TUM_BAM_OUTD=`get_step_dirname ${outd} index_tum_bam`
+    INDEX_TUM_BAM_OUTD=`get_step_dirname ${local_outd} index_tum_bam`
 
     # Index tumor bam file if necessary
     if [ ! -f ${local_tumorbam}.bai ]; then
@@ -466,7 +495,7 @@ execute_delete_bam_files()
     local_outd=$3
 
     # Initialize variables
-    DELETE_BAM_FILES_OUTD=`get_step_dirname ${outd} delete_bam_files`
+    DELETE_BAM_FILES_OUTD=`get_step_dirname ${local_outd} delete_bam_files`
 
     # Delete normal bam file
     rm ${local_normalbam} > ${DELETE_BAM_FILES_OUTD}/rm_norm.log 2>&1 || exit 1

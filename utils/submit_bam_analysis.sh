@@ -16,6 +16,7 @@ usage()
     echo "submit_bam_analysis  -r <string>"
     echo "                     -n <string>|-egan <string> -t <string>|-egat <string>"
     echo "                     -a <string> -g <string> -o <string>"
+    echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-debug] [--help]"
     echo ""
@@ -29,6 +30,8 @@ usage()
     echo "                      <stepname> <cpus> <mem> <time> <jobdeps=stepname1:...>"
     echo "-g <string>          Sample gender (XX|XY)"
     echo "-o <string>          Output directory"
+    echo "-sg <string>         SNP GC correction file (for ASCATNGS)"
+    echo "-mc <string>         Name of male sex chromosome (for ASCATNGS)"
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
@@ -49,6 +52,10 @@ read_pars()
     g_given=0
     gender="XX"
     o_given=0
+    sg_given=0
+    snpgccorr="NONE"
+    mc_given=0
+    malesexchr="Y"
     egastr_given=0
     egastr=50
     egacred_given=0
@@ -108,6 +115,18 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       outd=$1
                       o_given=1
+                  fi
+                  ;;
+            "-sg") shift
+                  if [ $# -ne 0 ]; then
+                      snpgccorr=$1
+                      sg_given=1
+                  fi
+                  ;;
+            "-mc") shift
+                  if [ $# -ne 0 ]; then
+                      malesexchr=$1
+                      mc_given=1
                   fi
                   ;;
             "-egastr") shift
@@ -285,6 +304,12 @@ get_pars_platypus_germline()
 get_pars_cnvkit()
 {
     echo "$ref $normalbam $tumorbam $outd $cpus"
+}
+
+########
+get_pars_ascatngs()
+{
+    echo "$ref $normalbam $tumorbam $gender $malesexchr $snpgccorr $outd $cpus"
 }
 
 ########

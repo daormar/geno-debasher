@@ -364,6 +364,35 @@ execute_cnvkit()
 }
 
 ########
+execute_wisecondorx()
+{
+    # Initialize variables
+    local_wcref=$1
+    local_tumorbam=$2
+    local_outd=$3
+    local_cpus=$4
+
+    # Initialize variables
+    WISECONDORX_OUTD=`get_step_dirname ${local_outd} cnvkit`
+    
+    # Activate conda environment
+    conda activate wisecondorx
+
+    # Convert tumor bam file into npz
+    BINSIZE=5000
+    WisecondorX convert ${local_tumorbam} ${WISECONDORX_OUTD}/tumor.npz --binsize $BINSIZE > ${WISECONDORX_OUTD}/wisecondorx_convert.log 2>&1 || exit 1
+    
+    # Use WisecondorX for prediction
+    WisecondorX predict ${WISECONDORX_OUTD}/tumor.npz ${local_wcref} ${WISECONDORX_OUTD}/out > ${WISECONDORX_OUTD}/wisecondorx_predict.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
+
+    # Create file indicating that execution was finished
+    touch ${WISECONDORX_OUTD}/finished
+}
+
+########
 execute_ascatngs()
 {
     # Initialize variables

@@ -16,7 +16,7 @@ usage()
     echo "submit_bam_analysis  -r <string>"
     echo "                     -n <string>|-egan <string> -t <string>|-egat <string>"
     echo "                     -a <string> -g <string> -o <string>"
-    echo "                     [-sg <string>] [-mc <string>]"
+    echo "                     [-sg <string>] [-mc <string>] [-wcr <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-debug] [--help]"
     echo ""
@@ -32,6 +32,7 @@ usage()
     echo "-o <string>          Output directory"
     echo "-sg <string>         SNP GC correction file (for ASCATNGS)"
     echo "-mc <string>         Name of male sex chromosome (for ASCATNGS)"
+    echo "-wcr <string>        Reference file in npz format for WisecondorX"
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
@@ -56,6 +57,8 @@ read_pars()
     snpgccorr="NONE"
     mc_given=0
     malesexchr="Y"
+    wcr_given=0
+    wcref="NONE"
     egastr_given=0
     egastr=50
     egacred_given=0
@@ -127,6 +130,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       malesexchr=$1
                       mc_given=1
+                  fi
+                  ;;
+            "-wcr") shift
+                  if [ $# -ne 0 ]; then
+                      wcref=$1
+                      wcr_given=1
                   fi
                   ;;
             "-egastr") shift
@@ -279,7 +288,6 @@ get_pars_manta_somatic()
     echo "$ref $normalbam $tumorbam $outd $cpus"
 }
 
-
 ########
 get_pars_strelka_somatic()
 {
@@ -292,18 +300,22 @@ get_pars_msisensor()
     echo "$ref $normalbam $tumorbam $outd $cpus"
 }
 
-
 ########
 get_pars_platypus_germline()
 {
     echo "$ref $normalbam $outd"
 }
 
-
 ########
 get_pars_cnvkit()
 {
     echo "$ref $normalbam $tumorbam $outd $cpus"
+}
+
+########
+get_pars_wisecondorx()
+{
+    echo "$wcref $tumorbam $outd $cpus"
 }
 
 ########

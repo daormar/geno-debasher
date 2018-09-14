@@ -210,6 +210,22 @@ get_step_status()
     fi
 }
 
+########
+display_begin_step_message()
+{
+    if [ -z "${SLURM_JOB_ID}" ]; then
+        echo "Step started at `date`" >&2
+    else
+        echo "Step started at `date` (SLURM_JOB_ID= ${SLURM_JOB_ID})" >&2
+    fi
+}
+
+########
+display_end_step_message()
+{
+    echo "Step finished at `date`" >&2
+}
+
 ##################
 # ANALYSYS STEPS #
 ##################
@@ -217,6 +233,8 @@ get_step_status()
 ########
 execute_manta_somatic()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
@@ -224,7 +242,7 @@ execute_manta_somatic()
     local_outd=$4
     local_cpus=$5
     local_step_outd=`get_step_dirname ${local_outd} manta_somatic`
-
+    
     # Activate conda environment
     conda activate manta 2> ${local_step_outd}/conda_activate.log || exit 1
     
@@ -239,11 +257,15 @@ execute_manta_somatic()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_strelka_somatic()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
@@ -266,11 +288,15 @@ execute_strelka_somatic()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_msisensor()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
@@ -278,7 +304,7 @@ execute_msisensor()
     local_outd=$4
     local_cpus=$5
     local_step_outd=`get_step_dirname ${local_outd} msisensor`
-    
+
     # Activate conda environment
     conda activate msisensor 2> ${local_step_outd}/conda_activate.log || exit 1
 
@@ -293,11 +319,15 @@ execute_msisensor()
     
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_platypus_germline_conda()
 {
+    display_begin_step_message
+    
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
@@ -315,22 +345,28 @@ execute_platypus_germline_conda()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished        
+
+    display_end_step_message
 }
 
 ########
 execute_platypus_germline_local()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
     local_outd=$3
     local_step_outd=`get_step_dirname ${local_outd} platypus_germline`
-    
+
     # Run Platypus
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished    
+
+    display_end_step_message
 }
 
 ########
@@ -351,6 +387,8 @@ execute_platypus_germline()
 ########
 execute_cnvkit()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
@@ -370,11 +408,15 @@ execute_cnvkit()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_wisecondorx()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_wcref=$1
     local_tumorbam=$2
@@ -397,11 +439,15 @@ execute_wisecondorx()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_facets()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_normalbam=$1
     local_tumorbam=$2
@@ -417,11 +463,15 @@ execute_facets()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_ascatngs()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
@@ -444,11 +494,15 @@ execute_ascatngs()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_download_ega_norm_bam()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_normalbam=$1
     local_egaid_normalbam=$2
@@ -468,11 +522,15 @@ execute_download_ega_norm_bam()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_download_ega_tum_bam()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_tumorbam=$1
     local_egaid_tumorbam=$2
@@ -492,11 +550,15 @@ execute_download_ega_tum_bam()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_index_norm_bam()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_normalbam=$1
     local_outd=$2
@@ -517,11 +579,15 @@ execute_index_norm_bam()
     
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_sort_norm_bam()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_normalbam=$1
     local_outd=$2
@@ -541,11 +607,15 @@ execute_sort_norm_bam()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_sort_tum_bam()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_tumorbam=$1
     local_outd=$2
@@ -565,11 +635,15 @@ execute_sort_tum_bam()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_index_tum_bam()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_tumorbam=$1
     local_outd=$2
@@ -590,11 +664,15 @@ execute_index_tum_bam()
     
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
 execute_delete_bam_files()
 {
+    display_begin_step_message
+
     # Initialize variables
     local_normalbam=$1
     local_tumorbam=$2
@@ -609,4 +687,6 @@ execute_delete_bam_files()
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
+
+    display_end_step_message
 }

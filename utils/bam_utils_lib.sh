@@ -75,6 +75,18 @@ create_script()
 }
 
 ########
+get_partition_opt()
+{
+    local_partition=$1
+
+    if [ -z "${local_partition}" ]; then
+        echo ""
+    else
+        echo "--partition=${local_partition}"
+    fi
+}
+
+########
 get_dependency_opt()
 {
     local_jobdeps=$1
@@ -90,18 +102,20 @@ get_dependency_opt()
 launch()
 {
     local_file=$1
-    local_cpus=$2
-    local_mem=$3
-    local_time=$4
-    local_jobdeps=$5
-    local_outvar=$6
+    local_partition=$2
+    local_cpus=$3
+    local_mem=$4
+    local_time=$5
+    local_jobdeps=$6
+    local_outvar=$7
     
     if [ -z "${SBATCH}" ]; then
         $local_file
         eval "${outvar}=\"\""
     else
+        partition_opt=`get_partition_opt ${local_partition}`
         dependency_opt=`get_dependency_opt "${local_jobdeps}"`
-        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${dependency_opt} ${local_file})
+        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${partition_opt} ${dependency_opt} ${local_file})
         eval "${local_outvar}='${local_jid}'"
     fi
 }
@@ -121,31 +135,38 @@ extract_stepname_from_entry()
 }
 
 ########
-extract_cpus_from_entry()
+extract_partition_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $2}'
 }
 
 ########
-extract_mem_from_entry()
+extract_cpus_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $3}'
 }
 
 ########
-extract_time_from_entry()
+extract_mem_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $4}'
 }
 
 ########
+extract_time_from_entry()
+{
+    local_entry=$1
+    echo "${local_entry}" | $AWK '{print $5}'
+}
+
+########
 extract_jobdeps_spec_from_entry()
 {
     local_entry=$1
-    echo "${local_entry}" | $AWK '{print substr($5,9)}'
+    echo "${local_entry}" | $AWK '{print substr($6,9)}'
 }
 
 ########

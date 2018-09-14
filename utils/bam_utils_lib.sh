@@ -392,8 +392,7 @@ execute_facets()
     ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${local_step_outd}/snp-pileup-counts.csv ${local_normalbam} ${local_tumorbam} > ${local_step_outd}/snp-pileup.log 2>&1 || exit 1
     
     # Execute facets
-    # TO-BE-DONE
-    # ${bindir}/run_facets > ${local_step_outd}/run_facets.log 2>&1 || exit 1
+    ${bindir}/run_facets -c ${local_step_outd}/snp-pileup-counts.csv > ${local_step_outd}/facets.out 2> ${local_step_outd}/run_facets.log || exit 1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished

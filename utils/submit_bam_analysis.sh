@@ -29,7 +29,7 @@ usage()
     echo "-g <string>          Sample gender (XX|XY)"
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
-    echo "                      <stepname> <cpus> <mem> <time> <jobdeps=stepname1:...>"
+    echo "                     <stepname> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
     echo "-o <string>          Output directory"
     echo "-wcr <string>        Reference file in npz format for WisecondorX"
     echo "-sv <string>         SNP vcf file required by Facets"

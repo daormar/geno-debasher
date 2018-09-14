@@ -531,7 +531,7 @@ execute_sort_norm_bam()
     conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Execute samtools
-    samtools sort ${local_normalbam} > ${local_step_outd}/sorted.bam 2> ${local_step_outd}/samtools.log || exit 1
+    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam ${local_normalbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
     
     # Deactivate conda environment
     conda deactivate
@@ -555,7 +555,7 @@ execute_sort_tum_bam()
     conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Execute samtools
-    samtools sort ${local_tumorbam} > ${local_step_outd}/sorted.bam 2> ${local_step_outd}/samtools.log || exit 1
+    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam ${local_tumorbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
     
     # Deactivate conda environment
     conda deactivate

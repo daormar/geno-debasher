@@ -414,7 +414,9 @@ get_jobdeps()
             *) local_jdeps=""
                for dep in `echo ${local_jobdeps_spec} | $SED 's/:/ /g'`; do
                    dep_jid=${dep}_jid
-                   local_jdeps=${local_jdeps}":"${!dep_jid}
+                   if [ ! -z "${!dep_jid}" ]; then
+                       local_jdeps=${local_jdeps}":"${!dep_jid}
+                   fi
                done
                echo ${local_jdeps}
                ;;

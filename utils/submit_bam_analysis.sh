@@ -434,6 +434,7 @@ execute_step()
     local_mem=$5
     local_time=$6
     local_jobdeps_spec=$7
+    local_jobdeptype="afterok"
 
     # Execute step
     local_script_pars=`get_pars_${local_stepname}`
@@ -444,7 +445,7 @@ execute_step()
         reset_outdir_for_step ${local_dirname} ${local_stepname} || exit 1
         local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
         local_stepname_jid=${local_stepname}_jid
-        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid}
+        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_partition} ${local_cpus} ${local_mem} ${local_time} ${local_jobdeptype} "${local_jobdeps}" ${local_stepname_jid}
         
         # Update variables storing jids
         step_jids="${step_jids}:${!local_stepname_jid}"

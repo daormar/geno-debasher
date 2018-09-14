@@ -1,5 +1,5 @@
-download_ega_norm_bam normal_priority 1 1024 0 jobdeps=none
-download_ega_tum_bam  normal_priority 1 1024 0 jobdeps=none
+download_ega_norm_bam normal_priority 1 2048 0 jobdeps=none
+download_ega_tum_bam  normal_priority 1 2048 0 jobdeps=none
 sort_norm_bam         normal_priority 1 1024 0 jobdeps=download_ega_norm_bam
 sort_tum_bam          normal_priority 1 1024 0 jobdeps=download_ega_tum_bam
 index_norm_bam        normal_priority 1 1024 0 jobdeps=sort_norm_bam

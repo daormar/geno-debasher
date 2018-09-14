@@ -227,7 +227,7 @@ display_end_step_message()
 }
 
 ##################
-# ANALYSYS STEPS #
+# ANALYSIS STEPS #
 ##################
 
 ########

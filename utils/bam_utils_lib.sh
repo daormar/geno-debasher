@@ -87,14 +87,29 @@ get_partition_opt()
 }
 
 ########
-get_dependency_opt()
+get_slurm_afterok_keyword()
 {
-    local_jobdeps=$1
+    echo "afterok"
+}
 
+########
+get_slurm_dependency_opt()
+{
+    local_jobdeptype=$1
+    local_jobdeps=$2
+
+    # Map job dependency type
+    case ${local_jobdeptype} in
+        "afterok")
+            local_slurm_jobdeptype=`get_slurm_afterok_keyword`
+            ;;
+    esac
+
+    # Create dependency option
     if [ -z "${local_jobdeps}" ]; then
         echo ""
     else
-        echo "--dependency=afterok${local_jobdeps}"
+        echo "--dependency=${local_slurm_jobdeptype}${local_jobdeps}"
     fi
 }
 
@@ -106,15 +121,16 @@ launch()
     local_cpus=$3
     local_mem=$4
     local_time=$5
-    local_jobdeps=$6
-    local_outvar=$7
+    local_jobdeptype=$6
+    local_jobdeps=$7
+    local_outvar=$8
     
     if [ -z "${SBATCH}" ]; then
         $local_file
         eval "${outvar}=\"\""
     else
         partition_opt=`get_partition_opt ${local_partition}`
-        dependency_opt=`get_dependency_opt "${local_jobdeps}"`
+        dependency_opt=`get_slurm_dependency_opt ${local_jobdeptype} "${local_jobdeps}"`
         local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${partition_opt} ${dependency_opt} ${local_file})
         eval "${local_outvar}='${local_jid}'"
     fi

@@ -15,7 +15,7 @@ usage()
 {
     echo "gen_wisecondorx_ref  -egalist <string> -o <string> -T <string>"
     echo "                     -p <string> [-egastr <int>] [-egacred <string>]"
-    echo "                     [--help]"
+    echo "                     [--debug] [--help]"
     echo ""
     echo "-egalist <string>    File with list of EGA ids of normal bam files (one"
     echo "                     per line)"
@@ -25,6 +25,8 @@ usage()
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
+    echo "-debug               After ending, do not delete temporary files"
+    echo "                     (for debugging purposes)"
     echo "--help               Display this help and exit"
 }
 
@@ -39,6 +41,7 @@ read_pars()
     egastr=50
     egacred_given=0
     egacred="cred.json"
+    debug=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -64,11 +67,13 @@ read_pars()
                       tdir=$1
                       T_given=1
                   fi
+                  ;;
             "-p") shift
                   if [ $# -ne 0 ]; then
                       partition=$1
                       p_given=1
                   fi
+                  ;;
             "-egastr") shift
                   if [ $# -ne 0 ]; then
                       egastr=$1
@@ -81,6 +86,9 @@ read_pars()
                       egacred_given=1
                   fi
                   ;;
+            "-debug") debug=1
+                      debug_opt="-debug"
+                      ;;
         esac
         shift
     done   
@@ -209,9 +217,11 @@ process_pars()
     launch ${tmpdir}/scripts/gen_reffile_wisecondorx ${$partition} ${local_cpus} ${local_mem} ${local_time} afterok "${local_jids}" local_jid
     local_jids="${local_jids}:${local_jid}"
 
-    # Remove directory with temporary files
-    create_script ${tmpdir}/scripts/remove_dir "${tmpdir}"
-    launch ${tmpdir}/scripts/remove_dir ${$partition} ${local_cpus} ${local_mem} ${local_time} afterok "${local_jids}" local_jid
+    if [ ${debug} -eq 0 ]; then
+        # Remove directory with temporary files
+        create_script ${tmpdir}/scripts/remove_dir "${tmpdir}"
+        launch ${tmpdir}/scripts/remove_dir ${$partition} ${local_cpus} ${local_mem} ${local_time} afterok "${local_jids}" local_jid
+    fi
 }
 
 ########

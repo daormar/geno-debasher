@@ -315,37 +315,37 @@ set_bam_filenames()
 ########
 get_pars_manta_somatic()
 {
-    echo "$ref $normalbam $tumorbam $outd $cpus"
+    echo "$ref $normalbam $tumorbam ${step_outd} $cpus"
 }
 
 ########
 get_pars_strelka_somatic()
 {
-    echo "$ref $normalbam $tumorbam $outd $cpus"
+    echo "$ref $normalbam $tumorbam ${step_outd} $cpus"
 }
 
 ########
 get_pars_msisensor()
 {
-    echo "$ref $normalbam $tumorbam $outd $cpus"
+    echo "$ref $normalbam $tumorbam ${step_outd} $cpus"
 }
 
 ########
 get_pars_platypus_germline()
 {
-    echo "$ref $normalbam $outd"
+    echo "$ref $normalbam ${step_outd}"
 }
 
 ########
 get_pars_cnvkit()
 {
-    echo "$ref $normalbam $tumorbam $outd $cpus"
+    echo "$ref $normalbam $tumorbam ${step_outd} $cpus"
 }
 
 ########
 get_pars_wisecondorx()
 {
-    echo "$wcref $tumorbam $outd $cpus"
+    echo "$wcref $tumorbam ${step_outd} $cpus"
 }
 
 ########
@@ -357,49 +357,49 @@ get_pars_facets()
 ########
 get_pars_ascatngs()
 {
-    echo "$ref $normalbam $tumorbam $gender $malesexchr $snpgccorr $outd $cpus"
+    echo "$ref $normalbam $tumorbam $gender $malesexchr $snpgccorr ${step_outd} $cpus"
 }
 
 ########
 get_pars_download_ega_norm_bam()
 {
-    echo "$normalbam ${egaid_normalbam} $egastr $egacred $outd"
+    echo "$normalbam ${egaid_normalbam} $egastr $egacred ${step_outd}"
 }
 
 ########
 get_pars_download_ega_tum_bam()
 {
-    echo "$tumorbam ${egaid_tumorbam} $egastr $egacred $outd"
+    echo "$tumorbam ${egaid_tumorbam} $egastr $egacred ${step_outd}"
 }
 
 ########
 get_pars_index_norm_bam()
 {
-    echo "$normalbam $outd"
+    echo "$normalbam ${step_outd}"
 }
 
 ########
 get_pars_index_tum_bam()
 {
-    echo "$tumorbam $outd"
+    echo "$tumorbam ${step_outd}"
 }
 
 ########
 get_pars_sort_norm_bam()
 {
-    echo "$normalbam $outd $cpus"
+    echo "$normalbam ${step_outd} $cpus"
 }
 
 ########
 get_pars_sort_tum_bam()
 {
-    echo "$tumorbam $outd $cpus"
+    echo "$tumorbam ${step_outd} $cpus"
 }
 
 ########
 get_pars_delete_bam_files()
 {
-    echo "$normalbam $tumorbam $outd"
+    echo "$normalbam $tumorbam ${step_outd}"
 }
 
 ########
@@ -435,7 +435,8 @@ execute_step()
     local_time=$6
     local_jobdeps_spec=$7
     local_jobdeptype="afterok"
-
+    step_outd=`get_step_dirname ${local_outd} ${local_stepname}`
+    
     # Execute step
     local_script_pars=`get_pars_${local_stepname}`
     create_script ${local_dirname}/scripts/execute_${local_stepname} execute_${local_stepname} "${local_script_pars}"

@@ -255,9 +255,8 @@ execute_manta_somatic()
     local_ref=$1
     local_normalbam=$2
     local_tumorbam=$3
-    local_outd=$4
+    local_step_outd=$4
     local_cpus=$5
-    local_step_outd=`get_step_dirname ${local_outd} manta_somatic`
     
     # Activate conda environment
     conda activate manta 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -286,9 +285,8 @@ execute_strelka_somatic()
     local_ref=$1
     local_normalbam=$2
     local_tumorbam=$3
-    local_outd=$4
+    local_step_outd=$4
     local_cpus=$5
-    local_step_outd=`get_step_dirname ${local_outd} strelka_somatic`
 
     # Activate conda environment
     conda activate strelka 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -317,9 +315,8 @@ execute_msisensor()
     local_ref=$1
     local_normalbam=$2
     local_tumorbam=$3
-    local_outd=$4
+    local_step_outd=$4
     local_cpus=$5
-    local_step_outd=`get_step_dirname ${local_outd} msisensor`
 
     # Activate conda environment
     conda activate msisensor 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -347,8 +344,7 @@ execute_platypus_germline_conda()
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
-    local_outd=$3
-    local_step_outd=`get_step_dirname ${local_outd} platypus_germline`
+    local_step_outd=$3
 
     # Activate conda environment
     conda activate platypus 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -373,8 +369,7 @@ execute_platypus_germline_local()
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
-    local_outd=$3
-    local_step_outd=`get_step_dirname ${local_outd} platypus_germline`
+    local_step_outd=$3
 
     # Run Platypus
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
@@ -391,12 +386,12 @@ execute_platypus_germline()
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
-    local_outd=$3
+    local_step_outd=$3
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
-        execute_platypus_germline_conda ${local_ref} ${local_normalbam} ${local_outd}
+        execute_platypus_germline_conda ${local_ref} ${local_normalbam} ${local_step_outd}
     else
-        execute_platypus_germline_local ${local_ref} ${local_normalbam} ${local_outd}
+        execute_platypus_germline_local ${local_ref} ${local_normalbam} ${local_step_outd}
     fi
 }
 
@@ -409,9 +404,8 @@ execute_cnvkit()
     local_ref=$1
     local_normalbam=$2
     local_tumorbam=$3
-    local_outd=$4
+    local_step_outd=$4
     local_cpus=$5
-    local_step_outd=`get_step_dirname ${local_outd} cnvkit`
     
     # Activate conda environment
     conda activate cnvkit 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -436,9 +430,8 @@ execute_wisecondorx()
     # Initialize variables
     local_wcref=$1
     local_tumorbam=$2
-    local_outd=$3
+    local_step_outd=$3
     local_cpus=$4
-    local_step_outd=`get_step_dirname ${local_outd} wisecondorx`
     
     # Activate conda environment
     conda activate wisecondorx 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -468,8 +461,7 @@ execute_facets()
     local_normalbam=$1
     local_tumorbam=$2
     local_snpvcf=$3
-    local_outd=$4
-    local_step_outd=`get_step_dirname ${local_outd} facets`
+    local_step_outd=$4
 
     # Execute snp-pileup
     ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${local_step_outd}/snp-pileup-counts.csv ${local_normalbam} ${local_tumorbam} > ${local_step_outd}/snp-pileup.log 2>&1 || exit 1
@@ -495,9 +487,8 @@ execute_ascatngs()
     local_gender=$4
     local_malesexchr=$5
     local_snpgccorr=$6
-    local_outd=$7
+    local_step_outd=$7
     local_cpus=$8
-    local_step_outd=`get_step_dirname ${local_outd} ascatngs`
     
     # Activate conda environment
     conda activate ascatngs 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -524,8 +515,7 @@ execute_download_ega_norm_bam()
     local_egaid_normalbam=$2
     local_egastr=$3
     local_egacred=$4
-    local_outd=$5
-    local_step_outd=`get_step_dirname ${local_outd} download_ega_norm_bam`
+    local_step_outd=$5
 
     # Activate conda environment
     conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -552,8 +542,7 @@ execute_download_ega_tum_bam()
     local_egaid_tumorbam=$2
     local_egastr=$3
     local_egacred=$4
-    local_outd=$5
-    local_step_outd=`get_step_dirname ${local_outd} download_ega_tum_bam`
+    local_step_outd=$5
 
     # Activate conda environment
     conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -577,8 +566,7 @@ execute_index_norm_bam()
 
     # Initialize variables
     local_normalbam=$1
-    local_outd=$2
-    local_step_outd=`get_step_dirname ${local_outd} index_norm_bam`
+    local_step_outd=$2
 
     # Index normal bam file if necessary
     if [ ! -f ${local_normalbam}.bai ]; then
@@ -606,9 +594,8 @@ execute_sort_norm_bam()
 
     # Initialize variables
     local_normalbam=$1
-    local_outd=$2
+    local_step_outd=$2
     local_cpus=$3
-    local_step_outd=`get_step_dirname ${local_outd} sort_norm_bam`
 
     # Activate conda environment
     conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -635,9 +622,8 @@ execute_sort_tum_bam()
 
     # Initialize variables
     local_tumorbam=$1
-    local_outd=$2
+    local_step_outd=$2
     local_cpus=$3
-    local_step_outd=`get_step_dirname ${local_outd} sort_tum_bam`
 
     # Activate conda environment
     conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
@@ -664,8 +650,7 @@ execute_index_tum_bam()
 
     # Initialize variables
     local_tumorbam=$1
-    local_outd=$2
-    local_step_outd=`get_step_dirname ${local_outd} index_tum_bam`
+    local_step_outd=$2
 
     # Index tumor bam file if necessary
     if [ ! -f ${local_tumorbam}.bai ]; then
@@ -694,8 +679,7 @@ execute_delete_bam_files()
     # Initialize variables
     local_normalbam=$1
     local_tumorbam=$2
-    local_outd=$3
-    local_step_outd=`get_step_dirname ${local_outd} delete_bam_files`
+    local_step_outd=$3
 
     # Delete normal bam file
     rm ${local_normalbam} > ${local_step_outd}/rm_norm.log 2>&1 || exit 1

@@ -87,29 +87,35 @@ get_partition_opt()
 }
 
 ########
-get_slurm_afterok_keyword()
+apply_deptype_to_jobids()
 {
-    echo "afterok"
+    # Initialize variables
+    local_jids=$1
+    local_deptype=$2
+
+    # Apply deptype
+    result=""
+    for jid in `echo ${local_jids} | $SED 's/,/ /g'`; do
+        if [ -z "" ]; then
+            result=${local_deptype}:${jid}
+        else
+            result=${result}","${local_deptype}:${jid}
+        fi
+    done
+
+    echo $result
 }
 
 ########
 get_slurm_dependency_opt()
 {
-    local_jobdeptype=$1
-    local_jobdeps=$2
-
-    # Map job dependency type
-    case ${local_jobdeptype} in
-        "afterok")
-            local_slurm_jobdeptype=`get_slurm_afterok_keyword`
-            ;;
-    esac
+    local_jobdeps=$1
 
     # Create dependency option
     if [ -z "${local_jobdeps}" ]; then
         echo ""
     else
-        echo "--dependency=${local_slurm_jobdeptype}${local_jobdeps}"
+        echo "--dependency=${local_jobdeps}"
     fi
 }
 
@@ -121,16 +127,15 @@ launch()
     local_cpus=$3
     local_mem=$4
     local_time=$5
-    local_jobdeptype=$6
-    local_jobdeps=$7
-    local_outvar=$8
+    local_jobdeps=$6
+    local_outvar=$7
     
     if [ -z "${SBATCH}" ]; then
         $local_file
         eval "${outvar}=\"\""
     else
         partition_opt=`get_partition_opt ${local_partition}`
-        dependency_opt=`get_slurm_dependency_opt ${local_jobdeptype} "${local_jobdeps}"`
+        dependency_opt=`get_slurm_dependency_opt "${local_jobdeps}"`
         local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${partition_opt} ${dependency_opt} ${local_file})
         eval "${local_outvar}='${local_jid}'"
     fi

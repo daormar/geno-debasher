@@ -403,22 +403,39 @@ get_pars_delete_bam_files()
 }
 
 ########
+get_jobdeps_from_detailed_spec()
+{
+    local_jobdeps_spec=$1
+
+    local_jdeps=""
+    # Iterate over the elements of the job specification: type1:stepname1,...,typen:stepnamen
+    for dep_spec in `echo ${local_jobdeps_spec} | $SED 's/,/ /g'`; do
+        local_deptype=`echo ${dep_spec} | $AWK -F ":" '{print $1}'`
+        local_step=`echo ${dep_spec} | $AWK -F ":" '{print $2}'`
+        
+        # Check if there is a jid for the step
+        local_step_jid=${local_step}_jid
+        if [ ! -z "${!local_step_jid}" ]; then
+            if [ -z "local_jdeps" ]; then
+                local_jdeps=${local_deptype}":"${!local_step_jid}
+            else
+                local_jdeps=${local_jdeps}","${local_deptype}":"${!local_step_jid}
+            fi
+        fi
+    done
+    echo ${local_jdeps}
+}
+
+########
 get_jobdeps()
 {
     local_jobdeps_spec=$1
     case ${local_jobdeps_spec} in
-            "all") echo ${step_jids}
-                   ;;
+            "afterok:all") apply_deptype_to_jobids ${step_jids} afterok
+                    ;;
             "none") echo ""
                     ;;
-            *) local_jdeps=""
-               for dep in `echo ${local_jobdeps_spec} | $SED 's/:/ /g'`; do
-                   dep_jid=${dep}_jid
-                   if [ ! -z "${!dep_jid}" ]; then
-                       local_jdeps=${local_jdeps}":"${!dep_jid}
-                   fi
-               done
-               echo ${local_jdeps}
+            *) get_jobdeps_from_detailed_spec ${local_jobdeps_spec}
                ;;
     esac
 }
@@ -434,7 +451,6 @@ execute_step()
     local_mem=$5
     local_time=$6
     local_jobdeps_spec=$7
-    local_jobdeptype="afterok"
     step_outd=`get_step_dirname ${local_outd} ${local_stepname}`
     
     # Execute step
@@ -446,7 +462,7 @@ execute_step()
         reset_outdir_for_step ${local_dirname} ${local_stepname} || exit 1
         local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
         local_stepname_jid=${local_stepname}_jid
-        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_partition} ${local_cpus} ${local_mem} ${local_time} ${local_jobdeptype} "${local_jobdeps}" ${local_stepname_jid}
+        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid}
         
         # Update variables storing jids
         step_jids="${step_jids}:${!local_stepname_jid}"

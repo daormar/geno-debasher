@@ -208,6 +208,13 @@ remove_dir()
 }
 
 ########
+extract_egaid_from_entry()
+{
+    local_entry=$1
+    echo ${local_entry} | $AWK '{print $1}'
+}
+
+########
 process_pars()
 {
     # Initialize variables
@@ -219,12 +226,12 @@ process_pars()
     # Read file with list of EGA ids
     while read entry; do
         # Extract EGA id
-        egaid=`extract_egaid_from_entry`
+        egaid=`extract_egaid_from_entry $entry`
         
         # Process EGA id
         local_jobdeps=""
         create_script ${tmpdir}/scripts/bam_download_and_npz_conv "${tmpdir}/data $egaid $egastr $egacred"
-        launch ${tmpdir}/scripts/bam2npz_conv ${account} ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" local_jid
+        launch ${tmpdir}/scripts/bam2npz_conv ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" local_jid
 
         # Update variables storing jids
         local_jids="${local_jids},${local_jid}"

@@ -234,7 +234,7 @@ process_pars()
         # Process EGA id
         local_jobdeps=""
         create_script ${tmpdir}/scripts/bam_download_and_npz_conv "${tmpdir}/data $egaid $egastr $egacred"
-        launch ${tmpdir}/scripts/bam2npz_conv ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" local_jid
+        launch ${tmpdir}/scripts/bam_download_and_npz_conv ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" local_jid
 
         # Update variables storing jids
         local_jids="${local_jids},${local_jid}"
@@ -244,14 +244,14 @@ process_pars()
     # Generate reference file
     create_script ${tmpdir}/scripts/gen_reffile_wisecondorx "${tmpdir}/data $outf"
     local_job_deps=`apply_deptype_to_jobids ${local_jids} afterok`
-    launch ${tmpdir}/scripts/gen_reffile_wisecondorx ${account} ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
+    launch ${tmpdir}/scripts/gen_reffile_wisecondorx ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
     local_jids="${local_jids},${local_jid}"
 
     if [ ${debug} -eq 0 ]; then
         # Remove directory with temporary files
         create_script ${tmpdir}/scripts/remove_dir "${tmpdir}"
         local_job_deps=`apply_deptype_to_jobids ${local_jids} afterok`
-        launch ${tmpdir}/scripts/remove_dir ${account} ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
+        launch ${tmpdir}/scripts/remove_dir ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
     fi
 }
 

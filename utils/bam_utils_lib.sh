@@ -82,7 +82,7 @@ get_account_opt()
     if [ -z "${local_account}" ]; then
         echo ""
     else
-        echo "-A=${local_account}"
+        echo "-A ${local_account}"
     fi
 }
 

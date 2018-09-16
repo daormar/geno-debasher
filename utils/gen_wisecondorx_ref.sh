@@ -222,7 +222,7 @@ process_pars()
     # Initialize variables
     local_cpus=1
     local_mem=1024
-    local_time=03:00:00
+    local_time=12:00:00
     local_jids=""
     
     # Read file with list of EGA ids

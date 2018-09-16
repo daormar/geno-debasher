@@ -233,13 +233,13 @@ extract_normal_sample_info()
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}
+    else
+        if [ ! -z "${sample2}" ]; then
+            echo ${sample2}
+        else
+            echo ""
+        fi
     fi
-
-    if [ ! -z "${sample2}" ]; then
-        echo ${sample2}
-    fi
-
-    echo ""
 }
 
 ########
@@ -251,13 +251,13 @@ extract_tumor_sample_info()
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}
+    else
+        if [ ! -z "${sample2}" ]; then
+            echo ${sample2}
+        else
+            echo ""
+        fi
     fi
-
-    if [ ! -z "${sample2}" ]; then
-        echo ${sample2}
-    fi
-
-    echo ""
 }
 
 ########

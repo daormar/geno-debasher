@@ -264,8 +264,8 @@ extract_tumor_sample_info()
 egadata_entry_is_ok()
 {
     local_entry=$1
-    nsample=`extract_normal_sample_info ${local_entry}`
-    tsample=`extract_tumor_sample_info ${local_entry}`
+    nsample=`extract_normal_sample_info "${local_entry}"`
+    tsample=`extract_tumor_sample_info "${local_entry}"`
 
     if [ ! -z "${nsample}" -a ! -z "${tsample}" ]; then
         echo "yes"
@@ -297,10 +297,10 @@ process_pars()
         entry_ok=`egadata_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract sample info
-            normal_sample_info=`extract_normal_sample_info $entry`
+            normal_sample_info=`extract_normal_sample_info "$entry"`
             egan_id=`extract_egafid_from_sample_info ${normal_sample_info}`
             
-            tumor_sample_info=`extract_tumor_sample_info $entry`
+            tumor_sample_info=`extract_tumor_sample_info "$entry"`
             egat_id=`extract_egafid_from_sample_info ${normal_sample_info}`
 
             gender=`extract_gender_from_sample_info ${normal_sample_info}`

@@ -445,8 +445,8 @@ execute_step()
 {
     # Initialize variables
     local_dirname=$1
-    local_account=$2
-    local_stepname=$3
+    local_stepname=$2
+    local_account=$3
     local_partition=$4
     local_cpus=$5
     local_mem=$6

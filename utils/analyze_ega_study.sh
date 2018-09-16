@@ -228,8 +228,8 @@ create_dirs()
 extract_normal_sample_info()
 {
     local_entry=$1
-    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}'` | $GREP 'Normal\|normal'
-    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}'` | $GREP 'Normal\|normal'
+    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal'`
+    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}' | $GREP 'Normal\|normal'`
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}
@@ -246,8 +246,8 @@ extract_normal_sample_info()
 extract_tumor_sample_info()
 {
     local_entry=$1
-    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}'` | $GREP 'Tumour\|tumour'
-    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}'` | $GREP 'Tumour\|tumour'
+    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Tumour\|tumour'`
+    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}' | $GREP 'Tumour\|tumour'`
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}

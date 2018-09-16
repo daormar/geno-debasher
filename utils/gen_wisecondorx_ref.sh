@@ -120,7 +120,7 @@ check_pars()
         echo "Error! -T parameter not given!" >&2
         exit 1
     else
-        if [ -d ${tdir} ]; then
+        if [ ! -d ${tdir} ]; then
             echo "Error! directory for temporaries does not exist" >&2
             exit 1
         fi

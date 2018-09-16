@@ -293,7 +293,7 @@ process_pars()
 {
     # Read EGA data file
     while read entry; do
-        entry_is_ok=`egadata_entry_is_ok "$entry"`
+        entry_ok=`egadata_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract sample info
             normal_sample_info=`extract_normal_sample_info $entry`

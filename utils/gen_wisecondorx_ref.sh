@@ -67,7 +67,7 @@ read_pars()
                   ;;
             "-T") shift
                   if [ $# -ne 0 ]; then
-                      tdir=$1
+                      tmpdir=$1
                       T_given=1
                   fi
                   ;;
@@ -120,7 +120,7 @@ check_pars()
         echo "Error! -T parameter not given!" >&2
         exit 1
     else
-        if [ ! -d ${tdir} ]; then
+        if [ ! -d ${tmpdir} ]; then
             echo "Error! directory for temporaries does not exist" >&2
             exit 1
         fi
@@ -140,9 +140,9 @@ check_pars()
 ########
 create_dirs()
 {
-    mkdir -p ${tdir} || { echo "Error! cannot create directory for temporary files" >&2; return 1; }
-    mkdir -p ${tdir}/scripts || { echo "Error! cannot create directory for scripts" >&2; return 1; }
-    mkdir -p ${tdir}/data || { echo "Error! cannot create directory to store data files" >&2; return 1; }
+    mkdir -p ${tmpdir} || { echo "Error! cannot create directory for temporary files" >&2; return 1; }
+    mkdir -p ${tmpdir}/scripts || { echo "Error! cannot create directory for scripts" >&2; return 1; }
+    mkdir -p ${tmpdir}/data || { echo "Error! cannot create directory to store data files" >&2; return 1; }
 }
 
 ########

@@ -82,7 +82,7 @@ get_account_opt()
     if [ -z "${local_account}" ]; then
         echo ""
     else
-        echo "--A=${local_account}"
+        echo "-A=${local_account}"
     fi
 }
 
@@ -147,7 +147,7 @@ launch()
         $local_file
         eval "${outvar}=\"\""
     else
-        account_opt=`get_account_opt ${local_partition}`
+        account_opt=`get_account_opt ${local_account}`
         partition_opt=`get_partition_opt ${local_partition}`
         dependency_opt=`get_slurm_dependency_opt "${local_jobdeps}"`
         local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${local_file})

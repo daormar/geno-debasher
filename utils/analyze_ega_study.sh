@@ -292,6 +292,7 @@ extract_gender_from_sample_info()
 process_pars()
 {
     # Read EGA data file
+    entry_num=1
     while read entry; do
         entry_ok=`egadata_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
@@ -316,7 +317,12 @@ process_pars()
             
             # Submit bam analysis for normal and tumor samples
             echo ${bindir}/submit_bam_analysis -r ${ref} -egan ${egan_id} -egat ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+        else
+            echo "Error in entry number ${entry_num}"
         fi
+
+        entry_num=`expr ${entry_num} + 1`
+        
     done < ${egadata}
 }
 

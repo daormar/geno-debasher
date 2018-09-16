@@ -167,7 +167,6 @@ bam_download_and_npz_conv()
 
     # Deactivate conda environment
     conda deactivate
-
     
     ### Convert bam file into npz file
 

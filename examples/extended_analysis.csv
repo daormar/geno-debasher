@@ -1,4 +1,4 @@
-manta_somatic         normal_priority 8  2048 4:00:00 jobdeps=none
-strelka_somatic       normal_priority 8  2048 5:00:00 jobdeps=none
-msisensor             normal_priority 8  3072 7:00:00 jobdeps=none
-cnvkit                normal_priority 8 20000 5:00:00 jobdeps=none
+manta_somatic         normal_prio 8  2048 4:00:00 jobdeps=none
+strelka_somatic       normal_prio 8  2048 5:00:00 jobdeps=none
+msisensor             normal_prio 8  3072 7:00:00 jobdeps=none
+cnvkit                normal_prio 8 20000 5:00:00 jobdeps=none

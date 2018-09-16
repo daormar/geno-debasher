@@ -451,7 +451,7 @@ execute_step()
     local_mem=$5
     local_time=$6
     local_jobdeps_spec=$7
-    step_outd=`get_step_dirname ${local_outd} ${local_stepname}`
+    step_outd=`get_step_dirname ${outd} ${local_stepname}`
     
     # Execute step
     local_script_pars=`get_pars_${local_stepname}`

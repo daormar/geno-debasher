@@ -482,7 +482,7 @@ execute_steps_in_afile()
     
     # Read information about the steps to be executed
     while read entry; do
-        entry_ok=`entry_is_ok "$entry"`
+        entry_ok=`analysis_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract entry information
             local_stepname=`extract_stepname_from_entry "$entry"`

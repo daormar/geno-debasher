@@ -156,7 +156,7 @@ launch()
 }
 
 ########
-entry_is_ok()
+analysis_entry_is_ok()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{if(NF>=4) print"yes\n"; else print"no\n"}'

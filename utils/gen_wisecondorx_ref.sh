@@ -14,14 +14,16 @@ print_desc()
 usage()
 {
     echo "gen_wisecondorx_ref  -egalist <string> -o <string> -T <string>"
-    echo "                     -p <string> [-egastr <int>] [-egacred <string>]"
+    echo "                     -a <string> -p <string>"
+    echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [--debug] [--help]"
     echo ""
     echo "-egalist <string>    File with list of EGA ids of normal bam files (one"
     echo "                     per line)"
     echo "-o <string>          Output file"
     echo "-T <string>          Directory for temporary files"
-    echo "-p <string>          Partition where the tool should be executed"
+    echo "-a <string>          Slurm account name used to submit jobs"
+    echo "-p <string>          Partition where the jobs should be executed"
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
@@ -36,6 +38,7 @@ read_pars()
     egalist_given=0
     o_given=0
     T_given=0
+    a_given=0
     p_given=0
     egastr_given=0
     egastr=50
@@ -66,6 +69,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       tdir=$1
                       T_given=1
+                  fi
+                  ;;
+            "-a") shift
+                  if [ $# -ne 0 ]; then
+                      account=$1
+                      a_given=1
                   fi
                   ;;
             "-p") shift
@@ -115,6 +124,16 @@ check_pars()
             echo "Error! directory for temporaries does not exist" >&2
             exit 1
         fi
+    fi
+
+    if [ ${a_given} -eq 0 ]; then
+        echo "Error! -a parameter not given!" >&2
+        exit 1
+    fi
+
+    if [ ${p_given} -eq 0 ]; then
+        echo "Error! -p parameter not given!" >&2
+        exit 1
     fi
 }
 
@@ -205,7 +224,7 @@ process_pars()
         # Process EGA id
         local_jobdeps=""
         create_script ${tmpdir}/scripts/bam_download_and_npz_conv "${tmpdir}/data $egaid $egastr $egacred"
-        launch ${tmpdir}/scripts/bam2npz_conv ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" local_jid
+        launch ${tmpdir}/scripts/bam2npz_conv ${account} ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" local_jid
 
         # Update variables storing jids
         local_jids="${local_jids},${local_jid}"
@@ -215,14 +234,14 @@ process_pars()
     # Generate reference file
     create_script ${tmpdir}/scripts/gen_reffile_wisecondorx "${tmpdir}/data $outf"
     local_job_deps=`apply_deptype_to_jobids ${local_jids} afterok`
-    launch ${tmpdir}/scripts/gen_reffile_wisecondorx ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
+    launch ${tmpdir}/scripts/gen_reffile_wisecondorx ${account} ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
     local_jids="${local_jids},${local_jid}"
 
     if [ ${debug} -eq 0 ]; then
         # Remove directory with temporary files
         create_script ${tmpdir}/scripts/remove_dir "${tmpdir}"
         local_job_deps=`apply_deptype_to_jobids ${local_jids} afterok`
-        launch ${tmpdir}/scripts/remove_dir ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
+        launch ${tmpdir}/scripts/remove_dir ${account} ${$partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
     fi
 }
 

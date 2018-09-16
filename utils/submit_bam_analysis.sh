@@ -416,7 +416,7 @@ get_jobdeps_from_detailed_spec()
         # Check if there is a jid for the step
         local_step_jid=${local_step}_jid
         if [ ! -z "${!local_step_jid}" ]; then
-            if [ -z "local_jdeps" ]; then
+            if [ -z "${local_jdeps}" ]; then
                 local_jdeps=${local_deptype}":"${!local_step_jid}
             else
                 local_jdeps=${local_jdeps}","${local_deptype}":"${!local_step_jid}

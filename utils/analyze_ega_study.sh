@@ -298,12 +298,12 @@ process_pars()
         if [ ${entry_ok} = "yes" ]; then
             # Extract sample info
             normal_sample_info=`extract_normal_sample_info "$entry"`
-            egan_id=`extract_egafid_from_sample_info ${normal_sample_info}`
+            egan_id=`extract_egafid_from_sample_info "${normal_sample_info}"`
             
             tumor_sample_info=`extract_tumor_sample_info "$entry"`
-            egat_id=`extract_egafid_from_sample_info ${normal_sample_info}`
+            egat_id=`extract_egafid_from_sample_info "${tumor_sample_info}"`
 
-            gender=`extract_gender_from_sample_info ${normal_sample_info}`
+            gender=`extract_gender_from_sample_info "${normal_sample_info}"`
 
             # Obtain value for -g option
             if [ ${gender} = "gender=male" ]; then

@@ -75,6 +75,18 @@ create_script()
 }
 
 ########
+get_account_opt()
+{
+    local_account=$1
+
+    if [ -z "${local_account}" ]; then
+        echo ""
+    else
+        echo "--A=${local_account}"
+    fi
+}
+
+########
 get_partition_opt()
 {
     local_partition=$1
@@ -123,20 +135,22 @@ get_slurm_dependency_opt()
 launch()
 {
     local_file=$1
-    local_partition=$2
-    local_cpus=$3
-    local_mem=$4
-    local_time=$5
-    local_jobdeps=$6
-    local_outvar=$7
+    local_account=$2
+    local_partition=$3
+    local_cpus=$4
+    local_mem=$5
+    local_time=$6
+    local_jobdeps=$7
+    local_outvar=$8
     
     if [ -z "${SBATCH}" ]; then
         $local_file
         eval "${outvar}=\"\""
     else
+        account_opt=`get_account_opt ${local_partition}`
         partition_opt=`get_partition_opt ${local_partition}`
         dependency_opt=`get_slurm_dependency_opt "${local_jobdeps}"`
-        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${partition_opt} ${dependency_opt} ${local_file})
+        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${local_file})
         eval "${local_outvar}='${local_jid}'"
     fi
 }
@@ -156,38 +170,45 @@ extract_stepname_from_entry()
 }
 
 ########
-extract_partition_from_entry()
+extract_account_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $2}'
 }
 
 ########
-extract_cpus_from_entry()
+extract_partition_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $3}'
 }
 
 ########
-extract_mem_from_entry()
+extract_cpus_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $4}'
 }
 
 ########
-extract_time_from_entry()
+extract_mem_from_entry()
 {
     local_entry=$1
     echo "${local_entry}" | $AWK '{print $5}'
 }
 
 ########
+extract_time_from_entry()
+{
+    local_entry=$1
+    echo "${local_entry}" | $AWK '{print $6}'
+}
+
+########
 extract_jobdeps_spec_from_entry()
 {
     local_entry=$1
-    echo "${local_entry}" | $AWK '{print substr($6,9)}'
+    echo "${local_entry}" | $AWK '{print substr($7,9)}'
 }
 
 ########

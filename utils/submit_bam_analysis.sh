@@ -445,12 +445,13 @@ execute_step()
 {
     # Initialize variables
     local_dirname=$1
-    local_stepname=$2
-    local_partition=$3
-    local_cpus=$4
-    local_mem=$5
-    local_time=$6
-    local_jobdeps_spec=$7
+    local_account=$2
+    local_stepname=$3
+    local_partition=$4
+    local_cpus=$5
+    local_mem=$6
+    local_time=$7
+    local_jobdeps_spec=$8
     step_outd=`get_step_dirname ${outd} ${local_stepname}`
     
     # Execute step
@@ -462,7 +463,7 @@ execute_step()
         reset_outdir_for_step ${local_dirname} ${local_stepname} || exit 1
         local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
         local_stepname_jid=${local_stepname}_jid
-        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid}
+        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid}
         
         # Update variables storing jids
         step_jids="${step_jids}:${!local_stepname_jid}"
@@ -485,6 +486,7 @@ execute_steps_in_afile()
         if [ ${entry_ok} = "yes" ]; then
             # Extract entry information
             local_stepname=`extract_stepname_from_entry "$entry"`
+            local_account=`extract_account_from_entry "$entry"`
             local_partition=`extract_partition_from_entry "$entry"`
             cpus=`extract_cpus_from_entry "$entry"`
             local_mem=`extract_mem_from_entry "$entry"`
@@ -492,7 +494,7 @@ execute_steps_in_afile()
             local_jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
 
             # Execute step
-            execute_step ${local_dirname} ${local_stepname} ${local_partition} ${cpus} ${local_mem} ${local_time} ${local_jobdeps_spec} || exit 1
+            execute_step ${local_dirname} ${local_stepname} ${local_account} ${local_partition} ${cpus} ${local_mem} ${local_time} ${local_jobdeps_spec} || exit 1
         fi
     done < ${local_afile}
 }

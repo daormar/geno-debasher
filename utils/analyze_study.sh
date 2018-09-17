@@ -225,7 +225,7 @@ create_dirs()
 }
 
 ########
-extract_normal_sample_info()
+extract_normal_sample_info_ega()
 {
     local_entry=$1
     sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal'`
@@ -243,7 +243,7 @@ extract_normal_sample_info()
 }
 
 ########
-extract_tumor_sample_info()
+extract_tumor_sample_info_ega()
 {
     local_entry=$1
     sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Tumour\|tumour'`
@@ -264,8 +264,8 @@ extract_tumor_sample_info()
 egadata_entry_is_ok()
 {
     local_entry=$1
-    nsample=`extract_normal_sample_info "${local_entry}"`
-    tsample=`extract_tumor_sample_info "${local_entry}"`
+    nsample=`extract_normal_sample_info_ega "${local_entry}"`
+    tsample=`extract_tumor_sample_info_ega "${local_entry}"`
 
     if [ ! -z "${nsample}" -a ! -z "${tsample}" ]; then
         echo "yes"
@@ -275,17 +275,17 @@ egadata_entry_is_ok()
 }
 
 ########
-extract_egafid_from_sample_info()
+extract_fid_from_sample_info_ega()
 {
-    local_sample_info=$1
-    echo ${local_sample_info} | $AWK '{print $3}'
+    local_sample_info_ega=$1
+    echo ${local_sample_info_ega} | $AWK '{print $3}'
 }
 
 ########
-extract_gender_from_sample_info()
+extract_gender_from_sample_info_ega()
 {
-    local_sample_info=$1
-    echo ${local_sample_info} | $AWK '{print $NF}'
+    local_sample_info_ega=$1
+    echo ${local_sample_info_ega} | $AWK '{print $NF}'
 }
 
 ########
@@ -297,13 +297,13 @@ analyze_ega_study()
         entry_ok=`egadata_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract sample info
-            normal_sample_info=`extract_normal_sample_info "$entry"`
-            egan_id=`extract_egafid_from_sample_info "${normal_sample_info}"`
+            normal_sample_info_ega=`extract_normal_sample_info_ega "$entry"`
+            egan_id=`extract_fid_from_sample_info_ega "${normal_sample_info_ega}"`
             
-            tumor_sample_info=`extract_tumor_sample_info "$entry"`
-            egat_id=`extract_egafid_from_sample_info "${tumor_sample_info}"`
+            tumor_sample_info_ega=`extract_tumor_sample_info_ega "$entry"`
+            egat_id=`extract_fid_from_sample_info_ega "${tumor_sample_info_ega}"`
 
-            gender=`extract_gender_from_sample_info "${normal_sample_info}"`
+            gender=`extract_gender_from_sample_info_ega "${normal_sample_info_ega}"`
 
             # Obtain value for -g option
             if [ ${gender} = "gender=male" ]; then

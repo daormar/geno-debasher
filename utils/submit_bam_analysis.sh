@@ -298,17 +298,19 @@ create_dirs()
     mkdir -p ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
 
     mkdir -p ${outd}/scripts || { echo "Error! cannot create scripts directory" >&2; return 1; }
+
+    mkdir -p ${outd}/data || { echo "Error! cannot create data directory" >&2; return 1; }
 }
 
 ########
 set_bam_filenames()
 {
     if [ ${egan_given} -eq 1 ]; then
-        normalbam=${outd}/normal.bam
+        normalbam=${outd}/data/normal.bam
     fi
 
     if [ ${egat_given} -eq 1 ]; then
-        tumorbam=${outd}/tumor.bam
+        tumorbam=${outd}/data/tumor.bam
     fi
 }
 

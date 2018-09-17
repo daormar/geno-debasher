@@ -6,14 +6,14 @@
 ########
 print_desc()
 {
-    echo "analyze_ega_study analyses samples of ega study"
+    echo "analyze_study analyses samples of a given study"
     echo "type \"analyze_ega_study --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "analyze_ega_study    -r <string> -e <string>"
+    echo "analyze_study        -r <string> -e <string>"
     echo "                     -a <string> -o <string>"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
@@ -21,8 +21,8 @@ usage()
     echo "                     [-debug] [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
-    echo "-e <string>          File with processed EGA metadata using the query_ega_metadata"
-    echo "                     tool (option -f 3)"
+    echo "-e <string>          File with processed EGA metadata using the"
+    echo "                     query_ega_metadata tool (option -f 3)"
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
     echo "                     <stepname> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
@@ -289,7 +289,7 @@ extract_gender_from_sample_info()
 }
 
 ########
-process_pars()
+analyze_ega_study()
 {
     # Read EGA data file
     entry_num=1
@@ -324,6 +324,14 @@ process_pars()
         entry_num=`expr ${entry_num} + 1`
         
     done < ${egadata}
+}
+
+########
+process_pars()
+{
+    if [ ${e_given} -eq 1 ]; then
+        analyze_ega_study
+    fi
 }
 
 ########

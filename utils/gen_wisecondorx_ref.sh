@@ -167,6 +167,17 @@ bam_download_and_npz_conv()
 
     # Deactivate conda environment
     conda deactivate
+
+    ### Index bam file
+    
+    # Activate conda environment
+    conda activate base || exit 1
+
+    # Index file
+    samtools index ${local_datadir}/${local_egaid}.bam || exit 1
+
+    # Deactivate conda environment
+    conda deactivate
     
     ### Convert bam file into npz file
 

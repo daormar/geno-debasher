@@ -491,9 +491,9 @@ execute_steps_in_afile()
             local_account=`extract_account_from_entry "$entry"`
             local_partition=`extract_partition_from_entry "$entry"`
             cpus=`extract_cpus_from_entry "$entry"`
-            local_mem=`extract_mem_from_entry "$entry"`
+            mem=`extract_mem_from_entry "$entry"`
             local_time=`extract_time_from_entry "$entry"`
-            local_jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
+            jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
 
             # Execute step
             execute_step ${local_dirname} ${local_stepname} ${local_account} ${local_partition} ${cpus} ${local_mem} ${local_time} ${local_jobdeps_spec} || exit 1

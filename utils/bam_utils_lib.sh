@@ -303,6 +303,24 @@ execute_manta_somatic()
 }
 
 ########
+get_indel_cand_opt()
+{
+    local_manta_outd=$1
+
+    if [ -z "${local_manta_outd}" ]; then
+        echo ""
+    else
+        manta_indel_file="${local_manta_outd}/results/variants/candidateSmallIndels.vcf.gz"
+        if [ -f ${manta_indel_file} ]; then
+            echo "--indelCandidates ${manta_indel_file}"
+        else
+            echo "WARNING: Manta indel file for Strelka not found! (${manta_indel_file})" >&2
+            echo ""
+        fi
+    fi
+}
+
+########
 execute_strelka_somatic()
 {
     display_begin_step_message
@@ -312,13 +330,18 @@ execute_strelka_somatic()
     local_normalbam=$2
     local_tumorbam=$3
     local_step_outd=$4
-    local_cpus=$5
+    local_manta_outd=$5
+    local_cpus=$6
+
+    # Obtain output directory of Manta if the corresponding analysis
+    # step was given as a dependency
+    indel_cand_opt=`get_indel_cand_opt "${local_manta_outd}"`
 
     # Activate conda environment
     conda activate strelka 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Configure Strelka
-    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
+    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${indel_cand_opt} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
 
     # Execute Strelka
     ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1

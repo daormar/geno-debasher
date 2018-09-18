@@ -627,7 +627,11 @@ execute_sort_norm_bam()
     conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Execute samtools
-    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -@ ${local_cpus} ${local_normalbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
+    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_normalbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
+    # NOTE: -m option is used here to increase the maximum memory per
+    # thread. One lateral efect of this is that the number of tmp files
+    # generated is decreased. This constitutes one possible way to avoid
+    # the "Too many open files" error reported by samtools
     
     # Deactivate conda environment
     conda deactivate
@@ -655,7 +659,11 @@ execute_sort_tum_bam()
     conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Execute samtools
-    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -@ ${local_cpus} ${local_tumorbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
+    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_tumorbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
+    # NOTE: -m option is used here to increase the maximum memory per
+    # thread. One lateral efect of this is that the number of tmp files
+    # generated is decreased. This constitutes one possible way to avoid
+    # the "Too many open files" error reported by samtools
     
     # Deactivate conda environment
     conda deactivate

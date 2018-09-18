@@ -496,7 +496,7 @@ execute_steps_in_afile()
             jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
 
             # Execute step
-            execute_step ${local_dirname} ${local_stepname} ${local_account} ${local_partition} ${cpus} ${local_mem} ${local_time} ${local_jobdeps_spec} || exit 1
+            execute_step ${local_dirname} ${local_stepname} ${local_account} ${local_partition} ${cpus} ${mem} ${local_time} ${jobdeps_spec} || exit 1
         fi
     done < ${local_afile}
 }

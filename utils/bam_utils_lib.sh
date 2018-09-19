@@ -184,6 +184,39 @@ launch()
 }
 
 ########
+launch_step()
+{
+    # Initialize variables
+    local_stepname=$1
+    local_stepinfo=$2
+    local_jobdeps=$3
+    local_script_pars=$4
+    local_jid=$5
+
+    # Create script
+    create_script ${tmpdir}/scripts/${local_stepname} ${local_stepname} "${local_script_pars}"
+
+    # Retrieve requirements
+    local_account=`extract_account_from_entry "$local_stepinfo"`
+    local_partition=`extract_partition_from_entry "$local_stepinfo"`
+    local_cpus=`extract_cpus_from_entry "$local_stepinfo"`
+    local_mem=`extract_mem_from_entry "$local_stepinfo"`
+    local_time=`extract_time_from_entry "$local_stepinfo"`
+
+    # Launch script
+    launch ${tmpdir}/scripts/${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_jid}
+}
+
+########
+get_step_info()
+{
+    local_stepname=$1
+    local_infofile=$2
+
+    $AWK -v stepname=${local_stepname} '{if($1==stepname) print $0}' ${local_infofile}
+}
+
+########
 analysis_entry_is_ok()
 {
     local_entry=$1

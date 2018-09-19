@@ -14,7 +14,7 @@ print_desc()
 usage()
 {
     echo "gen_wisecondorx_ref  -egalist <string> -o <string> -T <string>"
-    echo "                     -a <string> -p <string>"
+    echo "                     -i <string>"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [--debug] [--help]"
     echo ""
@@ -22,8 +22,7 @@ usage()
     echo "                     per line)"
     echo "-o <string>          Output file"
     echo "-T <string>          Directory for temporary files"
-    echo "-a <string>          Slurm account name used to submit jobs"
-    echo "-p <string>          Partition where the jobs should be executed"
+    echo "-i <string>          File with information about the steps to execute"
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
@@ -38,8 +37,7 @@ read_pars()
     egalist_given=0
     o_given=0
     T_given=0
-    a_given=0
-    p_given=0
+    i_given=0
     egastr_given=0
     egastr=50
     egacred_given=0
@@ -71,16 +69,10 @@ read_pars()
                       T_given=1
                   fi
                   ;;
-            "-a") shift
+            "-i") shift
                   if [ $# -ne 0 ]; then
-                      account=$1
-                      a_given=1
-                  fi
-                  ;;
-            "-p") shift
-                  if [ $# -ne 0 ]; then
-                      partition=$1
-                      p_given=1
+                      infofile=$1
+                      i_given=1
                   fi
                   ;;
             "-egastr") shift
@@ -126,14 +118,14 @@ check_pars()
         fi
     fi
 
-    if [ ${a_given} -eq 0 ]; then
-        echo "Error! -a parameter not given!" >&2
+    if [ ${i_given} -eq 0 ]; then
+        echo "Error! -i parameter not given!" >&2
         exit 1
-    fi
-
-    if [ ${p_given} -eq 0 ]; then
-        echo "Error! -p parameter not given!" >&2
-        exit 1
+    else
+        if [ ! -f ${infofile} ]; then
+            echo "Error! file with step information does not exist" >&2
+            exit 1
+        fi
     fi
 }
 
@@ -228,40 +220,97 @@ extract_egaid_from_entry()
 }
 
 ########
-process_pars()
+get_pars_bam_download_and_npz_conv()
+{
+    echo "${tmpdir}/data $egaid $egastr $egacred"
+}
+
+########
+get_pars_gen_reffile_wisecondorx()
+{
+    echo "${tmpdir}/data $outf"
+}
+
+########
+get_pars_remove_dir()
+{
+    echo "${tmpdir}"
+}
+
+########
+get_step_info()
+{
+    local_stepname=$1
+    local_infofile=$2
+
+    $AWK -v stepname=${local_stepname} '{if($1==stepname) print $0}' ${local_infofile}
+}
+
+########
+launch_step()
 {
     # Initialize variables
-    local_cpus=1
-    local_mem=1024
-    local_time=12:00:00
-    local_jids=""
-    
+    local_stepname=$1
+    local_stepinfo=$2
+    local_jobdeps=$3
+    local_script_pars=$4
+    local_jid=$5
+
+    # Create script
+    create_script ${tmpdir}/scripts/${local_stepname} ${local_stepname} "${local_script_pars}"
+
+    # Retrieve requirements
+    local_account=`extract_account_from_entry "$local_stepinfo"`
+    local_partition=`extract_partition_from_entry "$local_stepinfo"`
+    local_cpus=`extract_cpus_from_entry "$local_stepinfo"`
+    local_mem=`extract_mem_from_entry "$local_stepinfo"`
+    local_time=`extract_time_from_entry "$local_stepinfo"`
+
+    # Launch script
+    launch ${tmpdir}/scripts/${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_jid}
+}
+
+########
+process_pars()
+{
     # Read file with list of EGA ids
     while read entry; do
         # Extract EGA id
         egaid=`extract_egaid_from_entry $entry`
         
         # Process EGA id
+        local_stepname=bam_download_and_npz_conv
+        local_stepinfo=`get_step_info ${local_stepname} ${infofile}`
         local_jobdeps=""
-        create_script ${tmpdir}/scripts/bam_download_and_npz_conv bam_download_and_npz_conv "${tmpdir}/data $egaid $egastr $egacred"
-        launch ${tmpdir}/scripts/bam_download_and_npz_conv ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" local_jid
+        local_script_pars=`get_pars_${local_stepname}`
+        launch_step ${local_stepname} "${local_stepinfo}" "${local_jobdeps}" "${local_script_pars}" local_jid
 
         # Update variables storing jids
-        local_jids="${local_jids},${local_jid}"
+        if [ -z "${local_jids}" ]; then
+            local_jids=${local_jid}
+        else
+            local_jids="${local_jids},${local_jid}"
+        fi
 
     done < ${egalist}
 
     # Generate reference file
-    create_script ${tmpdir}/scripts/gen_reffile_wisecondorx gen_reffile_wisecondorx "${tmpdir}/data $outf"
-    local_job_deps=`apply_deptype_to_jobids ${local_jids} afterok`
-    launch ${tmpdir}/scripts/gen_reffile_wisecondorx ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
+    local_stepname=gen_reffile_wisecondorx
+    local_stepinfo=`get_step_info ${local_stepname} ${infofile}`
+    local_jobdeps=`apply_deptype_to_jobids ${local_jids} afterok`
+    local_script_pars=`get_pars_${local_stepname}`
+    launch_step ${local_stepname} "${local_stepinfo}" "${local_jobdeps}" "${local_script_pars}" local_jid
+
+    # Update variables storing jids
     local_jids="${local_jids},${local_jid}"
 
     if [ ${debug} -eq 0 ]; then
         # Remove directory with temporary files
-        create_script ${tmpdir}/scripts/remove_dir remove_dir "${tmpdir}"
-        local_job_deps=`apply_deptype_to_jobids ${local_jids} afterok`
-        launch ${tmpdir}/scripts/remove_dir ${account} ${partition} ${local_cpus} ${local_mem} ${local_time} "${local_job_deps}" local_jid
+        local_stepname=remove_dir
+        local_stepinfo=`get_step_info ${local_stepname} ${infofile}`
+        local_jobdeps=`apply_deptype_to_jobids ${local_jids} afterok`
+        local_script_pars=`get_pars_${local_stepname}`
+        launch_step ${local_stepname} "${local_stepinfo}" "${local_jobdeps}" "${local_script_pars}" local_jid
     fi
 }
 

@@ -18,7 +18,7 @@ usage()
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
-    echo "                     [-debug] [--help]"
+    echo "                     [-p] [-debug] [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
     echo "-e <string>          File with processed EGA metadata using the"
@@ -34,6 +34,7 @@ usage()
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
+    echo "-p                   Only print the commands executing the analysis"
     echo "-debug               After ending, do not delete temporary files"
     echo "                     (for debugging purposes)"
     echo "--help               Display this help and exit"
@@ -58,6 +59,7 @@ read_pars()
     egastr=50
     egacred_given=0
     egacred="cred.json"
+    p_given=0
     debug=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -126,6 +128,8 @@ read_pars()
                       egacred=$1
                       egacred_given=1
                   fi
+                  ;;
+            "-p") p_given=1
                   ;;
             "-debug") debug=1
                       debug_opt="-debug"
@@ -316,7 +320,11 @@ analyze_ega_study()
             outd=${egan_id}"_"${egat_id}
             
             # Submit bam analysis for normal and tumor samples
-            echo ${bindir}/submit_bam_analysis -r ${ref} -egan ${egan_id} -egat ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+            if [ ${p_given} -eq 0 ]; then
+                ${bindir}/submit_bam_analysis -r ${ref} -egan ${egan_id} -egat ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+            else
+                echo ${bindir}/submit_bam_analysis -r ${ref} -egan ${egan_id} -egat ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+            fi
         else
             echo "Error in entry number ${entry_num}"
         fi

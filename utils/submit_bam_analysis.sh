@@ -323,8 +323,8 @@ get_pars_manta_somatic()
 ########
 get_pars_strelka_somatic()
 {
-#    manta_dep=`find_dependency_for_step ${local_jobdeps_spec} manta_somatic`
-#    local_manta_outd=`get_outd_for_dep ${outd} "${manta_dep}"`
+    local_manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`
+    local_manta_outd=`get_outd_for_dep ${outd} "${local_manta_dep}"`
     echo "$ref $normalbam $tumorbam ${step_outd} "${local_manta_outd}" $cpus"
 }
 

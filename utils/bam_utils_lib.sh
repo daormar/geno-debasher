@@ -99,6 +99,34 @@ get_partition_opt()
 }
 
 ########
+find_dependency_for_step()
+{
+    local_jobdeps_spec=$1
+    local_stepname_part=$2
+
+    for local_dep in `echo ${local_jobdeps_spec} | $SED 's/,/ /g'`; do
+        local_stepname_part_in_dep=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
+        if [ ${local_stepname_part_in_dep} = ${local_stepname_part} ]; then
+            echo ${local_dep}
+        fi
+    done
+}
+
+########
+get_outd_for_dep()
+{
+    local_outd=$1
+    local_dep=$2
+
+    if [ -z "${local_dep}" ]; then
+        echo ""
+    else
+        local_stepname_part=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
+        get_step_dirname ${local_outd} ${local_stepname_part}
+    fi
+}
+
+########
 apply_deptype_to_jobids()
 {
     # Initialize variables
@@ -333,8 +361,7 @@ execute_strelka_somatic()
     local_manta_outd=$5
     local_cpus=$6
 
-    # Obtain output directory of Manta if the corresponding analysis
-    # step was given as a dependency
+    # Define --indelCandidates option if output from Manta is available
     indel_cand_opt=`get_indel_cand_opt "${local_manta_outd}"`
 
     # Activate conda environment

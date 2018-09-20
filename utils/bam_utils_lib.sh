@@ -630,8 +630,11 @@ execute_download_ega_norm_bam()
     conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Download file
-    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_normalbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_step_outd}/normal.bam > ${local_step_outd}/pyega3.log 2>&1 || exit 1
 
+    # Move file
+    mv ${local_step_outd}/normal.bam ${local_normalbam}
+    
     # Deactivate conda environment
     conda deactivate
 
@@ -657,7 +660,10 @@ execute_download_ega_tum_bam()
     conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Download file
-    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_tumorbam} > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_step_outd}/tumor.bam > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+
+    # Move file
+    mv ${local_step_outd}/tumor.bam ${local_tumorbam}
 
     # Deactivate conda environment
     conda deactivate

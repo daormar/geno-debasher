@@ -31,6 +31,7 @@ def take_pars():
     flags["s_given"]=False
     flags["a_given"]=False
     flags["t_given"]=False
+    flags["f_given"]=False
     values["verbose"]=True
 
     try:
@@ -71,6 +72,10 @@ def check_pars(flags,values):
 
     if(flags["t_given"]==False):
         print >> sys.stderr, "Error! -t parameter not given"
+        sys.exit(2)
+
+    if(flags["f_given"]==False):
+        print >> sys.stderr, "Error! -f parameter not given"
         sys.exit(2)
 
 ##################################################

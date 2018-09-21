@@ -675,6 +675,28 @@ execute_download_ega_tum_bam()
 }
 
 ########
+execute_download_aws_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_normalbam=$1
+    local_icgcid_normalbam=$2
+    local_step_outd=$5
+
+    # Download file
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} || exit 1
+
+    # Move file
+    # TBD
+    
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
 execute_index_norm_bam()
 {
     display_begin_step_message

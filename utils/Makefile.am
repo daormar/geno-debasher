@@ -1,6 +1,6 @@
 SCRIPTS_TO_BE_BUILT= submit_bam_analysis analyze_study			\
 get_analysis_status gen_wisecondorx_ref convert_snppos_to_snpgcc	\
-create_snv_pos_ascat query_ega_metadata run_facets
+create_snv_pos_ascat query_ega_metadata query_icgc_metadata run_facets
 
 bin_SCRIPTS = bam_utils_lib.sh $(SCRIPTS_TO_BE_BUILT)
 
@@ -9,7 +9,7 @@ CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 EXTRA_DIST = bam_utils_lib.sh submit_bam_analysis.sh analyze_study.sh	\
 get_analysis_status.sh gen_wisecondorx_ref.sh				\
 convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
-query_ega_metadata.py run_facets.R
+query_ega_metadata.py query_icgc_metadata.py run_facets.R
 
 # Build using suffix rules (portable)
 SUFFIXES= .sh .py .r .R

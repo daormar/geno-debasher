@@ -47,6 +47,7 @@ SUFFIXES= .sh .py .r .R
 	echo "SAMTOOLS="$(SAMTOOLS) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@
+	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
 	cat $< >> $@
 	chmod ugo+x $@
 

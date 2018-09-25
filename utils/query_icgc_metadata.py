@@ -161,9 +161,38 @@ def get_info_in_basic_format(donor_info_map,awsmanif_map,table_map):
     return formatted_info
 
 ##################################################
+def group_formatted_info_by_donor(formatted_info):
+    # Create and populate map to make grouping easier
+    group_map={}
+    for elem in formatted_info:
+        if(elem[3] in group_map):
+            group_map[elem[3]].append(elem)
+        else:
+            group_map[elem[3]]=[]
+            group_map[elem[3]].append(elem)
+    # Created grouped info
+    formatted_info_grouped=[]
+    for key in group_map:
+        tmplist=[]
+        for elem in group_map[key]:
+            if(tmplist):
+                tmplist.append((";"))
+            tmplist.append(elem)
+        flattmplist=[item for sublist in tmplist for item in sublist]
+        formatted_info_grouped.append(flattmplist)
+
+    return formatted_info_grouped
+
+##################################################
 def format_info(format,donor_info_map,awsmanif_map,table_map):
     if(format==1):
         return get_info_in_basic_format(donor_info_map,awsmanif_map,table_map)
+    elif(format==2):
+        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map)
+        return sorted(formatted_info, key=operator.itemgetter(3))
+    elif(format==3):
+        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map)
+        return group_formatted_info_by_donor(formatted_info)
     
 ##################################################
 def print_info(formatted_info):

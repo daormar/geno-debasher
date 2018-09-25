@@ -675,6 +675,21 @@ execute_download_ega_tum_bam()
 }
 
 ########
+find_bam_filename()
+{
+    local_step_outd=$1
+    local_result=""
+    
+    for f in ${local_step_outd}/*.bam; do
+        if [ -f $f ]; then
+            local_result=$f
+        fi
+    done
+
+    echo ${local_result}
+}
+
+########
 execute_download_aws_norm_bam()
 {
     display_begin_step_message
@@ -687,9 +702,47 @@ execute_download_aws_norm_bam()
     # Download file
     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} || exit 1
 
-    # Move file
-    # TBD
+    # Find bam file name
+    local_bam_file_name=`find_bam_filename ${local_step_outd}`
     
+    if [ -z "${local_bam_file_name}" ]; then
+        echo "Error: bam file not found after download process was completed" >&2
+        exit 1
+    fi
+
+    # Move file
+    mv ${local_bam_file_name} $local_normalbam || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+execute_download_aws_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_tumorbam=$1
+    local_icgcid_tumorbam=$2
+    local_step_outd=$5
+
+    # Download file
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} || exit 1
+
+    # Find bam file name
+    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    
+    if [ -z "${local_bam_file_name}" ]; then
+        echo "Error: bam file not found after download process was completed" >&2
+        exit 1
+    fi
+
+    # Move file
+    mv ${local_bam_file_name} $local_tumorbam || exit 1
+
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
 

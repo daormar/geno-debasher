@@ -14,7 +14,8 @@ print_desc()
 usage()
 {
     echo "submit_bam_analysis  -r <string>"
-    echo "                     -n <string>|-egan <string> -t <string>|-egat <string>"
+    echo "                     -n <string>|-extn <string>"
+    echo "                     -t <string>|-extt <string>"
     echo "                     -g <string> -a <string> -o <string>"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
@@ -24,8 +25,8 @@ usage()
     echo "-r <string>          File with reference genome"
     echo "-n <string>          Normal bam file"
     echo "-t <string>          Tumor bam file"
-    echo "-egan <string>       EGA id of normal bam file to download"
-    echo "-egat <string>       EGA id of tumor bam file to download"
+    echo "-extn <string>       External database id of normal bam file to download"
+    echo "-extt <string>       External database id of tumor bam file to download"
     echo "-g <string>          Sample gender (XX|XY)"
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
@@ -49,8 +50,8 @@ read_pars()
     r_given=0
     n_given=0
     t_given=0
-    egan_given=0
-    egat_given=0
+    extn_given=0
+    extt_given=0
     a_given=0
     g_given=0
     gender="XX"
@@ -94,16 +95,16 @@ read_pars()
                       t_given=1
                   fi
                   ;;
-            "-egan") shift
+            "-extn") shift
                   if [ $# -ne 0 ]; then
-                      egaid_normalbam=$1
-                      egan_given=1
+                      extid_normalbam=$1
+                      extn_given=1
                   fi
                   ;;
-            "-egat") shift
+            "-extt") shift
                   if [ $# -ne 0 ]; then
-                      egaid_tumorbam=$1
-                      egat_given=1
+                      extid_tumorbam=$1
+                      extt_given=1
                   fi
                   ;;
             "-g") shift
@@ -181,20 +182,20 @@ check_pars()
         fi
     fi
 
-    if [ ${n_given} -eq 0 -a ${egan_given} -eq 0 ]; then
-        echo "Error, -n or -egan options should be given" >&2
+    if [ ${n_given} -eq 0 -a ${extn_given} -eq 0 ]; then
+        echo "Error, -n, -extn or -awsn options should be given" >&2
     fi
 
-    if [ ${n_given} -eq 1 -a ${egan_given} -eq 1 ]; then
-        echo "Error, -n and -egan options cannot be given simultaneously" >&2
+    if [ ${n_given} -eq 1 -a ${extn_given} -eq 1 ]; then
+        echo "Error, -n and -extn options cannot be given simultaneously" >&2
     fi
 
-    if [ ${t_given} -eq 0 -a ${egat_given} -eq 0 ]; then
-        echo "Error, -t or -egat options should be given" >&2
+    if [ ${t_given} -eq 0 -a ${extt_given} -eq 0 ]; then
+        echo "Error, -t, -extt or -awst options should be given" >&2
     fi
 
-    if [ ${t_given} -eq 1 -a ${egat_given} -eq 1 ]; then
-        echo "Error, -t and -egat options cannot be given simultaneously" >&2
+    if [ ${t_given} -eq 1 -a ${extt_given} -eq 1 ]; then
+        echo "Error, -t and -extt options cannot be given simultaneously" >&2
     fi
 
     if [ ${n_given} -eq 1 ]; then
@@ -251,12 +252,12 @@ print_pars()
         echo "-t is ${tumorbam}" >&2
     fi
 
-    if [ ${egan_given} -eq 1 ]; then
-        echo "-egan is ${egaid_normalbam}" >&2
+    if [ ${extn_given} -eq 1 ]; then
+        echo "-extn is ${extid_normalbam}" >&2
     fi
 
-    if [ ${egat_given} -eq 1 ]; then
-        echo "-egat is ${egaid_tumorbam}" >&2
+    if [ ${extt_given} -eq 1 ]; then
+        echo "-extt is ${extid_tumorbam}" >&2
     fi
 
     if [ ${a_given} -eq 1 ]; then
@@ -305,11 +306,11 @@ create_dirs()
 ########
 set_bam_filenames()
 {
-    if [ ${egan_given} -eq 1 ]; then
+    if [ ${extn_given} -eq 1 ]; then
         normalbam=${outd}/data/normal.bam
     fi
 
-    if [ ${egat_given} -eq 1 ]; then
+    if [ ${extt_given} -eq 1 ]; then
         tumorbam=${outd}/data/tumor.bam
     fi
 }
@@ -367,13 +368,25 @@ get_pars_ascatngs()
 ########
 get_pars_download_ega_norm_bam()
 {
-    echo "$normalbam ${egaid_normalbam} $egastr $egacred ${step_outd}"
+    echo "$normalbam ${extid_normalbam} $egastr $egacred ${step_outd}"
 }
 
 ########
 get_pars_download_ega_tum_bam()
 {
-    echo "$tumorbam ${egaid_tumorbam} $egastr $egacred ${step_outd}"
+    echo "$tumorbam ${extid_tumorbam} $egastr $egacred ${step_outd}"
+}
+
+########
+get_pars_download_aws_norm_bam()
+{
+    echo "$normalbam ${extid_normalbam} ${step_outd}"
+}
+
+########
+get_pars_download_aws_tum_bam()
+{
+    echo "$tumorbam ${extid_tumorbam} ${step_outd}"
 }
 
 ########

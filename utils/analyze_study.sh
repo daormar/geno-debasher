@@ -321,9 +321,9 @@ analyze_ega_study()
             
             # Submit bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then
-                ${bindir}/submit_bam_analysis -r ${ref} -egan ${egan_id} -egat ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+                ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
             else
-                echo ${bindir}/submit_bam_analysis -r ${ref} -egan ${egan_id} -egat ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
             fi
         else
             echo "Error in entry number ${entry_num}"

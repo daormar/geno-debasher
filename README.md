@@ -1,2 +1,3 @@
 # bam-utils
-Utilities to analyze of bam files
+
+Utilities to analyze bam files

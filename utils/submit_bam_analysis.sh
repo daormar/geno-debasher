@@ -183,7 +183,7 @@ check_pars()
     fi
 
     if [ ${n_given} -eq 0 -a ${extn_given} -eq 0 ]; then
-        echo "Error, -n, -extn or -awsn options should be given" >&2
+        echo "Error, -n or -extn options should be given" >&2
     fi
 
     if [ ${n_given} -eq 1 -a ${extn_given} -eq 1 ]; then
@@ -191,7 +191,7 @@ check_pars()
     fi
 
     if [ ${t_given} -eq 0 -a ${extt_given} -eq 0 ]; then
-        echo "Error, -t, -extt or -awst options should be given" >&2
+        echo "Error, -t or -extt options should be given" >&2
     fi
 
     if [ ${t_given} -eq 1 -a ${extt_given} -eq 1 ]; then

@@ -85,6 +85,7 @@ def print_help():
     print >> sys.stderr, "                1: FILE_ID OBJECT_ID FILENAME DONOR_ID PHENOTYPE GENDER"
     print >> sys.stderr, "                2: The same as 1 but sorted by donor_id"
     print >> sys.stderr, "                3: The same as 2 but entries for same donor_id appear in same line"
+    print >> sys.stderr, "                4: The same as 3 but mini-bam files are excluded"
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
@@ -145,7 +146,7 @@ def get_phenotype_code(phenotype):
         return "tumor"
     
 ##################################################
-def get_info_in_basic_format(donor_info_map,awsmanif_map,table_map):
+def get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files):
     formatted_info=[]
 
     # Populate formatted_info structure
@@ -156,7 +157,8 @@ def get_info_in_basic_format(donor_info_map,awsmanif_map,table_map):
         donor_sex=donor_info_map[donor_id].donor_sex
         phenotype=table_map[file_id].phenotype
         phenotype_code=get_phenotype_code(phenotype)
-        formatted_info.append((file_id,object_id,filename,donor_id,phenotype_code,donor_sex))
+        if(not exclude_mini_bam_files or ("mini" not in filename)):
+            formatted_info.append((file_id,object_id,filename,donor_id,phenotype_code,donor_sex))
 
     return formatted_info
 
@@ -186,12 +188,19 @@ def group_formatted_info_by_donor(formatted_info):
 ##################################################
 def format_info(format,donor_info_map,awsmanif_map,table_map):
     if(format==1):
-        return get_info_in_basic_format(donor_info_map,awsmanif_map,table_map)
+        exclude_mini_bam_files=False
+        return get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
     elif(format==2):
-        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map)
+        exclude_mini_bam_files=False
+        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
         return sorted(formatted_info, key=operator.itemgetter(3))
     elif(format==3):
-        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map)
+        exclude_mini_bam_files=False
+        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
+        return group_formatted_info_by_donor(formatted_info)
+    elif(format==4):
+        exclude_mini_bam_files=True
+        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
         return group_formatted_info_by_donor(formatted_info)
     
 ##################################################

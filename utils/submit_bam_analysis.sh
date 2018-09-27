@@ -184,18 +184,22 @@ check_pars()
 
     if [ ${n_given} -eq 0 -a ${extn_given} -eq 0 ]; then
         echo "Error, -n or -extn options should be given" >&2
+        exit 1
     fi
 
     if [ ${n_given} -eq 1 -a ${extn_given} -eq 1 ]; then
         echo "Error, -n and -extn options cannot be given simultaneously" >&2
+        exit 1
     fi
 
     if [ ${t_given} -eq 0 -a ${extt_given} -eq 0 ]; then
         echo "Error, -t or -extt options should be given" >&2
+        exit 1
     fi
 
     if [ ${t_given} -eq 1 -a ${extt_given} -eq 1 ]; then
         echo "Error, -t and -extt options cannot be given simultaneously" >&2
+        exit 1
     fi
 
     if [ ${n_given} -eq 1 ]; then

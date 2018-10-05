@@ -172,7 +172,7 @@ launch()
     local_outvar=$8
     
     if [ -z "${SBATCH}" ]; then
-        $local_file
+        $local_file || return 1
         eval "${outvar}=\"\""
     else
         account_opt=`get_account_opt ${local_account}`
@@ -204,7 +204,7 @@ launch_step()
     local_time=`extract_time_from_entry "$local_stepinfo"`
 
     # Launch script
-    launch ${tmpdir}/scripts/${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_jid}
+    launch ${tmpdir}/scripts/${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_jid} || return 1
 }
 
 ########

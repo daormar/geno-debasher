@@ -481,10 +481,10 @@ execute_step()
     local_status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
     echo "STEP: ${local_stepname} ; STATUS: ${local_status}" >&2
     if [ "${local_status}" != "FINISHED" ]; then
-        reset_outdir_for_step ${local_dirname} ${local_stepname} || exit 1
+        reset_outdir_for_step ${local_dirname} ${local_stepname} || return 1
         local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
         local_stepname_jid=${local_stepname}_jid
-        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid}
+        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid} || return 1
         
         # Update variables storing jids
         step_jids="${step_jids}:${!local_stepname_jid}"
@@ -515,7 +515,7 @@ execute_steps_in_afile()
             jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
 
             # Execute step
-            execute_step ${local_dirname} ${local_stepname} ${local_account} ${local_partition} ${cpus} ${mem} ${local_time} ${jobdeps_spec} || exit 1
+            execute_step ${local_dirname} ${local_stepname} ${local_account} ${local_partition} ${cpus} ${mem} ${local_time} ${jobdeps_spec} || return 1
         fi
     done < ${local_afile}
 }

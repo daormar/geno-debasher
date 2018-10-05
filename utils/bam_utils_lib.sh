@@ -172,7 +172,7 @@ launch()
     local_outvar=$8
     
     if [ -z "${SBATCH}" ]; then
-        $local_file || return 1
+        ${local_file} > ${local_file}.log 2>&1 || return 1
         eval "${local_outvar}=\"\""
     else
         account_opt=`get_account_opt ${local_account}`

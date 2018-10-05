@@ -697,7 +697,7 @@ execute_download_aws_norm_bam()
     # Initialize variables
     local_normalbam=$1
     local_icgcid_normalbam=$2
-    local_step_outd=$5
+    local_step_outd=$3
 
     # Download file
     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} || exit 1
@@ -711,7 +711,7 @@ execute_download_aws_norm_bam()
     fi
 
     # Move file
-    mv ${local_bam_file_name} $local_normalbam || exit 1
+    mv ${local_bam_file_name} ${local_normalbam} || exit 1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -727,7 +727,7 @@ execute_download_aws_tum_bam()
     # Initialize variables
     local_tumorbam=$1
     local_icgcid_tumorbam=$2
-    local_step_outd=$5
+    local_step_outd=$3
 
     # Download file
     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} || exit 1
@@ -741,7 +741,7 @@ execute_download_aws_tum_bam()
     fi
 
     # Move file
-    mv ${local_bam_file_name} $local_tumorbam || exit 1
+    mv ${local_bam_file_name} ${local_tumorbam} || exit 1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished

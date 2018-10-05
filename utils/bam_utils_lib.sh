@@ -51,23 +51,23 @@ create_script()
     
     # Write bash shebang
     local_BASH_SHEBANG=`init_bash_shebang_var`
-    echo ${local_BASH_SHEBANG} > ${local_name}
+    echo ${local_BASH_SHEBANG} > ${local_name} || return 1
 
     # Write SLURM commands
-    echo "#SBATCH --job-name=${local_command}" >> ${local_name}
-    echo "#SBATCH --output=${local_name}.slurm_out" >> ${local_name}
+    echo "#SBATCH --job-name=${local_command}" >> ${local_name} || return 1
+    echo "#SBATCH --output=${local_name}.slurm_out" >> ${local_name} || return 1
 
     # Write environment variables
-    set | exclude_readonly_vars | exclude_bashisms >> ${local_name}
+    set | exclude_readonly_vars | exclude_bashisms >> ${local_name} || return 1
 
     # Write functions if necessary
-    $GREP "()" ${local_name} -A1 | $GREP "{" > /dev/null || write_functions >> ${local_name}
+    $GREP "()" ${local_name} -A1 | $GREP "{" > /dev/null || write_functions >> ${local_name} || return 1
     
     # Write command to be executed
-    echo "${local_command} ${local_script_pars}" >> ${local_name}
+    echo "${local_command} ${local_script_pars}" >> ${local_name} || return 1
 
     # Give execution permission
-    chmod u+x ${local_name}
+    chmod u+x ${local_name} || return 1
 
     # Archive script with date info
     curr_date=`date '+%Y_%m_%d'`
@@ -194,7 +194,7 @@ launch_step()
     local_jid=$5
 
     # Create script
-    create_script ${tmpdir}/scripts/${local_stepname} ${local_stepname} "${local_script_pars}"
+    create_script ${tmpdir}/scripts/${local_stepname} ${local_stepname} "${local_script_pars}" || return 1
 
     # Retrieve requirements
     local_account=`extract_account_from_entry "$local_stepinfo"`

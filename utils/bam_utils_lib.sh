@@ -173,7 +173,7 @@ launch()
     
     if [ -z "${SBATCH}" ]; then
         $local_file || return 1
-        eval "${outvar}=\"\""
+        eval "${local_outvar}=\"\""
     else
         account_opt=`get_account_opt ${local_account}`
         partition_opt=`get_partition_opt ${local_partition}`

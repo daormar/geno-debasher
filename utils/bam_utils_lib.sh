@@ -689,7 +689,7 @@ execute_download_aws_norm_bam()
     local_step_outd=$3
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client download.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`
@@ -719,7 +719,7 @@ execute_download_aws_tum_bam()
     local_step_outd=$3
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client download.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`

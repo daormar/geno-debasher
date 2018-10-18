@@ -21,7 +21,6 @@ CXXFLAGS_AUX=${CXXFLAGS}
 dnl AX_PYTHON_MODULE(mwparserfromhell,fatal,python)
 
 # Checks for programs.
-AC_PATH_PROGS(BASH, bash)
 AC_PATH_PROGS(PYTHON, python)
 AC_PATH_PROGS(RSCRIPT, Rscript)
 AC_PATH_PROGS(SPLIT, split)
@@ -45,6 +44,14 @@ AC_PATH_PROGS(SRUN, srun)
 AC_PATH_PROGS(WGET, wget)
 AC_PATH_PROGS(PANDOC, pandoc)
 AC_PATH_PROGS(SAMTOOLS, samtools)
+
+# BASH may already be set in the shell, if the admin then changes the
+# the /bin/sh symlink to a non-bash shell, all hell will break lose.
+unset BASH
+AC_PATH_PROGS(BASH, bash, "no", [$PATH:/bin:/usr/bin:/usr/sbin])
+if test x$BASH = "xno"; then
+    AC_MSG_ERROR([bash is required])
+fi
 
 # check that qsub works
 if test ! -z "$QSUB"; then

@@ -29,14 +29,6 @@ exclude_bashisms()
 }
 
 ########
-write_functions()
-{
-    for f in `$AWK '{if(index($1,"()")!=0) printf"%s\n",$1}' $0`; do
-        sed -n /^$f/,/^}/p $0
-    done
-}
-
-########
 create_script()
 {
     # Init variables
@@ -59,9 +51,6 @@ create_script()
 
     # Write environment variables
     set | exclude_readonly_vars | exclude_bashisms >> ${local_name} || return 1
-
-    # Write functions if necessary
-    $GREP "()" ${local_name} -A1 | $GREP "{" > /dev/null || write_functions >> ${local_name} || return 1
     
     # Write command to be executed
     echo "${local_command} ${local_script_pars}" >> ${local_name} || return 1

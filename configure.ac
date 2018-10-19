@@ -46,7 +46,8 @@ AC_PATH_PROGS(PANDOC, pandoc)
 AC_PATH_PROGS(SAMTOOLS, samtools)
 
 # BASH may already be set in the shell, if the admin then changes the
-# the /bin/sh symlink to a non-bash shell, all hell will break lose.
+# the /bin/sh symlink to a non-bash shell, then the installation will
+# break
 unset BASH
 AC_PATH_PROGS(BASH, bash, "no", [$PATH:/bin:/usr/bin:/usr/sbin])
 if test x$BASH = "xno"; then

@@ -647,7 +647,7 @@ execute_download_ega_norm_bam()
     ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_normalbam} ${local_step_outd}/normal.bam ${local_download_tries} || exit 1
 
     # Move file
-    mv ${local_step_outd}/normal.bam ${local_normalbam}
+    mv ${local_step_outd}/normal.bam ${local_normalbam} || exit 1
     
     # Deactivate conda environment
     conda deactivate
@@ -678,7 +678,7 @@ execute_download_ega_tum_bam()
     ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_tumorbam} ${local_step_outd}/tumor.bam ${local_download_tries} || exit 1
 
     # Move file
-    mv ${local_step_outd}/tumor.bam ${local_tumorbam}
+    mv ${local_step_outd}/tumor.bam ${local_tumorbam} || exit 1
 
     # Deactivate conda environment
     conda deactivate

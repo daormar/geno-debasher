@@ -604,6 +604,30 @@ execute_ascatngs()
 }
 
 ########
+ega_download_retry()
+{
+    # Initialize variables
+    local_egastr=$1
+    local_egacred=$2
+    local_egaid=$3
+    local_outf=$4
+    local_download_tries=$5
+    local_step_outd=`${DIRNAME} ${local_outf}`
+    
+    # Start download with multiple tries
+    local_ntry=1
+    while [ ${local_ntry} -le ${local_download_tries} ]; do
+        echo "Starting download try number ${local_ntry}..." >&2
+        pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid} ${local_outf} > ${local_step_outd}/pyega3.log 2>&1 && return 0
+        local_ntry=`expr ${local_ntry} + 1`
+    done
+
+    echo "All download tries failed!" >&2
+
+    return 1
+}
+
+########
 execute_download_ega_norm_bam()
 {
     display_begin_step_message
@@ -613,13 +637,14 @@ execute_download_ega_norm_bam()
     local_egaid_normalbam=$2
     local_egastr=$3
     local_egacred=$4
-    local_step_outd=$5
+    local_download_tries=$5
+    local_step_outd=$6
 
     # Activate conda environment
     conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
 
-    # Download file
-    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_normalbam} ${local_step_outd}/normal.bam > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+    # Download file (with multiple tries)
+    ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_normalbam} ${local_step_outd}/normal.bam ${local_download_tries} || exit 1
 
     # Move file
     mv ${local_step_outd}/normal.bam ${local_normalbam}
@@ -643,13 +668,14 @@ execute_download_ega_tum_bam()
     local_egaid_tumorbam=$2
     local_egastr=$3
     local_egacred=$4
-    local_step_outd=$5
+    local_download_tries=$5
+    local_step_outd=$6
 
     # Activate conda environment
     conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
 
-    # Download file
-    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid_tumorbam} ${local_step_outd}/tumor.bam > ${local_step_outd}/pyega3.log 2>&1 || exit 1
+    # Download file (with multiple tries)
+    ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_tumorbam} ${local_step_outd}/tumor.bam ${local_download_tries} || exit 1
 
     # Move file
     mv ${local_step_outd}/tumor.bam ${local_tumorbam}
@@ -686,7 +712,8 @@ execute_download_aws_norm_bam()
     # Initialize variables
     local_normalbam=$1
     local_icgcid_normalbam=$2
-    local_step_outd=$3
+    local_download_tries=$3
+    local_step_outd=$4
 
     # Download file
     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
@@ -716,7 +743,8 @@ execute_download_aws_tum_bam()
     # Initialize variables
     local_tumorbam=$1
     local_icgcid_tumorbam=$2
-    local_step_outd=$3
+    local_download_tries=$3
+    local_step_outd=$4
 
     # Download file
     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1

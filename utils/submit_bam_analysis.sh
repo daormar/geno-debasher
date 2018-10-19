@@ -17,7 +17,7 @@ usage()
     echo "                     -n <string>|-extn <string>"
     echo "                     -t <string>|-extt <string>"
     echo "                     -g <string> -a <string> -o <string>"
-    echo "                     [-wcr <string>] [-sv <string>]"
+    echo "                     [-nt <int>] [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-debug] [--help]"
@@ -32,6 +32,7 @@ usage()
     echo "                     Expected format:"
     echo "                     <stepname> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
     echo "-o <string>          Output directory"
+    echo "-nt <int>            Number of download tries per file"
     echo "-wcr <string>        Reference file in npz format for WisecondorX"
     echo "-sv <string>         SNP vcf file required by Facets"
     echo "-sg <string>         SNP GC correction file required by AscatNGS"
@@ -56,6 +57,7 @@ read_pars()
     g_given=0
     gender="XX"
     o_given=0
+    download_tries=5
     wcr_given=0
     wcref="NONE"
     sv_given=0
@@ -123,6 +125,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       outd=$1
                       o_given=1
+                  fi
+                  ;;
+            "-nt") shift
+                  if [ $# -ne 0 ]; then
+                      download_tries=$1
+                      nt_given=1
                   fi
                   ;;
             "-wcr") shift
@@ -210,7 +218,7 @@ check_pars()
     fi
 
     if [ ${t_given} -eq 1 ]; then
-        if [ -a ! -f ${tumorbam} ]; then
+        if [ ! -f ${tumorbam} ]; then
             echo "Error! file ${tumorbam} does not exist" >&2
             exit 1
         fi
@@ -372,25 +380,25 @@ get_pars_ascatngs()
 ########
 get_pars_download_ega_norm_bam()
 {
-    echo "$normalbam ${extid_normalbam} $egastr $egacred ${step_outd}"
+    echo "$normalbam ${extid_normalbam} $egastr $egacred ${download_tries} ${step_outd}"
 }
 
 ########
 get_pars_download_ega_tum_bam()
 {
-    echo "$tumorbam ${extid_tumorbam} $egastr $egacred ${step_outd}"
+    echo "$tumorbam ${extid_tumorbam} $egastr $egacred ${download_tries} ${step_outd}"
 }
 
 ########
 get_pars_download_aws_norm_bam()
 {
-    echo "$normalbam ${extid_normalbam} ${step_outd}"
+    echo "$normalbam ${extid_normalbam} ${download_tries} ${step_outd}"
 }
 
 ########
 get_pars_download_aws_tum_bam()
 {
-    echo "$tumorbam ${extid_tumorbam} ${step_outd}"
+    echo "$tumorbam ${extid_tumorbam} ${download_tries} ${step_outd}"
 }
 
 ########

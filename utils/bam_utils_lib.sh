@@ -618,10 +618,20 @@ ega_download_retry()
     local_ntry=1
     while [ ${local_ntry} -le ${local_download_tries} ]; do
         echo "Starting download try number ${local_ntry}..." >&2
+
+        # Remove previously downloaded file (if any)
         if [ -f ${local_outf} ]; then
             rm ${local_outf}
         fi
-        pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid} ${local_outf} > ${local_step_outd}/pyega3.log 2>&1 && return 0
+
+        # Download file
+        pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid} ${local_outf} > ${local_step_outd}/pyega3.log 2>&1
+
+        # Check if download was successful
+        if [ $? -eq 0 and -f ${local_outf} ]; then
+            return 0
+        fi
+        
         local_ntry=`expr ${local_ntry} + 1`
     done
 

@@ -628,7 +628,7 @@ ega_download_retry()
         pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid} ${local_outf} > ${local_step_outd}/pyega3.log 2>&1
 
         # Check if download was successful
-        if [ $? -eq 0 and -f ${local_outf} ]; then
+        if [ $? -eq 0 -a -f ${local_outf} ]; then
             return 0
         fi
         

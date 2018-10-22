@@ -635,7 +635,7 @@ ega_download_retry()
         local_ntry=`expr ${local_ntry} + 1`
     done
 
-    echo "All download tries failed!" >&2
+    echo "All download attempts failed!" >&2
 
     return 1
 }

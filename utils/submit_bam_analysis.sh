@@ -368,7 +368,7 @@ get_pars_wisecondorx()
 ########
 get_pars_facets()
 {
-    echo "$normalbam $tumorbam $snpvcf outd$"
+    echo "$normalbam $tumorbam $snpvcf ${step_outd}"
 }
 
 ########

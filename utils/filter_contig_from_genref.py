@@ -40,7 +40,7 @@ def check_pars(flags,values):
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "remove_contig_from_genref -c <string> -g <string>"
+    print >> sys.stderr, "filter_contig_from_genref -c <string> -g <string>"
     print >> sys.stderr, ""
     print >> sys.stderr, "-c <string>    Contig name"
     print >> sys.stderr, "-g <string>    File with genome reference"

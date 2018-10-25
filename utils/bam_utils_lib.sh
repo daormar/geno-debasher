@@ -323,6 +323,18 @@ display_end_step_message()
 ##################
 
 ########
+get_callreg_opt()
+{
+    local_callregf=$1
+
+    if [ ${local_callregf} = "NONE" ]; then
+        echo ""
+    else
+        echo "--callRegions ${local_callregf}"
+    fi
+}
+
+########
 execute_manta_somatic()
 {
     display_begin_step_message
@@ -331,14 +343,18 @@ execute_manta_somatic()
     local_ref=$1
     local_normalbam=$2
     local_tumorbam=$3
-    local_step_outd=$4
-    local_cpus=$5
-    
+    local_callregf=$4
+    local_step_outd=$5
+    local_cpus=$6
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${local_callregf}"`
+
     # Activate conda environment
     conda activate manta 2> ${local_step_outd}/conda_activate.log || exit 1
     
     # Configure Manta
-    configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} --runDir ${local_step_outd} > ${local_step_outd}/configManta.log 2>&1 || exit 1
+    configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configManta.log 2>&1 || exit 1
 
     # Execute Manta
     ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
@@ -379,18 +395,22 @@ execute_strelka_somatic()
     local_ref=$1
     local_normalbam=$2
     local_tumorbam=$3
-    local_step_outd=$4
-    local_manta_outd=$5
-    local_cpus=$6
+    local_callregf=$4
+    local_step_outd=$5
+    local_manta_outd=$6
+    local_cpus=$7
 
     # Define --indelCandidates option if output from Manta is available
     indel_cand_opt=`get_indel_cand_opt "${local_manta_outd}"`
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${local_callregf}"`
 
     # Activate conda environment
     conda activate strelka 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Configure Strelka
-    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${indel_cand_opt} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
+    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
 
     # Execute Strelka
     ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1

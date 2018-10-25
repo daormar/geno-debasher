@@ -17,8 +17,8 @@ usage()
     echo "                     -n <string>|-extn <string>"
     echo "                     -t <string>|-extt <string>"
     echo "                     -g <string> -a <string> -o <string>"
-    echo "                     [-nt <int>] [-wcr <string>] [-sv <string>]"
-    echo "                     [-sg <string>] [-mc <string>]"
+    echo "                     [-nt <int>] [-cr <string>] [-wcr <string>]"
+    echo "                     [-sv <string>] [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-debug] [--help]"
     echo ""
@@ -33,6 +33,8 @@ usage()
     echo "                     <stepname> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
     echo "-o <string>          Output directory"
     echo "-nt <int>            Number of download tries per file"
+    echo "-cr <string>         bgzipped and tabixed bed file to specify regions to call for"
+    echo "                     Manta and Strelka"
     echo "-wcr <string>        Reference file in npz format for WisecondorX"
     echo "-sv <string>         SNP vcf file required by Facets"
     echo "-sg <string>         SNP GC correction file required by AscatNGS"
@@ -58,6 +60,8 @@ read_pars()
     gender="XX"
     o_given=0
     download_tries=5
+    cr_given=0
+    callregf="NONE"
     wcr_given=0
     wcref="NONE"
     sv_given=0
@@ -131,6 +135,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       download_tries=$1
                       nt_given=1
+                  fi
+                  ;;
+            "-cr") shift
+                  if [ $# -ne 0 ]; then
+                      callregf=$1
+                      cr_given=1
                   fi
                   ;;
             "-wcr") shift
@@ -292,6 +302,10 @@ print_pars()
         echo "-mc is ${malesexchr}" >&2
     fi
 
+    if [ ${cr_given} -eq 1 ]; then
+        echo "-cr is ${callregf}" >&2
+    fi
+
     if [ ${wcr_given} -eq 1 ]; then
         echo "-wcr is ${wcref}" >&2
     fi
@@ -330,7 +344,7 @@ set_bam_filenames()
 ########
 get_pars_manta_somatic()
 {
-    echo "$ref $normalbam $tumorbam ${step_outd} $cpus"
+    echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} $cpus"
 }
 
 ########
@@ -338,7 +352,7 @@ get_pars_strelka_somatic()
 {
     local_manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`
     local_manta_outd=`get_outd_for_dep ${outd} "${local_manta_dep}"`
-    echo "$ref $normalbam $tumorbam ${step_outd} "${local_manta_outd}" $cpus"
+    echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} "${local_manta_outd}" $cpus"
 }
 
 ########

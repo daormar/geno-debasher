@@ -50,6 +50,8 @@ read_pars()
     i_given=0
     a_given=0
     o_given=0
+    cr_given=0
+    callregf="NONE"
     wcr_given=0
     wcref="NONE"
     sv_given=0
@@ -100,6 +102,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       outd=$1
                       o_given=1
+                  fi
+                  ;;
+            "-cr") shift
+                  if [ $# -ne 0 ]; then
+                      callregf=$1
+                      cr_given=1
                   fi
                   ;;
             "-wcr") shift
@@ -230,6 +238,10 @@ print_pars()
         echo "-mc is ${malesexchr}" >&2
     fi
 
+    if [ ${cr_given} -eq 1 ]; then
+        echo "-cr is ${callregf}" >&2
+    fi
+
     if [ ${wcr_given} -eq 1 ]; then
         echo "-wcr is ${wcref}" >&2
     fi
@@ -342,9 +354,9 @@ analyze_ega_study()
             
             # Submit bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then
-                ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+                ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
             else
-                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
+                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
             fi
         else
             echo "Error in entry number ${entry_num}"
@@ -448,9 +460,9 @@ analyze_icgc_study()
             
             # Submit bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then
-                ${bindir}/submit_bam_analysis -r ${ref} -extn ${icgcn_id} -extt ${icgct_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr}
+                ${bindir}/submit_bam_analysis -r ${ref} -extn ${icgcn_id} -extt ${icgct_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr}
             else
-                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${icgcn_id} -extt ${icgct_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr}
+                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${icgcn_id} -extt ${icgct_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr}
             fi
         else
             echo "Error in entry number ${entry_num}"

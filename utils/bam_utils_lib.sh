@@ -612,7 +612,7 @@ execute_ascatngs()
     conda activate ascatngs 2> ${local_step_outd}/conda_activate.log || exit 1
 
     # Run cnvkit
-    ascat.pl -n ${local_normalbam} -t ${local_tumorbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} > ${local_step_outd}/ascat.log 2>&1 || exit 1
+    ascat.pl -n ${local_normalbam} -t ${local_tumorbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} -o ${local_step_outd} > ${local_step_outd}/ascat.log 2>&1 || exit 1
 
     # Deactivate conda environment
     conda deactivate

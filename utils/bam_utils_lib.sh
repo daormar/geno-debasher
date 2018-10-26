@@ -752,7 +752,7 @@ execute_download_aws_norm_bam()
     local_step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile aws --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`
@@ -783,7 +783,69 @@ execute_download_aws_tum_bam()
     local_step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile aws --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+
+    # Find bam file name
+    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    
+    if [ -z "${local_bam_file_name}" ]; then
+        echo "Error: bam file not found after download process was completed" >&2
+        exit 1
+    fi
+
+    # Move file
+    mv ${local_bam_file_name} ${local_tumorbam} || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+execute_download_collab_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_normalbam=$1
+    local_icgcid_normalbam=$2
+    local_download_tries=$3
+    local_step_outd=$4
+
+    # Download file
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile collab --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+
+    # Find bam file name
+    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    
+    if [ -z "${local_bam_file_name}" ]; then
+        echo "Error: bam file not found after download process was completed" >&2
+        exit 1
+    fi
+
+    # Move file
+    mv ${local_bam_file_name} ${local_normalbam} || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+execute_download_collab_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_tumorbam=$1
+    local_icgcid_tumorbam=$2
+    local_download_tries=$3
+    local_step_outd=$4
+
+    # Download file
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile collab --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`

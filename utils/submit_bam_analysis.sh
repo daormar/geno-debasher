@@ -416,6 +416,18 @@ get_pars_download_aws_tum_bam()
 }
 
 ########
+get_pars_download_collab_norm_bam()
+{
+    echo "$normalbam ${extid_normalbam} ${download_tries} ${step_outd}"
+}
+
+########
+get_pars_download_collab_tum_bam()
+{
+    echo "$tumorbam ${extid_tumorbam} ${download_tries} ${step_outd}"
+}
+
+########
 get_pars_index_norm_bam()
 {
     echo "$normalbam ${step_outd}"

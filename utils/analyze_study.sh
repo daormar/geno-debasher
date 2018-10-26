@@ -177,14 +177,18 @@ check_pars()
         echo "Error, -e and -i options cannot be given simultaneously" >&2
     fi
 
-    if [ ${e_given} -eq 1 -a ! -f ${egadata} ]; then
+    if [ ${e_given} -eq 1 ]; then
+        if [ ! -f ${egadata} ]; then
             echo "Error! file ${egadata} does not exist" >&2
             exit 1
+        fi
     fi
 
-    if [ ${i_given} -eq 1 -a ! -f ${icgcdata} ]; then
+    if [ ${i_given} -eq 1 ]; then
+        if [ ! -f ${icgcdata} ]; then
             echo "Error! file ${icgcdata} does not exist" >&2
             exit 1
+        fi
     fi
 
     if [ ${a_given} -eq 0 ]; then   

@@ -752,7 +752,7 @@ execute_download_aws_norm_bam()
     local_step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile aws --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`
@@ -783,7 +783,7 @@ execute_download_aws_tum_bam()
     local_step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile aws --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`
@@ -814,7 +814,7 @@ execute_download_collab_norm_bam()
     local_step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile collab --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`
@@ -845,7 +845,7 @@ execute_download_collab_tum_bam()
     local_step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client download --profile collab --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
     local_bam_file_name=`find_bam_filename ${local_step_outd}`

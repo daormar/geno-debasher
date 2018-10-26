@@ -11,7 +11,7 @@ def take_pars():
     flags["g_given"]=False
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"c:g:",["contig=","genref="])
+        opts, args = getopt.getopt(sys.argv[1:],"c:g:l:",["contig=","genref=","listc="])
     except getopt.GetoptError:
         print_help()
         sys.exit(2)
@@ -26,38 +26,61 @@ def take_pars():
             if opt in ("-g", "--genref"):
                 values["genref"] = arg
                 flags["g_given"]=True
+            if opt in ("-l", "--listc"):
+                values["listc"] = arg
+                flags["l_given"]=True
     return (flags,values)
 
 ##################################################
 def check_pars(flags,values):
-    if(flags["c_given"]==False):
-        print >> sys.stderr, "Error! -c parameter not given"
-        sys.exit(2)
-
     if(flags["g_given"]==False):
         print >> sys.stderr, "Error! -g parameter not given"
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "filter_contig_from_genref -c <string> -g <string>"
+    print >> sys.stderr, "filter_contig_from_genref -c <string> -l <string> -g <string>"
     print >> sys.stderr, ""
-    print >> sys.stderr, "-c <string>    Contig name"
+    print >> sys.stderr, "-c <string>    Name of contig to remove"
+    print >> sys.stderr, "-l <string>    List of contigs to keep (one contig name per line)"
     print >> sys.stderr, "-g <string>    File with genome reference"
 
 ##################################################
+def getContigsToKeep(listc):
+    file = open(listc, 'r')
+    contigsToKeep={}
+    for line in file:
+        line=line.strip("\n")
+        fields=line.split()
+        contigsToKeep[fields[0]]=1
+    return contigsToKeep
+    
+##################################################
 def process_pars(flags,values):
+    # Initialize variables
+    if(flags["c_given"]):
+        contigToFilter=values["contig"]
+    else:
+        contigToFilter=""
+        
+    if(flags["l_given"]):
+        contigsToKeep=getContigsToKeep(values["listc"])
+    else:
+        contigsToKeep={}
+
+    # Filter genome
     file = open(values["genref"], 'r')
-    contigstr=">"+values["contig"]
     skip=False
     # read file line by line
     for line in file:
         line=line.strip("\n")
         fields=line.split()
-        if(contigstr==fields[0]):
-            skip=True
-        elif(">" in fields[0]):
-            skip=False
+        if(">" in fields[0]):
+            contigname=fields[0][1:]
+            if(contigname==contigToFilter or (not contigname in contigsToKeep)):
+                skip=True
+            else:
+                skip=False
             
         if(not skip):
             print line

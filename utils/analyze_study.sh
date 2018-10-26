@@ -498,6 +498,8 @@ check_pars || exit 1
 
 print_pars || exit 1
 
-create_dirs || exit 1
+if [ ${p_given} -eq 0 ]; then
+    create_dirs || exit 1
+fi
 
 process_pars || exit 1

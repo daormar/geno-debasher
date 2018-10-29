@@ -477,6 +477,22 @@ else
 fi
 AC_SUBST(ICGCSTOR_HOME_DIR,$with_icgcstor)
 
+# Adds an extra argument to configure (enable use of aspera)
+AC_MSG_CHECKING(whether to enable aspera library)
+AC_ARG_WITH([aspera],
+ [AS_HELP_STRING([--with-aspera=DIR],
+   [installs the package with the necessary code to combine it with the aspera library @<:@default=no@:>@])],
+ [with_aspera=$withval],
+ [with_aspera=""])
+if test "$with_aspera" = ""; then
+ enable_aspera_lib="no"
+ AC_MSG_RESULT(no)
+else
+ enable_aspera_lib="yes"
+ AC_MSG_RESULT(yes)
+fi
+AC_SUBST(ASPERA_HOME_DIR,$with_aspera)
+
 # Process options given in shell variables
 
 # Change path of distribution include directory

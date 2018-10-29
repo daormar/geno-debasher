@@ -16,7 +16,7 @@ else
     $SPLIT --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
     
     # Process fragments
-    conda activate ascatngs
+    conda activate ascatngs || exit 1
     export PERL5LIB=/opt/anaconda3/envs/ascatngs/lib/perl5:/home/dortiz/bio/software/ascatngs/build/lib/perl5
     for file in `ls ${TMPDIR}/splitPos/`; do
         ascatSnpPanelGcCorrections.pl ${ref} ${TMPDIR}/splitPos/${file} > ${TMPDIR}/splitGc/${file} 2> ${TMPDIR}/splitGcLogs/${file}.log &

@@ -54,6 +54,20 @@ if test x$BASH = "xno"; then
     AC_MSG_ERROR([bash is required])
 fi
 
+# Check conda (conda is defined as a function so AC_PATH_PROGS may be
+# inadequate for checking)
+AC_MSG_CHECKING(for conda)
+if command -v conda > /dev/null 2>&1; then
+  AC_MSG_RESULT(yes)
+else
+  if ! test -z "$_CONDA_EXE"; then
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_RESULT(no)
+    AC_MSG_WARN([conda may not be available, check that there is a working conda installation])
+  fi      
+fi
+
 # check that qsub works
 if test ! -z "$QSUB"; then
  echo -n "checking whether qsub works... "

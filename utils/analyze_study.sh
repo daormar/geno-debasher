@@ -18,13 +18,13 @@ usage()
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
+    echo "                     [-asperausr <string>] [-asperapwd <string>]"
+    echo "                     [-asperaserv <string>]"
     echo "                     [-p] [-debug] [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
-    echo "-e <string>          File with processed EGA metadata using the"
-    echo "                     query_ega_metadata tool (option -f 3)"
-    echo "-i <string>          File with processed ICGC metadata using the"
-    echo "                     query_icgc_metadata tool (option -f 4)"
+    echo "-m <string>          File with metadata, one entry per line."
+    echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
     echo "                     <stepname> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
@@ -36,6 +36,9 @@ usage()
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
+    echo "-asperausr <string>  Username for Aspera server"
+    echo "-asperapwd <string>  Password for Aspera server"
+    echo "-asperaserv <string> Name of Aspera server"
     echo "-p                   Only print the commands executing the analysis"
     echo "-debug               After ending, do not delete temporary files"
     echo "                     (for debugging purposes)"
@@ -46,8 +49,7 @@ usage()
 read_pars()
 {
     r_given=0
-    e_given=0
-    i_given=0
+    m_given=0
     a_given=0
     o_given=0
     cr_given=0
@@ -64,6 +66,12 @@ read_pars()
     egastr=50
     egacred_given=0
     egacred="cred.json"
+    asperausr_given=0
+    asperausr="NONE"
+    asperapwd_given=0
+    asperapwd="NONE"
+    asperaserv_given=0
+    asperaserv="NONE"
     p_given=0
     debug=0
     while [ $# -ne 0 ]; do
@@ -80,16 +88,10 @@ read_pars()
                       r_given=1
                   fi
                   ;;
-            "-e") shift
+            "-m") shift
                   if [ $# -ne 0 ]; then
-                      egadata=$1
-                      e_given=1
-                  fi
-                  ;;
-            "-i") shift
-                  if [ $# -ne 0 ]; then
-                      icgcdata=$1
-                      i_given=1
+                      metadata=$1
+                      m_given=1
                   fi
                   ;;
             "-a") shift
@@ -146,6 +148,24 @@ read_pars()
                       egacred_given=1
                   fi
                   ;;
+            "-asperausr") shift
+                  if [ $# -ne 0 ]; then
+                      asperausr=$1
+                      asperausr_given=1
+                  fi
+                  ;;
+            "-asperapwd") shift
+                  if [ $# -ne 0 ]; then
+                      asperapwd=$1
+                      asperapwd_given=1
+                  fi
+                  ;;
+            "-asperaserv") shift
+                  if [ $# -ne 0 ]; then
+                      asperaserv=$1
+                      asperaserv_given=1
+                  fi
+                  ;;
             "-p") p_given=1
                   ;;
             "-debug") debug=1
@@ -177,16 +197,9 @@ check_pars()
         echo "Error, -e and -i options cannot be given simultaneously" >&2
     fi
 
-    if [ ${e_given} -eq 1 ]; then
-        if [ ! -f ${egadata} ]; then
-            echo "Error! file ${egadata} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${i_given} -eq 1 ]; then
-        if [ ! -f ${icgcdata} ]; then
-            echo "Error! file ${icgcdata} does not exist" >&2
+    if [ ${m_given} -eq 1 ]; then
+        if [ ! -f ${metadata} ]; then
+            echo "Error! file ${metadata} does not exist" >&2
             exit 1
         fi
     fi
@@ -218,12 +231,8 @@ print_pars()
         echo "-r is ${ref}" >&2
     fi
 
-    if [ ${e_given} -eq 1 ]; then
-        echo "-e is ${egadata}" >&2
-    fi
-
-    if [ ${i_given} -eq 1 ]; then
-        echo "-e is ${icgcdata}" >&2
+    if [ ${m_given} -eq 1 ]; then
+        echo "-m is ${metadata}" >&2
     fi
 
     if [ ${a_given} -eq 1 ]; then
@@ -257,6 +266,18 @@ print_pars()
     if [ ${egacred_given} -eq 1 ]; then
         echo "-egacred is ${egacred}" >&2
     fi
+
+    if [ ${asperausr_given} -eq 1 ]; then
+        echo "-asperausr is ${asperausr}" >&2
+    fi
+
+    if [ ${asperapwd_given} -eq 1 ]; then
+        echo "-asperapwd is ${asperapwd}" >&2
+    fi
+
+    if [ ${asperaserv_given} -eq 1 ]; then
+        echo "-asperaserv is ${asperaserv}" >&2
+    fi
 }
 
 ########
@@ -266,7 +287,7 @@ create_dirs()
 }
 
 ########
-extract_normal_sample_info_ega()
+extract_normal_sample_info()
 {
     local_entry=$1
     sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal'`
@@ -284,7 +305,7 @@ extract_normal_sample_info_ega()
 }
 
 ########
-extract_tumor_sample_info_ega()
+extract_tumor_sample_info()
 {
     local_entry=$1
     sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Tumour\|tumour\|Tumor\|tumor'`
@@ -302,11 +323,11 @@ extract_tumor_sample_info_ega()
 }
 
 ########
-egadata_entry_is_ok()
+entry_is_ok()
 {
     local_entry=$1
-    nsample=`extract_normal_sample_info_ega "${local_entry}"`
-    tsample=`extract_tumor_sample_info_ega "${local_entry}"`
+    nsample=`extract_normal_sample_info "${local_entry}"`
+    tsample=`extract_tumor_sample_info "${local_entry}"`
 
     if [ ! -z "${nsample}" -a ! -z "${tsample}" ]; then
         echo "yes"
@@ -316,141 +337,40 @@ egadata_entry_is_ok()
 }
 
 ########
-extract_fid_from_sample_info_ega()
+extract_id_from_sample_info()
 {
-    local_sample_info_ega=$1
-    echo ${local_sample_info_ega} | $AWK '{print $3}'
+    local_sample_info=$1
+    echo ${local_sample_info} | $AWK '{print $1}'
 }
 
 ########
-extract_gender_from_sample_info_ega()
+extract_gender_from_sample_info()
 {
-    local_sample_info_ega=$1
-    echo ${local_sample_info_ega} | $AWK '{print $NF}'
+    local_sample_info=$1
+    local_tmp=`echo ${local_sample_info} | $GREP 'Female\|female'`
+    if [ ! -z "${local_tmp}" ]; then
+        echo "female"
+    else
+        echo "male"
+    fi
 }
 
 ########
-analyze_ega_study()
+process_pars()
 {
-    # Read EGA data file
+    # Read metadata file
     entry_num=1
     while read entry; do
-        entry_ok=`egadata_entry_is_ok "$entry"`
+        entry_ok=`entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract sample info
-            normal_sample_info_ega=`extract_normal_sample_info_ega "$entry"`
-            egan_id=`extract_fid_from_sample_info_ega "${normal_sample_info_ega}"`
+            normal_sample_info=`extract_normal_sample_info "$entry"`
+            normal_id=`extract_id_from_sample_info "${normal_sample_info}"`
             
-            tumor_sample_info_ega=`extract_tumor_sample_info_ega "$entry"`
-            egat_id=`extract_fid_from_sample_info_ega "${tumor_sample_info_ega}"`
+            tumor_sample_info=`extract_tumor_sample_info "$entry"`
+            tumor_id=`extract_id_from_sample_info "${tumor_sample_info}"`
 
-            gender=`extract_gender_from_sample_info_ega "${normal_sample_info_ega}"`
-
-            # Obtain value for -g option
-            if [ ${gender} = "gender=male" ]; then
-                gender_opt="XY"
-            else                
-                gender_opt="XX"
-            fi
-            
-            # Set name of output directory for analysis
-            analysis_outd=${egan_id}"_"${egat_id}
-            
-            # Submit bam analysis for normal and tumor samples
-            if [ ${p_given} -eq 0 ]; then
-                ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
-            else
-                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${egan_id} -extt ${egat_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred}
-            fi
-        else
-            echo "Error in entry number ${entry_num}"
-        fi
-
-        entry_num=`expr ${entry_num} + 1`
-        
-    done < ${egadata}
-}
-
-########
-extract_normal_sample_info_icgc()
-{
-    local_entry=$1
-    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal'`
-    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}' | $GREP 'Normal\|normal'`
-
-    if [ ! -z "${sample1}" ]; then
-        echo ${sample1}
-    else
-        if [ ! -z "${sample2}" ]; then
-            echo ${sample2}
-        else
-            echo ""
-        fi
-    fi
-}
-
-########
-extract_tumor_sample_info_icgc()
-{
-    local_entry=$1
-    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Tumour\|tumour\|Tumor\|tumor'`
-    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}' | $GREP 'Tumour\|tumour\|Tumor\|tumor'`
-
-    if [ ! -z "${sample1}" ]; then
-        echo ${sample1}
-    else
-        if [ ! -z "${sample2}" ]; then
-            echo ${sample2}
-        else
-            echo ""
-        fi
-    fi
-}
-
-########
-icgcdata_entry_is_ok()
-{
-    local_entry=$1
-    nsample=`extract_normal_sample_info_icgc "${local_entry}"`
-    tsample=`extract_tumor_sample_info_icgc "${local_entry}"`
-
-    if [ ! -z "${nsample}" -a ! -z "${tsample}" ]; then
-        echo "yes"
-    else
-        echo "no"
-    fi
-}
-
-########
-extract_oid_from_sample_info_icgc()
-{
-    local_sample_info_icgc=$1
-    echo ${local_sample_info_icgc} | $AWK '{print $2}'
-}
-
-########
-extract_gender_from_sample_info_icgc()
-{
-    local_sample_info_icgc=$1
-    echo ${local_sample_info_icgc} | $AWK '{print $NF}'
-}
-
-########
-analyze_icgc_study()
-{
-    # Read ICGC data file
-    entry_num=1
-    while read entry; do
-        entry_ok=`icgcdata_entry_is_ok "$entry"`
-        if [ ${entry_ok} = "yes" ]; then
-            # Extract sample info
-            normal_sample_info_icgc=`extract_normal_sample_info_icgc "$entry"`
-            icgcn_id=`extract_oid_from_sample_info_icgc "${normal_sample_info_icgc}"`
-            
-            tumor_sample_info_icgc=`extract_tumor_sample_info_icgc "$entry"`
-            icgct_id=`extract_oid_from_sample_info_icgc "${tumor_sample_info_icgc}"`
-
-            gender=`extract_gender_from_sample_info_icgc "${normal_sample_info_icgc}"`
+            gender=`extract_gender_from_sample_info "${normal_sample_info}"`
 
             # Obtain value for -g option
             if [ ${gender} = "male" ]; then
@@ -460,13 +380,13 @@ analyze_icgc_study()
             fi
             
             # Set name of output directory for analysis
-            analysis_outd=${icgcn_id}"_"${icgct_id}
+            analysis_outd=${normal_id}"_"${tumor_id}
             
             # Submit bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then
-                ${bindir}/submit_bam_analysis -r ${ref} -extn ${icgcn_id} -extt ${icgct_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr}
+                ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv}
             else
-                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${icgcn_id} -extt ${icgct_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr}
+                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv}
             fi
         else
             echo "Error in entry number ${entry_num}"
@@ -474,19 +394,7 @@ analyze_icgc_study()
 
         entry_num=`expr ${entry_num} + 1`
         
-    done < ${icgcdata}
-}
-
-########
-process_pars()
-{
-    if [ ${e_given} -eq 1 ]; then
-        analyze_ega_study
-    fi
-
-    if [ ${i_given} -eq 1 ]; then
-        analyze_icgc_study
-    fi
+    done < ${metadata}
 }
 
 ########

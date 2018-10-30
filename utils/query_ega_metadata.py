@@ -87,8 +87,9 @@ def print_help():
     print >> sys.stderr, "-t <string>    File with study information"
     print >> sys.stderr, "-f <int>       Output format:"
     print >> sys.stderr, "                1: SAMPLE_ACCESSION EGA_SAMPLE_ID FILE_ACCESSION FILENAME DONOR_ID PHENOTYPE GENDER"
-    print >> sys.stderr, "                2: The same as 1 but sorted by donor_id"
-    print >> sys.stderr, "                3: The same as 2 but entries for same donor_id appear in same line"
+    print >> sys.stderr, "                2: Same as 1 but sorted by donor_id"
+    print >> sys.stderr, "                3: Same as 2 but entries for same donor_id appear in same line"
+    print >> sys.stderr, "                4: Same as 3 but only EGA_SAMPLE_ID and PHENOTYPE are listed"    
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
@@ -168,15 +169,25 @@ def get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map):
     return formatted_info
 
 ##################################################
-def group_formatted_info_by_donor(formatted_info):
+def filter_fields(entry,field_list):
+    if(field_list):
+        filtered_entry=[]
+        for field in field_list:
+            filtered_entry.append(entry[field])
+        return filtered_entry
+    else:
+        return entry    
+
+##################################################
+def group_formatted_info_by_donor(formatted_info,field_list):
     # Create and populate map to make grouping easier
     group_map={}
     for elem in formatted_info:
         if(elem[4] in group_map):
-            group_map[elem[4]].append(elem)
+            group_map[elem[4]].append(filter_fields(elem,field_list))
         else:
             group_map[elem[4]]=[]
-            group_map[elem[4]].append(elem)
+            group_map[elem[4]].append(filter_fields(elem,field_list))
     # Created grouped info
     formatted_info_grouped=[]
     for key in group_map:
@@ -199,8 +210,11 @@ def format_info(format,sample_info_map,analysis_info_map,study_info_map):
         return sorted(formatted_info, key=operator.itemgetter(4))
     elif(format==3):
         formatted_info=get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map)
-        return group_formatted_info_by_donor(formatted_info)
-    
+        return group_formatted_info_by_donor(formatted_info,[])
+    elif(format==4):
+        formatted_info=get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map)
+        return group_formatted_info_by_donor(formatted_info,[2,5])
+
 ##################################################
 def print_info(formatted_info):
     for elem in formatted_info:

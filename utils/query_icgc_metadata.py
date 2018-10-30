@@ -86,7 +86,7 @@ def print_help():
     print >> sys.stderr, "                2: Same as 1 but sorted by donor_id"
     print >> sys.stderr, "                3: Same as 2 but entries for same donor_id appear in same line"
     print >> sys.stderr, "                4: Same as 3 but mini-bam files are excluded"
-    print >> sys.stderr, "                5: Same as 3 but only OBJECT_ID and PHENOTYPE are listed"
+    print >> sys.stderr, "                5: Same as 3 but only OBJECT_ID, PHENOTYPE and GENDER are listed"
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
@@ -216,7 +216,7 @@ def format_info(format,donor_info_map,awsmanif_map,table_map):
     elif(format==5):
         exclude_mini_bam_files=True
         formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
-        return group_formatted_info_by_donor(formatted_info,[1,4])
+        return group_formatted_info_by_donor(formatted_info,[1,4,5])
 
 ##################################################
 def print_info(formatted_info):

@@ -83,9 +83,10 @@ def print_help():
     print >> sys.stderr, "-t <string>    Table file in json format"
     print >> sys.stderr, "-f <int>       Output format:"
     print >> sys.stderr, "                1: FILE_ID OBJECT_ID FILENAME DONOR_ID PHENOTYPE GENDER"
-    print >> sys.stderr, "                2: The same as 1 but sorted by donor_id"
-    print >> sys.stderr, "                3: The same as 2 but entries for same donor_id appear in same line"
-    print >> sys.stderr, "                4: The same as 3 but mini-bam files are excluded"
+    print >> sys.stderr, "                2: Same as 1 but sorted by donor_id"
+    print >> sys.stderr, "                3: Same as 2 but entries for same donor_id appear in same line"
+    print >> sys.stderr, "                4: Same as 3 but mini-bam files are excluded"
+    print >> sys.stderr, "                5: Same as 3 but only OBJECT_ID and PHENOTYPE are listed"
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
@@ -163,15 +164,25 @@ def get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_
     return formatted_info
 
 ##################################################
-def group_formatted_info_by_donor(formatted_info):
+def filter_fields(entry,field_list):
+    if(field_list):
+        filtered_entry=[]
+        for field in field_list:
+            filtered_entry.append(entry[field])
+        return filtered_entry
+    else:
+        return entry    
+
+##################################################
+def group_formatted_info_by_donor(formatted_info,field_list):
     # Create and populate map to make grouping easier
     group_map={}
     for elem in formatted_info:
         if(elem[3] in group_map):
-            group_map[elem[3]].append(elem)
+            group_map[elem[3]].append(filter_fields(elem,field_list))
         else:
             group_map[elem[3]]=[]
-            group_map[elem[3]].append(elem)
+            group_map[elem[3]].append(filter_fields(elem,field_list))
     # Created grouped info
     formatted_info_grouped=[]
     for key in group_map:
@@ -197,12 +208,16 @@ def format_info(format,donor_info_map,awsmanif_map,table_map):
     elif(format==3):
         exclude_mini_bam_files=False
         formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
-        return group_formatted_info_by_donor(formatted_info)
+        return group_formatted_info_by_donor(formatted_info,[])
     elif(format==4):
         exclude_mini_bam_files=True
         formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
-        return group_formatted_info_by_donor(formatted_info)
-    
+        return group_formatted_info_by_donor(formatted_info,[])
+    elif(format==5):
+        exclude_mini_bam_files=True
+        formatted_info=get_info_in_basic_format(donor_info_map,awsmanif_map,table_map,exclude_mini_bam_files)
+        return group_formatted_info_by_donor(formatted_info,[1,4])
+
 ##################################################
 def print_info(formatted_info):
     for elem in formatted_info:

@@ -89,7 +89,7 @@ def print_help():
     print >> sys.stderr, "                1: SAMPLE_ACCESSION EGA_SAMPLE_ID FILE_ACCESSION FILENAME DONOR_ID PHENOTYPE GENDER"
     print >> sys.stderr, "                2: Same as 1 but sorted by donor_id"
     print >> sys.stderr, "                3: Same as 2 but entries for same donor_id appear in same line"
-    print >> sys.stderr, "                4: Same as 3 but only EGA_SAMPLE_ID and PHENOTYPE are listed"    
+    print >> sys.stderr, "                4: Same as 3 but only EGA_SAMPLE_ID, PHENOTYPE and GENDER are listed"    
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
@@ -213,7 +213,7 @@ def format_info(format,sample_info_map,analysis_info_map,study_info_map):
         return group_formatted_info_by_donor(formatted_info,[])
     elif(format==4):
         formatted_info=get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map)
-        return group_formatted_info_by_donor(formatted_info,[2,5])
+        return group_formatted_info_by_donor(formatted_info,[2,5,6])
 
 ##################################################
 def print_info(formatted_info):

@@ -865,6 +865,74 @@ execute_download_collab_tum_bam()
 }
 
 ########
+execute_download_ega_asp_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_normalbam=$1
+    local_normalbam_file=$2
+    local_aspera_user=$3
+    local_aspera_passwd=$4
+    local_aspera_server=$5
+    local_download_tries=$6
+    local_step_outd=$7
+
+    # Download file
+    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key ${local_aspera_user}@${local_aspera_server}:${local_normalbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
+
+    # Obtain file name
+    local_bam_file_name=`$BASENAME ${local_normalbam_file}`
+    
+    if [ -z "${local_bam_file_name}" ]; then
+        echo "Error: bam file not found after download process was completed" >&2
+        exit 1
+    fi
+
+    # Move file
+    mv ${local_bam_file_name} ${local_normalbam} || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+execute_download_ega_asp_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_tumorbam=$1
+    local_tumorbam_file=$2
+    local_aspera_user=$3
+    local_aspera_passwd=$4
+    local_aspera_server=$5
+    local_download_tries=$6
+    local_step_outd=$7
+
+    # Download file
+    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key ${local_aspera_user}@${local_aspera_server}:${local_tumorbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
+
+    # Obtain file name
+    local_bam_file_name=`$BASENAME ${local_tumorbam_file}`
+    
+    if [ -z "${local_bam_file_name}" ]; then
+        echo "Error: bam file not found after download process was completed" >&2
+        exit 1
+    fi
+
+    # Move file
+    mv ${local_bam_file_name} ${local_tumorbam} || exit 1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
 execute_index_norm_bam()
 {
     display_begin_step_message

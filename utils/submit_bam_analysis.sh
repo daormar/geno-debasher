@@ -20,6 +20,8 @@ usage()
     echo "                     [-nt <int>] [-cr <string>] [-wcr <string>]"
     echo "                     [-sv <string>] [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
+    echo "                     [-asperausr <string>] [-asperapwd <string>]"
+    echo "                     [-asperaserv <string>]"
     echo "                     [-debug] [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
@@ -42,6 +44,9 @@ usage()
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
+    echo "-asperausr <string>  Username for Aspera server"
+    echo "-asperapwd <string>  Password for Aspera server"
+    echo "-asperaserv <string> Name of Aspera server"
     echo "-debug               After ending, do not delete temporary files"
     echo "                     (for debugging purposes)"
     echo "--help               Display this help and exit"
@@ -74,6 +79,12 @@ read_pars()
     egastr=50
     egacred_given=0
     egacred="cred.json"
+    asperausr_given=0
+    asperausr="NONE"
+    asperapwd_given=0
+    asperapwd="NONE"
+    asperaserv_given=0
+    asperaserv="NONE"
     debug=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -177,6 +188,24 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       egacred=$1
                       egacred_given=1
+                  fi
+                  ;;
+            "-asperausr") shift
+                  if [ $# -ne 0 ]; then
+                      asperausr=$1
+                      asperausr_given=1
+                  fi
+                  ;;
+            "-asperapwd") shift
+                  if [ $# -ne 0 ]; then
+                      asperapwd=$1
+                      asperapwd_given=1
+                  fi
+                  ;;
+            "-asperaserv") shift
+                  if [ $# -ne 0 ]; then
+                      asperaserv=$1
+                      asperaserv_given=1
                   fi
                   ;;
             "-debug") debug=1
@@ -317,6 +346,18 @@ print_pars()
     if [ ${egacred_given} -eq 1 ]; then
         echo "-egacred is ${egacred}" >&2
     fi
+
+    if [ ${asperausr_given} -eq 1 ]; then
+        echo "-asperausr is ${asperausr}" >&2
+    fi
+
+    if [ ${asperapwd_given} -eq 1 ]; then
+        echo "-asperapwd is ${asperapwd}" >&2
+    fi
+
+    if [ ${asperaserv_given} -eq 1 ]; then
+        echo "-asperaserv is ${asperaserv}" >&2
+    fi
 }
 
 ########
@@ -425,6 +466,18 @@ get_pars_download_collab_norm_bam()
 get_pars_download_collab_tum_bam()
 {
     echo "$tumorbam ${extid_tumorbam} ${download_tries} ${step_outd}"
+}
+
+########
+get_pars_download_ega_asp_norm_bam()
+{
+    echo "$normalbam ${extid_normalbam} ${asperausr} ${asperapwd} ${asperaserv} ${download_tries} ${step_outd}"
+}
+
+########
+get_pars_download_ega_asp_tum_bam()
+{
+    echo "$tumorbam ${extid_tumorbam} ${asperausr} ${asperapwd} ${asperaserv} ${download_tries} ${step_outd}"
 }
 
 ########

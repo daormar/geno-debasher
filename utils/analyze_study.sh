@@ -19,7 +19,7 @@ usage()
     echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-asperausr <string>] [-asperapwd <string>]"
-    echo "                     [-asperaserv <string>]"
+    echo "                     [-asperaserv <string>] [-egadecrpwd <string>]"
     echo "                     [-p] [-debug] [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
@@ -39,6 +39,7 @@ usage()
     echo "-asperausr <string>  Username for Aspera server"
     echo "-asperapwd <string>  Password for Aspera server"
     echo "-asperaserv <string> Name of Aspera server"
+    echo "-egadecrpwd <string> File with EGA decryptor password"
     echo "-p                   Only print the commands executing the analysis"
     echo "-debug               After ending, do not delete temporary files"
     echo "                     (for debugging purposes)"
@@ -72,6 +73,8 @@ read_pars()
     asperapwd="NONE"
     asperaserv_given=0
     asperaserv="NONE"
+    egadecrpwd_given=0
+    egadecrpwd="NONE"
     p_given=0
     debug=0
     while [ $# -ne 0 ]; do
@@ -164,6 +167,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       asperaserv=$1
                       asperaserv_given=1
+                  fi
+                  ;;
+            "-egadecrpwd") shift
+                  if [ $# -ne 0 ]; then
+                      egadecrpwd=$1
+                      egadecrpwd_given=1
                   fi
                   ;;
             "-p") p_given=1
@@ -278,6 +287,10 @@ print_pars()
     if [ ${asperaserv_given} -eq 1 ]; then
         echo "-asperaserv is ${asperaserv}" >&2
     fi
+
+    if [ ${egadecrpwd_given} -eq 1 ]; then
+        echo "-egadecrpwd is ${egadecrpwd}" >&2
+    fi
 }
 
 ########
@@ -384,9 +397,9 @@ process_pars()
             
             # Submit bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then
-                ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv}
+                ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
             else
-                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv}
+                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
             fi
         else
             echo "Error in entry number ${entry_num}"

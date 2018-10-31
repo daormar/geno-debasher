@@ -35,11 +35,6 @@ create_script()
     local_name=$1
     local_command=$2
     local_script_pars=$3
-
-    # # Save previous file (if any)
-    # if [ -f ${local_name} ]; then
-    #     cp ${local_name} ${local_name}.previous
-    # fi
     
     # Write bash shebang
     local_BASH_SHEBANG=`init_bash_shebang_var`

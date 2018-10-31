@@ -900,9 +900,10 @@ execute_download_ega_asp_norm_bam()
     local_aspera_server=$5
     local_download_tries=$6
     local_step_outd=$7
-
+    local_max_trans_rate=100m
+    
     # Download file
-    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key ${local_aspera_user}@${local_aspera_server}:${local_normalbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
+    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_normalbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
 
     # Obtain file name
     local_bam_file_name=`$BASENAME ${local_normalbam_file}`
@@ -934,9 +935,10 @@ execute_download_ega_asp_tum_bam()
     local_aspera_server=$5
     local_download_tries=$6
     local_step_outd=$7
+    local_max_trans_rate=100m
 
     # Download file
-    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key ${local_aspera_user}@${local_aspera_server}:${local_tumorbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
+    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_tumorbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
 
     # Obtain file name
     local_bam_file_name=`$BASENAME ${local_tumorbam_file}`

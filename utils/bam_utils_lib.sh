@@ -36,10 +36,10 @@ create_script()
     local_command=$2
     local_script_pars=$3
 
-    # Save previous file (if any)
-    if [ -f ${local_name} ]; then
-        cp ${local_name} ${local_name}.previous
-    fi
+    # # Save previous file (if any)
+    # if [ -f ${local_name} ]; then
+    #     cp ${local_name} ${local_name}.previous
+    # fi
     
     # Write bash shebang
     local_BASH_SHEBANG=`init_bash_shebang_var`
@@ -61,6 +61,24 @@ create_script()
     # Archive script with date info
     curr_date=`date '+%Y_%m_%d'`
     cp ${local_name} ${local_name}.${curr_date}
+}
+
+########
+check_script_was_modified()
+{
+    # Init variables
+    local_script_name=$1
+
+    # Check if previous script exists
+    if [ -f ${local_script_name}.last_exec ]; then
+        # Check if the script was modified
+        local_result=0
+        $DIFF ${local_script_name} ${local_script_name}.last_exec >${local_script_name}.diff 2>&1 || local_result=1
+        echo ${local_result}
+    else
+        # No previous script exists
+        echo 0
+    fi
 }
 
 ########
@@ -151,6 +169,7 @@ get_slurm_dependency_opt()
 ########
 launch()
 {
+    # Initialize variables
     local_file=$1
     local_account=$2
     local_partition=$3
@@ -159,7 +178,11 @@ launch()
     local_time=$6
     local_jobdeps=$7
     local_outvar=$8
-    
+
+    # Save file status
+    cp ${local_file} ${local_file}.last_exec
+
+    # Launch file
     if [ -z "${SBATCH}" ]; then
         ${local_file} > ${local_file}.log 2>&1 || return 1
         eval "${local_outvar}=\"\""

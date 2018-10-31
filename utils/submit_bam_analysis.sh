@@ -564,17 +564,23 @@ execute_step()
     
     # Execute step
     local_script_pars=`get_pars_${local_stepname}`
-    create_script ${local_dirname}/scripts/execute_${local_stepname} execute_${local_stepname} "${local_script_pars}"
+    script_filename=${local_dirname}/scripts/execute_${local_stepname}
+    create_script ${script_filename} execute_${local_stepname} "${local_script_pars}"
+    script_modified=`check_script_was_modified ${script_filename}`
     local_status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
     echo "STEP: ${local_stepname} ; STATUS: ${local_status}" >&2
     if [ "${local_status}" != "FINISHED" ]; then
         reset_outdir_for_step ${local_dirname} ${local_stepname} || return 1
         local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
         local_stepname_jid=${local_stepname}_jid
-        launch ${local_dirname}/scripts/execute_${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid} || return 1
+        launch ${script_filename} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid} || return 1
         
         # Update variables storing jids
         step_jids="${step_jids}:${!local_stepname_jid}"
+    else
+        if [ ${script_modified} -eq 1 ]; then
+            echo "Warning: script was changed for this step with respect to last execution. See changes in file ${script_filename}.diff">&2
+        fi
     fi
 }
 

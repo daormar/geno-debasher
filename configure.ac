@@ -44,6 +44,7 @@ AC_PATH_PROGS(SBATCH, sbatch)
 AC_PATH_PROGS(SRUN, srun)
 AC_PATH_PROGS(WGET, wget)
 AC_PATH_PROGS(PANDOC, pandoc)
+AC_PATH_PROGS(JAVA, java)
 AC_PATH_PROGS(SAMTOOLS, samtools)
 
 # BASH may already be set in the shell, if the admin then changes the

@@ -35,6 +35,7 @@ SUFFIXES= .sh .py .r .R
 	echo "SPLIT="$(SPLIT) >> $@
 	echo "HEAD="$(HEAD) >> $@
 	echo "TAIL="$(TAIL) >> $@
+	echo "DIFF="$(DIFF) >> $@
 	echo "FIND="$(FIND) >> $@
 	echo "MKTEMP="$(MKTEMP) >> $@
 	echo "QSUB=\""$(QSUB)"\"" >> $@

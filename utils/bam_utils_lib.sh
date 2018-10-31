@@ -898,15 +898,19 @@ execute_download_ega_asp_norm_bam()
     local_aspera_user=$3
     local_aspera_passwd=$4
     local_aspera_server=$5
-    local_download_tries=$6
-    local_step_outd=$7
+    local_egadecrypt_pwd=$6
+    local_download_tries=$7
+    local_step_outd=$8
     local_max_trans_rate=100m
     
     # Download file
-    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_normalbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
+    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_normalbam_file} ${local_step_outd}/normal.bam.crypt > ${local_step_outd}/ascp.log 2>&1 || exit 1
 
+    # Decrypt file
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${local_egadecrypt_pwd} ${local_step_outd}/normal.bam.crypt > ${local_step_outd}/decryptor.log 2>&1 || exit 1
+    
     # Obtain file name
-    local_bam_file_name=`$BASENAME ${local_normalbam_file}`
+    local_bam_file_name=`find_bam_filename ${local_step_outd}`
     
     if [ -z "${local_bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2
@@ -933,15 +937,19 @@ execute_download_ega_asp_tum_bam()
     local_aspera_user=$3
     local_aspera_passwd=$4
     local_aspera_server=$5
-    local_download_tries=$6
-    local_step_outd=$7
+    local_egadecrypt_pwd=$6
+    local_download_tries=$7
+    local_step_outd=$8
     local_max_trans_rate=100m
 
     # Download file
-    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_tumorbam_file} ${local_step_outd}/ > ${local_step_outd}/ascp.log 2>&1 || exit 1
+    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_tumorbam_file} ${local_step_outd}/tumor.bam.crypt > ${local_step_outd}/ascp.log 2>&1 || exit 1
+
+    # Decrypt file
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${local_egadecrypt_pwd} ${local_step_outd}/tumor.bam.crypt > ${local_step_outd}/decryptor.log 2>&1 || exit 1
 
     # Obtain file name
-    local_bam_file_name=`$BASENAME ${local_tumorbam_file}`
+    local_bam_file_name=`find_bam_filename ${local_step_outd}`
     
     if [ -z "${local_bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2

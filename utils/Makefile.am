@@ -1,4 +1,4 @@
-SCRIPTS_TO_BE_BUILT= submit_bam_analysis analyze_study			\
+SCRIPTS_TO_BE_BUILT= submit_bam_analysis analyze_dataset		\
 get_analysis_status gen_bed_for_genome gen_wisecondorx_ref		\
 convert_snppos_to_snpgcc create_snv_pos_ascat query_ega_metadata	\
 query_icgc_metadata filter_contig_from_genref run_facets
@@ -7,7 +7,7 @@ bin_SCRIPTS = bam_utils_lib.sh $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = bam_utils_lib.sh submit_bam_analysis.sh analyze_study.sh	\
+EXTRA_DIST = bam_utils_lib.sh submit_bam_analysis.sh analyze_dataset.sh	\
 get_analysis_status.sh gen_bed_for_genome.sh gen_wisecondorx_ref.sh	\
 convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
 query_ega_metadata.py query_icgc_metadata.py				\

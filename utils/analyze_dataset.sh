@@ -6,14 +6,14 @@
 ########
 print_desc()
 {
-    echo "analyze_study analyses samples of a given study"
+    echo "analyze_dataset analyses samples of a given dataset"
     echo "type \"analyze_ega_study --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "analyze_study        -r <string> -e <string>|-i <string>"
+    echo "analyze_dataset      -r <string> -e <string>|-i <string>"
     echo "                     -a <string> -o <string>"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"

@@ -369,7 +369,7 @@ execute_manta_somatic()
     call_reg_opt=`get_callreg_opt "${local_callregf}"`
 
     # Activate conda environment
-    conda activate manta 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate manta > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
     
     # Configure Manta
     configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configManta.log 2>&1 || exit 1
@@ -378,7 +378,7 @@ execute_manta_somatic()
     ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -425,7 +425,7 @@ execute_strelka_somatic()
     call_reg_opt=`get_callreg_opt "${local_callregf}"`
 
     # Activate conda environment
-    conda activate strelka 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate strelka > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Configure Strelka
     configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
@@ -434,7 +434,7 @@ execute_strelka_somatic()
     ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -455,7 +455,7 @@ execute_msisensor()
     local_cpus=$5
 
     # Activate conda environment
-    conda activate msisensor 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate msisensor > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Create homopolymer and microsatellites file
     msisensor scan -d ${local_ref} -o ${local_step_outd}/msisensor.list > ${local_step_outd}/msisensor_scan.log 2>&1 || exit 1
@@ -464,7 +464,7 @@ execute_msisensor()
     msisensor msi -d ${local_step_outd}/msisensor.list -n ${local_normalbam} -t ${local_tumorbam} -o ${local_step_outd}/output -l 1 -q 1 -b ${local_cpus} > ${local_step_outd}/msisensor_msi.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
     
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -483,13 +483,13 @@ execute_platypus_germline_conda()
     local_step_outd=$3
 
     # Activate conda environment
-    conda activate platypus 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate platypus > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Run Platypus
     Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished        
@@ -544,13 +544,13 @@ execute_cnvkit()
     local_cpus=$5
     
     # Activate conda environment
-    conda activate cnvkit 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate cnvkit > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Run cnvkit
     cnvkit.py batch ${local_tumorbam} -n ${local_normalbam} -m wgs -f ${local_ref}  -d ${local_step_outd} -p ${local_cpus} > ${local_step_outd}/cnvkit.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -570,7 +570,7 @@ execute_wisecondorx()
     local_cpus=$4
     
     # Activate conda environment
-    conda activate wisecondorx 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate wisecondorx > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Convert tumor bam file into npz
     BINSIZE=5000
@@ -580,7 +580,7 @@ execute_wisecondorx()
     WisecondorX predict ${local_step_outd}/tumor.npz ${local_wcref} ${local_step_outd}/out > ${local_step_outd}/wisecondorx_predict.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -627,13 +627,13 @@ execute_ascatngs()
     local_cpus=$8
     
     # Activate conda environment
-    conda activate ascatngs 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate ascatngs > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Run cnvkit
     ascat.pl -n ${local_normalbam} -t ${local_tumorbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} -o ${local_step_outd} > ${local_step_outd}/ascat.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -695,7 +695,7 @@ execute_download_ega_norm_bam()
     local_step_outd=$6
 
     # Activate conda environment
-    conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate pyega3 > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Download file (with multiple tries)
     ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_normalbam} ${local_step_outd}/normal.bam ${local_download_tries} || exit 1
@@ -704,7 +704,7 @@ execute_download_ega_norm_bam()
     mv ${local_step_outd}/normal.bam ${local_normalbam} || exit 1
     
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -726,7 +726,7 @@ execute_download_ega_tum_bam()
     local_step_outd=$6
 
     # Activate conda environment
-    conda activate pyega3 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate pyega3 > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Download file (with multiple tries)
     ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_tumorbam} ${local_step_outd}/tumor.bam ${local_download_tries} || exit 1
@@ -735,7 +735,7 @@ execute_download_ega_tum_bam()
     mv ${local_step_outd}/tumor.bam ${local_tumorbam} || exit 1
 
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
@@ -973,13 +973,13 @@ execute_index_norm_bam()
     if [ ! -f ${local_normalbam}.bai ]; then
 
         # Activate conda environment
-        conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
+        conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
         # Execute samtools
         samtools index ${local_normalbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
-        conda deactivate
+        conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
     fi
     
     # Create file indicating that execution was finished
@@ -999,7 +999,7 @@ execute_sort_norm_bam()
     local_cpus=$3
 
     # Activate conda environment
-    conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Execute samtools
     samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_normalbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
@@ -1009,7 +1009,7 @@ execute_sort_norm_bam()
     # the "Too many open files" error reported by samtools
     
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Replace initial bam file by the sorted one
     mv ${local_step_outd}/sorted.bam ${local_normalbam} 2> ${local_step_outd}/mv.log || exit 1
@@ -1031,7 +1031,7 @@ execute_sort_tum_bam()
     local_cpus=$3
 
     # Activate conda environment
-    conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
+    conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Execute samtools
     samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_tumorbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
@@ -1041,7 +1041,7 @@ execute_sort_tum_bam()
     # the "Too many open files" error reported by samtools
     
     # Deactivate conda environment
-    conda deactivate
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
 
     # Replace initial bam file by the sorted one
     mv ${local_step_outd}/sorted.bam ${local_tumorbam} 2> ${local_step_outd}/mv.log || exit 1
@@ -1065,13 +1065,13 @@ execute_index_tum_bam()
     if [ ! -f ${local_tumorbam}.bai ]; then
 
         # Activate conda environment
-        conda activate base 2> ${local_step_outd}/conda_activate.log || exit 1
+        conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
         # Execute samtools
         samtools index ${local_tumorbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
-        conda deactivate
+        conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
     fi
     
     # Create file indicating that execution was finished

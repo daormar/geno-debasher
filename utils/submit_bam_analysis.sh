@@ -578,7 +578,8 @@ execute_step()
     # Execute step
     local_script_pars=`get_pars_${local_stepname}`
     script_filename=${local_dirname}/scripts/execute_${local_stepname}
-    create_script ${script_filename} execute_${local_stepname} "${local_script_pars}"
+    step_function=`get_step_function ${local_stepname}`
+    create_script ${script_filename} ${step_function} "${local_script_pars}"
     script_modified=`check_script_was_modified ${script_filename}`
     local_status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
     echo "STEP: ${local_stepname} ; STATUS: ${local_status}" >&2

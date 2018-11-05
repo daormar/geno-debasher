@@ -101,6 +101,16 @@ get_partition_opt()
 }
 
 ########
+get_step_function()
+{
+    local_stepname=$1
+
+    local_stepname_wo_suffix=`echo ${local_stepname} | $AWK '{if(index($1,"__")==0){print $1} else{printf "%s\n",substr($1,1,index($1,"__")-1)}}'`
+    
+    echo "execute_${local_stepname_wo_suffix}"
+}
+
+########
 find_dependency_for_step()
 {
     local_jobdeps_spec=$1

@@ -1021,6 +1021,68 @@ execute_sort_norm_bam()
 }
 
 ########
+execute_filter_norm_bam_contigs()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_step_outd=$3
+
+    # Activate conda environment
+    conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Generate bed file for genome reference
+    ${bindir}/gen_bed_for_genome -r ${ref} -o ${local_step_outd}/genref
+    
+    # Filter normal bam file
+    samtools view -b -L ${local_step_outd}/genref.bed $local_normalbam} > ${local_step_outd}/filtered.bam 2> ${local_step_outd}/samtools_view.log
+
+    # Replace initial bam file by the filtered one
+    mv ${local_step_outd}/filtered.bam ${local_normalbam} 2> ${local_step_outd}/mv.log || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+execute_filter_tum_bam_contigs()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_ref=$1
+    local_tumorbam=$2
+    local_step_outd=$3
+
+    # Activate conda environment
+    conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Generate bed file for genome reference
+    ${bindir}/gen_bed_for_genome -r ${ref} -o ${local_step_outd}/genref
+    
+    # Filter tumor bam file
+    samtools view -b -L ${local_step_outd}/genref.bed $local_tumorbam} > ${local_step_outd}/filtered.bam 2> ${local_step_outd}/samtools_view.log
+
+    # Replace initial bam file by the filtered one
+    mv ${local_step_outd}/filtered.bam ${local_tumorbam} 2> ${local_step_outd}/mv.log || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
 execute_sort_tum_bam()
 {
     display_begin_step_message

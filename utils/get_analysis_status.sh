@@ -18,8 +18,7 @@ usage()
     echo ""
     echo "-d <string>               Directory where the analysis steps are stored."
     echo "-s <string>               Step name whose status should be get"
-    echo "-a <string>               File with steps to be performed. Expected format:"
-    echo "                          <stepname> <cpus> <mem> <time>"
+    echo "-a <string>               File with steps to be performed"
     echo "--help                    Display this help and exit."
 }
 
@@ -99,7 +98,7 @@ get_status_for_afile()
     
     # Read information about the steps to be executed
     while read entry; do
-        entry_ok=`entry_is_ok "$entry"`
+        entry_ok=`analysis_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract entry information
             local_stepname=`extract_stepname_from_entry "$entry"`

@@ -13,7 +13,7 @@ print_desc()
 ########
 usage()
 {
-    echo "analyze_dataset      -r <string> -e <string>|-i <string>"
+    echo "analyze_dataset      -r <string> -m <string>"
     echo "                     -a <string> -o <string>"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
@@ -198,12 +198,8 @@ check_pars()
         fi
     fi
     
-    if [ ${e_given} -eq 0 -a ${i_given} -eq 0 ]; then
-        echo "Error, -e or -i options should be given" >&2
-    fi
-
-    if [ ${e_given} -eq 1 -a ${i_given} -eq 1 ]; then
-        echo "Error, -e and -i options cannot be given simultaneously" >&2
+    if [ ${m_given} -eq 0 ]; then
+        echo "Error, -m option should be given" >&2
     fi
 
     if [ ${m_given} -eq 1 ]; then

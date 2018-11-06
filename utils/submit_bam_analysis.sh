@@ -408,6 +408,12 @@ get_pars_manta_somatic()
 }
 
 ########
+get_pars_strelka_germline()
+{
+    echo "$ref $normalbam ${callregf} ${step_outd} $cpus"
+}
+
+########
 get_pars_strelka_somatic()
 {
     local_manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`

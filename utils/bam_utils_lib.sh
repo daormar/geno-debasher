@@ -467,6 +467,39 @@ get_indel_cand_opt()
 }
 
 ########
+execute_strelka_germline()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_callregf=$3
+    local_step_outd=$4
+    local_cpus=$5
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${local_callregf}"`
+
+    # Activate conda environment
+    conda activate strelka > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Configure Strelka
+    configureStrelkaGermlineWorkflow.py --bam ${local_normalbam} --referenceFasta ${local_ref} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaGermlineWorkflow.log 2>&1 || exit 1
+
+    # Execute Strelka
+    ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
 execute_strelka_somatic()
 {
     display_begin_step_message

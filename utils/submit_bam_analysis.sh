@@ -518,6 +518,18 @@ get_pars_sort_tum_bam()
 }
 
 ########
+get_pars_filter_norm_bam_contigs()
+{
+    echo "$ref $normalbam ${step_outd}"
+}
+
+########
+get_pars_filter_tum_bam_contigs()
+{
+    echo "$ref $tumorbam ${step_outd}"
+}
+
+########
 get_pars_delete_bam_files()
 {
     echo "$normalbam $tumorbam ${step_outd}"
@@ -591,9 +603,10 @@ execute_step()
     # Execute step
 
     ## Create script
-    local_script_pars=`get_pars_${local_stepname}`
-    local_script_filename=${local_dirname}/scripts/execute_${local_stepname}
+    local_script_filename=`get_script_filename ${local_stepname}`
     local_step_function=`get_step_function ${local_stepname}`
+    local_script_pars_funcname=`get_script_pars_funcname ${local_stepname}`
+    local_script_pars=`${local_script_pars_funcname}`
     create_script ${local_script_filename} ${local_step_function} "${local_script_pars}"
 
     ## Obtain step status

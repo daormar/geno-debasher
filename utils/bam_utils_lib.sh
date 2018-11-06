@@ -97,13 +97,39 @@ get_partition_opt()
 }
 
 ########
+get_script_filename() 
+{
+    local_stepname=$1
+    
+    echo ${local_dirname}/scripts/execute_${local_stepname}
+}
+
+########
+remove_suffix_from_stepname()
+{
+    local_stepname=$1
+    
+    echo ${local_stepname} | $AWK '{if(index($1,"__")==0){print $1} else{printf "%s\n",substr($1,1,index($1,"__")-1)}}'
+}
+
+########
 get_step_function()
 {
     local_stepname=$1
 
-    local_stepname_wo_suffix=`echo ${local_stepname} | $AWK '{if(index($1,"__")==0){print $1} else{printf "%s\n",substr($1,1,index($1,"__")-1)}}'`
+    local_stepname_wo_suffix=`remove_suffix_from_stepname ${local_stepname}`
     
     echo "execute_${local_stepname_wo_suffix}"
+}
+
+########
+get_script_pars_funcname()
+{
+    local_stepname=$1
+
+    local_stepname_wo_suffix=`remove_suffix_from_stepname ${local_stepname}`
+
+    echo get_pars_${local_stepname_wo_suffix}
 }
 
 ########

@@ -396,6 +396,12 @@ set_bam_filenames()
 }
 
 ########
+get_pars_manta_germline()
+{
+    echo "$ref $normalbam ${callregf} ${step_outd} $cpus"
+}
+
+########
 get_pars_manta_somatic()
 {
     echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} $cpus"

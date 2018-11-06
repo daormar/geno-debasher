@@ -382,6 +382,39 @@ get_callreg_opt()
 }
 
 ########
+execute_manta_germline()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local_ref=$1
+    local_normalbam=$2
+    local_callregf=$4
+    local_step_outd=$5
+    local_cpus=$6
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${local_callregf}"`
+
+    # Activate conda environment
+    conda activate manta > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Configure Manta
+    configManta.py --bam ${local_normalbam} --referenceFasta ${local_ref} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configManta.log 2>&1 || exit 1
+
+    # Execute Manta
+    ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${local_step_outd}/finished
+
+    display_end_step_message
+}
+
+########
 execute_manta_somatic()
 {
     display_begin_step_message

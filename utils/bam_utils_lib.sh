@@ -1010,6 +1010,9 @@ execute_download_ega_asp_norm_bam()
     # Move file
     mv ${local_bam_file_name} ${local_normalbam} || exit 1
 
+    # Remove encrypted file
+    rm ${local_step_outd}/normal.bam.crypt || exit 1
+    
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished
 
@@ -1048,6 +1051,9 @@ execute_download_ega_asp_tum_bam()
 
     # Move file
     mv ${local_bam_file_name} ${local_tumorbam} || exit 1
+
+    # Remove encrypted file
+    rm ${local_step_outd}/tumor.bam.crypt || exit 1
 
     # Create file indicating that execution was finished
     touch ${local_step_outd}/finished

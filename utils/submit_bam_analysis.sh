@@ -562,6 +562,19 @@ get_jobdeps()
 }
 
 ########
+archive_script()
+{
+    local_script_filename=$1
+    
+    # Save file status
+    cp ${local_script_filename} ${local_script_filename}.last_exec
+    
+    # Archive script with date info
+    local_curr_date=`date '+%Y_%m_%d'`
+    cp ${local_script_filename} ${local_script_filename}.${local_curr_date}
+}
+
+########
 execute_step()
 {
     # Initialize variables
@@ -576,24 +589,34 @@ execute_step()
     step_outd=`get_step_dirname ${outd} ${local_stepname}`
     
     # Execute step
+
+    ## Create script
     local_script_pars=`get_pars_${local_stepname}`
-    script_filename=${local_dirname}/scripts/execute_${local_stepname}
-    step_function=`get_step_function ${local_stepname}`
-    create_script ${script_filename} ${step_function} "${local_script_pars}"
-    script_modified=`check_script_was_modified ${script_filename}`
+    local_script_filename=${local_dirname}/scripts/execute_${local_stepname}
+    local_step_function=`get_step_function ${local_stepname}`
+    create_script ${local_script_filename} ${local_step_function} "${local_script_pars}"
+
+    ## Obtain step status
+    script_modified=`check_script_was_modified ${local_script_filename}`
     local_status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
     echo "STEP: ${local_stepname} ; STATUS: ${local_status}" >&2
+
+    ## Decide whether step should be executed
     if [ "${local_status}" != "FINISHED" ]; then
+        # Execute script
         reset_outdir_for_step ${local_dirname} ${local_stepname} || return 1
         local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
         local_stepname_jid=${local_stepname}_jid
-        launch ${script_filename} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid} || return 1
+        launch ${local_script_filename} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid} || return 1
         
         # Update variables storing jids
         step_jids="${step_jids}:${!local_stepname_jid}"
+
+        # Archive script
+        archive_script ${local_script_filename}
     else
         if [ ${script_modified} -eq 1 ]; then
-            echo "Warning: script was changed for this step with respect to last execution. See changes in file ${script_filename}.diff">&2
+            echo "Warning: script was changed for this step with respect to last execution. See changes in file ${local_script_filename}.diff">&2
         fi
     fi
 }

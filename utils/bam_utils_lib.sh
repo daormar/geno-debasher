@@ -52,10 +52,6 @@ create_script()
 
     # Give execution permission
     chmod u+x ${local_name} || return 1
-
-    # Archive script with date info
-    curr_date=`date '+%Y_%m_%d'`
-    cp ${local_name} ${local_name}.${curr_date}
 }
 
 ########
@@ -183,9 +179,6 @@ launch()
     local_time=$6
     local_jobdeps=$7
     local_outvar=$8
-
-    # Save file status
-    cp ${local_file} ${local_file}.last_exec
 
     # Launch file
     if [ -z "${SBATCH}" ]; then

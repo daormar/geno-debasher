@@ -389,9 +389,9 @@ execute_manta_germline()
     # Initialize variables
     local_ref=$1
     local_normalbam=$2
-    local_callregf=$4
-    local_step_outd=$5
-    local_cpus=$6
+    local_callregf=$3
+    local_step_outd=$4
+    local_cpus=$5
 
     # Define --callRegions option
     call_reg_opt=`get_callreg_opt "${local_callregf}"`

@@ -369,6 +369,19 @@ extract_gender_from_sample_info()
 }
 
 ########
+get_outd_name()
+{
+    local_norm_id=$1
+    local_tum_id=$2
+
+    # If id contains a file path, retain file name only
+    local_norm_id_wo_pathinfo=`$BASENAME ${local_norm_id}`
+    local_tum_id_wo_pathinfo=`$BASENAME ${local_tum_id}`
+    
+    echo ${local_norm_id_wo_pathinfo}"_"${local_tum_id_wo_pathinfo}
+}
+
+########
 process_pars()
 {
     # Read metadata file
@@ -393,7 +406,7 @@ process_pars()
             fi
             
             # Set name of output directory for analysis
-            analysis_outd=${normal_id}"_"${tumor_id}
+            analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Submit bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then

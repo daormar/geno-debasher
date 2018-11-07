@@ -1098,7 +1098,6 @@ execute_sort_norm_bam()
     local normalbam=$1
     local step_outd=$2
     local cpus=$3
-    local mem=$4
 
     # Activate conda environment
     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
@@ -1193,7 +1192,6 @@ execute_sort_tum_bam()
     local tumorbam=$1
     local step_outd=$2
     local cpus=$3
-    local mem=$4
 
     # Activate conda environment
     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1

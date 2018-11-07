@@ -1098,12 +1098,13 @@ execute_sort_norm_bam()
     local_normalbam=$1
     local_step_outd=$2
     local_cpus=$3
+    local_mem=$4
 
     # Activate conda environment
     conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Execute samtools
-    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_normalbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
+    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m ${local_mem} -@ ${local_cpus} ${local_normalbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
     # NOTE: -m option is used here to increase the maximum memory per
     # thread. One lateral efect of this is that the number of tmp files
     # generated is decreased. This constitutes one possible way to avoid
@@ -1192,12 +1193,13 @@ execute_sort_tum_bam()
     local_tumorbam=$1
     local_step_outd=$2
     local_cpus=$3
+    local_mem=$4
 
     # Activate conda environment
     conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Execute samtools
-    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_tumorbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
+    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m ${local_mem} -@ ${local_cpus} ${local_tumorbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
     # NOTE: -m option is used here to increase the maximum memory per
     # thread. One lateral efect of this is that the number of tmp files
     # generated is decreased. This constitutes one possible way to avoid

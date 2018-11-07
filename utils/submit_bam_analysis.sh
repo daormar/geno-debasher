@@ -520,13 +520,13 @@ get_pars_index_tum_bam()
 ########
 get_pars_sort_norm_bam()
 {
-    echo "$normalbam ${step_outd} $cpus"
+    echo "$normalbam ${step_outd} $cpus $mem"
 }
 
 ########
 get_pars_sort_tum_bam()
 {
-    echo "$tumorbam ${step_outd} $cpus"
+    echo "$tumorbam ${step_outd} $cpus $mem"
 }
 
 ########

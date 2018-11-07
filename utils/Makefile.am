@@ -54,6 +54,7 @@ SUFFIXES= .sh .py .r .R
 	echo "SBATCH="$(SBATCH) >> $@
 	echo "WGET="$(WGET) >> $@
 	echo "PANDOC="$(PANDOC) >> $@
+	echo "PYTHON="$(PYTHON) >> $@
 	echo "JAVA="$(JAVA) >> $@
 	echo "SAMTOOLS="$(SAMTOOLS) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@

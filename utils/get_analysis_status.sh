@@ -104,12 +104,12 @@ get_status_for_afile()
             local stepname=`extract_stepname_from_entry "$entry"`
 
             # Check step status
-            local status=`get_step_status ${local dirname} ${local stepname}`
+            local status=`get_step_status ${dirname} ${stepname}`
 
             # Print status
             echo "STEP: $stepname ; STATUS: $status"
         fi
-    done < ${local afile}
+    done < ${afile}
 }
 
 ########

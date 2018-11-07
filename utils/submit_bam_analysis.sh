@@ -32,7 +32,7 @@ usage()
     echo "-g <string>          Sample gender (XX|XY)"
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
-    echo "                     <stepname> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
+    echo "                     <stepname> <account> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
     echo "-o <string>          Output directory"
     echo "-nt <int>            Number of download tries per file"
     echo "-cr <string>         bgzipped and tabixed bed file to specify regions to call for"

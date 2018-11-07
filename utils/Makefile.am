@@ -1,9 +1,9 @@
-SCRIPTS_TO_BE_BUILT= submit_bam_analysis analyze_dataset		\
+SCRIPTS_TO_BE_BUILT= bam_utils_lib submit_bam_analysis analyze_dataset	\
 get_analysis_status gen_bed_for_genome gen_wisecondorx_ref		\
 convert_snppos_to_snpgcc create_snv_pos_ascat query_ega_metadata	\
 query_icgc_metadata filter_contig_from_genref run_facets
 
-bin_SCRIPTS = bam_utils_lib.sh $(SCRIPTS_TO_BE_BUILT)
+bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
@@ -12,6 +12,12 @@ get_analysis_status.sh gen_bed_for_genome.sh gen_wisecondorx_ref.sh	\
 convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
 query_ega_metadata.py query_icgc_metadata.py				\
 filter_contig_from_genref.py run_facets.R
+
+# Build rule for shell library
+bam_utils_lib: bam_utils_lib.sh
+	rm -f $@
+	$(PYTHON) -c "import os; t=os.path.getmtime('bam_utils_lib.sh'); print '# Lib time stamp:',int(t)" > $@
+	cat bam_utils_lib.sh >> $@
 
 # Build using suffix rules (portable)
 SUFFIXES= .sh .py .r .R

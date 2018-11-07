@@ -93,23 +93,23 @@ check_pars()
 ########
 get_status_for_afile()
 {
-    local_dirname=$1
-    local_afile=$2
+    local dirname=$1
+    local afile=$2
     
     # Read information about the steps to be executed
     while read entry; do
         entry_ok=`analysis_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract entry information
-            local_stepname=`extract_stepname_from_entry "$entry"`
+            local stepname=`extract_stepname_from_entry "$entry"`
 
             # Check step status
-            local_status=`get_step_status ${local_dirname} ${local_stepname}`
+            local status=`get_step_status ${local dirname} ${local stepname}`
 
             # Print status
-            echo "STEP: $local_stepname ; STATUS: $local_status"
+            echo "STEP: $stepname ; STATUS: $status"
         fi
-    done < ${local_afile}
+    done < ${local afile}
 }
 
 ########

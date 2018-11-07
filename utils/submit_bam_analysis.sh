@@ -416,9 +416,9 @@ get_pars_strelka_germline()
 ########
 get_pars_strelka_somatic()
 {
-    local_manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`
-    local_manta_outd=`get_outd_for_dep ${outd} "${local_manta_dep}"`
-    echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} "${local_manta_outd}" $cpus"
+    local manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`
+    local manta_outd=`get_outd_for_dep ${outd} "${manta_dep}"`
+    echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} "${manta_outd}" $cpus"
 }
 
 ########
@@ -550,37 +550,37 @@ get_pars_delete_bam_files()
 ########
 get_jobdeps_from_detailed_spec()
 {
-    local_jobdeps_spec=$1
+    local jobdeps_spec=$1
+    local jdeps=""
 
-    local_jdeps=""
     # Iterate over the elements of the job specification: type1:stepname1,...,typen:stepnamen
-    for dep_spec in `echo ${local_jobdeps_spec} | $SED 's/,/ /g'`; do
-        local_deptype=`echo ${dep_spec} | $AWK -F ":" '{print $1}'`
-        local_step=`echo ${dep_spec} | $AWK -F ":" '{print $2}'`
+    for dep_spec in `echo ${jobdeps_spec} | $SED 's/,/ /g'`; do
+        local deptype=`echo ${dep_spec} | $AWK -F ":" '{print $1}'`
+        local step=`echo ${dep_spec} | $AWK -F ":" '{print $2}'`
         
         # Check if there is a jid for the step
-        local_step_jid=${local_step}_jid
-        if [ ! -z "${!local_step_jid}" ]; then
-            if [ -z "${local_jdeps}" ]; then
-                local_jdeps=${local_deptype}":"${!local_step_jid}
+        local step_jid=${step}_jid
+        if [ ! -z "${!step_jid}" ]; then
+            if [ -z "${jdeps}" ]; then
+                jdeps=${deptype}":"${!step_jid}
             else
-                local_jdeps=${local_jdeps}","${local_deptype}":"${!local_step_jid}
+                jdeps=${jdeps}","${deptype}":"${!step_jid}
             fi
         fi
     done
-    echo ${local_jdeps}
+    echo ${jdeps}
 }
 
 ########
 get_jobdeps()
 {
-    local_jobdeps_spec=$1
-    case ${local_jobdeps_spec} in
+    local jobdeps_spec=$1
+    case ${jobdeps_spec} in
             "afterok:all") apply_deptype_to_jobids ${step_jids} afterok
                     ;;
             "none") echo ""
                     ;;
-            *) get_jobdeps_from_detailed_spec ${local_jobdeps_spec}
+            *) get_jobdeps_from_detailed_spec ${jobdeps_spec}
                ;;
     esac
 }
@@ -588,60 +588,60 @@ get_jobdeps()
 ########
 archive_script()
 {
-    local_script_filename=$1
+    local script_filename=$1
     
     # Save file status
-    cp ${local_script_filename} ${local_script_filename}.last_exec
+    cp ${script_filename} ${script_filename}.last_exec
     
     # Archive script with date info
-    local_curr_date=`date '+%Y_%m_%d'`
-    cp ${local_script_filename} ${local_script_filename}.${local_curr_date}
+    local curr_date=`date '+%Y_%m_%d'`
+    cp ${script_filename} ${script_filename}.${curr_date}
 }
 
 ########
 execute_step()
 {
     # Initialize variables
-    local_dirname=$1
-    local_stepname=$2
-    local_account=$3
-    local_partition=$4
-    local_cpus=$5
-    local_mem=$6
-    local_time=$7
-    local_jobdeps_spec=$8
-    step_outd=`get_step_dirname ${outd} ${local_stepname}`
+    local dirname=$1
+    local stepname=$2
+    local account=$3
+    local partition=$4
+    local cpus=$5
+    local mem=$6
+    local time=$7
+    local jobdeps_spec=$8
+    step_outd=`get_step_dirname ${outd} ${stepname}`
     
     # Execute step
 
     ## Create script
-    local_script_filename=`get_script_filename ${local_stepname}`
-    local_step_function=`get_step_function ${local_stepname}`
-    local_script_pars_funcname=`get_script_pars_funcname ${local_stepname}`
-    local_script_pars=`${local_script_pars_funcname}`
-    create_script ${local_script_filename} ${local_step_function} "${local_script_pars}"
+    local script_filename=`get_script_filename ${stepname}`
+    local step_function=`get_step_function ${stepname}`
+    local script_pars_funcname=`get_script_pars_funcname ${stepname}`
+    local script_pars=`${script_pars_funcname}`
+    create_script ${script_filename} ${step_function} "${script_pars}"
 
     ## Obtain step status
-    script_modified=`check_script_was_modified ${local_script_filename}`
-    local_status=`${bindir}/get_analysis_status -d ${local_dirname} -s "${local_stepname}"`
-    echo "STEP: ${local_stepname} ; STATUS: ${local_status}" >&2
+    script_modified=`check_script_was_modified ${script_filename}`
+    local status=`${bindir}/get_analysis_status -d ${dirname} -s "${stepname}"`
+    echo "STEP: ${stepname} ; STATUS: ${status}" >&2
 
     ## Decide whether step should be executed
-    if [ "${local_status}" != "FINISHED" ]; then
+    if [ "${status}" != "FINISHED" ]; then
         # Execute script
-        reset_outdir_for_step ${local_dirname} ${local_stepname} || return 1
-        local_jobdeps="`get_jobdeps ${local_jobdeps_spec}`"
-        local_stepname_jid=${local_stepname}_jid
-        launch ${local_script_filename} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_stepname_jid} || return 1
+        reset_outdir_for_step ${dirname} ${stepname} || return 1
+        local jobdeps="`get_jobdeps ${jobdeps_spec}`"
+        local stepname_jid=${stepname}_jid
+        launch ${script_filename} ${account} ${partition} ${cpus} ${mem} ${time} "${jobdeps}" ${stepname_jid} || return 1
         
         # Update variables storing jids
-        step_jids="${step_jids}:${!local_stepname_jid}"
+        step_jids="${step_jids}:${!stepname_jid}"
 
         # Archive script
-        archive_script ${local_script_filename}
+        archive_script ${script_filename}
     else
         if [ ${script_modified} -eq 1 ]; then
-            echo "Warning: script was changed for this step with respect to last execution. See changes in file ${local_script_filename}.diff">&2
+            echo "Warning: script was changed for this step with respect to last execution. See changes in file ${script_filename}.diff">&2
         fi
     fi
 }
@@ -650,8 +650,8 @@ execute_step()
 execute_steps_in_afile()
 {
     # Read input parameters
-    local_dirname=$1
-    local_afile=$2
+    local dirname=$1
+    local afile=$2
 
     # step_jids will store the job ids of the analysis steps
     step_jids=""
@@ -661,18 +661,18 @@ execute_steps_in_afile()
         entry_ok=`analysis_entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
             # Extract entry information
-            local_stepname=`extract_stepname_from_entry "$entry"`
-            local_account=`extract_account_from_entry "$entry"`
-            local_partition=`extract_partition_from_entry "$entry"`
+            local stepname=`extract_stepname_from_entry "$entry"`
+            local account=`extract_account_from_entry "$entry"`
+            local partition=`extract_partition_from_entry "$entry"`
             cpus=`extract_cpus_from_entry "$entry"`
             mem=`extract_mem_from_entry "$entry"`
-            local_time=`extract_time_from_entry "$entry"`
+            local time=`extract_time_from_entry "$entry"`
             jobdeps_spec=`extract_jobdeps_spec_from_entry "$entry"`
 
             # Execute step
-            execute_step ${local_dirname} ${local_stepname} ${local_account} ${local_partition} ${cpus} ${mem} ${local_time} ${jobdeps_spec} || return 1
+            execute_step ${dirname} ${stepname} ${account} ${partition} ${cpus} ${mem} ${time} ${jobdeps_spec} || return 1
         fi
-    done < ${local_afile}
+    done < ${afile}
 }
 
 ########

@@ -1,7 +1,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. ${bindir}/bam_utils_lib.sh
+. ${bindir}/bam_utils_lib
 
 ########
 print_desc()
@@ -13,7 +13,7 @@ print_desc()
 ########
 usage()
 {
-    echo "analyze_dataset      -r <string> -e <string>|-i <string>"
+    echo "analyze_dataset      -r <string> -m <string>"
     echo "                     -a <string> -o <string>"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
@@ -198,12 +198,8 @@ check_pars()
         fi
     fi
     
-    if [ ${e_given} -eq 0 -a ${i_given} -eq 0 ]; then
-        echo "Error, -e or -i options should be given" >&2
-    fi
-
-    if [ ${e_given} -eq 1 -a ${i_given} -eq 1 ]; then
-        echo "Error, -e and -i options cannot be given simultaneously" >&2
+    if [ ${m_given} -eq 0 ]; then
+        echo "Error, -m option should be given" >&2
     fi
 
     if [ ${m_given} -eq 1 ]; then
@@ -302,9 +298,9 @@ create_dirs()
 ########
 extract_normal_sample_info()
 {
-    local_entry=$1
-    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal'`
-    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}' | $GREP 'Normal\|normal'`
+    local entry=$1
+    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal'`
+    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | $GREP 'Normal\|normal'`
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}
@@ -320,9 +316,9 @@ extract_normal_sample_info()
 ########
 extract_tumor_sample_info()
 {
-    local_entry=$1
-    sample1=`echo ${local_entry} | $AWK -F ";" '{print $1}' | $GREP 'Tumour\|tumour\|Tumor\|tumor'`
-    sample2=`echo ${local_entry} | $AWK -F ";" '{print $2}' | $GREP 'Tumour\|tumour\|Tumor\|tumor'`
+    local entry=$1
+    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | $GREP 'Tumour\|tumour\|Tumor\|tumor'`
+    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | $GREP 'Tumour\|tumour\|Tumor\|tumor'`
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}
@@ -338,9 +334,9 @@ extract_tumor_sample_info()
 ########
 entry_is_ok()
 {
-    local_entry=$1
-    nsample=`extract_normal_sample_info "${local_entry}"`
-    tsample=`extract_tumor_sample_info "${local_entry}"`
+    local entry=$1
+    local nsample=`extract_normal_sample_info "${entry}"`
+    local tsample=`extract_tumor_sample_info "${entry}"`
 
     if [ ! -z "${nsample}" -a ! -z "${tsample}" ]; then
         echo "yes"
@@ -352,20 +348,33 @@ entry_is_ok()
 ########
 extract_id_from_sample_info()
 {
-    local_sample_info=$1
-    echo ${local_sample_info} | $AWK '{print $1}'
+    local sample_info=$1
+    echo ${sample_info} | $AWK '{print $1}'
 }
 
 ########
 extract_gender_from_sample_info()
 {
-    local_sample_info=$1
-    local_tmp=`echo ${local_sample_info} | $GREP 'Female\|female'`
-    if [ ! -z "${local_tmp}" ]; then
+    local sample_info=$1
+    local tmp=`echo ${sample_info} | $GREP 'Female\|female'`
+    if [ ! -z "${tmp}" ]; then
         echo "female"
     else
         echo "male"
     fi
+}
+
+########
+get_outd_name()
+{
+    local norm_id=$1
+    local tum_id=$2
+
+    # If id contains a file path, retain file name only
+    local norm_id_wo_pathinfo=`$BASENAME ${norm_id}`
+    local tum_id_wo_pathinfo=`$BASENAME ${tum_id}`
+    
+    echo ${norm_id_wo_pathinfo}"_"${tum_id_wo_pathinfo}
 }
 
 ########
@@ -393,7 +402,7 @@ process_pars()
             fi
             
             # Set name of output directory for analysis
-            analysis_outd=${normal_id}"_"${tumor_id}
+            analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Submit bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then

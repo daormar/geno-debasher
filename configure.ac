@@ -516,4 +516,4 @@ AC_SUBST(EGADECRYPT_HOME_DIR,$with_egadecrypt)
 # Change path of distribution include directory
 includedir=${prefix}/include/bam-utils
 
-AC_OUTPUT(Makefile m4/Makefile utils/Makefile examples/Makefile)
+AC_OUTPUT(Makefile m4/Makefile utils/Makefile doc/Makefile examples/Makefile)

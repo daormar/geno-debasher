@@ -32,83 +32,110 @@ exclude_bashisms()
 create_script()
 {
     # Init variables
-    local_name=$1
-    local_command=$2
-    local_script_pars=$3
+    local name=$1
+    local command=$2
+    local script_pars=$3
     
     # Write bash shebang
-    local_BASH_SHEBANG=`init_bash_shebang_var`
-    echo ${local_BASH_SHEBANG} > ${local_name} || return 1
+    local BASH_SHEBANG=`init_bash_shebang_var`
+    echo ${BASH_SHEBANG} > ${name} || return 1
 
     # Write SLURM commands
-    echo "#SBATCH --job-name=${local_command}" >> ${local_name} || return 1
-    echo "#SBATCH --output=${local_name}.slurm_out" >> ${local_name} || return 1
+    echo "#SBATCH --job-name=${command}" >> ${name} || return 1
+    echo "#SBATCH --output=${name}.slurm_out" >> ${name} || return 1
 
     # Write environment variables
-    set | exclude_readonly_vars | exclude_bashisms >> ${local_name} || return 1
+    set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
     
     # Write command to be executed
-    echo "${local_command} ${local_script_pars}" >> ${local_name} || return 1
+    echo "${command} ${script_pars}" >> ${name} || return 1
 
     # Give execution permission
-    chmod u+x ${local_name} || return 1
-
-    # Archive script with date info
-    curr_date=`date '+%Y_%m_%d'`
-    cp ${local_name} ${local_name}.${curr_date}
+    chmod u+x ${name} || return 1
 }
 
 ########
-check_script_was_modified()
+get_lib_timestamp()
 {
-    # Init variables
-    local_script_name=$1
+    $GREP "Lib time stamp:" ${bindir}/bam_utils_lib | $AWK '{printf"%s",$NF}'
+}
 
-    # Check if previous script exists
-    if [ -f ${local_script_name}.last_exec ]; then
-        # Check if the script was modified
-        local_result=0
-        $DIFF ${local_script_name} ${local_script_name}.last_exec >${local_script_name}.diff 2>&1 || local_result=1
-        echo ${local_result}
-    else
-        # No previous script exists
-        echo 0
-    fi
+########
+get_file_timestamp()
+{
+    local file=$1
+    ${PYTHON} -c "import os; t=os.path.getmtime('${file}'); print int(t)"
 }
 
 ########
 get_account_opt()
 {
-    local_account=$1
+    local account=$1
 
-    if [ -z "${local_account}" ]; then
+    if [ -z "${account}" ]; then
         echo ""
     else
-        echo "-A ${local_account}"
+        echo "-A ${account}"
     fi
 }
 
 ########
 get_partition_opt()
 {
-    local_partition=$1
+    local partition=$1
 
-    if [ -z "${local_partition}" ]; then
+    if [ -z "${partition}" ]; then
         echo ""
     else
-        echo "--partition=${local_partition}"
+        echo "--partition=${partition}"
     fi
+}
+
+########
+get_script_filename() 
+{
+    local stepname=$1
+    
+    echo ${dirname}/scripts/execute_${stepname}
+}
+
+########
+remove_suffix_from_stepname()
+{
+    local stepname=$1
+    
+    echo ${stepname} | $AWK '{if(index($1,"__")==0){print $1} else{printf "%s\n",substr($1,1,index($1,"__")-1)}}'
+}
+
+########
+get_step_function()
+{
+    local stepname=$1
+
+    local stepname_wo_suffix=`remove_suffix_from_stepname ${stepname}`
+    
+    echo "execute_${stepname_wo_suffix}"
+}
+
+########
+get_script_pars_funcname()
+{
+    local stepname=$1
+
+    local stepname_wo_suffix=`remove_suffix_from_stepname ${stepname}`
+
+    echo get_pars_${stepname_wo_suffix}
 }
 
 ########
 find_dependency_for_step()
 {
-    local_jobdeps_spec=$1
-    local_stepname_part=$2
+    local jobdeps_spec=$1
+    local stepname_part=$2
 
-    for local_dep in `echo ${local_jobdeps_spec} | $SED 's/,/ /g'`; do
-        local_stepname_part_in_dep=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
-        if [ ${local_stepname_part_in_dep} = ${local_stepname_part} ]; then
+    for local_dep in `echo ${jobdeps_spec} | $SED 's/,/ /g'`; do
+        local stepname_part_in_dep=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
+        if [ ${stepname_part_in_dep} = ${stepname_part} ]; then
             echo ${local_dep}
         fi
     done
@@ -117,14 +144,14 @@ find_dependency_for_step()
 ########
 get_outd_for_dep()
 {
-    local_outd=$1
-    local_dep=$2
+    local outd=$1
+    local dep=$2
 
-    if [ -z "${local_dep}" ]; then
+    if [ -z "${dep}" ]; then
         echo ""
     else
-        local_stepname_part=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
-        get_step_dirname ${local_outd} ${local_stepname_part}
+        local stepname_part=`echo ${dep} | $AWK -F ":" '{print $2}'`
+        get_step_dirname ${outd} ${stepname_part}
     fi
 }
 
@@ -132,16 +159,16 @@ get_outd_for_dep()
 apply_deptype_to_jobids()
 {
     # Initialize variables
-    local_jids=$1
-    local_deptype=$2
+    local jids=$1
+    local deptype=$2
 
     # Apply deptype
     result=""
-    for jid in `echo ${local_jids} | $SED 's/,/ /g'`; do
+    for local_jid in `echo ${jids} | $SED 's/,/ /g'`; do
         if [ -z "" ]; then
-            result=${local_deptype}:${jid}
+            result=${deptype}:${local_jid}
         else
-            result=${result}","${local_deptype}:${jid}
+            result=${result}","${deptype}:${local_jid}
         fi
     done
 
@@ -151,13 +178,13 @@ apply_deptype_to_jobids()
 ########
 get_slurm_dependency_opt()
 {
-    local_jobdeps=$1
+    local jobdeps=$1
 
     # Create dependency option
-    if [ -z "${local_jobdeps}" ]; then
+    if [ -z "${jobdeps}" ]; then
         echo ""
     else
-        echo "--dependency=${local_jobdeps}"
+        echo "--dependency=${jobdeps}"
     fi
 }
 
@@ -165,28 +192,25 @@ get_slurm_dependency_opt()
 launch()
 {
     # Initialize variables
-    local_file=$1
-    local_account=$2
-    local_partition=$3
-    local_cpus=$4
-    local_mem=$5
-    local_time=$6
-    local_jobdeps=$7
-    local_outvar=$8
-
-    # Save file status
-    cp ${local_file} ${local_file}.last_exec
+    local file=$1
+    local account=$2
+    local partition=$3
+    local cpus=$4
+    local mem=$5
+    local time=$6
+    local jobdeps=$7
+    local outvar=$8
 
     # Launch file
     if [ -z "${SBATCH}" ]; then
-        ${local_file} > ${local_file}.log 2>&1 || return 1
-        eval "${local_outvar}=\"\""
+        ${file} > ${file}.log 2>&1 || return 1
+        eval "${outvar}=\"\""
     else
-        account_opt=`get_account_opt ${local_account}`
-        partition_opt=`get_partition_opt ${local_partition}`
-        dependency_opt=`get_slurm_dependency_opt "${local_jobdeps}"`
-        local_jid=$($SBATCH --cpus-per-task=${local_cpus} --mem=${local_mem} --time ${local_time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${local_file})
-        eval "${local_outvar}='${local_jid}'"
+        account_opt=`get_account_opt ${account}`
+        partition_opt=`get_partition_opt ${partition}`
+        dependency_opt=`get_slurm_dependency_opt "${jobdeps}"`
+        local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${file})
+        eval "${outvar}='${jid}'"
     fi
 }
 
@@ -194,123 +218,123 @@ launch()
 launch_step()
 {
     # Initialize variables
-    local_stepname=$1
-    local_stepinfo=$2
-    local_jobdeps=$3
-    local_script_pars=$4
-    local_jid=$5
+    local stepname=$1
+    local stepinfo=$2
+    local jobdeps=$3
+    local script_pars=$4
+    local jid=$5
 
     # Create script
-    create_script ${tmpdir}/scripts/${local_stepname} ${local_stepname} "${local_script_pars}" || return 1
+    create_script ${tmpdir}/scripts/${stepname} ${stepname} "${script_pars}" || return 1
 
     # Retrieve requirements
-    local_account=`extract_account_from_entry "$local_stepinfo"`
-    local_partition=`extract_partition_from_entry "$local_stepinfo"`
-    local_cpus=`extract_cpus_from_entry "$local_stepinfo"`
-    local_mem=`extract_mem_from_entry "$local_stepinfo"`
-    local_time=`extract_time_from_entry "$local_stepinfo"`
+    local account=`extract_account_from_entry "$stepinfo"`
+    local partition=`extract_partition_from_entry "$stepinfo"`
+    local cpus=`extract_cpus_from_entry "$stepinfo"`
+    local mem=`extract_mem_from_entry "$stepinfo"`
+    local time=`extract_time_from_entry "$stepinfo"`
 
     # Launch script
-    launch ${tmpdir}/scripts/${local_stepname} ${local_account} ${local_partition} ${local_cpus} ${local_mem} ${local_time} "${local_jobdeps}" ${local_jid} || return 1
+    launch ${tmpdir}/scripts/${stepname} ${account} ${partition} ${cpus} ${mem} ${time} "${jobdeps}" ${jid} || return 1
 }
 
 ########
 get_step_info()
 {
-    local_stepname=$1
-    local_infofile=$2
+    local stepname=$1
+    local infofile=$2
 
-    $AWK -v stepname=${local_stepname} '{if($1==stepname) print $0}' ${local_infofile}
+    $AWK -v stepname=${stepname} '{if($1==stepname) print $0}' ${infofile}
 }
 
 ########
 analysis_entry_is_ok()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{if(NF>=4) print"yes\n"; else print"no\n"}'
+    local entry=$1
+    echo "${entry}" | $AWK '{if(NF>=4) print"yes\n"; else print"no\n"}'
 }
 
 ########
 extract_stepname_from_entry()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print $1}'
+    local entry=$1
+    echo "${entry}" | $AWK '{print $1}'
 }
 
 ########
 extract_account_from_entry()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print $2}'
+    local entry=$1
+    echo "${entry}" | $AWK '{print $2}'
 }
 
 ########
 extract_partition_from_entry()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print $3}'
+    local entry=$1
+    echo "${entry}" | $AWK '{print $3}'
 }
 
 ########
 extract_cpus_from_entry()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print $4}'
+    local entry=$1
+    echo "${entry}" | $AWK '{print $4}'
 }
 
 ########
 extract_mem_from_entry()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print $5}'
+    local entry=$1
+    echo "${entry}" | $AWK '{print $5}'
 }
 
 ########
 extract_time_from_entry()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print $6}'
+    local entry=$1
+    echo "${entry}" | $AWK '{print $6}'
 }
 
 ########
 extract_jobdeps_spec_from_entry()
 {
-    local_entry=$1
-    echo "${local_entry}" | $AWK '{print substr($7,9)}'
+    local entry=$1
+    echo "${entry}" | $AWK '{print substr($7,9)}'
 }
 
 ########
 get_step_dirname()
 {
-    local_dirname=$1
-    local_stepname=$2
-    echo ${local_dirname}/${local_stepname}
+    local dirname=$1
+    local stepname=$2
+    echo ${dirname}/${stepname}
 }
 
 ########
 reset_outdir_for_step() 
 {
-    local_dirname=$1
-    local_stepname=$2
-    local_outd=`get_step_dirname ${local_dirname} ${local_stepname}`
+    local dirname=$1
+    local stepname=$2
+    local outd=`get_step_dirname ${dirname} ${stepname}`
 
-    if [ -d ${local_outd} ]; then
-        echo "Warning: ${local_stepname} output directory already exists but analysis was not finished, directory content will be removed">&2
-        rm -rf ${local_outd}/* || { echo "Error! could not clear output directory" >&2; return 1; }
+    if [ -d ${outd} ]; then
+        echo "Warning: ${stepname} output directory already exists but analysis was not finished, directory content will be removed">&2
+        rm -rf ${outd}/* || { echo "Error! could not clear output directory" >&2; return 1; }
     else
-        mkdir ${local_outd} || { echo "Error! cannot create output directory" >&2; return 1; }
+        mkdir ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
     fi
 }
 
 ########
 get_step_status()
 {
-    local_dirname=$1
-    local_stepname=$2
-    local_stepdirname=`get_step_dirname ${local_dirname} ${local_stepname}`
+    local dirname=$1
+    local stepname=$2
+    local stepdirname=`get_step_dirname ${dirname} ${stepname}`
     
-    if [ -d ${local_stepdirname} ]; then
-        if [ -f ${local_stepdirname}/finished ]; then
+    if [ -d ${stepdirname} ]; then
+        if [ -f ${stepdirname}/finished ]; then
             echo "FINISHED"
         else
             echo "UNFINISHED"
@@ -343,13 +367,46 @@ display_end_step_message()
 ########
 get_callreg_opt()
 {
-    local_callregf=$1
+    local callregf=$1
 
-    if [ ${local_callregf} = "NONE" ]; then
+    if [ ${callregf} = "NONE" ]; then
         echo ""
     else
-        echo "--callRegions ${local_callregf}"
+        echo "--callRegions ${callregf}"
     fi
+}
+
+########
+execute_manta_germline()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=$1
+    local normalbam=$2
+    local callregf=$3
+    local step_outd=$4
+    local cpus=$5
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${callregf}"`
+
+    # Activate conda environment
+    conda activate manta > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Configure Manta
+    configManta.py --bam ${normalbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configManta.log 2>&1 || exit 1
+
+    # Execute Manta
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${step_outd}/finished
+
+    display_end_step_message
 }
 
 ########
@@ -358,30 +415,30 @@ execute_manta_somatic()
     display_begin_step_message
 
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_tumorbam=$3
-    local_callregf=$4
-    local_step_outd=$5
-    local_cpus=$6
+    local ref=$1
+    local normalbam=$2
+    local tumorbam=$3
+    local callregf=$4
+    local step_outd=$5
+    local cpus=$6
 
     # Define --callRegions option
-    call_reg_opt=`get_callreg_opt "${local_callregf}"`
+    call_reg_opt=`get_callreg_opt "${callregf}"`
 
     # Activate conda environment
-    conda activate manta > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate manta > ${step_outd}/conda_activate.log 2>&1 || exit 1
     
     # Configure Manta
-    configManta.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configManta.log 2>&1 || exit 1
+    configManta.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configManta.log 2>&1 || exit 1
 
     # Execute Manta
-    ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -389,12 +446,12 @@ execute_manta_somatic()
 ########
 get_indel_cand_opt()
 {
-    local_manta_outd=$1
+    local manta_outd=$1
 
-    if [ -z "${local_manta_outd}" ]; then
+    if [ -z "${manta_outd}" ]; then
         echo ""
     else
-        manta_indel_file="${local_manta_outd}/results/variants/candidateSmallIndels.vcf.gz"
+        manta_indel_file="${manta_outd}/results/variants/candidateSmallIndels.vcf.gz"
         if [ -f ${manta_indel_file} ]; then
             echo "--indelCandidates ${manta_indel_file}"
         else
@@ -405,39 +462,72 @@ get_indel_cand_opt()
 }
 
 ########
+execute_strelka_germline()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=$1
+    local normalbam=$2
+    local callregf=$3
+    local step_outd=$4
+    local cpus=$5
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${callregf}"`
+
+    # Activate conda environment
+    conda activate strelka > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Configure Strelka
+    configureStrelkaGermlineWorkflow.py --bam ${normalbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configureStrelkaGermlineWorkflow.log 2>&1 || exit 1
+
+    # Execute Strelka
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${step_outd}/finished
+
+    display_end_step_message
+}
+
+########
 execute_strelka_somatic()
 {
     display_begin_step_message
 
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_tumorbam=$3
-    local_callregf=$4
-    local_step_outd=$5
-    local_manta_outd=$6
-    local_cpus=$7
+    local ref=$1
+    local normalbam=$2
+    local tumorbam=$3
+    local callregf=$4
+    local step_outd=$5
+    local manta_outd=$6
+    local cpus=$7
 
     # Define --indelCandidates option if output from Manta is available
-    indel_cand_opt=`get_indel_cand_opt "${local_manta_outd}"`
+    indel_cand_opt=`get_indel_cand_opt "${manta_outd}"`
 
     # Define --callRegions option
-    call_reg_opt=`get_callreg_opt "${local_callregf}"`
+    call_reg_opt=`get_callreg_opt "${callregf}"`
 
     # Activate conda environment
-    conda activate strelka > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate strelka > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Configure Strelka
-    configureStrelkaSomaticWorkflow.py --normalBam ${local_normalbam} --tumorBam ${local_tumorbam} --referenceFasta ${local_ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${local_step_outd} > ${local_step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
+    configureStrelkaSomaticWorkflow.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
 
     # Execute Strelka
-    ${local_step_outd}/runWorkflow.py -m local -j ${local_cpus} > ${local_step_outd}/runWorkflow.log 2>&1 || exit 1
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -448,26 +538,26 @@ execute_msisensor()
     display_begin_step_message
 
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_tumorbam=$3
-    local_step_outd=$4
-    local_cpus=$5
+    local ref=$1
+    local normalbam=$2
+    local tumorbam=$3
+    local step_outd=$4
+    local cpus=$5
 
     # Activate conda environment
-    conda activate msisensor > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate msisensor > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Create homopolymer and microsatellites file
-    msisensor scan -d ${local_ref} -o ${local_step_outd}/msisensor.list > ${local_step_outd}/msisensor_scan.log 2>&1 || exit 1
+    msisensor scan -d ${ref} -o ${step_outd}/msisensor.list > ${step_outd}/msisensor_scan.log 2>&1 || exit 1
 
     # Run MSIsensor analysis
-    msisensor msi -d ${local_step_outd}/msisensor.list -n ${local_normalbam} -t ${local_tumorbam} -o ${local_step_outd}/output -l 1 -q 1 -b ${local_cpus} > ${local_step_outd}/msisensor_msi.log 2>&1 || exit 1
+    msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} > ${step_outd}/msisensor_msi.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
     
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -478,21 +568,21 @@ execute_platypus_germline_conda()
     display_begin_step_message
     
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_step_outd=$3
+    local ref=$1
+    local normalbam=$2
+    local step_outd=$3
 
     # Activate conda environment
-    conda activate platypus > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate platypus > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Run Platypus
-    Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
+    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 > ${step_outd}/platypus.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished        
+    touch ${step_outd}/finished        
 
     display_end_step_message
 }
@@ -503,15 +593,15 @@ execute_platypus_germline_local()
     display_begin_step_message
 
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_step_outd=$3
+    local ref=$1
+    local normalbam=$2
+    local step_outd=$3
 
     # Run Platypus
-    python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${local_normalbam} --refFile=${local_ref} --output=${local_step_outd}/output.vcf --verbosity=1 > ${local_step_outd}/platypus.log 2>&1 || exit 1
+    python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 > ${step_outd}/platypus.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished    
+    touch ${step_outd}/finished    
 
     display_end_step_message
 }
@@ -520,14 +610,14 @@ execute_platypus_germline_local()
 execute_platypus_germline()
 {
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_step_outd=$3
+    local ref=$1
+    local normalbam=$2
+    local step_outd=$3
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
-        execute_platypus_germline_conda ${local_ref} ${local_normalbam} ${local_step_outd}
+        execute_platypus_germline_conda ${ref} ${normalbam} ${step_outd}
     else
-        execute_platypus_germline_local ${local_ref} ${local_normalbam} ${local_step_outd}
+        execute_platypus_germline_local ${ref} ${normalbam} ${step_outd}
     fi
 }
 
@@ -537,23 +627,23 @@ execute_cnvkit()
     display_begin_step_message
 
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_tumorbam=$3
-    local_step_outd=$4
-    local_cpus=$5
+    local ref=$1
+    local normalbam=$2
+    local tumorbam=$3
+    local step_outd=$4
+    local cpus=$5
     
     # Activate conda environment
-    conda activate cnvkit > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate cnvkit > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Run cnvkit
-    cnvkit.py batch ${local_tumorbam} -n ${local_normalbam} -m wgs -f ${local_ref}  -d ${local_step_outd} -p ${local_cpus} > ${local_step_outd}/cnvkit.log 2>&1 || exit 1
+    cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${step_outd} -p ${cpus} > ${step_outd}/cnvkit.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -564,26 +654,26 @@ execute_wisecondorx()
     display_begin_step_message
 
     # Initialize variables
-    local_wcref=$1
-    local_tumorbam=$2
-    local_step_outd=$3
-    local_cpus=$4
+    local wcref=$1
+    local tumorbam=$2
+    local step_outd=$3
+    local cpus=$4
     
     # Activate conda environment
-    conda activate wisecondorx > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate wisecondorx > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Convert tumor bam file into npz
     BINSIZE=5000
-    WisecondorX convert ${local_tumorbam} ${local_step_outd}/tumor.npz --binsize $BINSIZE > ${local_step_outd}/wisecondorx_convert.log 2>&1 || exit 1
+    WisecondorX convert ${tumorbam} ${step_outd}/tumor.npz --binsize $BINSIZE > ${step_outd}/wisecondorx_convert.log 2>&1 || exit 1
     
     # Use WisecondorX for prediction
-    WisecondorX predict ${local_step_outd}/tumor.npz ${local_wcref} ${local_step_outd}/out > ${local_step_outd}/wisecondorx_predict.log 2>&1 || exit 1
+    WisecondorX predict ${step_outd}/tumor.npz ${wcref} ${step_outd}/out > ${step_outd}/wisecondorx_predict.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -594,19 +684,19 @@ execute_facets()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_tumorbam=$2
-    local_snpvcf=$3
-    local_step_outd=$4
+    local normalbam=$1
+    local tumorbam=$2
+    local snpvcf=$3
+    local step_outd=$4
 
     # Execute snp-pileup
-    ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${local_step_outd}/snp-pileup-counts.csv ${local_normalbam} ${local_tumorbam} > ${local_step_outd}/snp-pileup.log 2>&1 || exit 1
+    ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} > ${step_outd}/snp-pileup.log 2>&1 || exit 1
     
     # Execute facets
-    ${bindir}/run_facets -c ${local_step_outd}/snp-pileup-counts.csv > ${local_step_outd}/facets.out 2> ${local_step_outd}/run_facets.log || exit 1
+    ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv > ${step_outd}/facets.out 2> ${step_outd}/run_facets.log || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -617,26 +707,26 @@ execute_ascatngs()
     display_begin_step_message
 
     # Initialize variables
-    local_ref=$1
-    local_normalbam=$2
-    local_tumorbam=$3
-    local_gender=$4
-    local_malesexchr=$5
-    local_snpgccorr=$6
-    local_step_outd=$7
-    local_cpus=$8
+    local ref=$1
+    local normalbam=$2
+    local tumorbam=$3
+    local gender=$4
+    local malesexchr=$5
+    local snpgccorr=$6
+    local step_outd=$7
+    local cpus=$8
     
     # Activate conda environment
-    conda activate ascatngs > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate ascatngs > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Run cnvkit
-    ascat.pl -n ${local_normalbam} -t ${local_tumorbam} -r ${local_ref} -sg ${local_snpgccorr} -pr WGS -g ${local_gender} -gc ${local_malesexchr} -cpus ${local_cpus} -o ${local_step_outd} > ${local_step_outd}/ascat.log 2>&1 || exit 1
+    ascat.pl -n ${normalbam} -t ${tumorbam} -r ${ref} -sg ${snpgccorr} -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o ${step_outd} > ${step_outd}/ascat.log 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -645,35 +735,35 @@ execute_ascatngs()
 ega_download_retry()
 {
     # Initialize variables
-    local_egastr=$1
-    local_egacred=$2
-    local_egaid=$3
-    local_outf=$4
-    local_download_tries=$5
-    local_step_outd=`${DIRNAME} ${local_outf}`
+    local egastr=$1
+    local egacred=$2
+    local egaid=$3
+    local outf=$4
+    local download_tries=$5
+    local step_outd=`${DIRNAME} ${outf}`
     
     # Start download with multiple tries
-    local_ntry=1
-    while [ ${local_ntry} -le ${local_download_tries} ]; do
-        echo "Starting download try number ${local_ntry}..." >&2
+    local ntry=1
+    while [ ${ntry} -le ${download_tries} ]; do
+        echo "Starting download try number ${ntry}..." >&2
 
         # Remove previously downloaded file (if any)
-        if [ -f ${local_outf} ]; then
-            rm ${local_outf}
+        if [ -f ${outf} ]; then
+            rm ${outf}
         fi
 
         # Download file
-        pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid} ${local_outf} > ${local_step_outd}/pyega3.log 2>&1
+        pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} ${outf} > ${step_outd}/pyega3.log 2>&1
         
         # Check if download was successful
-        if [ $? -eq 0 -a -f ${local_outf} ]; then
+        if [ $? -eq 0 -a -f ${outf} ]; then
             return 0
         fi
 
         # Save log file
-        cp ${local_step_outd}/pyega3.log ${local_step_outd}/pyega3.log.attempt${local_ntry}
+        cp ${step_outd}/pyega3.log ${step_outd}/pyega3.log.attempt${ntry}
 
-        local_ntry=`expr ${local_ntry} + 1`
+        ntry=`expr ${ntry} + 1`
     done
 
     echo "All download attempts failed!" >&2
@@ -687,27 +777,27 @@ execute_download_ega_norm_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_egaid_normalbam=$2
-    local_egastr=$3
-    local_egacred=$4
-    local_download_tries=$5
-    local_step_outd=$6
+    local normalbam=$1
+    local egaid_normalbam=$2
+    local egastr=$3
+    local egacred=$4
+    local download_tries=$5
+    local step_outd=$6
 
     # Activate conda environment
-    conda activate pyega3 > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate pyega3 > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_normalbam} ${local_step_outd}/normal.bam ${local_download_tries} || exit 1
+    ega_download_retry ${egastr} ${egacred} ${egaid_normalbam} ${step_outd}/normal.bam ${download_tries} || exit 1
 
     # Move file
-    mv ${local_step_outd}/normal.bam ${local_normalbam} || exit 1
+    mv ${step_outd}/normal.bam ${normalbam} || exit 1
     
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -718,27 +808,27 @@ execute_download_ega_tum_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_tumorbam=$1
-    local_egaid_tumorbam=$2
-    local_egastr=$3
-    local_egacred=$4
-    local_download_tries=$5
-    local_step_outd=$6
+    local tumorbam=$1
+    local egaid_tumorbam=$2
+    local egastr=$3
+    local egacred=$4
+    local download_tries=$5
+    local step_outd=$6
 
     # Activate conda environment
-    conda activate pyega3 > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate pyega3 > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    ega_download_retry ${local_egastr} ${local_egacred} ${local_egaid_tumorbam} ${local_step_outd}/tumor.bam ${local_download_tries} || exit 1
+    ega_download_retry ${egastr} ${egacred} ${egaid_tumorbam} ${step_outd}/tumor.bam ${download_tries} || exit 1
 
     # Move file
-    mv ${local_step_outd}/tumor.bam ${local_tumorbam} || exit 1
+    mv ${step_outd}/tumor.bam ${tumorbam} || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -746,16 +836,16 @@ execute_download_ega_tum_bam()
 ########
 find_bam_filename()
 {
-    local_step_outd=$1
-    local_result=""
+    local step_outd=$1
+    local result=""
     
-    for f in ${local_step_outd}/*.bam; do
+    for f in ${step_outd}/*.bam; do
         if [ -f $f ]; then
-            local_result=$f
+            result=$f
         fi
     done
 
-    echo ${local_result}
+    echo ${result}
 }
 
 ########
@@ -764,27 +854,27 @@ execute_download_aws_norm_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_icgcid_normalbam=$2
-    local_download_tries=$3
-    local_step_outd=$4
+    local normalbam=$1
+    local icgcid_normalbam=$2
+    local download_tries=$3
+    local step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_normalbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
-    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    local bam_file_name=`find_bam_filename ${step_outd}`
     
-    if [ -z "${local_bam_file_name}" ]; then
+    if [ -z "${bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2
         exit 1
     fi
 
     # Move file
-    mv ${local_bam_file_name} ${local_normalbam} || exit 1
+    mv ${bam_file_name} ${normalbam} || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -795,27 +885,27 @@ execute_download_aws_tum_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_tumorbam=$1
-    local_icgcid_tumorbam=$2
-    local_download_tries=$3
-    local_step_outd=$4
+    local tumorbam=$1
+    local icgcid_tumorbam=$2
+    local download_tries=$3
+    local step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
-    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    local bam_file_name=`find_bam_filename ${step_outd}`
     
-    if [ -z "${local_bam_file_name}" ]; then
+    if [ -z "${bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2
         exit 1
     fi
 
     # Move file
-    mv ${local_bam_file_name} ${local_tumorbam} || exit 1
+    mv ${bam_file_name} ${tumorbam} || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -826,27 +916,27 @@ execute_download_collab_norm_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_icgcid_normalbam=$2
-    local_download_tries=$3
-    local_step_outd=$4
+    local normalbam=$1
+    local icgcid_normalbam=$2
+    local download_tries=$3
+    local step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${local_icgcid_normalbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_normalbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
-    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    local bam_file_name=`find_bam_filename ${step_outd}`
     
-    if [ -z "${local_bam_file_name}" ]; then
+    if [ -z "${bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2
         exit 1
     fi
 
     # Move file
-    mv ${local_bam_file_name} ${local_normalbam} || exit 1
+    mv ${bam_file_name} ${normalbam} || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -857,27 +947,27 @@ execute_download_collab_tum_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_tumorbam=$1
-    local_icgcid_tumorbam=$2
-    local_download_tries=$3
-    local_step_outd=$4
+    local tumorbam=$1
+    local icgcid_tumorbam=$2
+    local download_tries=$3
+    local step_outd=$4
 
     # Download file
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${local_icgcid_tumorbam} --output-dir ${local_step_outd} > ${local_step_outd}/icgc-storage-client.log 2>&1 || exit 1
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
 
     # Find bam file name
-    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    local bam_file_name=`find_bam_filename ${step_outd}`
     
-    if [ -z "${local_bam_file_name}" ]; then
+    if [ -z "${bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2
         exit 1
     fi
 
     # Move file
-    mv ${local_bam_file_name} ${local_tumorbam} || exit 1
+    mv ${bam_file_name} ${tumorbam} || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -888,35 +978,38 @@ execute_download_ega_asp_norm_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_normalbam_file=$2
-    local_aspera_user=$3
-    local_aspera_passwd=$4
-    local_aspera_server=$5
-    local_egadecrypt_pwd=$6
-    local_download_tries=$7
-    local_step_outd=$8
-    local_max_trans_rate=100m
+    local normalbam=$1
+    local normalbam_file=$2
+    local aspera_user=$3
+    local aspera_passwd=$4
+    local aspera_server=$5
+    local egadecrypt_pwd=$6
+    local download_tries=$7
+    local step_outd=$8
+    local max_trans_rate=100m
     
     # Download file
-    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_normalbam_file} ${local_step_outd}/normal.bam.crypt > ${local_step_outd}/ascp.log 2>&1 || exit 1
+    ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${normalbam_file} ${step_outd}/normal.bam.crypt > ${step_outd}/ascp.log 2>&1 || exit 1
 
     # Decrypt file
-    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${local_egadecrypt_pwd} ${local_step_outd}/normal.bam.crypt > ${local_step_outd}/decryptor.log 2>&1 || exit 1
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/normal.bam.crypt > ${step_outd}/decryptor.log 2>&1 || exit 1
     
     # Obtain file name
-    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    local bam_file_name=`find_bam_filename ${step_outd}`
     
-    if [ -z "${local_bam_file_name}" ]; then
+    if [ -z "${bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2
         exit 1
     fi
 
     # Move file
-    mv ${local_bam_file_name} ${local_normalbam} || exit 1
+    mv ${bam_file_name} ${normalbam} || exit 1
 
+    # Remove encrypted file
+    rm ${step_outd}/normal.bam.crypt || exit 1
+    
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -927,35 +1020,38 @@ execute_download_ega_asp_tum_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_tumorbam=$1
-    local_tumorbam_file=$2
-    local_aspera_user=$3
-    local_aspera_passwd=$4
-    local_aspera_server=$5
-    local_egadecrypt_pwd=$6
-    local_download_tries=$7
-    local_step_outd=$8
-    local_max_trans_rate=100m
+    local tumorbam=$1
+    local tumorbam_file=$2
+    local aspera_user=$3
+    local aspera_passwd=$4
+    local aspera_server=$5
+    local egadecrypt_pwd=$6
+    local download_tries=$7
+    local step_outd=$8
+    local max_trans_rate=100m
 
     # Download file
-    ASPERA_SCP_PASS=${local_aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${local_max_trans_rate} ${local_aspera_user}@${local_aspera_server}:${local_tumorbam_file} ${local_step_outd}/tumor.bam.crypt > ${local_step_outd}/ascp.log 2>&1 || exit 1
+    ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${tumorbam_file} ${step_outd}/tumor.bam.crypt > ${step_outd}/ascp.log 2>&1 || exit 1
 
     # Decrypt file
-    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${local_egadecrypt_pwd} ${local_step_outd}/tumor.bam.crypt > ${local_step_outd}/decryptor.log 2>&1 || exit 1
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/tumor.bam.crypt > ${step_outd}/decryptor.log 2>&1 || exit 1
 
     # Obtain file name
-    local_bam_file_name=`find_bam_filename ${local_step_outd}`
+    local bam_file_name=`find_bam_filename ${step_outd}`
     
-    if [ -z "${local_bam_file_name}" ]; then
+    if [ -z "${bam_file_name}" ]; then
         echo "Error: bam file not found after download process was completed" >&2
         exit 1
     fi
 
     # Move file
-    mv ${local_bam_file_name} ${local_tumorbam} || exit 1
+    mv ${bam_file_name} ${tumorbam} || exit 1
+
+    # Remove encrypted file
+    rm ${step_outd}/tumor.bam.crypt || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -966,24 +1062,24 @@ execute_index_norm_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_step_outd=$2
+    local normalbam=$1
+    local step_outd=$2
 
     # Index normal bam file if necessary
-    if [ ! -f ${local_normalbam}.bai ]; then
+    if [ ! -f ${normalbam}.bai ]; then
 
         # Activate conda environment
-        conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+        conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
         # Execute samtools
-        samtools index ${local_normalbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1
+        samtools index ${normalbam} > ${step_outd}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
-        conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+        conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
     fi
     
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -994,28 +1090,96 @@ execute_sort_norm_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_step_outd=$2
-    local_cpus=$3
+    local normalbam=$1
+    local step_outd=$2
+    local cpus=$3
 
     # Activate conda environment
-    conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
-    # Execute samtools
-    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_normalbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
-    # NOTE: -m option is used here to increase the maximum memory per
-    # thread. One lateral efect of this is that the number of tmp files
-    # generated is decreased. This constitutes one possible way to avoid
-    # the "Too many open files" error reported by samtools
+    # Verify if bam file is already sorted
+    local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l` || exit 1
+    if [ ${bam_is_sorted} -eq 1 ]; then
+        echo "Warning: bam file is already sorted"
+    else
+        # Execute samtools
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        # NOTE: -m option is used here to increase the maximum memory per
+        # thread. One lateral efect of this is that the number of tmp files
+        # generated is decreased. This constitutes one possible way to avoid
+        # the "Too many open files" error reported by samtools
+
+        # Replace initial bam file by the sorted one
+        mv ${step_outd}/sorted.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
+    fi
     
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
-
-    # Replace initial bam file by the sorted one
-    mv ${local_step_outd}/sorted.bam ${local_normalbam} 2> ${local_step_outd}/mv.log || exit 1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+execute_filter_norm_bam_contigs()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=$1
+    local normalbam=$2
+    local step_outd=$3
+
+    # Activate conda environment
+    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Generate bed file for genome reference
+    ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    
+    # Filter normal bam file
+    samtools view -b -L ${step_outd}/genref.bed ${normalbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
+
+    # Replace initial bam file by the filtered one
+    mv ${step_outd}/filtered.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+execute_filter_tum_bam_contigs()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=$1
+    local tumorbam=$2
+    local step_outd=$3
+
+    # Activate conda environment
+    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Generate bed file for genome reference
+    ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    
+    # Filter tumor bam file
+    samtools view -b -L ${step_outd}/genref.bed ${tumorbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
+
+    # Replace initial bam file by the filtered one
+    mv ${step_outd}/filtered.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -1026,28 +1190,34 @@ execute_sort_tum_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_tumorbam=$1
-    local_step_outd=$2
-    local_cpus=$3
-
+    local tumorbam=$1
+    local step_outd=$2
+    local cpus=$3
+    
     # Activate conda environment
-    conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
-    # Execute samtools
-    samtools sort -T ${local_step_outd} -o ${local_step_outd}/sorted.bam -m 2G -@ ${local_cpus} ${local_tumorbam} >  ${local_step_outd}/samtools.log 2>&1 || exit 1
-    # NOTE: -m option is used here to increase the maximum memory per
-    # thread. One lateral efect of this is that the number of tmp files
-    # generated is decreased. This constitutes one possible way to avoid
-    # the "Too many open files" error reported by samtools
+    # Verify if bam file is already sorted
+    local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l` || exit 1
+    if [ ${bam_is_sorted} -eq 1 ]; then
+        echo "Warning: bam file is already sorted"
+    else
+        # Execute samtools
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        # NOTE: -m option is used here to increase the maximum memory per
+        # thread. One lateral efect of this is that the number of tmp files
+        # generated is decreased. This constitutes one possible way to avoid
+        # the "Too many open files" error reported by samtools
+
+        # Replace initial bam file by the sorted one
+        mv ${step_outd}/sorted.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
+    fi
     
     # Deactivate conda environment
-    conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
-
-    # Replace initial bam file by the sorted one
-    mv ${local_step_outd}/sorted.bam ${local_tumorbam} 2> ${local_step_outd}/mv.log || exit 1
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -1058,24 +1228,24 @@ execute_index_tum_bam()
     display_begin_step_message
 
     # Initialize variables
-    local_tumorbam=$1
-    local_step_outd=$2
+    local tumorbam=$1
+    local step_outd=$2
 
     # Index tumor bam file if necessary
-    if [ ! -f ${local_tumorbam}.bai ]; then
+    if [ ! -f ${tumorbam}.bai ]; then
 
         # Activate conda environment
-        conda activate base > ${local_step_outd}/conda_activate.log 2>&1 || exit 1
+        conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
         # Execute samtools
-        samtools index ${local_tumorbam} > ${local_step_outd}/samtools.log 2>&1 || exit 1
+        samtools index ${tumorbam} > ${step_outd}/samtools.log 2>&1 || exit 1
 
         # Deactivate conda environment
-        conda deactivate > ${local_step_outd}/conda_deactivate.log 2>&1
+        conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
     fi
     
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }
@@ -1086,18 +1256,18 @@ execute_delete_bam_files()
     display_begin_step_message
 
     # Initialize variables
-    local_normalbam=$1
-    local_tumorbam=$2
-    local_step_outd=$3
+    local normalbam=$1
+    local tumorbam=$2
+    local step_outd=$3
 
     # Delete normal bam file
-    rm ${local_normalbam} > ${local_step_outd}/rm_norm.log 2>&1 || exit 1
+    rm ${normalbam} > ${step_outd}/rm_norm.log 2>&1 || exit 1
     
     # Delete tumor bam file
-    rm ${local_tumorbam} > ${local_step_outd}/rm_tum.log 2>&1 || exit 1
+    rm ${tumorbam} > ${step_outd}/rm_tum.log 2>&1 || exit 1
 
     # Create file indicating that execution was finished
-    touch ${local_step_outd}/finished
+    touch ${step_outd}/finished
 
     display_end_step_message
 }

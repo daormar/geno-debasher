@@ -1,7 +1,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. ${bindir}/bam_utils_lib.sh
+. ${bindir}/bam_utils_lib
 
 ########
 print_desc()
@@ -144,10 +144,10 @@ create_dirs()
 bam_download_and_npz_conv()
 {
     # Initialize variables
-    local_datadir=$1
-    local_egaid=$2
-    local_egastr=$3
-    local_egacred=$4
+    local datadir=$1
+    local egaid=$2
+    local egastr=$3
+    local egacred=$4
 
     ### Download bam file
 
@@ -155,7 +155,7 @@ bam_download_and_npz_conv()
     conda activate pyega3 || exit 1
 
     # Download file
-    pyega3 -c ${local_egastr} -cf ${local_egacred} fetch ${local_egaid} ${local_datadir}/${local_egaid}.bam || exit 1
+    pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} ${datadir}/${egaid}.bam || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -166,7 +166,7 @@ bam_download_and_npz_conv()
     conda activate base || exit 1
 
     # Index file
-    samtools index ${local_datadir}/${local_egaid}.bam || exit 1
+    samtools index ${datadir}/${egaid}.bam || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -178,7 +178,7 @@ bam_download_and_npz_conv()
 
     # Execute conversion
     BINSIZE=5000
-    WisecondorX convert ${local_datadir}/${local_egaid}.bam ${local_datadir}/${local_egaid}.npz --binsize $BINSIZE || exit 1
+    WisecondorX convert ${datadir}/${egaid}.bam ${datadir}/${egaid}.npz --binsize $BINSIZE || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -188,15 +188,15 @@ bam_download_and_npz_conv()
 gen_reffile_wisecondorx()
 {
     # Initialize variables
-    local_datadir=$1
-    local_outf=$2
+    local datadir=$1
+    local outf=$2
 
     # Activate conda environment
     conda activate wisecondorx || exit 1
 
     # Convert tumor bam file into npz
     BINSIZE=5000
-    WisecondorX newref ${local_datadir}/*.npz ${local_outf} --binsize $BINSIZE || exit 1
+    WisecondorX newref ${datadir}/*.npz ${outf} --binsize $BINSIZE || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -206,17 +206,17 @@ gen_reffile_wisecondorx()
 remove_dir()
 {
     # Initialize variables
-    local_dir=$1
+    local dir=$1
 
     # Remove directory
-    rm -rf ${local_dir} || exit 1
+    rm -rf ${dir} || exit 1
 }
 
 ########
 extract_egaid_from_entry()
 {
-    local_entry=$1
-    echo ${local_entry} | $AWK '{print $1}'
+    local entry=$1
+    echo ${entry} | $AWK '{print $1}'
 }
 
 ########
@@ -241,43 +241,44 @@ get_pars_remove_dir()
 process_pars()
 {
     # Read file with list of EGA ids
+    local jids=""
     while read entry; do
         # Extract EGA id
         egaid=`extract_egaid_from_entry $entry`
         
         # Process EGA id
-        local_stepname=bam_download_and_npz_conv
-        local_stepinfo=`get_step_info ${local_stepname} ${infofile}`
-        local_jobdeps=""
-        local_script_pars=`get_pars_${local_stepname}`
-        launch_step ${local_stepname} "${local_stepinfo}" "${local_jobdeps}" "${local_script_pars}" local_jid
+        local stepname=bam_download_and_npz_conv
+        local stepinfo=`get_step_info ${stepname} ${infofile}`
+        local jobdeps=""
+        local script_pars=`get_pars_${stepname}`
+        launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
 
         # Update variables storing jids
-        if [ -z "${local_jids}" ]; then
-            local_jids=${local_jid}
+        if [ -z "${jids}" ]; then
+            jids=${jid}
         else
-            local_jids="${local_jids},${local_jid}"
+            jids="${jids},${jid}"
         fi
 
     done < ${egalist}
 
     # Generate reference file
-    local_stepname=gen_reffile_wisecondorx
-    local_stepinfo=`get_step_info ${local_stepname} ${infofile}`
-    local_jobdeps=`apply_deptype_to_jobids ${local_jids} afterok`
-    local_script_pars=`get_pars_${local_stepname}`
-    launch_step ${local_stepname} "${local_stepinfo}" "${local_jobdeps}" "${local_script_pars}" local_jid
+    local stepname=gen_reffile_wisecondorx
+    local stepinfo=`get_step_info ${stepname} ${infofile}`
+    local jobdeps=`apply_deptype_to_jobids ${jids} afterok`
+    local script_pars=`get_pars_${stepname}`
+    launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
 
     # Update variables storing jids
-    local_jids="${local_jids},${local_jid}"
+    jids="${jids},${jid}"
 
     if [ ${debug} -eq 0 ]; then
         # Remove directory with temporary files
-        local_stepname=remove_dir
-        local_stepinfo=`get_step_info ${local_stepname} ${infofile}`
-        local_jobdeps=`apply_deptype_to_jobids ${local_jids} afterok`
-        local_script_pars=`get_pars_${local_stepname}`
-        launch_step ${local_stepname} "${local_stepinfo}" "${local_jobdeps}" "${local_script_pars}" local_jid
+        local stepname=remove_dir
+        local stepinfo=`get_step_info ${stepname} ${infofile}`
+        local jobdeps=`apply_deptype_to_jobids ${jids} afterok`
+        local script_pars=`get_pars_${stepname}`
+        launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
     fi
 }
 

@@ -1114,19 +1114,25 @@ execute_sort_norm_bam()
 
     # Activate conda environment
     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-    
-    # Execute samtools
-    samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
-    # NOTE: -m option is used here to increase the maximum memory per
-    # thread. One lateral efect of this is that the number of tmp files
-    # generated is decreased. This constitutes one possible way to avoid
-    # the "Too many open files" error reported by samtools
+
+    # Verify if bam file is already sorted
+    local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l`
+    if [ ${bam_is_sorted} -eq 1 ]; then
+        echo "Warning: bam file is already sorted"
+    else
+        # Execute samtools
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        # NOTE: -m option is used here to increase the maximum memory per
+        # thread. One lateral efect of this is that the number of tmp files
+        # generated is decreased. This constitutes one possible way to avoid
+        # the "Too many open files" error reported by samtools
+
+        # Replace initial bam file by the sorted one
+        mv ${step_outd}/sorted.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
+    fi
     
     # Deactivate conda environment
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-    # Replace initial bam file by the sorted one
-    mv ${step_outd}/sorted.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
 
     # Create file indicating that execution was finished
     touch ${step_outd}/finished
@@ -1205,22 +1211,28 @@ execute_sort_tum_bam()
     local tumorbam=$1
     local step_outd=$2
     local cpus=$3
-
+    
     # Activate conda environment
     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
-    # Execute samtools
-    samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
-    # NOTE: -m option is used here to increase the maximum memory per
-    # thread. One lateral efect of this is that the number of tmp files
-    # generated is decreased. This constitutes one possible way to avoid
-    # the "Too many open files" error reported by samtools
+    # Verify if bam file is already sorted
+    local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l`
+    if [ ${bam_is_sorted} -eq 1 ]; then
+        echo "Warning: bam file is already sorted"
+    else
+        # Execute samtools
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        # NOTE: -m option is used here to increase the maximum memory per
+        # thread. One lateral efect of this is that the number of tmp files
+        # generated is decreased. This constitutes one possible way to avoid
+        # the "Too many open files" error reported by samtools
+
+        # Replace initial bam file by the sorted one
+        mv ${step_outd}/sorted.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
+    fi
     
     # Deactivate conda environment
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-    # Replace initial bam file by the sorted one
-    mv ${step_outd}/sorted.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
 
     # Create file indicating that execution was finished
     touch ${step_outd}/finished

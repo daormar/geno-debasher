@@ -68,24 +68,6 @@ get_file_timestamp()
 }
 
 ########
-check_script_was_modified()
-{
-    # Init variables
-    local script_name=$1
-
-    # Check if previous script exists
-    if [ -f ${script_name}.last_exec ]; then
-        # Check if the script was modified
-        local result=0
-        $DIFF ${script_name} ${script_name}.last_exec >${script_name}.diff 2>&1 || local result=1
-        echo ${result}
-    else
-        # No previous script exists
-        echo 0
-    fi
-}
-
-########
 get_account_opt()
 {
     local account=$1

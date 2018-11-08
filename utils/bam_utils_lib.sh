@@ -1151,7 +1151,7 @@ execute_filter_norm_bam_contigs()
     ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
     
     # Filter normal bam file
-    samtools view -b -L ${step_outd}/genref.bed $normalbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
+    samtools view -b -L ${step_outd}/genref.bed ${normalbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
 
     # Replace initial bam file by the filtered one
     mv ${step_outd}/filtered.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
@@ -1182,7 +1182,7 @@ execute_filter_tum_bam_contigs()
     ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
     
     # Filter tumor bam file
-    samtools view -b -L ${step_outd}/genref.bed $tumorbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
+    samtools view -b -L ${step_outd}/genref.bed ${tumorbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
 
     # Replace initial bam file by the filtered one
     mv ${step_outd}/filtered.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1

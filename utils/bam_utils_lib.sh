@@ -57,7 +57,7 @@ create_script()
 ########
 get_lib_timestamp()
 {
-    $GREP "Lib time stamp:" ${bindir}/bam_utils_lib | $AWK '{printf"%s",$NF}'
+    $GREP "Lib time stamp:" ${bindir}/bam_utils_lib | $AWK '{if(NF==5) printf"%s",$NF}'
 }
 
 ########

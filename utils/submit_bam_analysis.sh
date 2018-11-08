@@ -586,24 +586,6 @@ get_jobdeps()
 }
 
 ########
-get_prev_exec_suffix()
-{
-    echo ".prev_exec"
-}
-
-########
-save_prev_exec()
-{
-    local script_filename=$1
-    local prev_exec_suff=`get_prev_exec_suffix`
-    
-    # Save file status
-    if [ -f ${script_filename} ]; then
-        cp -p ${script_filename} ${script_filename}${prev_exec_suff}
-    fi
-}
-
-########
 archive_script()
 {
     local script_filename=$1
@@ -622,25 +604,6 @@ check_script_is_older_than_lib()
     if [ ${script_timestamp} -lt ${lib_timestamp} ]; then
         echo 1
     else
-        echo 0
-    fi
-}
-
-########
-check_script_was_modified()
-{
-    # Init variables
-    local script_name=$1
-    local prev_exec_suff=`get_prev_exec_suffix`
-
-    # Check if previous script exists
-    if [ -f ${script_name}${prev_exec_suff} ]; then
-        # Check if the script was modified
-        local result=0
-        $DIFF ${script_name} ${script_name}${prev_exec_suff} >${script_name}.diff 2>&1 || local result=1
-        echo ${result}
-    else
-        # No previous script exists
         echo 0
     fi
 }
@@ -672,10 +635,7 @@ execute_step()
         local step_function=`get_step_function ${stepname}`
         local script_pars_funcname=`get_script_pars_funcname ${stepname}`
         local script_pars=`${script_pars_funcname}`
-        
-        # Save last execution
-        save_prev_exec ${script_filename}
-        
+                
         # Create script
         create_script ${script_filename} ${step_function} "${script_pars}"
 
@@ -691,8 +651,7 @@ execute_step()
         # Update variables storing jids
         step_jids="${step_jids}:${!stepname_jid}"
     else
-        local prev_exec_suff=`get_prev_exec_suffix`
-        prev_exec_script_older_than_lib=`check_script_is_older_than_lib ${script_filename}${prev_exec_suff}`
+        prev_exec_script_older_than_lib=`check_script_is_older_than_lib ${script_filename}`
         if [ ${prev_exec_script_older_than_lib} -eq 1 ]; then
             echo "Warning: last execution of this script used an outdated shell library">&2
         fi

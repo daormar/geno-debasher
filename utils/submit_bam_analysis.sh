@@ -599,7 +599,7 @@ save_prev_exec()
     
     # Save file status
     if [ -f ${script_filename} ]; then
-        cp ${script_filename} ${script_filename}${prev_exec_suff}
+        cp -p ${script_filename} ${script_filename}${prev_exec_suff}
     fi
 }
 

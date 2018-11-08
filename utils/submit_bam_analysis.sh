@@ -586,16 +586,44 @@ get_jobdeps()
 }
 
 ########
+get_last_exec_suffix()
+{
+    echo ".last_exec"
+}
+
+########
+save_last_exec()
+{
+    local script_filename=$1
+    local last_exec_suff=`get_last_exec_suffix`
+    
+    # Save file status
+    if [ -f ${script_filename} ]; then
+        cp ${script_filename} ${script_filename}${last_exec_suff}
+    fi
+}
+
+########
 archive_script()
 {
     local script_filename=$1
-    
-    # Save file status
-    cp ${script_filename} ${script_filename}.last_exec
-    
+        
     # Archive script with date info
     local curr_date=`date '+%Y_%m_%d'`
     cp ${script_filename} ${script_filename}.${curr_date}
+}
+
+########
+check_script_is_older_than_lib()
+{
+    local script_filename=$1
+    lib_timestamp=`get_lib_timestamp`
+    script_timestamp=`get_file_timestamp ${script_filename}`
+    if [ ${script_timestamp} -lt ${lib_timestamp} ]; then
+        echo 1
+    else
+        echo 0
+    fi
 }
 
 ########
@@ -614,20 +642,27 @@ execute_step()
     
     # Execute step
 
-    ## Create script
-    local script_filename=`get_script_filename ${stepname}`
-    local step_function=`get_step_function ${stepname}`
-    local script_pars_funcname=`get_script_pars_funcname ${stepname}`
-    local script_pars=`${script_pars_funcname}`
-    create_script ${script_filename} ${step_function} "${script_pars}"
-
     ## Obtain step status
-    script_modified=`check_script_was_modified ${script_filename}`
     local status=`${bindir}/get_analysis_status -d ${dirname} -s "${stepname}"`
     echo "STEP: ${stepname} ; STATUS: ${status}" >&2
 
     ## Decide whether step should be executed
     if [ "${status}" != "FINISHED" ]; then
+        # Initialize script variables
+        local script_filename=`get_script_filename ${stepname}`
+        local step_function=`get_step_function ${stepname}`
+        local script_pars_funcname=`get_script_pars_funcname ${stepname}`
+        local script_pars=`${script_pars_funcname}`
+        
+        # Save last execution
+        save_last_exec ${script_filename}
+        
+        # Create script
+        create_script ${script_filename} ${step_function} "${script_pars}"
+
+        # Archive script
+        archive_script ${script_filename}
+
         # Execute script
         reset_outdir_for_step ${dirname} ${stepname} || return 1
         local jobdeps="`get_jobdeps ${jobdeps_spec}`"
@@ -636,12 +671,11 @@ execute_step()
         
         # Update variables storing jids
         step_jids="${step_jids}:${!stepname_jid}"
-
-        # Archive script
-        archive_script ${script_filename}
     else
-        if [ ${script_modified} -eq 1 ]; then
-            echo "Warning: script was changed for this step with respect to last execution. See changes in file ${script_filename}.diff">&2
+        local last_exec_suff=`get_last_exec_suffix`
+        last_exec_script_older_than_lib=`check_script_is_older_than_lib ${script_filename}${last_exec_suff}`
+        if [ ${last_exec_script_older_than_lib} -eq 1 ]; then
+            echo "Warning: last execution of this script used an outdated shell library">&2
         fi
     fi
 }

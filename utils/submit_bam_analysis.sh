@@ -599,11 +599,18 @@ archive_script()
 check_script_is_older_than_lib()
 {
     local script_filename=$1
-    lib_timestamp=`get_lib_timestamp`
-    script_timestamp=`get_file_timestamp ${script_filename}`
-    if [ ${script_timestamp} -lt ${lib_timestamp} ]; then
-        echo 1
+    # Check if script exists
+    if [ -f ${script_filename} ]; then
+        # script exists
+        lib_timestamp=`get_lib_timestamp`
+        script_timestamp=`get_file_timestamp ${script_filename}`
+        if [ ${script_timestamp} -lt ${lib_timestamp} ]; then
+            echo 1
+        else
+            echo 0
+        fi
     else
+        # script does not exist
         echo 0
     fi
 }

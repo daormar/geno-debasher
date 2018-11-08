@@ -1116,7 +1116,7 @@ execute_sort_norm_bam()
     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Verify if bam file is already sorted
-    local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l`
+    local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l` || exit 1
     if [ ${bam_is_sorted} -eq 1 ]; then
         echo "Warning: bam file is already sorted"
     else
@@ -1216,7 +1216,7 @@ execute_sort_tum_bam()
     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Verify if bam file is already sorted
-    local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l`
+    local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l` || exit 1
     if [ ${bam_is_sorted} -eq 1 ]; then
         echo "Warning: bam file is already sorted"
     else

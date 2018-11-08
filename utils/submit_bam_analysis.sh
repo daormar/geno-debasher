@@ -658,6 +658,7 @@ execute_step()
         # Update variables storing jids
         step_jids="${step_jids}:${!stepname_jid}"
     else
+        local script_filename=`get_script_filename ${stepname}`
         prev_exec_script_older_than_lib=`check_script_is_older_than_lib ${script_filename}`
         if [ ${prev_exec_script_older_than_lib} -eq 1 ]; then
             echo "Warning: last execution of this script used an outdated shell library">&2

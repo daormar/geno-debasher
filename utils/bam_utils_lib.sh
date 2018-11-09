@@ -1106,7 +1106,7 @@ execute_sort_norm_bam()
         echo "Warning: bam file is already sorted"
     else
         # Execute samtools
-        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
         # NOTE: -m option is used here to increase the maximum memory per
         # thread. One lateral efect of this is that the number of tmp files
         # generated is decreased. This constitutes one possible way to avoid
@@ -1206,7 +1206,7 @@ execute_sort_tum_bam()
         echo "Warning: bam file is already sorted"
     else
         # Execute samtools
-        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 14G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
         # NOTE: -m option is used here to increase the maximum memory per
         # thread. One lateral efect of this is that the number of tmp files
         # generated is decreased. This constitutes one possible way to avoid

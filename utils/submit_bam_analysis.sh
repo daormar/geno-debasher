@@ -393,7 +393,7 @@ create_dirs()
 ########
 print_command_line()
 {
-    echo ${command_name} ${input_pars} > ${outd}/command_line.sh
+    echo ${command_line} > ${outd}/command_line.sh
 }
 
 ########
@@ -716,8 +716,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Save command line
-input_pars="$*"
-command_name=$0
+command_line="$0 $*"
 
 read_pars $@ || exit 1
 

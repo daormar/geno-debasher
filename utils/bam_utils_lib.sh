@@ -1065,18 +1065,21 @@ execute_index_norm_bam()
     local normalbam=$1
     local step_outd=$2
 
-    # Index normal bam file if necessary
-    if [ ! -f ${normalbam}.bai ]; then
-
-        # Activate conda environment
-        conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-        # Execute samtools
-        samtools index ${normalbam} > ${step_outd}/samtools.log 2>&1 || exit 1
-
-        # Deactivate conda environment
-        conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    # Remove previous index if one was created
+    if [ -f ${normalbam}.bai ]; then
+        rm ${normalbam}.bai || exit 1
     fi
+        
+    # Index normal bam file
+
+    # Activate conda environment
+    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Execute samtools
+    samtools index ${normalbam} > ${step_outd}/samtools.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
     
     # Create file indicating that execution was finished
     touch ${step_outd}/finished
@@ -1231,18 +1234,21 @@ execute_index_tum_bam()
     local tumorbam=$1
     local step_outd=$2
 
-    # Index tumor bam file if necessary
-    if [ ! -f ${tumorbam}.bai ]; then
-
-        # Activate conda environment
-        conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-        # Execute samtools
-        samtools index ${tumorbam} > ${step_outd}/samtools.log 2>&1 || exit 1
-
-        # Deactivate conda environment
-        conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    # Remove previous index if one was created
+    if [ -f ${tumorbam}.bai ]; then
+        rm ${tumorbam}.bai || exit 1
     fi
+
+    # Index tumor bam file
+
+    # Activate conda environment
+    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    
+    # Execute samtools
+    samtools index ${tumorbam} > ${step_outd}/samtools.log 2>&1 || exit 1
+
+    # Deactivate conda environment
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
     
     # Create file indicating that execution was finished
     touch ${step_outd}/finished

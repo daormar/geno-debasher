@@ -54,6 +54,13 @@ usage()
 }
 
 ########
+save_command_line()
+{
+    input_pars="$*"
+    command_name=$0
+}
+
+########
 read_pars()
 {
     r_given=0
@@ -384,6 +391,12 @@ create_dirs()
 }
 
 ########
+print_command_line()
+{
+    echo ${command_name} ${input_pars} > ${outd}/command_line.sh
+}
+
+########
 set_bam_filenames()
 {
     if [ ${extn_given} -eq 1 ]; then
@@ -702,6 +715,10 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# Save command line
+input_pars="$*"
+command_name=$0
+
 read_pars $@ || exit 1
 
 check_pars || exit 1
@@ -709,6 +726,8 @@ check_pars || exit 1
 print_pars || exit 1
 
 create_dirs || exit 1
+
+print_command_line || exit 1
 
 set_bam_filenames || exit 1
 

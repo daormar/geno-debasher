@@ -689,11 +689,25 @@ execute_facets()
     local snpvcf=$3
     local step_outd=$4
 
+    # Activate conda environment if needed
+    if [ -z "${FACETS_HOME_DIR}" ]; then
+        conda activate facets > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    fi
+        
     # Execute snp-pileup
-    ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} > ${step_outd}/snp-pileup.log 2>&1 || exit 1
+    if [ -z "${FACETS_HOME_DIR}" ]; then
+        snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} > ${step_outd}/snp-pileup.log 2>&1 || exit 1
+    else
+        ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} > ${step_outd}/snp-pileup.log 2>&1 || exit 1
+    fi
     
     # Execute facets
     ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv > ${step_outd}/facets.out 2> ${step_outd}/run_facets.log || exit 1
+
+    # Deactivate conda environment if needed
+    if [ -z "${FACETS_HOME_DIR}" ]; then
+        conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    fi
 
     # Create file indicating that execution was finished
     touch ${step_outd}/finished

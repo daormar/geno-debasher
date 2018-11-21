@@ -302,6 +302,48 @@ check_pars()
             echo "Warning! output directory does exist" >&2 
         fi
     fi
+
+    if [ ${cr_given} -eq 1 ]; then
+        if [ ! -f ${callregf} ]; then
+            echo "Error! file ${callregf} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${wcr_given} -eq 1 ]; then
+        if [ ! -f ${wcref} ]; then
+            echo "Error! file ${wcref} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${sv_given} -eq 1 ]; then
+        if [ ! -f ${snpvcf} ]; then
+            echo "Error! file ${snpvcf} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${sg_given} -eq 1 ]; then
+        if [ ! -f ${snpgccorr} ]; then
+            echo "Error! file ${snpgcorr} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${egacred_given} -eq 1 ]; then
+        if [ ! -f ${egacred} ]; then
+            echo "Error! file ${egacred} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${egadecrpwd_given} -eq 1 ]; then
+        if [ ! -f ${egadecrpwd} ]; then
+            echo "Error! file ${egadecrpwd} does not exist" >&2
+            exit 1
+        fi
+    fi
 }
 
 ########

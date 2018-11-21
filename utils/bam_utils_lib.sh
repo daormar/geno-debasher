@@ -96,7 +96,7 @@ get_script_filename()
 {
     local stepname=$1
     
-    echo ${dirname}/scripts/execute_${stepname}
+    echo ${dirname}/scripts/${stepname}
 }
 
 ########
@@ -114,7 +114,7 @@ get_step_function()
 
     local stepname_wo_suffix=`remove_suffix_from_stepname ${stepname}`
     
-    echo "execute_${stepname_wo_suffix}"
+    echo "${stepname_wo_suffix}"
 }
 
 ########
@@ -377,7 +377,7 @@ get_callreg_opt()
 }
 
 ########
-execute_manta_germline()
+manta_germline()
 {
     display_begin_step_message
 
@@ -410,7 +410,7 @@ execute_manta_germline()
 }
 
 ########
-execute_manta_somatic()
+manta_somatic()
 {
     display_begin_step_message
 
@@ -462,7 +462,7 @@ get_indel_cand_opt()
 }
 
 ########
-execute_strelka_germline()
+strelka_germline()
 {
     display_begin_step_message
 
@@ -495,7 +495,7 @@ execute_strelka_germline()
 }
 
 ########
-execute_strelka_somatic()
+strelka_somatic()
 {
     display_begin_step_message
 
@@ -533,7 +533,7 @@ execute_strelka_somatic()
 }
 
 ########
-execute_msisensor()
+msisensor()
 {
     display_begin_step_message
 
@@ -563,7 +563,7 @@ execute_msisensor()
 }
 
 ########
-execute_platypus_germline_conda()
+platypus_germline_conda()
 {
     display_begin_step_message
     
@@ -588,7 +588,7 @@ execute_platypus_germline_conda()
 }
 
 ########
-execute_platypus_germline_local()
+platypus_germline_local()
 {
     display_begin_step_message
 
@@ -607,7 +607,7 @@ execute_platypus_germline_local()
 }
 
 ########
-execute_platypus_germline()
+platypus_germline()
 {
     # Initialize variables
     local ref=$1
@@ -615,14 +615,14 @@ execute_platypus_germline()
     local step_outd=$3
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
-        execute_platypus_germline_conda ${ref} ${normalbam} ${step_outd}
+        platypus_germline_conda ${ref} ${normalbam} ${step_outd}
     else
-        execute_platypus_germline_local ${ref} ${normalbam} ${step_outd}
+        platypus_germline_local ${ref} ${normalbam} ${step_outd}
     fi
 }
 
 ########
-execute_cnvkit()
+cnvkit()
 {
     display_begin_step_message
 
@@ -649,7 +649,7 @@ execute_cnvkit()
 }
 
 ########
-execute_wisecondorx()
+wisecondorx()
 {
     display_begin_step_message
 
@@ -679,7 +679,7 @@ execute_wisecondorx()
 }
 
 ########
-execute_facets()
+facets()
 {
     display_begin_step_message
 
@@ -716,7 +716,7 @@ execute_facets()
 }
 
 ########
-execute_ascatngs()
+ascatngs()
 {
     display_begin_step_message
 
@@ -786,7 +786,7 @@ ega_download_retry()
 }
 
 ########
-execute_download_ega_norm_bam()
+download_ega_norm_bam()
 {
     display_begin_step_message
 
@@ -817,7 +817,7 @@ execute_download_ega_norm_bam()
 }
 
 ########
-execute_download_ega_tum_bam()
+download_ega_tum_bam()
 {
     display_begin_step_message
 
@@ -863,7 +863,7 @@ find_bam_filename()
 }
 
 ########
-execute_download_aws_norm_bam()
+download_aws_norm_bam()
 {
     display_begin_step_message
 
@@ -894,7 +894,7 @@ execute_download_aws_norm_bam()
 }
 
 ########
-execute_download_aws_tum_bam()
+download_aws_tum_bam()
 {
     display_begin_step_message
 
@@ -925,7 +925,7 @@ execute_download_aws_tum_bam()
 }
 
 ########
-execute_download_collab_norm_bam()
+download_collab_norm_bam()
 {
     display_begin_step_message
 
@@ -956,7 +956,7 @@ execute_download_collab_norm_bam()
 }
 
 ########
-execute_download_collab_tum_bam()
+download_collab_tum_bam()
 {
     display_begin_step_message
 
@@ -987,7 +987,7 @@ execute_download_collab_tum_bam()
 }
 
 ########
-execute_download_ega_asp_norm_bam()
+download_ega_asp_norm_bam()
 {
     display_begin_step_message
 
@@ -1029,7 +1029,7 @@ execute_download_ega_asp_norm_bam()
 }
 
 ########
-execute_download_ega_asp_tum_bam()
+download_ega_asp_tum_bam()
 {
     display_begin_step_message
 
@@ -1071,7 +1071,7 @@ execute_download_ega_asp_tum_bam()
 }
 
 ########
-execute_index_norm_bam()
+index_norm_bam()
 {
     display_begin_step_message
 
@@ -1102,7 +1102,7 @@ execute_index_norm_bam()
 }
 
 ########
-execute_sort_norm_bam()
+sort_norm_bam()
 {
     display_begin_step_message
 
@@ -1140,7 +1140,7 @@ execute_sort_norm_bam()
 }
 
 ########
-execute_filter_norm_bam_contigs()
+filter_norm_bam_contigs()
 {
     display_begin_step_message
 
@@ -1171,7 +1171,7 @@ execute_filter_norm_bam_contigs()
 }
 
 ########
-execute_filter_tum_bam_contigs()
+filter_tum_bam_contigs()
 {
     display_begin_step_message
 
@@ -1202,7 +1202,7 @@ execute_filter_tum_bam_contigs()
 }
 
 ########
-execute_sort_tum_bam()
+sort_tum_bam()
 {
     display_begin_step_message
 
@@ -1240,7 +1240,7 @@ execute_sort_tum_bam()
 }
 
 ########
-execute_index_tum_bam()
+index_tum_bam()
 {
     display_begin_step_message
 
@@ -1271,7 +1271,7 @@ execute_index_tum_bam()
 }
 
 ########
-execute_delete_bam_files()
+delete_bam_files()
 {
     display_begin_step_message
 

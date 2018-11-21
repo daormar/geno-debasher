@@ -347,6 +347,50 @@ check_pars()
 }
 
 ########
+absolutize_file_paths()
+{
+    if [ ${r_given} -eq 1 ]; then   
+        ${ref}=`get_absolute_path ${ref}`
+    fi
+    
+    if [ ${m_given} -eq 1 ]; then
+        ${metadata}=`get_absolute_path ${metadata}`
+    fi
+
+    if [ ${a_given} -eq 1 ]; then   
+        ${afile}=`get_absolute_path ${afile}`
+    fi
+
+    if [ ${o_given} -eq 1 ]; then
+        ${outd}=`get_absolute_path ${outd}`
+    fi
+
+    if [ ${cr_given} -eq 1 ]; then
+        ${callregf}=`get_absolute_path ${callregf}`
+    fi
+
+    if [ ${wcr_given} -eq 1 ]; then
+        ${wcref}=`get_absolute_path ${wcref}`
+    fi
+
+    if [ ${sv_given} -eq 1 ]; then
+        ${snpvcf}=`get_absolute_path ${snpvcf}`
+    fi
+
+    if [ ${sg_given} -eq 1 ]; then
+        ${snpgccorr}=`get_absolute_path ${snpgccorr}`
+    fi
+
+    if [ ${egacred_given} -eq 1 ]; then
+        ${egacred}=`get_absolute_path ${egacred}`
+    fi
+
+    if [ ${egadecrpwd_given} -eq 1 ]; then
+        ${egadecrpwd}=`get_absolute_path ${egadecrpwd}`
+    fi
+}
+
+########
 print_pars()
 {
     if [ ${r_given} -eq 1 ]; then

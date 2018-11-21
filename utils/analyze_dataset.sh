@@ -49,7 +49,6 @@ usage()
 ########
 read_pars()
 {
-    NOFILE="<NONE>"
     r_given=0
     m_given=0
     a_given=0

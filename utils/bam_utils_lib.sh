@@ -1,6 +1,16 @@
 # *- bash -*
 
-########
+
+#############
+# CONSTANTS #
+#############
+
+NOFILE="<NONE>"
+
+#####################
+# GENERAL FUNCTIONS #
+#####################
+
 init_bash_shebang_var()
 {
     echo "#!${BASH}"
@@ -397,7 +407,7 @@ get_callreg_opt()
 {
     local callregf=$1
 
-    if [ ${callregf} = "NONE" ]; then
+    if [ ${callregf} = ${NOFILE} ]; then
         echo ""
     else
         echo "--callRegions ${callregf}"

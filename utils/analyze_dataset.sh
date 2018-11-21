@@ -66,7 +66,7 @@ read_pars()
     egastr_given=0
     egastr=50
     egacred_given=0
-    egacred="cred.json"
+    egacred=${NOFILE}
     asperausr_given=0
     asperausr=${NOFILE}
     asperapwd_given=0

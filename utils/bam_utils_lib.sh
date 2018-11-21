@@ -5,7 +5,7 @@
 # CONSTANTS #
 #############
 
-NOFILE="<NONE>"
+NOFILE="_NONE_"
 
 #####################
 # GENERAL FUNCTIONS #

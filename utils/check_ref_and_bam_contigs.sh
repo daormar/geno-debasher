@@ -107,7 +107,7 @@ print_pars()
 ########
 filter_bam_stats()
 {
-    ${AWK} '{if($3>0 && $4>0) printf"%s %d\n",$1,$2}'
+    ${AWK} '{if($3>0 || $4>0) printf"%s %d\n",$1,$2}'
 }
 
 ########
@@ -117,16 +117,16 @@ process_pars()
 
     # Obtain reference contigs
     samtools faidx ${ref}
-
     $AWK '{printf "%s %d\n",$1,$2}' ${ref}.fai | ${SORT} > ${outpref}.refcontigs
 
     # Obtain bam contigs
-    samtools idxstats $bam | filter_bam_stats | ${SORT} > ${outpref}.bamcontigs || exit 1
+    samtools idxstats $bam > ${outpref}.bamstats || exit 1
+    cat ${outpref}.bamstats | filter_bam_stats | ${SORT} > ${outpref}.bamcontigs || exit 1
     
     conda deactivate
 
     # Execute diff command
-    $DIFF ${outpref}.refcontigs ${outpref}.bamcontigs > ${outpref}.contigdiffs || exit 1
+    $DIFF ${outpref}.refcontigs ${outpref}.bamcontigs > ${outpref}.contigdiffs || { echo "Contigs in reference and bam files differ!" >&2 ; exit 1; }
 }
 
 ########

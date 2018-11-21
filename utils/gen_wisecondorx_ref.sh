@@ -41,7 +41,7 @@ read_pars()
     egastr_given=0
     egastr=50
     egacred_given=0
-    egacred="cred.json"
+    egacred=${NOFILE}
     debug=0
     while [ $# -ne 0 ]; do
         case $1 in

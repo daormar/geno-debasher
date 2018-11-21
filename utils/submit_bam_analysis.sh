@@ -63,6 +63,7 @@ save_command_line()
 ########
 read_pars()
 {
+    NOFILE="<NONE>"
     r_given=0
     n_given=0
     t_given=0
@@ -74,13 +75,13 @@ read_pars()
     o_given=0
     download_tries=5
     cr_given=0
-    callregf="NONE"
+    callregf=${NOFILE}
     wcr_given=0
-    wcref="NONE"
+    wcref=${NOFILE}
     sv_given=0
-    snpvcf="NONE"
+    snpvcf=${NOFILE}
     sg_given=0
-    snpgccorr="NONE"
+    snpgccorr=${NOFILE}
     mc_given=0
     malesexchr="Y"
     egastr_given=0
@@ -88,13 +89,13 @@ read_pars()
     egacred_given=0
     egacred="cred.json"
     asperausr_given=0
-    asperausr="NONE"
+    asperausr=${NOFILE}
     asperapwd_given=0
-    asperapwd="NONE"
+    asperapwd=${NOFILE}
     asperaserv_given=0
-    asperaserv="NONE"
+    asperaserv=${NOFILE}
     egadecrpwd_given=0
-    egadecrpwd="NONE"
+    egadecrpwd=${NOFILE}
     debug=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -304,42 +305,42 @@ check_pars()
     fi
 
     if [ ${cr_given} -eq 1 ]; then
-        if [ ! -f ${callregf} ]; then
+        if [ "${callregf}" != ${NOFILE} -a ! -f ${callregf} ]; then
             echo "Error! file ${callregf} does not exist" >&2
             exit 1
         fi
     fi
 
     if [ ${wcr_given} -eq 1 ]; then
-        if [ ! -f ${wcref} ]; then
+        if [ "${wcref}" != ${NOFILE} -a ! -f ${wcref} ]; then
             echo "Error! file ${wcref} does not exist" >&2
             exit 1
         fi
     fi
 
     if [ ${sv_given} -eq 1 ]; then
-        if [ ! -f ${snpvcf} ]; then
+        if [ "${snpvcf}" != ${NOFILE} -a ! -f ${snpvcf} ]; then
             echo "Error! file ${snpvcf} does not exist" >&2
             exit 1
         fi
     fi
 
     if [ ${sg_given} -eq 1 ]; then
-        if [ ! -f ${snpgccorr} ]; then
+        if [ "${snpgcorr}" != ${NOFILE} -a ! -f ${snpgccorr} ]; then
             echo "Error! file ${snpgcorr} does not exist" >&2
             exit 1
         fi
     fi
 
     if [ ${egacred_given} -eq 1 ]; then
-        if [ ! -f ${egacred} ]; then
+        if [ "${egacred}" != ${NOFILE} -a ! -f ${egacred} ]; then
             echo "Error! file ${egacred} does not exist" >&2
             exit 1
         fi
     fi
 
     if [ ${egadecrpwd_given} -eq 1 ]; then
-        if [ ! -f ${egadecrpwd} ]; then
+        if [ "${egadecrpwd}" != ${NOFILE} -a ! -f ${egadecrpwd} ]; then
             echo "Error! file ${egadecrpwd} does not exist" >&2
             exit 1
         fi
@@ -365,27 +366,27 @@ absolutize_file_paths()
         ${outd}=`get_absolute_path ${outd}`
     fi
 
-    if [ ${cr_given} -eq 1 ]; then
+    if [ ${cr_given} -eq 1 -a "${callrefg}" != ${NOFILE} ]; then
         ${callregf}=`get_absolute_path ${callregf}`
     fi
 
-    if [ ${wcr_given} -eq 1 ]; then
+    if [ ${wcr_given} -eq 1 -a "${wcref}" != ${NOFILE} ]; then
         ${wcref}=`get_absolute_path ${wcref}`
     fi
 
-    if [ ${sv_given} -eq 1 ]; then
+    if [ ${sv_given} -eq 1 -a "${snpvcf}" != ${NOFILE} ]; then
         ${snpvcf}=`get_absolute_path ${snpvcf}`
     fi
 
-    if [ ${sg_given} -eq 1 ]; then
+    if [ ${sg_given} -eq 1 -a "${snpgccorr}" != ${NOFILE} ]; then
         ${snpgccorr}=`get_absolute_path ${snpgccorr}`
     fi
 
-    if [ ${egacred_given} -eq 1 ]; then
+    if [ ${egacred_given} -eq 1 -a "${egacred}" != ${NOFILE} ]; then
         ${egacred}=`get_absolute_path ${egacred}`
     fi
 
-    if [ ${egadecrpwd_given} -eq 1 ]; then
+    if [ ${egadecrpwd_given} -eq 1 -a "${egadecrpwd}" != ${NOFILE} ]; then
         ${egadecrpwd}=`get_absolute_path ${egadecrpwd}`
     fi
 }

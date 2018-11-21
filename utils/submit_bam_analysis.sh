@@ -325,8 +325,8 @@ check_pars()
     fi
 
     if [ ${sg_given} -eq 1 ]; then
-        if [ "${snpgcorr}" != ${NOFILE} -a ! -f ${snpgccorr} ]; then
-            echo "Error! file ${snpgcorr} does not exist" >&2
+        if [ "${snpgccorr}" != ${NOFILE} -a ! -f ${snpgccorr} ]; then
+            echo "Error! file ${snpgccorr} does not exist" >&2
             exit 1
         fi
     fi
@@ -807,6 +807,8 @@ command_line="$0 $*"
 read_pars $@ || exit 1
 
 check_pars || exit 1
+
+absolutize_file_paths || exit 1
 
 print_pars || exit 1
 

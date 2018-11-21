@@ -353,10 +353,6 @@ absolutize_file_paths()
         ref=`get_absolute_path ${ref}`
     fi
     
-    if [ ${m_given} -eq 1 ]; then
-        metadata=`get_absolute_path ${metadata}`
-    fi
-
     if [ ${a_given} -eq 1 ]; then   
         afile=`get_absolute_path ${afile}`
     fi

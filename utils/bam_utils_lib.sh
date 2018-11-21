@@ -7,6 +7,34 @@ init_bash_shebang_var()
 }
 
 ########
+is_absolute_path()
+{
+    case $1 in
+        /*) echo 1 ;;
+        *) echo 0 ;;
+    esac
+}
+
+########
+get_absolute_path()
+{
+    file=$1
+    # Check if an absolute path was given
+    absolute=`is_absolute_path $file`
+    if [ $absolute -eq 1 ]; then
+        echo $file
+    else
+        oldpwd=$PWD
+        basetmp=`$BASENAME $PWD/$file`
+        dirtmp=`$DIRNAME $PWD/$file`
+        cd $dirtmp
+        result=${PWD}/${basetmp}
+        cd $oldpwd
+        echo $result
+    fi
+}
+
+########
 exclude_readonly_vars()
 {
     $AWK -F "=" 'BEGIN{

@@ -18,17 +18,17 @@ is_absolute_path()
 ########
 get_absolute_path()
 {
-    file=$1
+    local file=$1
     # Check if an absolute path was given
-    absolute=`is_absolute_path $file`
+    local absolute=`is_absolute_path $file`
     if [ $absolute -eq 1 ]; then
         echo $file
     else
-        oldpwd=$PWD
-        basetmp=`$BASENAME $PWD/$file`
-        dirtmp=`$DIRNAME $PWD/$file`
+        local oldpwd=$PWD
+        local basetmp=`$BASENAME $PWD/$file`
+        local dirtmp=`$DIRNAME $PWD/$file`
         cd $dirtmp
-        result=${PWD}/${basetmp}
+        local result=${PWD}/${basetmp}
         cd $oldpwd
         echo $result
     fi

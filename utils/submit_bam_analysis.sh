@@ -63,7 +63,6 @@ save_command_line()
 ########
 read_pars()
 {
-    NOFILE="<NONE>"
     r_given=0
     n_given=0
     t_given=0
@@ -351,43 +350,43 @@ check_pars()
 absolutize_file_paths()
 {
     if [ ${r_given} -eq 1 ]; then   
-        ${ref}=`get_absolute_path ${ref}`
+        ref=`get_absolute_path ${ref}`
     fi
     
     if [ ${m_given} -eq 1 ]; then
-        ${metadata}=`get_absolute_path ${metadata}`
+        metadata=`get_absolute_path ${metadata}`
     fi
 
     if [ ${a_given} -eq 1 ]; then   
-        ${afile}=`get_absolute_path ${afile}`
+        afile=`get_absolute_path ${afile}`
     fi
 
     if [ ${o_given} -eq 1 ]; then
-        ${outd}=`get_absolute_path ${outd}`
+        outd=`get_absolute_path ${outd}`
     fi
 
     if [ ${cr_given} -eq 1 -a "${callrefg}" != ${NOFILE} ]; then
-        ${callregf}=`get_absolute_path ${callregf}`
+        callregf=`get_absolute_path ${callregf}`
     fi
 
     if [ ${wcr_given} -eq 1 -a "${wcref}" != ${NOFILE} ]; then
-        ${wcref}=`get_absolute_path ${wcref}`
+        wcref=`get_absolute_path ${wcref}`
     fi
 
     if [ ${sv_given} -eq 1 -a "${snpvcf}" != ${NOFILE} ]; then
-        ${snpvcf}=`get_absolute_path ${snpvcf}`
+        snpvcf=`get_absolute_path ${snpvcf}`
     fi
 
     if [ ${sg_given} -eq 1 -a "${snpgccorr}" != ${NOFILE} ]; then
-        ${snpgccorr}=`get_absolute_path ${snpgccorr}`
+        snpgccorr=`get_absolute_path ${snpgccorr}`
     fi
 
     if [ ${egacred_given} -eq 1 -a "${egacred}" != ${NOFILE} ]; then
-        ${egacred}=`get_absolute_path ${egacred}`
+        egacred=`get_absolute_path ${egacred}`
     fi
 
     if [ ${egadecrpwd_given} -eq 1 -a "${egadecrpwd}" != ${NOFILE} ]; then
-        ${egadecrpwd}=`get_absolute_path ${egadecrpwd}`
+        egadecrpwd=`get_absolute_path ${egadecrpwd}`
     fi
 }
 

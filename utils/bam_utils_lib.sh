@@ -740,7 +740,10 @@ facets()
     fi
     
     # Execute facets
-    ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv > ${step_outd}/facets.out 2> ${step_outd}/run_facets.log || exit 1
+    # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
+    # installation is used (otherwise, general R installation given in
+    # shebang directive would be executed)
+    Rscript ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv > ${step_outd}/facets.out 2> ${step_outd}/run_facets.log || exit 1
 
     # Deactivate conda environment if needed
     if [ -z "${FACETS_HOME_DIR}" ]; then

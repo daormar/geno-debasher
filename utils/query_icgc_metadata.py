@@ -28,7 +28,7 @@ def take_pars():
     flags["a_given"]=False
     flags["t_given"]=False
     flags["f_given"]=False
-    values["verbose"]=True
+    values["verbose"]=False
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],"d:a:t:f:v",["donorinfofile=","awsmanif=","table=","format="])
@@ -53,7 +53,7 @@ def take_pars():
                 values["format"] = int(arg)
                 flags["f_given"]=True
             elif opt in ("-v", "--verbose"):
-                verbose=1
+                flags["verbose"]=True
     return (flags,values)
 
 ##################################################

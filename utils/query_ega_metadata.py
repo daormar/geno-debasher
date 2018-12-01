@@ -33,7 +33,7 @@ def take_pars():
     flags["t_given"]=False
     flags["f_given"]=False
     flags["p_given"]=False
-    values["verbose"]=True
+    values["verbose"]=False
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],"s:a:t:f:p:v",["sampleinfofile=","analysisinfofile=","studyinfofile=","format=","asperacontent="])
@@ -61,7 +61,7 @@ def take_pars():
                 values["asperacontent"] = arg
                 flags["p_given"]=True
             elif opt in ("-v", "--verbose"):
-                verbose=1
+                flags["verbose"]=True
     return (flags,values)
 
 ##################################################

@@ -490,11 +490,11 @@ process_pars()
             # Set name of output directory for analysis
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
-            # Submit bam analysis for normal and tumor samples
+            # Execute bam analysis for normal and tumor samples
             if [ ${p_given} -eq 0 ]; then
-                ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+                ${bindir}/exec_pipeline -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
             else
-                echo ${bindir}/submit_bam_analysis -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+                echo ${bindir}/exec_pipeline -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
             fi
         else
             echo "Error in entry number ${entry_num}"

@@ -5,6 +5,7 @@
 #############
 
 NOFILE="_NONE_"
+OPT_NOT_FOUND="_OPT_NOT_FOUND_"
 
 ####################
 # GLOBAL VARIABLES #
@@ -100,12 +101,6 @@ create_script()
 
     # Give execution permission
     chmod u+x ${name} || return 1
-}
-
-########
-get_lib_timestamp()
-{
-    $GREP "Lib time stamp:" ${bindir}/bam_utils_lib | $AWK '{if(NF==5) printf"%s",$NF}'
 }
 
 ########
@@ -378,6 +373,39 @@ get_pipeline_modules()
 }
 
 ########
+determine_full_module_name()
+{
+    local module=$1
+    local absolute=`is_absolute_path $module`
+    if [ $absolute -eq 1 ]; then
+        fullmodname=${module}
+    else
+        fullmodname=${bindir}${module}
+    fi
+
+    echo $fullmodname
+}
+
+########
+load_pipeline_module()
+{
+    local module=$1
+
+    # Determine full module name
+    fullmodname=`determine_full_module_name $module`
+
+    echo "Loading module $module (${fullmodname})..." >&2
+
+    # Check that module file exists
+    if [ -f ${fullmodname} ]; then
+        . ${fullmodname}
+    else
+        echo "Error: module ${fullmodname} does not exist" >&2
+        return 1
+    fi
+}
+
+########
 load_pipeline_modules()
 {
     local afile=$1
@@ -391,15 +419,34 @@ load_pipeline_modules()
     else
         # Load modules
         IFS=','; for mod in ${comma_sep_modules}; do
-            echo "Loading module $mod..." >&2
-            fullmodname=${bindir}/${mod}
-            if [ -f ${fullmodname} ]; then
-                . ${fullmodname}
+            load_pipeline_module $mod
+        done
+    fi
+}
+
+########
+get_pipeline_fullmodnames()
+{
+    local afile=$1
+
+    file_exists $afile || { echo "Error: file $afile does not exist" >&2 ; return 1; }
+    
+    comma_sep_modules=`get_pipeline_modules $afile`
+    
+    if [ -z "${comma_sep_modules}" ]; then
+        echo "Warning: no pipeline modules were given" >&2
+    else
+        # Get names
+        local fullmodnames
+        IFS=','; for mod in ${comma_sep_modules}; do
+            local fullmodname=`determine_full_module_name $mod`
+            if [ -z "${fullmodnames}" ]; then
+                fullmodnames=${fullmodname}
             else
-                echo "Error: module ${fullmodname} does not exist" >&2
-                return 1
+                fullmodnames="${fullmodnames} ${fullmodname}"
             fi
         done
+        echo "${fullmodnames}"
     fi
 }
 
@@ -468,6 +515,13 @@ errmsg()
 }
 
 ########
+logmsg()
+{
+    local msg=$1
+    echo $msg >&2
+}
+
+########
 file_exists()
 {
     local file=$1
@@ -522,6 +576,7 @@ read_opt_value_from_line()
     done
 
     # Option not given
+    echo ${OPT_NOT_FOUND}
     return 1
 }
 
@@ -557,7 +612,7 @@ define_cmdline_opt()
     value=`read_opt_value_from_line $cmdline $opt` || { errmsg "$opt option not found" ; return 1; }
 
     # Add option
-    define_option $opt $value $varname
+    define_opt $opt $value $varname
 }
 
 ########
@@ -573,9 +628,12 @@ define_cmdline_fileopt()
 
     # Check if file exists
     file_exists $value || { errmsg "file $value does not exist ($opt option)" ; return 1; }
+
+    # Absolutize path
+    value=`get_absolute_path ${value}`
     
     # Add option
-    define_option $opt $value $varname
+    define_opt $opt $value $varname
 }
 
 ########
@@ -590,18 +648,34 @@ define_cmdline_opt_shdir()
     value=`read_opt_value_from_line $cmdline $opt` || { errmsg "$opt option not found" ; return 1; }
 
     # Add option
-    define_option $opt $value $varname
+    define_opt $opt $value $varname
 
     # Store shared directory name in associative array
     PIPELINE_SHDIRS["-$opt"]=$value
 }
 
 ########
-define_option()
+define_opt()
 {
     local opt=$1
     local value=$2
     local varname=$3
+
+    eval "${varname}='${!varname} ${opt} ${value}'"
+}
+
+########
+define_fileopt()
+{
+    local opt=$1
+    local value=$2
+    local varname=$3
+
+    # Check if file exists
+    file_exists $value || { errmsg "file $value does not exist ($opt option)" ; return 1; }
+
+    # Absolutize path
+    value=`get_absolute_path ${value}`
 
     eval "${varname}='${!varname} ${opt} ${value}'"
 }

@@ -223,34 +223,40 @@ archive_script()
     cp ${script_filename} ${script_filename}.${curr_date}
 }
 
-# ########
-# check_script_is_older_than_lib()
-# {
-#     local script_filename=$1
-#     # Check if script exists
-#     if [ -f ${script_filename} ]; then
-#         # script exists
-#         lib_timestamp=`get_lib_timestamp`
-#         script_timestamp=`get_file_timestamp ${script_filename}`
-#         if [ ${script_timestamp} -lt ${lib_timestamp} ]; then
-#             echo 1
-#         else
-#             echo 0
-#         fi
-#     else
-#         # script does not exist
-#         echo 0
-#     fi
-# }
+########
+check_script_is_older_than_modules()
+{
+    local script_filename=$1
+    local fullmodnames=$2
+    
+    # Check if script exists
+    if [ -f ${script_filename} ]; then
+        # script exists
+        script_older=0
+        for mod in ${fullmodnames}; do
+            if [ ${script_filename} -ot ${mod} ]; then
+                script_older=1
+                echo "Warning: ${script_filename} is older than module ${mod}" >&2
+            fi
+        done
+        # Return value
+        return ${script_older}
+    else
+        # script does not exist
+        echo "Warning: ${script_filename} does not exist" >&2
+        return 1
+    fi
+}
 
 ########
 execute_step()
 {
     # Initialize variables
     local cmdline=$1
-    local dirname=$2
-    local stepname=$3
-    local jobspec=$4
+    local fullmodnames=$2
+    local dirname=$3
+    local stepname=$4
+    local jobspec=$5
     local step_outd=`get_step_dirname ${outd} ${stepname}`
     
     # Execute step
@@ -286,9 +292,10 @@ execute_step()
         step_jids="${step_jids}:${!stepname_jid}"
     else
         local script_filename=`get_script_filename ${stepname}`
-        prev_exec_script_older_than_lib=`check_script_is_older_than_lib ${script_filename}`
-        if [ ${prev_exec_script_older_than_lib} -eq 1 ]; then
-            echo "Warning: last execution of this script used an outdated shell library">&2
+        prev_script_older=0
+        check_script_is_older_than_modules ${script_filename} ${fullmodnames} || prev_script_older=1
+        if [ ${prev_script_older} -eq 1 ]; then
+            echo "Warning: last execution of this script used outdated modules">&2
         fi
     fi
 }
@@ -298,9 +305,10 @@ debug_step()
 {
     # Initialize variables
     local cmdline=$1
-    local dirname=$2
-    local stepname=$3
-    local jobspec=$4
+    local fullmodnames=$2
+    local dirname=$3
+    local stepname=$4
+    local jobspec=$5
     local step_outd=`get_step_dirname ${outd} ${stepname}`
     
     # Debug step
@@ -329,6 +337,7 @@ execute_pipeline_steps()
 
     # Load pipeline modules
     load_pipeline_modules $afile || return 1
+    local fullmodnames=`get_pipeline_fullmodnames $afile` || return 1
     
     # step_jids will store the job ids of the analysis steps
     step_jids=""
@@ -343,9 +352,9 @@ execute_pipeline_steps()
 
             # Decide whether to execute or debug step
             if [ $debug -eq 0 ]; then
-                execute_step ${cmdline} ${dirname} ${stepname} ${jobspec} || return 1
+                execute_step ${cmdline} ${fullmodnames} ${dirname} ${stepname} ${jobspec} || return 1
             else
-                debug_step ${cmdline} ${dirname} ${stepname} ${jobspec} || return 1                
+                debug_step ${cmdline} ${fullmodnames} ${dirname} ${stepname} ${jobspec} || return 1                
             fi
         fi
     done < ${afile}

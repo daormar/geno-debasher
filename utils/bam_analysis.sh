@@ -59,10 +59,6 @@ manta_germline_explain_cmdline_opts()
     description="Normal bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" $description
 
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" $description
-
     # -callregf option
     description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka"
     explain_cmdline_opt "-cr" "<string>" $description
@@ -152,6 +148,88 @@ manta_germline()
     display_end_step_message
 }
 
+########
+cnvkit_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" $description
+}
+
+########
+cnvkit_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+
+    # -step-outd option
+    local outd
+    outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
+    local stepname=`extract_stepname_from_jobspec ${jobspec}`
+    local step_outd=`get_step_dirname ${outd} ${stepname}`
+    define_opt "-step-outd" ${step_outd} optlist
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
+    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Print option list
+    echo $optlist
+}
+
+########
+cnvkit()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate cnvkit 2>&1 || exit 1
+
+    # Run cnvkit
+    logmsg "* Executing cnvkit.py..."
+    cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${step_outd} -p ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment"
+    conda deactivate 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${step_outd}/finished
+
+    display_end_step_message
+}
+
 # ########
 # get_pars_manta_somatic()
 # {
@@ -182,12 +260,6 @@ manta_germline()
 # get_pars_platypus_germline()
 # {
 #     echo "$ref $normalbam ${step_outd}"
-# }
-
-# ########
-# get_pars_cnvkit()
-# {
-#     echo "$ref $normalbam $tumorbam ${step_outd} $cpus"
 # }
 
 # ########
@@ -508,33 +580,6 @@ manta_germline()
 #     else
 #         platypus_germline_local ${ref} ${normalbam} ${step_outd}
 #     fi
-# }
-
-# ########
-# cnvkit()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local tumorbam=$3
-#     local step_outd=$4
-#     local cpus=$5
-    
-#     # Activate conda environment
-#     conda activate cnvkit > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Run cnvkit
-#     cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${step_outd} -p ${cpus} > ${step_outd}/cnvkit.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
 # }
 
 # ########

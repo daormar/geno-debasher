@@ -20,7 +20,7 @@ usage()
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-asperausr <string>] [-asperapwd <string>]"
     echo "                     [-asperaserv <string>] [-egadecrpwd <string>]"
-    echo "                     [-p] [-debug] [--help]"
+    echo "                     [-p] [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
     echo "-m <string>          File with metadata, one entry per line."
@@ -41,8 +41,6 @@ usage()
     echo "-asperaserv <string> Name of Aspera server"
     echo "-egadecrpwd <string> File with EGA decryptor password"
     echo "-p                   Only print the commands executing the analysis"
-    echo "-debug               After ending, do not delete temporary files"
-    echo "                     (for debugging purposes)"
     echo "--help               Display this help and exit"
 }
 
@@ -76,7 +74,6 @@ read_pars()
     egadecrpwd_given=0
     egadecrpwd=${NOFILE}
     p_given=0
-    debug=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -177,9 +174,6 @@ read_pars()
                   ;;
             "-p") p_given=1
                   ;;
-            "-debug") debug=1
-                      debug_opt="-debug"
-                      ;;
         esac
         shift
     done   

@@ -83,12 +83,12 @@ manta_germline_define_opts()
     outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
     local stepname=`extract_stepname_from_jobspec ${jobspec}`
     local step_outd=`get_step_dirname ${outd} ${stepname}`
-    define_option "-step-outd" ${step_outd} optlist
+    define_opt "-step-outd" ${step_outd} optlist
 
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_option "-normalbam" $normalbam optlist
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
 
     # -callregf option
     define_cmdline_fileopt $cmdline "-cr" optlist || exit 1
@@ -96,7 +96,7 @@ manta_germline_define_opts()
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
-    define_option "-cpus" $cpus optlist
+    define_opt "-cpus" $cpus optlist
 
     # Print option list
     echo $optlist
@@ -131,16 +131,20 @@ manta_germline()
     call_reg_opt=`get_callreg_opt "${callregf}"`
 
     # Activate conda environment
-    conda activate manta > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    logmsg "* Activating conda environment..."
+    conda activate manta || exit 1
 
     # Configure Manta
-    configManta.py --bam ${normalbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configManta.log 2>&1 || exit 1
+    logmsg "* Executing configManty.py..."
+    configManta.py --bam ${normalbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} 2>&1 || exit 1
 
     # Execute Manta
-    ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
+    logmsg "* Executing runWorkflow.py..."
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} 2>&1 || exit 1
 
     # Deactivate conda environment
-    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    logmsg "* Deactivating conda environment"
+    conda deactivate 2>&1
 
     # Create file indicating that execution was finished
     touch ${step_outd}/finished

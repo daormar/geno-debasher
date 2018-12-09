@@ -16,7 +16,11 @@ declare -A PIPELINE_OPT_DESC
 declare -A PIPELINE_OPT_TYPE
 
 # Declare associative array to store names of shared directories
+declare -A PIPELINE_STEPDIRS
 declare -A PIPELINE_SHDIRS
+
+# Declare variable used to save option lists for scripts
+declare SCRIPT_OPT_LIST
 
 #####################
 # GENERAL FUNCTIONS #
@@ -451,11 +455,25 @@ get_pipeline_fullmodnames()
 }
 
 ########
-get_step_dirname()
+get_default_step_dirname()
 {
     local dirname=$1
     local stepname=$2
     echo ${dirname}/${stepname}
+}
+
+########
+get_step_dirname()
+{
+    local dirname=$1
+    local stepname=$2
+
+    if [ -z "${PIPELINE_STEPDIRS[${stepname}]}" ]; then
+        echo "Warning! directory for step ${stepname} not defined, assuming default name" >&2
+        get_default_step_dirname $dirname $stepname
+    else
+        echo ${PIPELINE_STEPDIRS[${stepname}]}
+    fi
 }
 
 ########
@@ -530,6 +548,13 @@ file_exists()
     else
         return 1
     fi
+}
+
+########
+signal_step_completion()
+{
+    local step_outd=$1
+    touch ${step_outd}/finished
 }
 
 ########
@@ -655,6 +680,38 @@ define_cmdline_opt_shdir()
 }
 
 ########
+define_step_outd_opt()
+{
+    local stepname=$1
+    local step_outd=$2
+    local varname=$3
+
+    # Add option
+    define_opt "-step-outd" ${step_outd} $varname
+
+    # Store directory name for step in associative array
+    PIPELINE_STEPDIRS[${stepname}]=${step_outd}
+}
+
+########
+define_default_step_outd_opt()
+{
+    local cmdline=$1
+    local jobspec=$2
+    local varname=$3
+
+    # Get full path of directory
+    local outd
+    outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
+    outd=`get_absolute_path ${outd}`
+    local stepname=`extract_stepname_from_jobspec ${jobspec}`
+    local step_outd=`get_default_step_dirname ${outd} ${stepname}`
+
+    # Add option
+    define_step_outd_opt ${stepname} ${step_outd} ${varname}
+}
+
+########
 define_opt()
 {
     local opt=$1
@@ -697,4 +754,11 @@ get_absolute_shdirname()
     local outd=$1
     local shdirname=$2
     echo ${outd}/${shdirname}
+}
+
+########
+save_opt_list()
+{
+    local optlist=$1
+    SCRIPT_OPT_LIST=$optlist
 }

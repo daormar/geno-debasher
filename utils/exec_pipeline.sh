@@ -99,6 +99,10 @@ absolutize_file_paths()
     if [ ${a_given} -eq 1 ]; then   
         afile=`get_absolute_path ${afile}`
     fi
+
+    if [ ${o_given} -eq 1 ]; then   
+        outd=`get_absolute_path ${outd}`
+    fi
 }
 
 ########
@@ -106,8 +110,7 @@ show_pipeline_opts()
 {
     # Read input parameters
     local cmdline=$1
-    local dirname=$2
-    local afile=$3
+    local afile=$2
 
     # Load pipeline modules
     load_pipeline_modules $afile || return 1
@@ -136,8 +139,7 @@ check_pipeline_pars()
     
     # Read input parameters
     local cmdline=$1
-    local dirname=$2
-    local afile=$3
+    local afile=$2
 
     # Load pipeline modules
     load_pipeline_modules $afile 2>/dev/null || return 1
@@ -150,8 +152,7 @@ check_pipeline_pars()
             # Extract step information
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
             local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            local script_opts
-            script_opts=`${script_define_opts_funcname} ${cmdline} ${jobspec}` || return 1
+            ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
         fi
     done < ${afile}
 }
@@ -172,7 +173,8 @@ create_dirs()
 ########
 print_command_line()
 {
-    echo ${command_line} > ${outd}/command_line.sh
+    echo "cd $PWD" > ${outd}/command_line.sh
+    echo ${command_line} >> ${outd}/command_line.sh
 }
 
 ########
@@ -257,22 +259,23 @@ execute_step()
     local dirname=$3
     local stepname=$4
     local jobspec=$5
-    local step_outd=`get_step_dirname ${outd} ${stepname}`
     
     # Execute step
 
+    # Initialize script variables
+    local script_filename=`get_script_filename ${stepname}`
+    local step_function=`get_step_function ${stepname}`
+    local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
+    ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+    local script_opts=${SCRIPT_OPT_LIST}
+    
     ## Obtain step status
-    local status=`${bindir}/get_analysis_status -d ${dirname} -s "${stepname}"`
+    local status=`get_step_status ${dirname} ${stepname}`
     echo "STEP: ${stepname} ; STATUS: ${status} ; JOBSPEC: ${jobspec}" >&2
 
     ## Decide whether the step should be executed
     if [ "${status}" != "FINISHED" ]; then
-        # Initialize script variables
-        local script_filename=`get_script_filename ${stepname}`
-        local step_function=`get_step_function ${stepname}`
-        local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-        local script_opts
-        script_opts=`${script_define_opts_funcname} ${cmdline} ${jobspec}` || return 1
+        # Print script options
         echo "-> ${stepname} options: ${script_opts}" >&2
         
         # Create script
@@ -309,19 +312,18 @@ debug_step()
     local dirname=$3
     local stepname=$4
     local jobspec=$5
-    local step_outd=`get_step_dirname ${outd} ${stepname}`
     
     # Debug step
 
     ## Obtain step status
-    local status=`${bindir}/get_analysis_status -d ${dirname} -s "${stepname}"`
-    local step_function=`get_step_function ${stepname}`
+    local status=`get_step_status ${dirname} ${stepname}`
     echo "STEP: ${stepname} ; STATUS: ${status} ; JOBSPEC: ${jobspec}" >&2
 
     ## Obtain step options
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
     local script_opts
-    script_opts=`${script_define_opts_funcname} ${cmdline} ${jobspec}` || return 1
+    ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+    local script_opts=${SCRIPT_OPT_LIST}
     echo "-> ${stepname} options: ${script_opts}" >&2
 }
 
@@ -377,9 +379,9 @@ check_pars || exit 1
 absolutize_file_paths || exit 1
 
 if [ ${showopts_given} -eq 1 ]; then
-    show_pipeline_opts "${command_line}" ${outd} ${afile} || exit 1
+    show_pipeline_opts "${command_line}" ${afile} || exit 1
 else
-    check_pipeline_pars "${command_line}" ${outd} ${afile} || exit 1
+    check_pipeline_pars "${command_line}" ${afile} || exit 1
 
     create_dirs || exit 1
 

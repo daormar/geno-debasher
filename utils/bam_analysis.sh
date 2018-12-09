@@ -74,12 +74,9 @@ manta_germline_define_opts()
     # -r option
     define_cmdline_fileopt $cmdline "-r" optlist || exit 1
 
-    # -step-outd option
-    local outd
-    outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
-    local stepname=`extract_stepname_from_jobspec ${jobspec}`
-    local step_outd=`get_step_dirname ${outd} ${stepname}`
-    define_opt "-step-outd" ${step_outd} optlist
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -94,8 +91,8 @@ manta_germline_define_opts()
     cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
-    # Print option list
-    echo $optlist
+    # Save option list
+    save_opt_list $optlist
 }
 
 ########
@@ -142,8 +139,8 @@ manta_germline()
     logmsg "* Deactivating conda environment"
     conda deactivate 2>&1
 
-    # Create file indicating that execution was finished
-    touch ${step_outd}/finished
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -174,12 +171,9 @@ cnvkit_define_opts()
     # -r option
     define_cmdline_fileopt $cmdline "-r" optlist || exit 1
 
-    # -step-outd option
-    local outd
-    outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
-    local stepname=`extract_stepname_from_jobspec ${jobspec}`
-    local step_outd=`get_step_dirname ${outd} ${stepname}`
-    define_opt "-step-outd" ${step_outd} optlist
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -196,8 +190,8 @@ cnvkit_define_opts()
     cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
-    # Print option list
-    echo $optlist
+    # Save option list
+    save_opt_list $optlist
 }
 
 ########
@@ -224,8 +218,8 @@ cnvkit()
     logmsg "* Deactivating conda environment"
     conda deactivate 2>&1
 
-    # Create file indicating that execution was finished
-    touch ${step_outd}/finished
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
 
     display_end_step_message
 }

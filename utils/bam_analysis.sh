@@ -136,7 +136,7 @@ manta_germline()
     ${step_outd}/runWorkflow.py -m local -j ${cpus} 2>&1 || exit 1
 
     # Deactivate conda environment
-    logmsg "* Deactivating conda environment"
+    logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
     # Signal that step execution was completed
@@ -215,7 +215,618 @@ cnvkit()
     cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${step_outd} -p ${cpus} 2>&1 || exit 1
 
     # Deactivate conda environment
-    logmsg "* Deactivating conda environment"
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+manta_somatic_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" $description    
+}
+
+########
+manta_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
+    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -callregf option
+    define_cmdline_fileopt $cmdline "-cr" optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+manta_somatic()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local callregf=`read_opt_value_from_line "$*" "-cr"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${callregf}"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate manta 2>&1 || exit 1
+    
+    # Configure Manta
+    logmsg "* Executing configManta.py..."
+    configManta.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} 2>&1 || exit 1
+
+    # Execute Manta
+    logmsg "* Executing runWorkflow.py..."
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+strelka_germline_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description
+}
+
+########
+strelka_germline_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+strelka_germline()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${callregf}"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate strelka 2>&1 || exit 1
+
+    # Configure Strelka
+    logmsg "* Executing configureStrelkaGermlineWorkflow.py..."
+    configureStrelkaGermlineWorkflow.py --bam ${normalbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} 2>&1 || exit 1
+
+    # Execute Strelka
+    logmsg "* Executing runWorkflow.py..."
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+platypus_germline_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description    
+}
+
+########
+platypus_germline_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+platypus_germline_conda()
+{
+    display_begin_step_message
+    
+    # Initialize variables
+    local ref=$1
+    local normalbam=$2
+    local step_outd=$3
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate platypus 2>&1 || exit 1
+
+    # Run Platypus
+    logmsg "* Executing Platypus.py..."
+    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+platypus_germline_local()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=$1
+    local normalbam=$2
+    local step_outd=$3
+
+    # Run Platypus
+    logmsg "* Executing Platypus.py..."
+    python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 2>&1 || exit 1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+platypus_germline()
+{
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+
+    if [ -z "${PLATYPUS_HOME_DIR}" ]; then
+        platypus_germline_conda ${ref} ${normalbam} ${step_outd}
+    else
+        platypus_germline_local ${ref} ${normalbam} ${step_outd}
+    fi
+}
+
+########
+msisensor_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" $description        
+}
+
+########
+msisensor_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
+    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+msisensor()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate msisensor 2>&1 || exit 1
+
+    # Create homopolymer and microsatellites file
+    logmsg "* Executing msisensor scan..."
+    msisensor scan -d ${ref} -o ${step_outd}/msisensor.list 2>&1 || exit 1
+
+    # Run MSIsensor analysis
+    logmsg "* Executing msisensor msi..."
+    msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Dectivating conda environment..."
+    conda deactivate 2>&1
+    
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+wisecondorx_explain_cmdline_opts()
+{
+    # -wcr option
+    description="Reference file in npz format for WisecondorX"
+    explain_cmdline_opt "-wcr" "<string>" $description
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" $description    
+}
+
+########
+wisecondorx_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -wcr option
+    define_cmdline_fileopt $cmdline "-wcr" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
+    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+wisecondorx()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local wcref=`read_opt_value_from_line "$*" "-wcr"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate wisecondorx > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Convert tumor bam file into npz
+    logmsg "* Executing WisecondorX convert..."
+    local BINSIZE=5000
+    WisecondorX convert ${tumorbam} ${step_outd}/tumor.npz --binsize $BINSIZE 2>&1 || exit 1
+    
+    # Use WisecondorX for prediction
+    logmsg "* Executing WisecondorX predict..."
+    WisecondorX predict ${step_outd}/tumor.npz ${wcref} ${step_outd}/out 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Dectivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+facets_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" $description        
+
+    # -sv option
+    description="SNP vcf file required by Facets"
+    explain_cmdline_opt "-sv" "<string>" $description        
+}
+
+########
+facets_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -sv option
+    define_cmdline_fileopt $cmdline "-sv" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
+    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+facets()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local snpvcf=`read_opt_value_from_line "$*" "-sv"`
+
+    # Activate conda environment if needed
+    if [ -z "${FACETS_HOME_DIR}" ]; then
+        logmsg "* Activating conda environment..."
+        conda activate facets 2>&1 || exit 1
+    fi
+        
+    # Execute snp-pileup
+    logmsg "* Executing snp-pileup..."
+    if [ -z "${FACETS_HOME_DIR}" ]; then
+        snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
+    else
+        ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
+    fi
+    
+    # Execute facets
+    # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
+    # installation is used (otherwise, general R installation given in
+    # shebang directive would be executed)
+    Rscript ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv 2>&1 || exit 1
+
+    # Deactivate conda environment if needed
+    if [ -z "${FACETS_HOME_DIR}" ]; then
+        logmsg "* Dectivating conda environment..."
+        conda deactivate 2>&1
+    fi
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+ascatngs_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" $description    
+
+    # -g option
+    description="Sample gender (XX|XY)"
+    explain_cmdline_opt "-g" "<string>" $description    
+
+    # -sg option
+    description="SNP GC correction file required by AscatNGS"
+    explain_cmdline_opt "-sg" "<string>" $description    
+
+    # -mc option
+    description="Name of male sex chromosome required by AscatNGS"
+    explain_cmdline_opt "-mc" "<string>" $description    
+}
+
+########
+ascatngs_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_fileopt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
+    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -g option
+    define_cmdline_opt $cmdline "-g" optlist || exit 1
+
+    # -sg option
+    define_cmdline_fileopt $cmdline "-sg" optlist || exit 1
+
+    # -mc option
+    define_cmdline_opt $cmdline "-mc" optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+ascatngs()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local gender=`read_opt_value_from_line "$*" "-g"`
+    local malesexchr=`read_opt_value_from_line "$*" "-mc"`
+    local snpgccorr=`read_opt_value_from_line "$*" "-sg"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate ascatngs 2>&1 || exit 1
+
+    # Run cnvkit
+    logmsg "* Executing ascat.pl..."
+    ascat.pl -n ${normalbam} -t ${tumorbam} -r ${ref} -sg ${snpgccorr} -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o ${step_outd} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
     # Signal that step execution was completed
@@ -225,53 +836,11 @@ cnvkit()
 }
 
 # ########
-# get_pars_manta_somatic()
-# {
-#     echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} $cpus"
-# }
-
-# ########
-# get_pars_strelka_germline()
-# {
-#     echo "$ref $normalbam ${callregf} ${step_outd} $cpus"
-# }
-
-# ########
 # get_pars_strelka_somatic()
 # {
 #     local manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`
 #     local manta_outd=`get_outd_for_dep ${outd} "${manta_dep}"`
 #     echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} "${manta_outd}" $cpus"
-# }
-
-# ########
-# get_pars_msisensor()
-# {
-#     echo "$ref $normalbam $tumorbam ${step_outd} $cpus"
-# }
-
-# ########
-# get_pars_platypus_germline()
-# {
-#     echo "$ref $normalbam ${step_outd}"
-# }
-
-# ########
-# get_pars_wisecondorx()
-# {
-#     echo "$wcref $tumorbam ${step_outd} $cpus"
-# }
-
-# ########
-# get_pars_facets()
-# {
-#     echo "$normalbam $tumorbam $snpvcf ${step_outd}"
-# }
-
-# ########
-# get_pars_ascatngs()
-# {
-#     echo "$ref $normalbam $tumorbam $gender $malesexchr $snpgccorr ${step_outd} $cpus"
 # }
 
 # ########
@@ -365,40 +934,6 @@ cnvkit()
 # }
 
 # ########
-# manta_somatic()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local tumorbam=$3
-#     local callregf=$4
-#     local step_outd=$5
-#     local cpus=$6
-
-#     # Define --callRegions option
-#     call_reg_opt=`get_callreg_opt "${callregf}"`
-
-#     # Activate conda environment
-#     conda activate manta > ${step_outd}/conda_activate.log 2>&1 || exit 1
-    
-#     # Configure Manta
-#     configManta.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configManta.log 2>&1 || exit 1
-
-#     # Execute Manta
-#     ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
 # get_indel_cand_opt()
 # {
 #     local manta_outd=$1
@@ -414,39 +949,6 @@ cnvkit()
 #             echo ""
 #         fi
 #     fi
-# }
-
-# ########
-# strelka_germline()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local callregf=$3
-#     local step_outd=$4
-#     local cpus=$5
-
-#     # Define --callRegions option
-#     call_reg_opt=`get_callreg_opt "${callregf}"`
-
-#     # Activate conda environment
-#     conda activate strelka > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Configure Strelka
-#     configureStrelkaGermlineWorkflow.py --bam ${normalbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configureStrelkaGermlineWorkflow.log 2>&1 || exit 1
-
-#     # Execute Strelka
-#     ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
 # }
 
 # ########
@@ -477,195 +979,6 @@ cnvkit()
 
 #     # Execute Strelka
 #     ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# msisensor()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local tumorbam=$3
-#     local step_outd=$4
-#     local cpus=$5
-
-#     # Activate conda environment
-#     conda activate msisensor > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Create homopolymer and microsatellites file
-#     msisensor scan -d ${ref} -o ${step_outd}/msisensor.list > ${step_outd}/msisensor_scan.log 2>&1 || exit 1
-
-#     # Run MSIsensor analysis
-#     msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} > ${step_outd}/msisensor_msi.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-    
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# platypus_germline_conda()
-# {
-#     display_begin_step_message
-    
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local step_outd=$3
-
-#     # Activate conda environment
-#     conda activate platypus > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Run Platypus
-#     Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 > ${step_outd}/platypus.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished        
-
-#     display_end_step_message
-# }
-
-# ########
-# platypus_germline_local()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local step_outd=$3
-
-#     # Run Platypus
-#     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 > ${step_outd}/platypus.log 2>&1 || exit 1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished    
-
-#     display_end_step_message
-# }
-
-# ########
-# platypus_germline()
-# {
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local step_outd=$3
-
-#     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
-#         platypus_germline_conda ${ref} ${normalbam} ${step_outd}
-#     else
-#         platypus_germline_local ${ref} ${normalbam} ${step_outd}
-#     fi
-# }
-
-# ########
-# wisecondorx()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local wcref=$1
-#     local tumorbam=$2
-#     local step_outd=$3
-#     local cpus=$4
-    
-#     # Activate conda environment
-#     conda activate wisecondorx > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Convert tumor bam file into npz
-#     BINSIZE=5000
-#     WisecondorX convert ${tumorbam} ${step_outd}/tumor.npz --binsize $BINSIZE > ${step_outd}/wisecondorx_convert.log 2>&1 || exit 1
-    
-#     # Use WisecondorX for prediction
-#     WisecondorX predict ${step_outd}/tumor.npz ${wcref} ${step_outd}/out > ${step_outd}/wisecondorx_predict.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# facets()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local tumorbam=$2
-#     local snpvcf=$3
-#     local step_outd=$4
-
-#     # Activate conda environment if needed
-#     if [ -z "${FACETS_HOME_DIR}" ]; then
-#         conda activate facets > ${step_outd}/conda_activate.log 2>&1 || exit 1
-#     fi
-        
-#     # Execute snp-pileup
-#     if [ -z "${FACETS_HOME_DIR}" ]; then
-#         snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} > ${step_outd}/snp-pileup.log 2>&1 || exit 1
-#     else
-#         ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} > ${step_outd}/snp-pileup.log 2>&1 || exit 1
-#     fi
-    
-#     # Execute facets
-#     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
-#     # installation is used (otherwise, general R installation given in
-#     # shebang directive would be executed)
-#     Rscript ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv > ${step_outd}/facets.out 2> ${step_outd}/run_facets.log || exit 1
-
-#     # Deactivate conda environment if needed
-#     if [ -z "${FACETS_HOME_DIR}" ]; then
-#         conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-#     fi
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# ascatngs()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local tumorbam=$3
-#     local gender=$4
-#     local malesexchr=$5
-#     local snpgccorr=$6
-#     local step_outd=$7
-#     local cpus=$8
-    
-#     # Activate conda environment
-#     conda activate ascatngs > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Run cnvkit
-#     ascat.pl -n ${normalbam} -t ${tumorbam} -r ${ref} -sg ${snpgccorr} -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o ${step_outd} > ${step_outd}/ascat.log 2>&1 || exit 1
 
 #     # Deactivate conda environment
 #     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1

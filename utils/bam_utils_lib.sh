@@ -641,7 +641,27 @@ define_cmdline_opt()
 }
 
 ########
-define_cmdline_fileopt()
+define_cmdline_nonmandatory_opt()
+{
+    local cmdline=$1
+    local opt=$2
+    local default_value=$3
+    local varname=$4
+
+    # Get value for option
+    local value
+    value=`read_opt_value_from_line $cmdline $opt`
+
+    if [ $value = ${OPT_NOT_FOUND} ]; then
+        value=${default_value}
+    fi
+    
+    # Add option
+    define_opt $opt $value $varname    
+}
+
+########
+define_cmdline_infile_opt()
 {
     local cmdline=$1
     local opt=$2
@@ -722,7 +742,7 @@ define_opt()
 }
 
 ########
-define_fileopt()
+define_infile_opt()
 {
     local opt=$1
     local value=$2
@@ -740,8 +760,10 @@ define_fileopt()
 ########
 create_pipeline_shdirs()
 {
-    for dir in "${PIPELINE_SHDIRS[@]}"; do
-        absdir=`get_absolute_shdirname $dir`
+    local outd=$1
+    
+    for dirname in "${PIPELINE_SHDIRS[@]}"; do
+        absdir=`get_absolute_shdirname $outd $dirname`
         if [ ! -d ${absdir} ]; then
            mkdir ${absdir} || exit 1
         fi
@@ -754,6 +776,27 @@ get_absolute_shdirname()
     local outd=$1
     local shdirname=$2
     echo ${outd}/${shdirname}
+}
+
+########
+get_default_shdirname()
+{
+    local cmdline=$1
+    local jobspec=$2
+    local shdiropt=$3
+
+    # Get full path of directory
+    local outd
+    outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
+    outd=`get_absolute_path ${outd}`
+    local stepname=`extract_stepname_from_jobspec ${jobspec}`
+    local step_outd=`get_default_step_dirname ${outd} ${stepname}`
+
+    # Get name of shared dir
+    local shdir
+    shdir=`read_opt_value_from_line $cmdline "${shdiropt}"` || exit 1
+
+    get_absolute_shdirname $step_outd $shdir
 }
 
 ########

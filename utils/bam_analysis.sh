@@ -1,5 +1,13 @@
 # *- bash -*
 
+#############
+# CONSTANTS #
+#############
+
+DEFAULT_NUMBER_OF_DOWNLOAD_TRIES=5
+DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS=50
+DEFAULT_ASP_MAX_TRANS_RATE=100m
+
 ######################
 # BAM ANALYSIS STEPS #
 ######################
@@ -72,7 +80,7 @@ manta_germline_define_opts()
     local jobspec=$2
 
     # -r option
-    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -81,10 +89,10 @@ manta_germline_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
 
     # -callregf option
-    define_cmdline_fileopt $cmdline "-cr" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-cr" optlist || exit 1
 
     # -cpus option
     local cpus
@@ -169,7 +177,7 @@ cnvkit_define_opts()
     local jobspec=$2
 
     # -r option
-    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -178,12 +186,12 @@ cnvkit_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cpus option
     local cpus
@@ -248,7 +256,7 @@ manta_somatic_define_opts()
     local jobspec=$2
 
     # -r option
-    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -257,15 +265,15 @@ manta_somatic_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -callregf option
-    define_cmdline_fileopt $cmdline "-cr" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-cr" optlist || exit 1
 
     # -cpus option
     local cpus
@@ -334,7 +342,7 @@ strelka_germline_define_opts()
     local jobspec=$2
 
     # -r option
-    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -343,7 +351,7 @@ strelka_germline_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
     
     # -cpus option
     local cpus
@@ -410,7 +418,7 @@ platypus_germline_define_opts()
     local jobspec=$2
 
     # -r option
-    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -419,7 +427,7 @@ platypus_germline_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
     save_opt_list $optlist    
@@ -512,7 +520,7 @@ msisensor_define_opts()
     local jobspec=$2
 
     # -r option
-    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -521,12 +529,12 @@ msisensor_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cpus option
     local cpus
@@ -591,7 +599,7 @@ wisecondorx_define_opts()
     local jobspec=$2
 
     # -wcr option
-    define_cmdline_fileopt $cmdline "-wcr" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-wcr" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -600,7 +608,7 @@ wisecondorx_define_opts()
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cpus option
     local cpus
@@ -669,7 +677,7 @@ facets_define_opts()
     local jobspec=$2
 
     # -sv option
-    define_cmdline_fileopt $cmdline "-sv" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-sv" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -678,12 +686,12 @@ facets_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
     save_opt_list $optlist    
@@ -768,7 +776,7 @@ ascatngs_define_opts()
     local jobspec=$2
 
     # -r option
-    define_cmdline_fileopt $cmdline "-r" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -777,18 +785,18 @@ ascatngs_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_fileopt "-normalbam" $normalbam optlist || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_fileopt "-tumorbam" $tumorbam optlist || exit 1
+    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -g option
     define_cmdline_opt $cmdline "-g" optlist || exit 1
 
     # -sg option
-    define_cmdline_fileopt $cmdline "-sg" optlist || exit 1
+    define_cmdline_infile_opt $cmdline "-sg" optlist || exit 1
 
     # -mc option
     define_cmdline_opt $cmdline "-mc" optlist || exit 1
@@ -835,102 +843,1273 @@ ascatngs()
     display_end_step_message
 }
 
+########
+download_ega_norm_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extn option
+    description="External database id of normal bam file to download (required)"
+    explain_cmdline_opt "-extn" "<string>" $description
+
+    # -egastr option
+    description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
+    explain_cmdline_opt "-egastr" "<int>" $description
+
+    # -egacred option
+    description="File with EGA download client credentials (required)"
+    explain_cmdline_opt "-egacred" "<string>" $description
+
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description
+}
+
+########
+download_ega_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extn option
+    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+
+    # -egastr option
+    define_cmdline_opt $cmdline "-egastr" optlist || exit 1
+
+    # -egacred option
+    define_cmdline_opt $cmdline "-egacred" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+ega_download_retry()
+{
+    # Initialize variables
+    local egastr=$1
+    local egacred=$2
+    local egaid=$3
+    local outf=$4
+    local download_tries=$5
+    local step_outd=`${DIRNAME} ${outf}`
+    
+    # Start download with multiple tries
+    local ntry=1
+    while [ ${ntry} -le ${download_tries} ]; do
+        logmsg "Starting download try number ${ntry}..."
+
+        # Remove previously downloaded file (if any)
+        if [ -f ${outf} ]; then
+            rm ${outf}
+        fi
+
+        # Download file
+        pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} ${outf} 2>&1
+        
+        # Check if download was successful
+        if [ $? -eq 0 -a -f ${outf} ]; then
+            return 0
+        fi
+
+        ntry=`expr ${ntry} + 1`
+    done
+
+    logmsg "All download attempts failed!"
+
+    return 1
+}
+
+########
+download_ega_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local egaid_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local egastr=`read_opt_value_from_line "$*" "-egastr"`
+    local egacred=`read_opt_value_from_line "$*" "-egacred"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate pyega3 2>&1 || exit 1
+
+    # Download file (with multiple tries)
+    ega_download_retry ${egastr} ${egacred} ${egaid_normalbam} ${step_outd}/normal.bam ${download_tries} || exit 1
+
+    # Move file
+    mv ${step_outd}/normal.bam ${normalbam} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    # Create file indicating that execution was finished
+    touch ${step_outd}/finished
+
+    display_end_step_message
+}
+
+########
+download_ega_tum_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extt option
+    description="External database id of tumor bam file to download (required)"
+    explain_cmdline_opt "-extt" "<string>" $description
+
+    # -egastr option
+    description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
+    explain_cmdline_opt "-egastr" "<int>" $description
+
+    # -egacred option
+    description="File with EGA download client credentials (required)"
+    explain_cmdline_opt "-egacred" "<string>" $description
+
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description
+}
+
+########
+download_ega_tum_bam_define_opts()
+{
+    echo "$tumorbam ${extid_tumorbam} $egastr $egacred ${download_tries} ${step_outd}"
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extt option
+    define_cmdline_infile_opt $cmdline "-extt" optlist || exit 1
+
+    # -egastr option
+    define_cmdline_opt $cmdline "-egastr" optlist || exit 1
+
+    # -egacred option
+    define_cmdline_opt $cmdline "-egacred" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+download_ega_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local egaid_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local egastr=`read_opt_value_from_line "$*" "-egastr"`
+    local egacred=`read_opt_value_from_line "$*" "-egacred"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate pyega3 > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Download file (with multiple tries)
+    ega_download_retry ${egastr} ${egacred} ${egaid_tumorbam} ${step_outd}/tumor.bam ${download_tries} || exit 1
+
+    # Move file
+    mv ${step_outd}/tumor.bam ${tumorbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+download_aws_norm_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extn option
+    description="External database id of normal bam file to download (required)"
+    explain_cmdline_opt "-extn" "<string>" $description
+
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description
+}
+
+########
+download_aws_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extn option
+    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+find_bam_filename()
+{
+    local step_outd=$1
+    local result=""
+    
+    for f in ${step_outd}/*.bam; do
+        if [ -f $f ]; then
+            result=$f
+        fi
+    done
+
+    echo ${result}
+}
+
+########
+download_aws_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local icgcid_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Download file
+    logmsg "* Executing icgc-storage-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
+
+    # Find bam file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after download process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${normalbam} || exit 1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+download_aws_tum_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extt option
+    description="External database id of tumor bam file to download (required)"
+    explain_cmdline_opt "-extt" "<string>" $description
+
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description
+}
+
+########
+download_aws_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extn option
+    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -tumorbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+download_aws_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local icgcid_tumorbam=`read_opt_value_from_line "$*" "-extt"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Download file
+    logmsg "* Executing icgc-storage-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
+
+    # Find bam file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after download process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${tumorbam} || exit 1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+download_collab_norm_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extn option
+    description="External database id of normal bam file to download (required)"
+    explain_cmdline_opt "-extn" "<string>" $description
+
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description
+}
+
+########
+download_collab_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extn option
+    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+download_collab_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local icgcid_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Download file
+    logmsg "* Executing icgc-storage-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
+
+    # Find bam file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after download process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${normalbam} || exit 1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+download_collab_tum_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extt option
+    description="External database id of tumor bam file to download (required)"
+    explain_cmdline_opt "-extt" "<string>" $description
+
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description    
+}
+
+########
+download_collab_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extn option
+    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -tumorbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+download_collab_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local icgcid_tumorbam=`read_opt_value_from_line "$*" "-extt"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Download file
+    logmsg "* Executing icgc-storage-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
+
+    # Find bam file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after download process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${tumorbam} || exit 1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+download_ega_asp_norm_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extn option
+    description="External database id of normal bam file to download (required)"
+    explain_cmdline_opt "-extn" "<string>" $description
+
+    # -asperausr option
+    description="Username for Aspera server (required)"
+    explain_cmdline_opt "-asperausr" "<string>" $description
+
+    # -asperapwd option
+    description="Password for Aspera server (required)"
+    explain_cmdline_opt "-asperapwd" "<string>" $description
+
+    # -asperaserv option
+    description="Name of Aspera server (required)"
+    explain_cmdline_opt "-asperaserv" "<string>" $description
+
+    # -egadecrpwd option
+    description="File with EGA decryptor password (required)"
+    explain_cmdline_opt "-egadecrpwd" "<string>" $description
+    
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description
+}
+
+########
+download_ega_asp_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extn option
+    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+
+    # -asperausr option
+    define_cmdline_infile_opt $cmdline "-asperausr" optlist || exit 1
+
+    # -asperapwd option
+    define_cmdline_infile_opt $cmdline "-asperapwd" optlist || exit 1
+
+    # -asperaserv option
+    define_cmdline_infile_opt $cmdline "-asperaserv" optlist || exit 1
+
+    # -egadecrpwd option
+    define_cmdline_infile_opt $cmdline "-egadecrpwd" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist
+}
+
+########
+download_ega_asp_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local normalbam_file=`read_opt_value_from_line "$*" "-extn"`
+    local aspera_user=`read_opt_value_from_line "$*" "-asperausr"`
+    local aspera_passwd=`read_opt_value_from_line "$*" "-asperapwd"`
+    local aspera_server=`read_opt_value_from_line "$*" "-asperaserv"`
+    local egadecrypt_pwd=`read_opt_value_from_line "$*" "-egadecrpwd"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
+    
+    # Download file
+    logmsg "* Executing ascp..."
+    ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${normalbam_file} ${step_outd}/normal.bam.crypt 2>&1 || exit 1
+
+    # Decrypt file
+    logmsg "* Executing decryptor.jar..."
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/normal.bam.crypt 2>&1 || exit 1
+    
+    # Obtain file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after download process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${normalbam} || exit 1
+
+    # Remove encrypted file
+    rm ${step_outd}/normal.bam.crypt || exit 1
+    
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+download_ega_asp_tum_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -extt option
+    description="External database id of normal bam file to download (required)"
+    explain_cmdline_opt "-extt" "<string>" $description
+
+    # -asperausr option
+    description="Username for Aspera server (required)"
+    explain_cmdline_opt "-asperausr" "<string>" $description
+
+    # -asperapwd option
+    description="Password for Aspera server (required)"
+    explain_cmdline_opt "-asperapwd" "<string>" $description
+
+    # -asperaserv option
+    description="Name of Aspera server (required)"
+    explain_cmdline_opt "-asperaserv" "<string>" $description
+
+    # -egadecrpwd option
+    description="File with EGA decryptor password (required)"
+    explain_cmdline_opt "-egadecrpwd" "<string>" $description
+    
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" $description
+}
+
+########
+download_ega_asp_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    
+    # -extn option
+    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+
+    # -asperausr option
+    define_cmdline_infile_opt $cmdline "-asperausr" optlist || exit 1
+
+    # -asperapwd option
+    define_cmdline_infile_opt $cmdline "-asperapwd" optlist || exit 1
+
+    # -asperaserv option
+    define_cmdline_infile_opt $cmdline "-asperaserv" optlist || exit 1
+
+    # -egadecrpwd option
+    define_cmdline_infile_opt $cmdline "-egadecrpwd" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -tumorbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list $optlist
+}
+
+########
+download_ega_asp_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local tumorbam_file=`read_opt_value_from_line "$*" "-extn"`
+    local aspera_user=`read_opt_value_from_line "$*" "-asperausr"`
+    local aspera_passwd=`read_opt_value_from_line "$*" "-asperapwd"`
+    local aspera_server=`read_opt_value_from_line "$*" "-asperaserv"`
+    local egadecrypt_pwd=`read_opt_value_from_line "$*" "-egadecrpwd"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
+
+    # Download file
+    logmsg "* Executing ascp..."
+    ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${tumorbam_file} ${step_outd}/tumor.bam.crypt 2>&1 || exit 1
+
+    # Decrypt file
+    logmsg "* Executing decryptor.jar..."
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/tumor.bam.crypt 2>&1 || exit 1
+
+    # Obtain file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after download process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${tumorbam} || exit 1
+
+    # Remove encrypted file
+    rm ${step_outd}/tumor.bam.crypt || exit 1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+index_norm_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+}
+
+########
+index_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+}
+
+########
+index_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Remove previous index if one was created
+    if [ -f ${normalbam}.bai ]; then
+        rm ${normalbam}.bai || exit 1
+    fi
+        
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate base 2>&1 || exit 1
+
+    # Execute samtools
+    logmsg "* Executing samtools index..."
+    samtools index ${normalbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+index_tum_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+}
+
+########
+index_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -tumorbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+}
+
+########
+index_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Remove previous index if one was created
+    if [ -f ${tumorbam}.bai ]; then
+        rm ${tumorbam}.bai || exit 1
+    fi
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate base 2>&1 || exit 1
+    
+    # Execute samtools
+    logmsg "* Executing samtools index..."
+    samtools index ${tumorbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+sort_norm_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+}
+
+########
+sort_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+}
+
+########
+sort_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
+
+    # Verify if bam file is already sorted
+    local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l` || exit 1
+    if [ ${bam_is_sorted} -eq 1 ]; then
+        echo "Warning: bam file is already sorted"
+    else
+        # Execute samtools
+        logmsg "* Executing samtools sort..."
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        # NOTE: -m option is used here to increase the maximum memory per
+        # thread. One lateral efect of this is that the number of tmp files
+        # generated is decreased. This constitutes one possible way to avoid
+        # the "Too many open files" error reported by samtools
+
+        # Replace initial bam file by the sorted one
+        mv ${step_outd}/sorted.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
+    fi
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+sort_tum_bam_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+}
+
+########
+sort_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -tumorbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+}
+
+########
+sort_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate base 2>&1 || exit 1
+
+    # Verify if bam file is already sorted
+    local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l` || exit 1
+    if [ ${bam_is_sorted} -eq 1 ]; then
+        echo "Warning: bam file is already sorted"
+    else
+        # Execute samtools
+        logmsg "* Executing samtools sort..."
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        # NOTE: -m option is used here to increase the maximum memory per
+        # thread. One lateral efect of this is that the number of tmp files
+        # generated is decreased. This constitutes one possible way to avoid
+        # the "Too many open files" error reported by samtools
+
+        # Replace initial bam file by the sorted one
+        mv ${step_outd}/sorted.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
+    fi
+    
+    # Deactivate conda environment
+    logmsg "* Dectivating conda environment..."
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+filter_norm_bam_contigs_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+}
+
+########
+filter_norm_bam_contigs_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+}
+
+########
+filter_norm_bam_contigs()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate base 2>&1 || exit 1
+
+    # Generate bed file for genome reference
+    logmsg "* Executing gen_bed_for_genome..."
+    ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    
+    # Filter normal bam file
+    logmsg "* Executing samtools view..."
+    samtools view -b -L ${step_outd}/genref.bed ${normalbam} > ${step_outd}/filtered.bam || exit 1
+
+    # Replace initial bam file by the filtered one
+    mv ${step_outd}/filtered.bam ${normalbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+filter_tum_bam_contigs_explain_cmdline_opts()
+{
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+}
+
+########
+filter_tum_bam_contigs_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -tumorbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+}
+
+########
+filter_tum_bam_contigs()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate base 2>&1 || exit 1
+
+    # Generate bed file for genome reference
+    logmsg "* Executing gen_bed_for_genome..."
+    ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    
+    # Filter tumor bam file
+    logmsg "* Executing samtools view..."
+    samtools view -b -L ${step_outd}/genref.bed ${tumorbam} > ${step_outd}/filtered.bam || exit 1
+
+    # Replace initial bam file by the filtered one
+    mv ${step_outd}/filtered.bam ${tumorbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
+delete_bam_files_explain_cmdline_opts()
+{    
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    explain_cmdline_opt "-bamdir" "<string>" $description
+}
+
+########
+delete_bam_files_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local bamdir_fullname
+    bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
+    local normalbam=${bamdir_fullname}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam=${bamdir_fullname}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+}
+
+########
+delete_bam_files()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Delete normal bam file
+    logmsg "Removing normal bam file..."
+    rm ${normalbam} 2>&1 || exit 1
+    
+    # Delete tumor bam file
+    logmsg "Removing tumor bam file..."
+    rm ${tumorbam} 2>&1 || exit 1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
 # ########
-# get_pars_strelka_somatic()
+# strelka_somatic_define_opts()
 # {
 #     local manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`
 #     local manta_outd=`get_outd_for_dep ${outd} "${manta_dep}"`
 #     echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} "${manta_outd}" $cpus"
-# }
-
-# ########
-# get_pars_download_ega_norm_bam()
-# {
-#     echo "$normalbam ${extid_normalbam} $egastr $egacred ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_download_ega_tum_bam()
-# {
-#     echo "$tumorbam ${extid_tumorbam} $egastr $egacred ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_download_aws_norm_bam()
-# {
-#     echo "$normalbam ${extid_normalbam} ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_download_aws_tum_bam()
-# {
-#     echo "$tumorbam ${extid_tumorbam} ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_download_collab_norm_bam()
-# {
-#     echo "$normalbam ${extid_normalbam} ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_download_collab_tum_bam()
-# {
-#     echo "$tumorbam ${extid_tumorbam} ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_download_ega_asp_norm_bam()
-# {
-#     echo "$normalbam ${extid_normalbam} ${asperausr} ${asperapwd} ${asperaserv} ${egadecrpwd} ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_download_ega_asp_tum_bam()
-# {
-#     echo "$tumorbam ${extid_tumorbam} ${asperausr} ${asperapwd} ${asperaserv} ${egadecrpwd} ${download_tries} ${step_outd}"
-# }
-
-# ########
-# get_pars_index_norm_bam()
-# {
-#     echo "$normalbam ${step_outd}"
-# }
-
-# ########
-# get_pars_index_tum_bam()
-# {
-#     echo "$tumorbam ${step_outd}"
-# }
-
-# ########
-# get_pars_sort_norm_bam()
-# {
-#     echo "$normalbam ${step_outd} $cpus"
-# }
-
-# ########
-# get_pars_sort_tum_bam()
-# {
-#     echo "$tumorbam ${step_outd} $cpus"
-# }
-
-# ########
-# get_pars_filter_norm_bam_contigs()
-# {
-#     echo "$ref $normalbam ${step_outd}"
-# }
-
-# ########
-# get_pars_filter_tum_bam_contigs()
-# {
-#     echo "$ref $tumorbam ${step_outd}"
-# }
-
-# ########
-# get_pars_delete_bam_files()
-# {
-#     echo "$normalbam $tumorbam ${step_outd}"
 # }
 
 # ########
@@ -982,553 +2161,6 @@ ascatngs()
 
 #     # Deactivate conda environment
 #     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# ega_download_retry()
-# {
-#     # Initialize variables
-#     local egastr=$1
-#     local egacred=$2
-#     local egaid=$3
-#     local outf=$4
-#     local download_tries=$5
-#     local step_outd=`${DIRNAME} ${outf}`
-    
-#     # Start download with multiple tries
-#     local ntry=1
-#     while [ ${ntry} -le ${download_tries} ]; do
-#         echo "Starting download try number ${ntry}..." >&2
-
-#         # Remove previously downloaded file (if any)
-#         if [ -f ${outf} ]; then
-#             rm ${outf}
-#         fi
-
-#         # Download file
-#         pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} ${outf} > ${step_outd}/pyega3.log 2>&1
-        
-#         # Check if download was successful
-#         if [ $? -eq 0 -a -f ${outf} ]; then
-#             return 0
-#         fi
-
-#         # Save log file
-#         cp ${step_outd}/pyega3.log ${step_outd}/pyega3.log.attempt${ntry}
-
-#         ntry=`expr ${ntry} + 1`
-#     done
-
-#     echo "All download attempts failed!" >&2
-
-#     return 1
-# }
-
-# ########
-# download_ega_norm_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local egaid_normalbam=$2
-#     local egastr=$3
-#     local egacred=$4
-#     local download_tries=$5
-#     local step_outd=$6
-
-#     # Activate conda environment
-#     conda activate pyega3 > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Download file (with multiple tries)
-#     ega_download_retry ${egastr} ${egacred} ${egaid_normalbam} ${step_outd}/normal.bam ${download_tries} || exit 1
-
-#     # Move file
-#     mv ${step_outd}/normal.bam ${normalbam} || exit 1
-    
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# download_ega_tum_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local tumorbam=$1
-#     local egaid_tumorbam=$2
-#     local egastr=$3
-#     local egacred=$4
-#     local download_tries=$5
-#     local step_outd=$6
-
-#     # Activate conda environment
-#     conda activate pyega3 > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Download file (with multiple tries)
-#     ega_download_retry ${egastr} ${egacred} ${egaid_tumorbam} ${step_outd}/tumor.bam ${download_tries} || exit 1
-
-#     # Move file
-#     mv ${step_outd}/tumor.bam ${tumorbam} || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# find_bam_filename()
-# {
-#     local step_outd=$1
-#     local result=""
-    
-#     for f in ${step_outd}/*.bam; do
-#         if [ -f $f ]; then
-#             result=$f
-#         fi
-#     done
-
-#     echo ${result}
-# }
-
-# ########
-# download_aws_norm_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local icgcid_normalbam=$2
-#     local download_tries=$3
-#     local step_outd=$4
-
-#     # Download file
-#     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_normalbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
-
-#     # Find bam file name
-#     local bam_file_name=`find_bam_filename ${step_outd}`
-    
-#     if [ -z "${bam_file_name}" ]; then
-#         echo "Error: bam file not found after download process was completed" >&2
-#         exit 1
-#     fi
-
-#     # Move file
-#     mv ${bam_file_name} ${normalbam} || exit 1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# download_aws_tum_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local tumorbam=$1
-#     local icgcid_tumorbam=$2
-#     local download_tries=$3
-#     local step_outd=$4
-
-#     # Download file
-#     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
-
-#     # Find bam file name
-#     local bam_file_name=`find_bam_filename ${step_outd}`
-    
-#     if [ -z "${bam_file_name}" ]; then
-#         echo "Error: bam file not found after download process was completed" >&2
-#         exit 1
-#     fi
-
-#     # Move file
-#     mv ${bam_file_name} ${tumorbam} || exit 1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# download_collab_norm_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local icgcid_normalbam=$2
-#     local download_tries=$3
-#     local step_outd=$4
-
-#     # Download file
-#     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_normalbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
-
-#     # Find bam file name
-#     local bam_file_name=`find_bam_filename ${step_outd}`
-    
-#     if [ -z "${bam_file_name}" ]; then
-#         echo "Error: bam file not found after download process was completed" >&2
-#         exit 1
-#     fi
-
-#     # Move file
-#     mv ${bam_file_name} ${normalbam} || exit 1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# download_collab_tum_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local tumorbam=$1
-#     local icgcid_tumorbam=$2
-#     local download_tries=$3
-#     local step_outd=$4
-
-#     # Download file
-#     ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} > ${step_outd}/icgc-storage-client.log 2>&1 || exit 1
-
-#     # Find bam file name
-#     local bam_file_name=`find_bam_filename ${step_outd}`
-    
-#     if [ -z "${bam_file_name}" ]; then
-#         echo "Error: bam file not found after download process was completed" >&2
-#         exit 1
-#     fi
-
-#     # Move file
-#     mv ${bam_file_name} ${tumorbam} || exit 1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# download_ega_asp_norm_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local normalbam_file=$2
-#     local aspera_user=$3
-#     local aspera_passwd=$4
-#     local aspera_server=$5
-#     local egadecrypt_pwd=$6
-#     local download_tries=$7
-#     local step_outd=$8
-#     local max_trans_rate=100m
-    
-#     # Download file
-#     ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${normalbam_file} ${step_outd}/normal.bam.crypt > ${step_outd}/ascp.log 2>&1 || exit 1
-
-#     # Decrypt file
-#     $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/normal.bam.crypt > ${step_outd}/decryptor.log 2>&1 || exit 1
-    
-#     # Obtain file name
-#     local bam_file_name=`find_bam_filename ${step_outd}`
-    
-#     if [ -z "${bam_file_name}" ]; then
-#         echo "Error: bam file not found after download process was completed" >&2
-#         exit 1
-#     fi
-
-#     # Move file
-#     mv ${bam_file_name} ${normalbam} || exit 1
-
-#     # Remove encrypted file
-#     rm ${step_outd}/normal.bam.crypt || exit 1
-    
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# download_ega_asp_tum_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local tumorbam=$1
-#     local tumorbam_file=$2
-#     local aspera_user=$3
-#     local aspera_passwd=$4
-#     local aspera_server=$5
-#     local egadecrypt_pwd=$6
-#     local download_tries=$7
-#     local step_outd=$8
-#     local max_trans_rate=100m
-
-#     # Download file
-#     ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${tumorbam_file} ${step_outd}/tumor.bam.crypt > ${step_outd}/ascp.log 2>&1 || exit 1
-
-#     # Decrypt file
-#     $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/tumor.bam.crypt > ${step_outd}/decryptor.log 2>&1 || exit 1
-
-#     # Obtain file name
-#     local bam_file_name=`find_bam_filename ${step_outd}`
-    
-#     if [ -z "${bam_file_name}" ]; then
-#         echo "Error: bam file not found after download process was completed" >&2
-#         exit 1
-#     fi
-
-#     # Move file
-#     mv ${bam_file_name} ${tumorbam} || exit 1
-
-#     # Remove encrypted file
-#     rm ${step_outd}/tumor.bam.crypt || exit 1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# index_norm_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local step_outd=$2
-
-#     # Remove previous index if one was created
-#     if [ -f ${normalbam}.bai ]; then
-#         rm ${normalbam}.bai || exit 1
-#     fi
-        
-#     # Index normal bam file
-
-#     # Activate conda environment
-#     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Execute samtools
-#     samtools index ${normalbam} > ${step_outd}/samtools.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-    
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# sort_norm_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local step_outd=$2
-#     local cpus=$3
-
-#     # Activate conda environment
-#     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Verify if bam file is already sorted
-#     local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l` || exit 1
-#     if [ ${bam_is_sorted} -eq 1 ]; then
-#         echo "Warning: bam file is already sorted"
-#     else
-#         # Execute samtools
-#         samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
-#         # NOTE: -m option is used here to increase the maximum memory per
-#         # thread. One lateral efect of this is that the number of tmp files
-#         # generated is decreased. This constitutes one possible way to avoid
-#         # the "Too many open files" error reported by samtools
-
-#         # Replace initial bam file by the sorted one
-#         mv ${step_outd}/sorted.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
-#     fi
-    
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# filter_norm_bam_contigs()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local step_outd=$3
-
-#     # Activate conda environment
-#     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Generate bed file for genome reference
-#     ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
-    
-#     # Filter normal bam file
-#     samtools view -b -L ${step_outd}/genref.bed ${normalbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
-
-#     # Replace initial bam file by the filtered one
-#     mv ${step_outd}/filtered.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# filter_tum_bam_contigs()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local tumorbam=$2
-#     local step_outd=$3
-
-#     # Activate conda environment
-#     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Generate bed file for genome reference
-#     ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
-    
-#     # Filter tumor bam file
-#     samtools view -b -L ${step_outd}/genref.bed ${tumorbam} > ${step_outd}/filtered.bam 2> ${step_outd}/samtools_view.log || exit 1
-
-#     # Replace initial bam file by the filtered one
-#     mv ${step_outd}/filtered.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# sort_tum_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local tumorbam=$1
-#     local step_outd=$2
-#     local cpus=$3
-    
-#     # Activate conda environment
-#     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Verify if bam file is already sorted
-#     local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l` || exit 1
-#     if [ ${bam_is_sorted} -eq 1 ]; then
-#         echo "Warning: bam file is already sorted"
-#     else
-#         # Execute samtools
-#         samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
-#         # NOTE: -m option is used here to increase the maximum memory per
-#         # thread. One lateral efect of this is that the number of tmp files
-#         # generated is decreased. This constitutes one possible way to avoid
-#         # the "Too many open files" error reported by samtools
-
-#         # Replace initial bam file by the sorted one
-#         mv ${step_outd}/sorted.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
-#     fi
-    
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# index_tum_bam()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local tumorbam=$1
-#     local step_outd=$2
-
-#     # Remove previous index if one was created
-#     if [ -f ${tumorbam}.bai ]; then
-#         rm ${tumorbam}.bai || exit 1
-#     fi
-
-#     # Index tumor bam file
-
-#     # Activate conda environment
-#     conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
-    
-#     # Execute samtools
-#     samtools index ${tumorbam} > ${step_outd}/samtools.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-    
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }
-
-# ########
-# delete_bam_files()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local normalbam=$1
-#     local tumorbam=$2
-#     local step_outd=$3
-
-#     # Delete normal bam file
-#     rm ${normalbam} > ${step_outd}/rm_norm.log 2>&1 || exit 1
-    
-#     # Delete tumor bam file
-#     rm ${tumorbam} > ${step_outd}/rm_tum.log 2>&1 || exit 1
 
 #     # Create file indicating that execution was finished
 #     touch ${step_outd}/finished

@@ -16,9 +16,9 @@ usage()
     echo "get_analysis_status       -d <string> [-s <string>]"
     echo "                          [--help]"
     echo ""
-    echo "-d <string>               Directory where the analysis steps are stored."
-    echo "-s <string>               Step name whose status should be get"
-    echo "--help                    Display this help and exit."
+    echo "-d <string>               Directory where the analysis steps are stored"
+    echo "-s <string>               Step name whose status should be determined"
+    echo "--help                    Display this help and exit"
 }
 
 ########

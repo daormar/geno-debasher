@@ -167,7 +167,7 @@ create_dirs()
     # Create shared directories required by the pipeline steps
     # IMPORTANT NOTE: the following function can only be executed after
     # executing check_pipeline_pars
-    create_pipeline_shdirs
+    create_pipeline_shdirs ${outd}
 }
 
 ########

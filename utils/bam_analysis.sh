@@ -1777,6 +1777,9 @@ index_norm_bam_define_opts()
     bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
 }
 
 ########
@@ -1979,6 +1982,9 @@ sort_tum_bam_define_opts()
     local cpus
     cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
     define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
 }
 
 ########
@@ -2056,6 +2062,9 @@ filter_norm_bam_contigs_define_opts()
     bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
 }
 
 ########
@@ -2127,6 +2136,9 @@ filter_tum_bam_contigs_define_opts()
     bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
 }
 
 ########
@@ -2195,6 +2207,9 @@ delete_bam_files_define_opts()
     # -tumorbam option
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
 }
 
 ########

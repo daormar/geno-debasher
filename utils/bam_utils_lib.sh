@@ -6,6 +6,7 @@
 
 NOFILE="_NONE_"
 OPT_NOT_FOUND="_OPT_NOT_FOUND_"
+DEP_NOT_FOUND="_DEP_NOT_FOUND_"
 
 ####################
 # GLOBAL VARIABLES #
@@ -187,19 +188,23 @@ get_script_define_opts_funcname()
 ########
 find_dependency_for_step()
 {
-    local jobdeps_spec=$1
+    local jobspec=$1
     local stepname_part=$2
 
-    for local_dep in `echo ${jobdeps_spec} | $SED 's/,/ /g'`; do
+    jobdeps=`extract_jobdeps_from_jobspec $jobspec`
+    for local_dep in `echo ${jobdeps} | $SED 's/,/ /g'`; do
         local stepname_part_in_dep=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
         if [ ${stepname_part_in_dep} = ${stepname_part} ]; then
             echo ${local_dep}
+            return 0
         fi
     done
+    echo ${DEP_NOT_FOUND}
+    return 1
 }
 
 ########
-get_outd_for_dep()
+get_default_outd_for_dep()
 {
     local outd=$1
     local dep=$2
@@ -362,7 +367,7 @@ extract_time_from_jobspec()
 }
 
 ########
-extract_jobdeps_spec_from_jobspec()
+extract_jobdeps_from_jobspec()
 {
     local jobspec=$1
     echo "${jobspec}" | $AWK '{print substr($7,9)}'
@@ -544,6 +549,17 @@ file_exists()
 {
     local file=$1
     if [ -f $file ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+########
+dir_exists()
+{
+    local dir=$1
+    if [ -d $dir ]; then
         return 0
     else
         return 1
@@ -750,6 +766,22 @@ define_infile_opt()
 
     # Check if file exists
     file_exists $value || { errmsg "file $value does not exist ($opt option)" ; return 1; }
+
+    # Absolutize path
+    value=`get_absolute_path ${value}`
+
+    eval "${varname}='${!varname} ${opt} ${value}'"
+}
+
+########
+define_indir_opt()
+{
+    local opt=$1
+    local value=$2
+    local varname=$3
+
+    # Check if file exists
+    dir_exists $value || { errmsg "directory $value does not exist ($opt option)" ; return 1; }
 
     # Absolutize path
     value=`get_absolute_path ${value}`

@@ -76,7 +76,7 @@ manta_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
+    
     # -r option
     define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
@@ -98,7 +98,7 @@ manta_germline_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist
+    save_opt_list optlist
 }
 
 ########
@@ -197,7 +197,7 @@ cnvkit_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist
+    save_opt_list optlist
 }
 
 ########
@@ -279,7 +279,7 @@ manta_somatic_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -357,7 +357,7 @@ strelka_germline_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -452,7 +452,7 @@ strelka_somatic_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -547,7 +547,7 @@ platypus_germline_define_opts()
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -659,7 +659,7 @@ msisensor_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -733,7 +733,7 @@ wisecondorx_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -811,7 +811,7 @@ facets_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -924,7 +924,7 @@ ascatngs_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -1017,7 +1017,7 @@ download_ega_norm_bam_define_opts()
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -1151,7 +1151,7 @@ download_ega_tum_bam_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -1230,7 +1230,7 @@ download_aws_norm_bam_define_opts()
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -1323,7 +1323,7 @@ download_aws_tum_bam_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -1401,7 +1401,7 @@ download_collab_norm_bam_define_opts()
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -1479,7 +1479,7 @@ download_collab_tum_bam_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist    
+    save_opt_list optlist    
 }
 
 ########
@@ -1585,7 +1585,7 @@ download_ega_asp_norm_bam_define_opts()
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist
+    save_opt_list optlist
 }
 
 ########
@@ -1703,7 +1703,7 @@ download_ega_asp_tum_bam_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
-    save_opt_list $optlist
+    save_opt_list optlist
 }
 
 ########

@@ -123,7 +123,7 @@ show_pipeline_opts()
             # Extract step information
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
             local script_explain_cmdline_opts_funcname=`get_script_explain_cmdline_opts_funcname ${stepname}`
-            ${script_explain_cmdline_opts_funcname}
+            ${script_explain_cmdline_opts_funcname} || exit 1
         fi
     done < ${afile}
 

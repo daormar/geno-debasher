@@ -424,7 +424,8 @@ load_pipeline_modules()
     comma_sep_modules=`get_pipeline_modules $afile`
     
     if [ -z "${comma_sep_modules}" ]; then
-        echo "Warning: no pipeline modules were given" >&2
+        echo "Error: no pipeline modules were given" >&2
+        return 1
     else
         # Load modules
         IFS=','; for mod in ${comma_sep_modules}; do

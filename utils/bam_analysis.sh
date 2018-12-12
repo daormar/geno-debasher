@@ -76,13 +76,14 @@ manta_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
     
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
-
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -173,13 +174,14 @@ cnvkit_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -252,13 +254,14 @@ manta_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -338,13 +341,14 @@ strelka_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -418,13 +422,14 @@ strelka_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -533,13 +538,14 @@ platypus_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -635,13 +641,14 @@ msisensor_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -714,13 +721,14 @@ wisecondorx_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -wcr option
-    define_cmdline_infile_opt $cmdline "-wcr" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -wcr option
+    define_cmdline_infile_opt $cmdline "-wcr" optlist || exit 1
 
     # -tumorbam option
     local tumorbam
@@ -792,13 +800,14 @@ facets_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -sv option
-    define_cmdline_infile_opt $cmdline "-sv" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -sv option
+    define_cmdline_infile_opt $cmdline "-sv" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -891,13 +900,14 @@ ascatngs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -r option
-    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -990,6 +1000,11 @@ download_ega_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1005,10 +1020,6 @@ download_ega_norm_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1124,6 +1135,11 @@ download_ega_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1139,10 +1155,6 @@ download_ega_tum_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1209,6 +1221,11 @@ download_aws_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1218,10 +1235,6 @@ download_aws_norm_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1302,6 +1315,11 @@ download_aws_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1311,10 +1329,6 @@ download_aws_tum_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -1380,6 +1394,11 @@ download_collab_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1389,10 +1408,6 @@ download_collab_norm_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1458,6 +1473,11 @@ download_collab_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1467,10 +1487,6 @@ download_collab_tum_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -1552,6 +1568,11 @@ download_ega_asp_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1573,10 +1594,6 @@ download_ega_asp_norm_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1670,6 +1687,11 @@ download_ega_asp_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
@@ -1691,10 +1713,6 @@ download_ega_asp_tum_bam_define_opts()
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -1764,13 +1782,14 @@ index_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1828,19 +1847,23 @@ index_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
     bamdir_fullname=`get_default_shdirname ${cmdline} ${jobspec} "-bamdir"` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
 }
 
 ########
@@ -1889,13 +1912,14 @@ sort_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1907,6 +1931,9 @@ sort_norm_bam_define_opts()
     local cpus
     cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
     define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
 }
 
 ########
@@ -1964,13 +1991,14 @@ sort_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -2046,16 +2074,17 @@ filter_norm_bam_contigs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -2120,16 +2149,17 @@ filter_tum_bam_contigs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
-
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -2190,13 +2220,14 @@ delete_bam_files_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-
-    # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname

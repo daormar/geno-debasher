@@ -1562,16 +1562,16 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_opt $cmdline "-extn" optlist || exit 1
 
     # -asperausr option
-    define_cmdline_infile_opt $cmdline "-asperausr" optlist || exit 1
+    define_cmdline_opt $cmdline "-asperausr" optlist || exit 1
 
     # -asperapwd option
-    define_cmdline_infile_opt $cmdline "-asperapwd" optlist || exit 1
+    define_cmdline_opt $cmdline "-asperapwd" optlist || exit 1
 
     # -asperaserv option
     define_cmdline_opt $cmdline "-asperaserv" optlist || exit 1
 
     # -egadecrpwd option
-    define_cmdline_infile_opt $cmdline "-egadecrpwd" optlist || exit 1
+    define_cmdline_opt $cmdline "-egadecrpwd" optlist || exit 1
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
@@ -1680,10 +1680,10 @@ download_ega_asp_tum_bam_define_opts()
     define_cmdline_opt $cmdline "-extt" optlist || exit 1
 
     # -asperausr option
-    define_cmdline_infile_opt $cmdline "-asperausr" optlist || exit 1
+    define_cmdline_opt $cmdline "-asperausr" optlist || exit 1
 
     # -asperapwd option
-    define_cmdline_infile_opt $cmdline "-asperapwd" optlist || exit 1
+    define_cmdline_opt $cmdline "-asperapwd" optlist || exit 1
 
     # -asperaserv option
     define_cmdline_opt $cmdline "-asperaserv" optlist || exit 1

@@ -286,7 +286,7 @@ execute_step()
 
         # Execute script
         reset_outdir_for_step ${dirname} ${stepname} || return 1
-        local jobdeps_spec=`extract_jobdeps_spec_from_jobspec "$jobspec"`
+        local jobdeps_spec=`extract_jobdeps_from_jobspec "$jobspec"`
         local jobdeps="`get_jobdeps ${jobdeps_spec}`"
         local stepname_jid=${stepname}_jid
         launch ${script_filename} ${jobspec} "${jobdeps}" ${stepname_jid} || return 1

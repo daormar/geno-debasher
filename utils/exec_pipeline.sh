@@ -108,8 +108,6 @@ absolutize_file_paths()
 ########
 show_pipeline_opts()
 {
-    echo "* Pipeline options..." >&2
-
     # Read input parameters
     local cmdline=$1
     local afile=$2
@@ -128,6 +126,10 @@ show_pipeline_opts()
             ${script_explain_cmdline_opts_funcname}
         fi
     done < ${afile}
+
+    # Print options
+    echo "* Pipeline options..." >&2
+    print_pipeline_opts()
 }
 
 ########

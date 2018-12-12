@@ -108,6 +108,8 @@ absolutize_file_paths()
 ########
 show_pipeline_opts()
 {
+    echo "* Pipeline options..." >&2
+
     # Read input parameters
     local cmdline=$1
     local afile=$2
@@ -126,16 +128,12 @@ show_pipeline_opts()
             ${script_explain_cmdline_opts_funcname}
         fi
     done < ${afile}
-
-    # Print parameters
-    echo "* Pipeline parameters:"
-    print_pipeline_opts
 }
 
 ########
-check_pipeline_pars()
+check_pipeline_opts()
 {
-    echo "* Checking pipeline parameters..." >&2
+    echo "* Checking pipeline options..." >&2
     
     # Read input parameters
     local cmdline=$1
@@ -381,7 +379,7 @@ absolutize_file_paths || exit 1
 if [ ${showopts_given} -eq 1 ]; then
     show_pipeline_opts "${command_line}" ${afile} || exit 1
 else
-    check_pipeline_pars "${command_line}" ${afile} || exit 1
+    check_pipeline_opts "${command_line}" ${afile} || exit 1
 
     create_dirs || exit 1
 

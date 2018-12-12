@@ -87,7 +87,7 @@ manta_germline_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -callregf option
     define_cmdline_infile_opt $cmdline "-cr" optlist || exit 1
@@ -184,12 +184,12 @@ cnvkit_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cpus option
     local cpus
@@ -263,12 +263,12 @@ manta_somatic_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -callregf option
     define_cmdline_infile_opt $cmdline "-cr" optlist || exit 1
@@ -349,7 +349,7 @@ strelka_germline_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
     
     # -cpus option
     local cpus
@@ -429,12 +429,12 @@ strelka_somatic_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -manta-outd option
     local manta_dep=`find_dependency_for_step ${jobspec} manta_somatic`
@@ -544,7 +544,7 @@ platypus_germline_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
     save_opt_list $optlist    
@@ -646,12 +646,12 @@ msisensor_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cpus option
     local cpus
@@ -725,7 +725,7 @@ wisecondorx_define_opts()
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cpus option
     local cpus
@@ -803,12 +803,12 @@ facets_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
     save_opt_list $optlist    
@@ -873,7 +873,7 @@ ascatngs_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" $description    
 
     # -g option
-    description="Sample gender (XX|XY)"
+    description="Sample gender: XX|XY (required)"
     explain_cmdline_opt "-g" "<string>" $description    
 
     # -sg option
@@ -902,12 +902,12 @@ ascatngs_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename $cmdline` || exit 1
-    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
-    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -g option
     define_cmdline_opt $cmdline "-g" optlist || exit 1

@@ -997,7 +997,7 @@ download_ega_norm_bam_define_opts()
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
     # -extn option
-    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+    define_cmdline_opt $cmdline "-extn" optlist || exit 1
 
     # -egastr option
     define_cmdline_opt $cmdline "-egastr" optlist || exit 1
@@ -1131,7 +1131,7 @@ download_ega_tum_bam_define_opts()
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
     # -extt option
-    define_cmdline_infile_opt $cmdline "-extt" optlist || exit 1
+    define_cmdline_opt $cmdline "-extt" optlist || exit 1
 
     # -egastr option
     define_cmdline_opt $cmdline "-egastr" optlist || exit 1
@@ -1216,7 +1216,7 @@ download_aws_norm_bam_define_opts()
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
     # -extn option
-    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+    define_cmdline_opt $cmdline "-extn" optlist || exit 1
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
@@ -1308,8 +1308,8 @@ download_aws_tum_bam_define_opts()
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
-    # -extn option
-    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+    # -extt option
+    define_cmdline_opt $cmdline "-extt" optlist || exit 1
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
@@ -1387,7 +1387,7 @@ download_collab_norm_bam_define_opts()
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
     # -extn option
-    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+    define_cmdline_opt $cmdline "-extn" optlist || exit 1
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
@@ -1464,8 +1464,8 @@ download_collab_tum_bam_define_opts()
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
-    # -extn option
-    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+    # -extt option
+    define_cmdline_opt $cmdline "-extt" optlist || exit 1
 
     # -nt option
     define_cmdline_nonmandatory_opt $cmdline "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
@@ -1559,7 +1559,7 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
     # -extn option
-    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+    define_cmdline_opt $cmdline "-extn" optlist || exit 1
 
     # -asperausr option
     define_cmdline_infile_opt $cmdline "-asperausr" optlist || exit 1
@@ -1676,8 +1676,8 @@ download_ega_asp_tum_bam_define_opts()
     # -bamdir option
     define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
     
-    # -extn option
-    define_cmdline_infile_opt $cmdline "-extn" optlist || exit 1
+    # -extt option
+    define_cmdline_opt $cmdline "-extt" optlist || exit 1
 
     # -asperausr option
     define_cmdline_infile_opt $cmdline "-asperausr" optlist || exit 1

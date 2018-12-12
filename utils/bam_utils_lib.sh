@@ -839,6 +839,4 @@ save_opt_list()
 {
     local optlist_varname=$1
     SCRIPT_OPT_LIST=${!optlist_varname}
-    # Reset variable
-    eval "${optlist_varname}=\"\""
 }

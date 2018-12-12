@@ -1568,7 +1568,7 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_infile_opt $cmdline "-asperapwd" optlist || exit 1
 
     # -asperaserv option
-    define_cmdline_infile_opt $cmdline "-asperaserv" optlist || exit 1
+    define_cmdline_opt $cmdline "-asperaserv" optlist || exit 1
 
     # -egadecrpwd option
     define_cmdline_infile_opt $cmdline "-egadecrpwd" optlist || exit 1
@@ -1686,7 +1686,7 @@ download_ega_asp_tum_bam_define_opts()
     define_cmdline_infile_opt $cmdline "-asperapwd" optlist || exit 1
 
     # -asperaserv option
-    define_cmdline_infile_opt $cmdline "-asperaserv" optlist || exit 1
+    define_cmdline_opt $cmdline "-asperaserv" optlist || exit 1
 
     # -egadecrpwd option
     define_cmdline_infile_opt $cmdline "-egadecrpwd" optlist || exit 1

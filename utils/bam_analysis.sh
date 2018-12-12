@@ -25,7 +25,7 @@ get_normal_bam_filename()
         echo $normalbam
     else
         # Check -extn option
-        check_opt_given "-extn" $cmdline || { errmsg "-n or -extn option should be given" ; return 1; }
+        check_opt_given $cmdline "-extn" || { errmsg "-n or -extn option should be given" ; return 1; }
         local bamdirname
         bamdirname=`read_opt_value_from_line $cmdline "bamdir"` || return 1
         local bamdir=`get_absolute_shdirname ${outd} ${bamdirname}`
@@ -47,7 +47,7 @@ get_tumor_bam_filename()
         echo $tumorbam
     else
         # Check -extt option
-        check_opt_given "-extt" $cmdline || { errmsg "-t or -extt option should be given" ; return 1; }
+        check_opt_given $cmdline "-extt" || { errmsg "-t or -extt option should be given" ; return 1; }
         local bamdirname
         bamdirname=`read_opt_value_from_line $cmdline "bamdir"` || return 1
         local bamdir=`get_shdirname ${outd} ${bamdirname}`

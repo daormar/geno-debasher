@@ -399,6 +399,125 @@ strelka_germline()
 }
 
 ########
+strelka_somatic_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" $description
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" $description
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" $description        
+}
+
+########
+strelka_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+
+    # -r option
+    define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename $cmdline` || exit 1
+    define_infile_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename $cmdline` || exit 1
+    define_infile_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -manta-outd option
+    local manta_dep=`find_dependency_for_step ${jobspec} manta_somatic`
+    if [ ${manta_dep} != ${DEP_NOT_FOUND} ]; then
+        local manta_outd=`get_default_outd_for_dep ${outd} "${manta_dep}"`
+        define_indir_opt "-manta-outd" ${manta_outd} optlist || exit 1
+    fi
+    
+    # -callregf option
+    define_cmdline_infile_opt $cmdline "-cr" optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list $optlist    
+}
+
+########
+get_indel_cand_opt()
+{
+    local manta_outd=$1
+
+    if [ -z "${manta_outd}" ]; then
+        echo ""
+    else
+        manta_indel_file="${manta_outd}/results/variants/candidateSmallIndels.vcf.gz"
+        if [ -f ${manta_indel_file} ]; then
+            echo "--indelCandidates ${manta_indel_file}"
+        else
+            echo "WARNING: Manta indel file for Strelka not found! (${manta_indel_file})" >&2
+            echo ""
+        fi
+    fi
+}
+
+########
+strelka_somatic()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local manta_outd=`read_opt_value_from_line "$*" "-manta-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local callregf=`read_opt_value_from_line "$*" "-cr"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Define --indelCandidates option if output from Manta is available
+    indel_cand_opt=`get_indel_cand_opt "${manta_outd}"`
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${callregf}"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate strelka 2>&1 || exit 1
+
+    # Configure Strelka
+    logmsg "* Executing configureStrelkaSomaticWorkflow.py..."
+    configureStrelkaSomaticWorkflow.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${step_outd} 2>&1 || exit 1
+
+    # Execute Strelka
+    logmsg "* Executing runWorkflow.py..."
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
+    display_end_step_message
+}
+
+########
 platypus_germline_explain_cmdline_opts()
 {
     # -r option
@@ -2103,67 +2222,3 @@ delete_bam_files()
 
     display_end_step_message
 }
-
-# ########
-# strelka_somatic_define_opts()
-# {
-#     local manta_dep=`find_dependency_for_step ${jobdeps_spec} manta_somatic`
-#     local manta_outd=`get_outd_for_dep ${outd} "${manta_dep}"`
-#     echo "$ref $normalbam $tumorbam ${callregf} ${step_outd} "${manta_outd}" $cpus"
-# }
-
-# ########
-# get_indel_cand_opt()
-# {
-#     local manta_outd=$1
-
-#     if [ -z "${manta_outd}" ]; then
-#         echo ""
-#     else
-#         manta_indel_file="${manta_outd}/results/variants/candidateSmallIndels.vcf.gz"
-#         if [ -f ${manta_indel_file} ]; then
-#             echo "--indelCandidates ${manta_indel_file}"
-#         else
-#             echo "WARNING: Manta indel file for Strelka not found! (${manta_indel_file})" >&2
-#             echo ""
-#         fi
-#     fi
-# }
-
-# ########
-# strelka_somatic()
-# {
-#     display_begin_step_message
-
-#     # Initialize variables
-#     local ref=$1
-#     local normalbam=$2
-#     local tumorbam=$3
-#     local callregf=$4
-#     local step_outd=$5
-#     local manta_outd=$6
-#     local cpus=$7
-
-#     # Define --indelCandidates option if output from Manta is available
-#     indel_cand_opt=`get_indel_cand_opt "${manta_outd}"`
-
-#     # Define --callRegions option
-#     call_reg_opt=`get_callreg_opt "${callregf}"`
-
-#     # Activate conda environment
-#     conda activate strelka > ${step_outd}/conda_activate.log 2>&1 || exit 1
-
-#     # Configure Strelka
-#     configureStrelkaSomaticWorkflow.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${step_outd} > ${step_outd}/configureStrelkaSomaticWorkflow.log 2>&1 || exit 1
-
-#     # Execute Strelka
-#     ${step_outd}/runWorkflow.py -m local -j ${cpus} > ${step_outd}/runWorkflow.log 2>&1 || exit 1
-
-#     # Deactivate conda environment
-#     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-#     # Create file indicating that execution was finished
-#     touch ${step_outd}/finished
-
-#     display_end_step_message
-# }

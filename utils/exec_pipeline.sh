@@ -129,7 +129,7 @@ show_pipeline_opts()
 
     # Print options
     echo "* Pipeline options..." >&2
-    print_pipeline_opts()
+    print_pipeline_opts
 }
 
 ########

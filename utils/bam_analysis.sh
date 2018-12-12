@@ -7,6 +7,7 @@
 DEFAULT_NUMBER_OF_DOWNLOAD_TRIES=5
 DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS=50
 DEFAULT_ASP_MAX_TRANS_RATE=100m
+DEFAULT_BAMDIR="data"
 
 ######################
 # BAM ANALYSIS STEPS #
@@ -122,7 +123,6 @@ manta_germline()
     # Initialize variables
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    # local bamdir=`read_opt_value_from_line "$*" "bamdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local callregf=`read_opt_value_from_line "$*" "-cr"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
@@ -974,7 +974,7 @@ ascatngs()
 download_ega_norm_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extn option
@@ -1007,8 +1007,8 @@ download_ega_norm_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
-    
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
+
     # -extn option
     define_cmdline_opt $cmdline "-extn" optlist || exit 1
 
@@ -1108,7 +1108,7 @@ download_ega_norm_bam()
 download_ega_tum_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extt option
@@ -1142,7 +1142,7 @@ download_ega_tum_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
     
     # -extt option
     define_cmdline_opt $cmdline "-extt" optlist || exit 1
@@ -1203,7 +1203,7 @@ download_ega_tum_bam()
 download_aws_norm_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extn option
@@ -1228,7 +1228,7 @@ download_aws_norm_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
     
     # -extn option
     define_cmdline_opt $cmdline "-extn" optlist || exit 1
@@ -1297,7 +1297,7 @@ download_aws_norm_bam()
 download_aws_tum_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extt option
@@ -1322,8 +1322,8 @@ download_aws_tum_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
-    
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
+
     # -extt option
     define_cmdline_opt $cmdline "-extt" optlist || exit 1
 
@@ -1376,7 +1376,7 @@ download_aws_tum_bam()
 download_collab_norm_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extn option
@@ -1401,7 +1401,7 @@ download_collab_norm_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
     
     # -extn option
     define_cmdline_opt $cmdline "-extn" optlist || exit 1
@@ -1455,7 +1455,7 @@ download_collab_norm_bam()
 download_collab_tum_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extt option
@@ -1480,7 +1480,7 @@ download_collab_tum_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
     
     # -extt option
     define_cmdline_opt $cmdline "-extt" optlist || exit 1
@@ -1534,7 +1534,7 @@ download_collab_tum_bam()
 download_ega_asp_norm_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extn option
@@ -1575,7 +1575,7 @@ download_ega_asp_norm_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
     
     # -extn option
     define_cmdline_opt $cmdline "-extn" optlist || exit 1
@@ -1653,7 +1653,7 @@ download_ega_asp_norm_bam()
 download_ega_asp_tum_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -extt option
@@ -1694,7 +1694,7 @@ download_ega_asp_tum_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
     
     # -extt option
     define_cmdline_opt $cmdline "-extt" optlist || exit 1
@@ -1772,7 +1772,7 @@ download_ega_asp_tum_bam()
 index_norm_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 }
 
@@ -1789,7 +1789,7 @@ index_norm_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1837,7 +1837,7 @@ index_norm_bam()
 index_tum_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 }
 
@@ -1854,7 +1854,7 @@ index_tum_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -1902,7 +1902,7 @@ index_tum_bam()
 sort_norm_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 }
 
@@ -1919,7 +1919,7 @@ sort_norm_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -1981,7 +1981,7 @@ sort_norm_bam()
 sort_tum_bam_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 }
 
@@ -1998,7 +1998,7 @@ sort_tum_bam_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -2060,7 +2060,7 @@ sort_tum_bam()
 filter_norm_bam_contigs_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -r option
@@ -2084,7 +2084,7 @@ filter_norm_bam_contigs_define_opts()
     define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname
@@ -2135,7 +2135,7 @@ filter_norm_bam_contigs()
 filter_tum_bam_contigs_explain_cmdline_opts()
 {
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 
     # -r option
@@ -2159,7 +2159,7 @@ filter_tum_bam_contigs_define_opts()
     define_cmdline_infile_opt $cmdline "-r" optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
     # -tumorbam option
     local bamdir_fullname
@@ -2210,7 +2210,7 @@ filter_tum_bam_contigs()
 delete_bam_files_explain_cmdline_opts()
 {    
     # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (required)"
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
     explain_cmdline_opt "-bamdir" "<string>" $description
 }
 
@@ -2227,7 +2227,7 @@ delete_bam_files_define_opts()
     define_default_step_outd_opt $cmdline $jobspec optlist || exit 1
 
     # -bamdir option
-    define_cmdline_opt_shdir $cmdline "-bamdir" optlist || exit 1
+    define_cmdline_nonmandatory_opt_shdir $cmdline "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
     # -normalbam option
     local bamdir_fullname

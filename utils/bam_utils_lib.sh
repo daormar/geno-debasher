@@ -719,6 +719,26 @@ define_cmdline_opt_shdir()
 }
 
 ########
+define_cmdline_nonmandatory_opt_shdir()
+{
+    local cmdline=$1
+    local opt=$2
+    local default_value=$3
+    local varname=$4
+
+    # Get value for option
+    local value
+    value=`read_opt_value_from_line $cmdline $opt`
+
+    if [ $value = ${OPT_NOT_FOUND} ]; then
+        value=${default_value}
+    fi
+
+    # Store shared directory name in associative array
+    PIPELINE_SHDIRS["-$opt"]=$value
+}
+
+########
 define_step_outd_opt()
 {
     local stepname=$1

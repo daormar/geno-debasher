@@ -135,7 +135,7 @@ manta_germline()
     conda activate manta || exit 1
 
     # Configure Manta
-    logmsg "* Executing configManty.py..."
+    logmsg "* Executing configManta.py..."
     configManta.py --bam ${normalbam} --referenceFasta ${ref} ${call_reg_opt} --runDir ${step_outd} 2>&1 || exit 1
 
     # Execute Manta

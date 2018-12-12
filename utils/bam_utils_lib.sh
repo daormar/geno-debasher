@@ -688,8 +688,10 @@ define_cmdline_infile_opt()
     local value
     value=`read_opt_value_from_line $cmdline $opt` || { errmsg "$opt option not found" ; return 1; }
 
-    # Check if file exists
-    file_exists $value || { errmsg "file $value does not exist ($opt option)" ; return 1; }
+    if [ $value != ${NOFILE} ]; then
+        # Check if file exists
+        file_exists $value || { errmsg "file $value does not exist ($opt option)" ; return 1; }
+    fi
 
     # Absolutize path
     value=`get_absolute_path ${value}`

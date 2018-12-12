@@ -837,6 +837,8 @@ get_default_shdirname()
 ########
 save_opt_list()
 {
-    local optlist=$1
-    SCRIPT_OPT_LIST=$optlist
+    local optlist_varname=$1
+    SCRIPT_OPT_LIST=${!optlist_varname}
+    # Reset variable
+    eval "${optlist_varname}=\"\""
 }

@@ -192,7 +192,7 @@ find_dependency_for_step()
     local jobspec=$1
     local stepname_part=$2
 
-    jobdeps=`extract_jobdeps_from_jobspec $jobspec`
+    jobdeps=`extract_jobdeps_from_jobspec "$jobspec"`
     prevIFS=$IFS
     IFS=','
     for local_dep in ${jobdeps}; do

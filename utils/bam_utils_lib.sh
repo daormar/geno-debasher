@@ -7,6 +7,7 @@
 NOFILE="_NONE_"
 OPT_NOT_FOUND="_OPT_NOT_FOUND_"
 DEP_NOT_FOUND="_DEP_NOT_FOUND_"
+INVALID_JID="_INVALID_JID_"
 
 ####################
 # GLOBAL VARIABLES #
@@ -192,13 +193,17 @@ find_dependency_for_step()
     local stepname_part=$2
 
     jobdeps=`extract_jobdeps_from_jobspec $jobspec`
-    for local_dep in `echo ${jobdeps} | $SED 's/,/ /g'`; do
+    prevIFS=$IFS
+    IFS=','
+    for local_dep in ${jobdeps}; do
         local stepname_part_in_dep=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
         if [ ${stepname_part_in_dep} = ${stepname_part} ]; then
             echo ${local_dep}
+            IFS=${prevIFS}
             return 0
         fi
     done
+    IFS=${prevIFS}
     echo ${DEP_NOT_FOUND}
     return 1
 }
@@ -226,13 +231,16 @@ apply_deptype_to_jobids()
 
     # Apply deptype
     result=""
-    for local_jid in `echo ${jids} | $SED 's/,/ /g'`; do
+    prevIFS=$IFS
+    IFS=','
+    for local_jid in ${jids}; do
         if [ -z "" ]; then
             result=${deptype}:${local_jid}
         else
             result=${result}","${deptype}:${local_jid}
         fi
     done
+    IFS=${prevIFS}
 
     echo $result
 }
@@ -280,6 +288,13 @@ launch()
 
         # Submit job
         local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${file})
+
+        # Check for errors
+        if [ -z "$jid" ]; then
+            jid=${INVALID_JID}
+        fi
+
+        # Assign output variable to job identifier
         eval "${outvar}='${jid}'"
     fi
 }
@@ -298,7 +313,7 @@ launch_step()
     create_script ${tmpdir}/scripts/${stepname} ${stepname} "${script_opts}" || return 1
 
     # Launch script
-    launch ${tmpdir}/scripts/${stepname} ${jobspec} ${jobdeps} ${jid} || return 1
+    launch ${tmpdir}/scripts/${stepname} "${jobspec}" ${jobdeps} ${jid} || return 1
 }
 
 ########
@@ -428,9 +443,12 @@ load_pipeline_modules()
         return 1
     else
         # Load modules
-        IFS=','; for mod in ${comma_sep_modules}; do
+        prevIFS=$IFS
+        IFS=','
+        for mod in ${comma_sep_modules}; do
             load_pipeline_module $mod
         done
+        IFS=${prevIFS}
     fi
 }
 
@@ -448,7 +466,9 @@ get_pipeline_fullmodnames()
     else
         # Get names
         local fullmodnames
-        IFS=','; for mod in ${comma_sep_modules}; do
+        prevIFS=$IFS
+        IFS=','
+        for mod in ${comma_sep_modules}; do
             local fullmodname=`determine_full_module_name $mod`
             if [ -z "${fullmodnames}" ]; then
                 fullmodnames=${fullmodname}
@@ -456,6 +476,7 @@ get_pipeline_fullmodnames()
                 fullmodnames="${fullmodnames} ${fullmodname}"
             fi
         done
+        IFS=${prevIFS}
         echo "${fullmodnames}"
     fi
 }
@@ -535,14 +556,14 @@ display_end_step_message()
 errmsg()
 {
     local msg=$1
-    echo $msg >&2
+    echo "$msg" >&2
 }
 
 ########
 logmsg()
 {
     local msg=$1
-    echo $msg >&2
+    echo "$msg" >&2
 }
 
 ########
@@ -651,7 +672,7 @@ define_cmdline_opt()
 
     # Get value for option
     local value
-    value=`read_opt_value_from_line $cmdline $opt` || { errmsg "$opt option not found" ; return 1; }
+    value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
 
     # Add option
     define_opt $opt $value $varname
@@ -667,7 +688,7 @@ define_cmdline_nonmandatory_opt()
 
     # Get value for option
     local value
-    value=`read_opt_value_from_line $cmdline $opt`
+    value=`read_opt_value_from_line "$cmdline" $opt`
 
     if [ $value = ${OPT_NOT_FOUND} ]; then
         value=${default_value}
@@ -686,7 +707,7 @@ define_cmdline_infile_opt()
 
     # Get value for option
     local value
-    value=`read_opt_value_from_line $cmdline $opt` || { errmsg "$opt option not found" ; return 1; }
+    value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
 
     if [ $value != ${NOFILE} ]; then
         # Check if file exists
@@ -709,7 +730,7 @@ define_cmdline_opt_shdir()
 
     # Get value for option
     local value
-    value=`read_opt_value_from_line $cmdline $opt` || { errmsg "$opt option not found" ; return 1; }
+    value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
 
     # Add option
     define_opt $opt $value $varname
@@ -728,7 +749,7 @@ define_cmdline_nonmandatory_opt_shdir()
 
     # Get value for option
     local value
-    value=`read_opt_value_from_line $cmdline $opt`
+    value=`read_opt_value_from_line "$cmdline" $opt`
 
     if [ $value = ${OPT_NOT_FOUND} ]; then
         value=${default_value}
@@ -761,7 +782,7 @@ define_default_step_outd_opt()
 
     # Get full path of directory
     local outd
-    outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
+    outd=`read_opt_value_from_line "$cmdline" "-o"` || exit 1
     outd=`get_absolute_path ${outd}`
     local stepname=`extract_stepname_from_jobspec ${jobspec}`
     local step_outd=`get_default_step_dirname ${outd} ${stepname}`
@@ -837,21 +858,18 @@ get_absolute_shdirname()
 get_default_shdirname()
 {
     local cmdline=$1
-    local jobspec=$2
-    local shdiropt=$3
+    local shdiropt=$2
 
     # Get full path of directory
     local outd
-    outd=`read_opt_value_from_line $cmdline "-o"` || exit 1
+    outd=`read_opt_value_from_line "$cmdline" "-o"` || exit 1
     outd=`get_absolute_path ${outd}`
-    local stepname=`extract_stepname_from_jobspec ${jobspec}`
-    local step_outd=`get_default_step_dirname ${outd} ${stepname}`
 
     # Get name of shared dir
     local shdir
-    shdir=`read_opt_value_from_line $cmdline "${shdiropt}"` || exit 1
+    shdir=`read_opt_value_from_line "$cmdline" "${shdiropt}"` || exit 1
 
-    get_absolute_shdirname $step_outd $shdir
+    get_absolute_shdirname $outd $shdir
 }
 
 ########

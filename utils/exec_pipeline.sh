@@ -152,7 +152,7 @@ check_pipeline_opts()
             # Extract step information
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
             local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+            ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
         fi
     done < ${afile}
 }
@@ -184,7 +184,9 @@ get_jobdeps_from_detailed_spec()
     local jdeps=""
 
     # Iterate over the elements of the job specification: type1:stepname1,...,typen:stepnamen
-    for dep_spec in `echo ${jobdeps_spec} | $SED 's/,/ /g'`; do
+    prevIFS=$IFS
+    IFS=','
+    for dep_spec in ${jobdeps_spec}; do
         local deptype=`echo ${dep_spec} | $AWK -F ":" '{print $1}'`
         local step=`echo ${dep_spec} | $AWK -F ":" '{print $2}'`
         
@@ -198,6 +200,8 @@ get_jobdeps_from_detailed_spec()
             fi
         fi
     done
+    IFS=${prevIFS}
+
     echo ${jdeps}
 }
 
@@ -266,7 +270,7 @@ execute_step()
     local script_filename=`get_script_filename ${stepname}`
     local step_function=`get_step_function ${stepname}`
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-    ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+    ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
     local script_opts=${SCRIPT_OPT_LIST}
     
     ## Obtain step status
@@ -289,7 +293,7 @@ execute_step()
         local jobdeps_spec=`extract_jobdeps_from_jobspec "$jobspec"`
         local jobdeps="`get_jobdeps ${jobdeps_spec}`"
         local stepname_jid=${stepname}_jid
-        launch ${script_filename} ${jobspec} "${jobdeps}" ${stepname_jid} || return 1
+        launch ${script_filename} "${jobspec}" "${jobdeps}" ${stepname_jid} || return 1
         
         # Update variables storing jids
         step_jids="${step_jids}:${!stepname_jid}"
@@ -322,7 +326,7 @@ debug_step()
     ## Obtain step options
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
     local script_opts
-    ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+    ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
     local script_opts=${SCRIPT_OPT_LIST}
     echo "-> ${stepname} options: ${script_opts}" >&2
 }
@@ -354,9 +358,9 @@ execute_pipeline_steps()
 
             # Decide whether to execute or debug step
             if [ $debug -eq 0 ]; then
-                execute_step ${cmdline} ${fullmodnames} ${dirname} ${stepname} ${jobspec} || return 1
+                execute_step "${cmdline}" ${fullmodnames} ${dirname} ${stepname} "${jobspec}" || return 1
             else
-                debug_step ${cmdline} ${fullmodnames} ${dirname} ${stepname} ${jobspec} || return 1                
+                debug_step "${cmdline}" ${fullmodnames} ${dirname} ${stepname} "${jobspec}" || return 1                
             fi
         fi
     done < ${afile}

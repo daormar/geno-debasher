@@ -63,7 +63,6 @@ read_pars()
             "--showopts") showopts_given=1
                   ;;
             "--debug") debug=1
-                      debug_opt="-debug"
                       ;;
         esac
         shift
@@ -82,14 +81,21 @@ check_pars()
             exit 1
         fi
     fi
-
+    
     if [ ${o_given} -eq 0 ]; then
-        echo "Error! -o parameter not given!" >&2
-        exit 1
+        if [ ${showopts_given} -eq 0 ]; then
+            echo "Error! -o parameter not given!" >&2
+            exit 1
+        fi
     else
         if [ -d ${outd} ]; then
             echo "Warning! output directory does exist" >&2 
         fi
+    fi
+
+    if [ ${showopts_given} -eq 1 -a ${debug} -eq 1 ]; then
+        echo "Error! --showopts and --debug options cannot be given simultaneously"
+        exit 1
     fi
 }
 

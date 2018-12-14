@@ -26,7 +26,7 @@ usage()
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
-    echo "-debug               After ending, do not delete temporary files"
+    echo "--debug              After ending, do not delete temporary files"
     echo "                     (for debugging purposes)"
     echo "--help               Display this help and exit"
 }
@@ -87,8 +87,7 @@ read_pars()
                       egacred_given=1
                   fi
                   ;;
-            "-debug") debug=1
-                      debug_opt="-debug"
+            "--debug") debug=1
                       ;;
         esac
         shift

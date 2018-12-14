@@ -656,10 +656,25 @@ explain_cmdline_opt()
 }
 
 ########
+explain_cmdline_opt_wo_value()
+{
+    local opt=$1
+    local desc=$2
+
+    # Store option in associative array
+    PIPELINE_OPT_TYPE[$opt]=""
+    PIPELINE_OPT_DESC[$opt]=$desc
+}
+
+########
 print_pipeline_opts()
 {
     for opt in ${!PIPELINE_OPT_TYPE[@]}; do
-        echo "${opt} ${PIPELINE_OPT_TYPE[$opt]} ${PIPELINE_OPT_DESC[$opt]}"
+        if [ -z ${PIPELINE_OPT_TYPE[$opt]} ]; then
+            echo "${opt} ${PIPELINE_OPT_DESC[$opt]}"
+        else
+            echo "${opt} ${PIPELINE_OPT_TYPE[$opt]} ${PIPELINE_OPT_DESC[$opt]}"
+        fi
     done
 }
 
@@ -676,6 +691,20 @@ define_cmdline_opt()
 
     # Add option
     define_opt $opt $value $varname
+}
+
+########
+define_cmdline_opt_wo_value()
+{
+    local cmdline=$1
+    local opt=$2
+    local varname=$3
+
+    # Get value for option
+    check_opt_given "$cmdline" $opt || { errmsg "$opt option not found" ; return 1; }
+
+    # Add option
+    define_opt_wo_value $opt $varname
 }
 
 ########
@@ -799,6 +828,15 @@ define_opt()
     local varname=$3
 
     eval "${varname}='${!varname} ${opt} ${value}'"
+}
+
+########
+define_opt_wo_value()
+{
+    local opt=$1
+    local varname=$2
+
+    eval "${varname}='${!varname} ${opt}'"
 }
 
 ########

@@ -132,7 +132,7 @@ manta_germline()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate manta || exit 1
+    conda activate manta 2>&1 || exit 1
 
     # Configure Manta
     logmsg "* Executing configManta.py..."

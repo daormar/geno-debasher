@@ -26,7 +26,7 @@ declare -A PIPELINE_SHDIRS
 declare -A MEMOIZED_OPTS
 
 # Declare string variable to store last processed command line
-LAST_PROC_LINE=""
+LAST_PROC_LINE_MEMOPTS=""
 
 # Declare variable used to save option lists for scripts
 declare SCRIPT_OPT_LIST
@@ -635,7 +635,7 @@ memoize_opts()
 }
 
 ########
-check_opt_given_wo_memoiz()
+check_opt_given()
 {
     line=$1
     opt=$2
@@ -669,12 +669,12 @@ check_memoized_opt()
 }
 
 ########
-check_opt_given()
+check_opt_given_memoiz()
 {
     line=$1
     opt=$2
 
-    if [ "${LAST_PROC_LINE}" = "$line" ]; then
+    if [ "${LAST_PROC_LINE_MEMOPTS}" = "$line" ]; then
         # Given line was previously processed, return memoized result
         check_memoized_opt $opt || return 1
     else
@@ -682,7 +682,7 @@ check_opt_given()
         memoize_opts $line
         
         # Store processed line
-        LAST_PROC_LINE="$line"
+        LAST_PROC_LINE_MEMOPTS="$line"
 
         # Return result
         check_memoized_opt $opt || return 1
@@ -690,7 +690,7 @@ check_opt_given()
 }
 
 ########
-read_opt_value_from_line_wo_memoiz()
+read_opt_value_from_line()
 {
     line=$1
     opt=$2
@@ -732,23 +732,23 @@ read_memoized_opt_value()
 }
 
 ########
-read_opt_value_from_line()
+read_opt_value_from_line_memoiz()
 {
     line=$1
     opt=$2
 
-    if [ "${LAST_PROC_LINE}" = "$line" ]; then
+    if [ "${LAST_PROC_LINE_MEMOPTS}" = "$line" ]; then
         # Given line was previously processed, return memoized result
-        read_memoized_opt_value $opt || return 1
+        _OPT_VALUE_=`read_memoized_opt_value $opt` || return 1
     else
         # Process not memoized line
         memoize_opts $line
         
         # Store processed line
-        LAST_PROC_LINE="$line"
+        LAST_PROC_LINE_MEMOPTS="$line"
 
         # Return result
-        read_memoized_opt_value $opt || return 1
+        _OPT_VALUE_=`read_memoized_opt_value $opt` || return 1
     fi
 }
 
@@ -795,9 +795,11 @@ define_cmdline_opt()
     local varname=$3
 
     # Get value for option
-    local value
-    value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
-
+    # local value
+    # value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
+    read_opt_value_from_line_memoiz "$cmdline" $opt || { errmsg "$opt option not found" ; return 1; }
+    local value=${_OPT_VALUE_}
+    
     # Add option
     define_opt $opt $value $varname
 }
@@ -825,8 +827,10 @@ define_cmdline_nonmandatory_opt()
     local varname=$4
 
     # Get value for option
-    local value
-    value=`read_opt_value_from_line "$cmdline" $opt`
+    # local value
+    # value=`read_opt_value_from_line "$cmdline" $opt`
+    read_opt_value_from_line_memoiz "$cmdline" $opt
+    local value=${_OPT_VALUE_}
 
     if [ $value = ${OPT_NOT_FOUND} ]; then
         value=${default_value}
@@ -844,8 +848,10 @@ define_cmdline_infile_opt()
     local varname=$3
 
     # Get value for option
-    local value
-    value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
+    # local value
+    # value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
+    read_opt_value_from_line_memoiz "$cmdline" $opt || { errmsg "$opt option not found" ; return 1; }
+    local value=${_OPT_VALUE_}
 
     if [ $value != ${NOFILE} ]; then
         # Check if file exists
@@ -867,8 +873,10 @@ define_cmdline_opt_shdir()
     local varname=$3
 
     # Get value for option
-    local value
-    value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
+    # local value
+    # value=`read_opt_value_from_line "$cmdline" $opt` || { errmsg "$opt option not found" ; return 1; }
+    read_opt_value_from_line_memoiz "$cmdline" $opt || { errmsg "$opt option not found" ; return 1; }
+    local value=${_OPT_VALUE_}
 
     # Add option
     define_opt $opt $value $varname
@@ -886,8 +894,10 @@ define_cmdline_nonmandatory_opt_shdir()
     local varname=$4
 
     # Get value for option
-    local value
-    value=`read_opt_value_from_line "$cmdline" $opt`
+    # local value
+    # value=`read_opt_value_from_line "$cmdline" $opt`
+    read_opt_value_from_line_memoiz "$cmdline" $opt
+    local value=${_OPT_VALUE_}
 
     if [ $value = ${OPT_NOT_FOUND} ]; then
         value=${default_value}
@@ -919,8 +929,11 @@ define_default_step_outd_opt()
     local varname=$3
 
     # Get full path of directory
-    local outd
-    outd=`read_opt_value_from_line "$cmdline" "-o"` || exit 1
+    # local outd
+    # outd=`read_opt_value_from_line "$cmdline" "-o"` || return 1
+    read_opt_value_from_line_memoiz "$cmdline" "-o" || return 1
+    local outd=${_OPT_VALUE_}
+
     outd=`get_absolute_path ${outd}`
     local stepname=`extract_stepname_from_jobspec ${jobspec}`
     local step_outd=`get_default_step_dirname ${outd} ${stepname}`
@@ -1008,13 +1021,17 @@ get_default_shdirname()
     local shdiropt=$2
 
     # Get full path of directory
-    local outd
-    outd=`read_opt_value_from_line "$cmdline" "-o"` || exit 1
+    # local outd
+    # outd=`read_opt_value_from_line "$cmdline" "-o"` || return 1
+    read_opt_value_from_line_memoiz "$cmdline" "-o" || return 1
+    local outd=${_OPT_VALUE_}
     outd=`get_absolute_path ${outd}`
 
     # Get name of shared dir
-    local shdir
-    shdir=`read_opt_value_from_line "$cmdline" "${shdiropt}"` || exit 1
+    # local shdir
+    # shdir=`read_opt_value_from_line "$cmdline" "${shdiropt}"` || return 1
+    read_opt_value_from_line_memoiz "$cmdline" "${shdiropt}" || return 1
+    local shdir=${_OPT_VALUE_}
 
     get_absolute_shdirname $outd $shdir
 }

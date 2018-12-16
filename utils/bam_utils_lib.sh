@@ -674,7 +674,7 @@ check_opt_given()
     line=$1
     opt=$2
 
-    if [ ${LAST_PROC_LINE} = $line ]; then
+    if [ "${LAST_PROC_LINE}" = "$line" ]; then
         # Given line was previously processed, return memoized result
         check_memoized_opt $opt || return 1
     else
@@ -682,7 +682,7 @@ check_opt_given()
         memoize_opts $line
         
         # Store processed line
-        LAST_PROC_LINE=$line
+        LAST_PROC_LINE="$line"
 
         # Return result
         check_memoized_opt $opt || return 1
@@ -723,7 +723,7 @@ read_memoized_opt_value()
 
     # Check if option was not given or it had void value
     if [ -z "${MEMOIZED_OPTS[$opt]}" -o "${MEMOIZED_OPTS[$opt]}" = ${VOID_VALUE} ]; then
-        echo ""
+        echo ${OPT_NOT_FOUND}
         return 1
     else
         echo ${MEMOIZED_OPTS[$opt]}
@@ -737,7 +737,7 @@ read_opt_value_from_line()
     line=$1
     opt=$2
 
-    if [ ${LAST_PROC_LINE} = $line ]; then
+    if [ "${LAST_PROC_LINE}" = "$line" ]; then
         # Given line was previously processed, return memoized result
         read_memoized_opt_value $opt || return 1
     else
@@ -745,7 +745,7 @@ read_opt_value_from_line()
         memoize_opts $line
         
         # Store processed line
-        LAST_PROC_LINE=$line
+        LAST_PROC_LINE="$line"
 
         # Return result
         read_memoized_opt_value $opt || return 1

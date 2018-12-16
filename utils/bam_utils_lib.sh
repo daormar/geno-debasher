@@ -676,7 +676,7 @@ check_opt_given()
 
     if [ ${LAST_PROC_LINE} = $line ]; then
         # Given line was previously processed, return memoized result
-        check_memoized_opt $opt || { return 1 }        
+        check_memoized_opt $opt || return 1
     else
         # Process not memoized line
         memoize_opts $line
@@ -685,7 +685,7 @@ check_opt_given()
         LAST_PROC_LINE=$line
 
         # Return result
-        check_memoized_opt $opt || { return 1 }
+        check_memoized_opt $opt || return 1
     fi    
 }
 
@@ -739,7 +739,7 @@ read_opt_value_from_line()
 
     if [ ${LAST_PROC_LINE} = $line ]; then
         # Given line was previously processed, return memoized result
-        read_memoized_opt_value $opt || { return 1 }        
+        read_memoized_opt_value $opt || return 1
     else
         # Process not memoized line
         memoize_opts $line
@@ -748,7 +748,7 @@ read_opt_value_from_line()
         LAST_PROC_LINE=$line
 
         # Return result
-        read_memoized_opt_value $opt || { return 1 }
+        read_memoized_opt_value $opt || return 1
     fi
 }
 

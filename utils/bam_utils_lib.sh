@@ -8,6 +8,7 @@ NOFILE="_NONE_"
 OPT_NOT_FOUND="_OPT_NOT_FOUND_"
 DEP_NOT_FOUND="_DEP_NOT_FOUND_"
 INVALID_JID="_INVALID_JID_"
+VOID_VALUE="_VOID_VALUE_"
 
 ####################
 # GLOBAL VARIABLES #
@@ -17,9 +18,15 @@ INVALID_JID="_INVALID_JID_"
 declare -A PIPELINE_OPT_DESC
 declare -A PIPELINE_OPT_TYPE
 
-# Declare associative array to store names of shared directories
+# Declare associative array to store names of directories
 declare -A PIPELINE_STEPDIRS
 declare -A PIPELINE_SHDIRS
+
+# Declare associative array to memoize command line options
+declare -A MEMOIZED_OPTS
+
+# Declare string variable to store last processed command line
+LAST_PROC_LINE=""
 
 # Declare variable used to save option lists for scripts
 declare SCRIPT_OPT_LIST
@@ -596,7 +603,39 @@ signal_step_completion()
 }
 
 ########
-check_opt_given()
+memoize_opts()
+{
+    shift
+    while [ $# -ne 0 ]; do
+        # Check if argument is an option
+        if [ ${1:0:1} = "-" -o ${1:0:2} = "--"  ]; then
+            # Argument is option
+            local opt=$1
+            shift
+            if [ $# -ne 0 ]; then
+                # Check if next argument is option
+                if [ ${1:0:1} = "-" -o ${1:0:2} = "--"  ]; then
+                    # Next argument is option
+                    MEMOIZED_OPTS[$opt]=${VOID_VALUE}
+                else
+                    # Next argument is value
+                    value=$1
+                    MEMOIZED_OPTS[$opt]=$value
+                    shift
+                fi
+            else
+                # There are no more arguments
+                MEMOIZED_OPTS[$opt]=${VOID_VALUE}
+            fi
+        else
+            echo "Warning: unexpected argument ($1), skipping..." >&2
+            shift
+        fi
+    done
+}
+
+########
+check_opt_given_wo_memoiz()
 {
     line=$1
     opt=$2
@@ -617,7 +656,41 @@ check_opt_given()
 }
 
 ########
-read_opt_value_from_line()
+check_memoized_opt()
+{
+    local opt=$1
+
+    # Check if option was not given
+    if [ -z "${MEMOIZED_OPTS[$opt]}" ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+########
+check_opt_given()
+{
+    line=$1
+    opt=$2
+
+    if [ ${LAST_PROC_LINE} = $line ]; then
+        # Given line was previously processed, return memoized result
+        check_memoized_opt $opt || { return 1 }        
+    else
+        # Process not memoized line
+        memoize_opts $line
+        
+        # Store processed line
+        LAST_PROC_LINE=$line
+
+        # Return result
+        check_memoized_opt $opt || { return 1 }
+    fi    
+}
+
+########
+read_opt_value_from_line_wo_memoiz()
 {
     line=$1
     opt=$2
@@ -641,6 +714,42 @@ read_opt_value_from_line()
     # Option not given
     echo ${OPT_NOT_FOUND}
     return 1
+}
+
+########
+read_memoized_opt_value()
+{
+    local opt=$1
+
+    # Check if option was not given or it had void value
+    if [ -z "${MEMOIZED_OPTS[$opt]}" -o "${MEMOIZED_OPTS[$opt]}" = ${VOID_VALUE} ]; then
+        echo ""
+        return 1
+    else
+        echo ${MEMOIZED_OPTS[$opt]}
+        return 0
+    fi
+}
+
+########
+read_opt_value_from_line()
+{
+    line=$1
+    opt=$2
+
+    if [ ${LAST_PROC_LINE} = $line ]; then
+        # Given line was previously processed, return memoized result
+        read_memoized_opt_value $opt || { return 1 }        
+    else
+        # Process not memoized line
+        memoize_opts $line
+        
+        # Store processed line
+        LAST_PROC_LINE=$line
+
+        # Return result
+        read_memoized_opt_value $opt || { return 1 }
+    fi
 }
 
 ########

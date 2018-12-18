@@ -175,7 +175,7 @@ check_pipeline_opts()
             local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
             ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
             local script_opts=${SCRIPT_OPT_LIST}
-            echo "STEP: ${stepname} ; options: ${script_opts}" >&2
+            echo "STEP: ${stepname} ; OPTIONS: ${script_opts}" >&2
         fi
     done < ${afile}
 
@@ -304,9 +304,6 @@ execute_step()
 
     ## Decide whether the step should be executed
     if [ "${status}" != "FINISHED" ]; then
-        # Print script options
-        echo "-> ${stepname} options: ${script_opts}" >&2
-        
         # Create script
         create_script ${script_filename} ${step_function} "${script_opts}"
 

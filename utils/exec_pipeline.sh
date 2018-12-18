@@ -178,6 +178,8 @@ check_pipeline_opts()
             echo "STEP: ${stepname} ; options: ${script_opts}" >&2
         fi
     done < ${afile}
+
+    echo "" >&2
 }
 
 ########
@@ -385,6 +387,8 @@ execute_pipeline_steps()
             fi
         fi
     done < ${afile}
+
+    echo "" >&2
 }
 
 ########

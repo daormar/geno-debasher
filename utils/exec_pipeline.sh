@@ -148,7 +148,7 @@ check_pipeline_opts()
     local afile=$2
 
     # Load pipeline modules
-    load_pipeline_modules $afile 2>/dev/null || return 1
+    load_pipeline_modules $afile || return 1
         
     # Read information about the steps to be executed
     while read jobspec; do

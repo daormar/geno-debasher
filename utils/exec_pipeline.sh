@@ -13,16 +13,18 @@ print_desc()
 ########
 usage()
 {
-    echo "exec_pipeline        -a <string> -o <string> [--showopts]"
-    echo "                     [-debug] [--version] [--help]"
+    echo "exec_pipeline        -a <string> -o <string>"
+    echo "                     [--showopts|--checkopts|--debug]"
+    echo "                     [--version] [--help]"
     echo ""
     echo "-a <string>          File with analysis steps to be performed."
     echo "                     Expected format:"
     echo "                     <stepname> <account> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
     echo "-o <string>          Output directory"
     echo "--showopts           Show pipeline options (-a option should be provided)"
-    echo "--debug              Do not execute pipeline, only print status"
-    echo "                     and input parameters"
+    echo "--checkopts          Check pipeline options (-a option should be provided)"
+    echo "--debug              Do everything except launching pipeline steps (-a and"
+    echo "                     -o options should be given)"
     echo "--version            Display version information and exit"
     echo "--help               Display this help and exit"
 }
@@ -39,6 +41,7 @@ read_pars()
 {
     a_given=0
     showopts_given=0
+    checkopts_given=0
     debug=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -61,6 +64,8 @@ read_pars()
                   fi
                   ;;
             "--showopts") showopts_given=1
+                  ;;
+            "--checkopts") checkopts_given=1
                   ;;
             "--debug") debug=1
                       ;;
@@ -93,8 +98,18 @@ check_pars()
         fi
     fi
 
+    if [ ${showopts_given} -eq 1 -a ${checkopts_given} -eq 1 ]; then
+        echo "Error! --showopts and --checkopts options cannot be given simultaneously"
+        exit 1
+    fi
+
     if [ ${showopts_given} -eq 1 -a ${debug} -eq 1 ]; then
         echo "Error! --showopts and --debug options cannot be given simultaneously"
+        exit 1
+    fi
+
+    if [ ${checkopts_given} -eq 1 -a ${debug} -eq 1 ]; then
+        echo "Error! --checkopts and --debug options cannot be given simultaneously"
         exit 1
     fi
 }
@@ -159,6 +174,8 @@ check_pipeline_opts()
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
             local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
             ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
+            local script_opts=${SCRIPT_OPT_LIST}
+            echo "STEP: ${stepname} ; options: ${script_opts}" >&2
         fi
     done < ${afile}
 }
@@ -333,8 +350,6 @@ debug_step()
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
     local script_opts
     ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
-    local script_opts=${SCRIPT_OPT_LIST}
-    echo "-> ${stepname} options: ${script_opts}" >&2
 }
 
 ########
@@ -391,11 +406,15 @@ absolutize_file_paths || exit 1
 if [ ${showopts_given} -eq 1 ]; then
     show_pipeline_opts "${command_line}" ${afile} || exit 1
 else
-    check_pipeline_opts "${command_line}" ${afile} || exit 1
-
-    create_dirs || exit 1
-
-    print_command_line || exit 1
-
-    execute_pipeline_steps "${command_line}" ${outd} ${afile} || exit 1
+    if [ ${checkopts_given} -eq 1 ]; then
+        check_pipeline_opts "${command_line}" ${afile} || exit 1
+    else
+        check_pipeline_opts "${command_line}" ${afile} || exit 1
+        
+        create_dirs || exit 1
+        
+        print_command_line || exit 1
+        
+        execute_pipeline_steps "${command_line}" ${outd} ${afile} || exit 1    
+    fi
 fi

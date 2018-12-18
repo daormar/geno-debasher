@@ -431,7 +431,6 @@ load_pipeline_module()
     if [ -f ${fullmodname} ]; then
         . ${fullmodname}
     else
-        echo "Error: module ${fullmodname} does not exist" >&2
         return 1
     fi
 }
@@ -453,7 +452,7 @@ load_pipeline_modules()
         prevIFS=$IFS
         IFS=','
         for mod in ${comma_sep_modules}; do
-            load_pipeline_module $mod
+            load_pipeline_module $mod || { "Error: module ${fullmodname} does not exist" >&2 ; return 1 }
         done
         IFS=${prevIFS}
     fi

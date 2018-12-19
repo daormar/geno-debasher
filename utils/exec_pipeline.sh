@@ -354,7 +354,11 @@ debug_step()
 ########
 execute_pipeline_steps()
 {
-    echo "* Executing pipeline steps..." >&2
+    if [ $debug -eq 0 ]; then
+        echo "* Executing pipeline steps..." >&2
+    else
+        echo "* Executing pipeline steps... (debug mode)" >&2
+    fi
 
     # Read input parameters
     local cmdline=$1

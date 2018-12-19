@@ -14,18 +14,19 @@ VOID_VALUE="_VOID_VALUE_"
 # GLOBAL VARIABLES #
 ####################
 
-# Declare associative array to store help about pipeline options
+# Declare associative arrays to store help about pipeline options
 declare -A PIPELINE_OPT_DESC
 declare -A PIPELINE_OPT_TYPE
 
-# Declare associative array to store names of directories
+# Declare associative arrays to store names of directories
 declare -A PIPELINE_STEPDIRS
 declare -A PIPELINE_SHDIRS
 
 # Declare associative array to memoize command line options
 declare -A MEMOIZED_OPTS
 
-# Declare string variable to store last processed command line
+# Declare string variable to store last processed command line when
+# memoizing options
 LAST_PROC_LINE_MEMOPTS=""
 
 # Declare variable used to save option lists for scripts

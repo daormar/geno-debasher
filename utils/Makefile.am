@@ -1,5 +1,5 @@
-SCRIPTS_TO_BE_BUILT= bam_utils_lib exec_pipeline bam_analysis		\
-analyze_dataset get_analysis_status gen_bed_for_genome			\
+SCRIPTS_TO_BE_BUILT= bam_utils_lib exec_pipeline check_pipeline		\
+bam_analysis analyze_dataset get_analysis_status gen_bed_for_genome	\
 check_ref_and_bam_contigs gen_wisecondorx_ref convert_snppos_to_snpgcc	\
 create_snv_pos_ascat query_ega_metadata query_icgc_metadata		\
 filter_contig_from_genref run_facets
@@ -8,11 +8,11 @@ bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = bam_utils_lib.sh exec_pipeline.sh bam_analysis.sh	\
-analyze_dataset.sh get_analysis_status.sh gen_bed_for_genome.sh	\
-check_ref_and_bam_contigs.sh gen_wisecondorx_ref.sh		\
-convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py		\
-query_ega_metadata.py query_icgc_metadata.py			\
+EXTRA_DIST = bam_utils_lib.sh exec_pipeline.sh check_pipeline.py	\
+bam_analysis.sh analyze_dataset.sh get_analysis_status.sh		\
+gen_bed_for_genome.sh check_ref_and_bam_contigs.sh			\
+gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
+create_snv_pos_ascat.py query_ega_metadata.py query_icgc_metadata.py	\
 filter_contig_from_genref.py run_facets.R
 
 # Build rules for libraries

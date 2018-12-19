@@ -322,7 +322,7 @@ execute_step()
     else
         local script_filename=`get_script_filename ${stepname}`
         prev_script_older=0
-        check_script_is_older_than_modules ${script_filename} ${fullmodnames} || prev_script_older=1
+        check_script_is_older_than_modules ${script_filename} "${fullmodnames}" || prev_script_older=1
         if [ ${prev_script_older} -eq 1 ]; then
             echo "Warning: last execution of this script used outdated modules">&2
         fi
@@ -378,9 +378,9 @@ execute_pipeline_steps()
 
             # Decide whether to execute or debug step
             if [ $debug -eq 0 ]; then
-                execute_step "${cmdline}" ${fullmodnames} ${dirname} ${stepname} "${jobspec}" || return 1
+                execute_step "${cmdline}" "${fullmodnames}" ${dirname} ${stepname} "${jobspec}" || return 1
             else
-                debug_step "${cmdline}" ${fullmodnames} ${dirname} ${stepname} "${jobspec}" || return 1                
+                debug_step "${cmdline}" "${fullmodnames}" ${dirname} ${stepname} "${jobspec}" || return 1                
             fi
         fi
     done < ${afile}

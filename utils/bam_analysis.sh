@@ -779,7 +779,7 @@ wisecondorx()
 }
 
 ########
-facets_explain_cmdline_opts()
+snp_pileup_plus_facets_explain_cmdline_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -795,7 +795,7 @@ facets_explain_cmdline_opts()
 }
 
 ########
-facets_define_opts()
+snp_pileup_plus_facets_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -824,7 +824,7 @@ facets_define_opts()
 }
 
 ########
-facets()
+snp_pileup_plus_facets()
 {
     display_begin_step_message
 
@@ -852,7 +852,8 @@ facets()
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
-    Rscript ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv 2>&1 || exit 1
+ 
+    Rscript ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     if [ -z "${FACETS_HOME_DIR}" ]; then
@@ -956,7 +957,7 @@ ascatngs()
     logmsg "* Activating conda environment..."
     conda activate ascatngs 2>&1 || exit 1
 
-    # Run cnvkit
+    # Run ascatngs
     logmsg "* Executing ascat.pl..."
     ascat.pl -n ${normalbam} -t ${tumorbam} -r ${ref} -sg ${snpgccorr} -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o ${step_outd} 2>&1 || exit 1
 

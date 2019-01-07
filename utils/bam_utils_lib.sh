@@ -9,6 +9,9 @@ OPT_NOT_FOUND="_OPT_NOT_FOUND_"
 DEP_NOT_FOUND="_DEP_NOT_FOUND_"
 INVALID_JID="_INVALID_JID_"
 VOID_VALUE="_VOID_VALUE_"
+FINISHED_STEP_STATUS="FINISHED"
+UNFINISHED_STEP_STATUS="UNFINISHED"
+TODO_STEP_STATUS="TO-DO"
 
 ####################
 # GLOBAL VARIABLES #
@@ -534,12 +537,12 @@ get_step_status()
     
     if [ -d ${stepdirname} ]; then
         if [ -f ${stepdirname}/finished ]; then
-            echo "FINISHED"
+            echo "${FINISHED_STEP_STATUS}"
         else
-            echo "UNFINISHED"
+            echo "${UNFINISHED_STEP_STATUS}"
         fi
     else
-        echo "TO-DO"
+        echo "${TODO_STEP_STATUS}"
     fi
 }
 

@@ -303,7 +303,7 @@ execute_step()
     echo "STEP: ${stepname} ; STATUS: ${status} ; JOBSPEC: ${jobspec}" >&2
 
     ## Decide whether the step should be executed
-    if [ "${status}" != "FINISHED" ]; then
+    if [ "${status}" != "${FINISHED_STEP_STATUS}" ]; then
         # Create script
         create_script ${script_filename} ${step_function} "${script_opts}"
 

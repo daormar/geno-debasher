@@ -139,7 +139,7 @@ process_status_for_afile()
             echo "STEP: $stepname ; STATUS: $status"
 
             # Revise value of analysis_finished variable
-            if [ "${status}" != "FINISHED" ]; then
+            if [ "${status}" != "${FINISHED_STEP_STATUS}" ]; then
                 analysis_finished=0
             fi
         else

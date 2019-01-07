@@ -114,6 +114,7 @@ process_status_for_afile()
     load_pipeline_modules $afile 2>/dev/null || return 1
         
     # Read information about the steps to be executed
+    lineno=1
     while read jobspec; do
         local jobspec_comment=`analysis_jobspec_is_comment "$jobspec"`
         local jobspec_ok=`analysis_jobspec_is_ok "$jobspec"`
@@ -135,7 +136,16 @@ process_status_for_afile()
 
             # Print status
             echo "STEP: $stepname ; STATUS: $status"
+        else
+            if [ ${jobspec_ok} = "no" ]; then
+                echo "Error: incorrect job specification at line $lineno" >&2
+                return 1
+            fi
         fi
+        
+        # Increase lineno
+        lineno=`expr $lineno + 1`
+        
     done < ${afile}
 }
 

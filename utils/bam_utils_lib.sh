@@ -10,8 +10,11 @@ DEP_NOT_FOUND="_DEP_NOT_FOUND_"
 INVALID_JID="_INVALID_JID_"
 VOID_VALUE="_VOID_VALUE_"
 FINISHED_STEP_STATUS="FINISHED"
+INPROGRESS_STEP_STATUS="IN-PROGRESS"
 UNFINISHED_STEP_STATUS="UNFINISHED"
 TODO_STEP_STATUS="TO-DO"
+NO_SCHEDULER="NO_SCHEDULER"
+SLURM_SCHEDULER="SLURM_SCHEDULER"
 
 ####################
 # GLOBAL VARIABLES #
@@ -101,15 +104,20 @@ create_script()
     local name=$1
     local command=$2
     local script_opts=$3
-    
+
     # Write bash shebang
     local BASH_SHEBANG=`init_bash_shebang_var`
     echo ${BASH_SHEBANG} > ${name} || return 1
 
-    # Write SLURM commands
-    echo "#SBATCH --job-name=${command}" >> ${name} || return 1
-    echo "#SBATCH --output=${name}.slurm_out" >> ${name} || return 1
-
+    # Write scheduler-specific commands
+    local sched=`determine_scheduler`
+    case $sched in
+        ${SLURM_SCHEDULER})
+            echo "#SBATCH --job-name=${command}" >> ${name} || return 1
+            echo "#SBATCH --output=${name}.slurm_out" >> ${name} || return 1
+        ;;
+    esac
+    
     # Write environment variables
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
     
@@ -223,13 +231,19 @@ find_dependency_for_step()
 ########
 get_default_outd_for_dep()
 {
-    local outd=$1
+    local cmdline=$1
     local dep=$2
 
     if [ -z "${dep}" ]; then
         echo ""
     else
+        # Get name of output directory
+        read_opt_value_from_line_memoiz "$cmdline" "-o" || return 1
+        local outd=${_OPT_VALUE_}
+
+        # Get stepname
         local stepname_part=`echo ${dep} | $AWK -F ":" '{print $2}'`
+        
         get_step_dirname ${outd} ${stepname_part}
     fi
 }
@@ -271,6 +285,16 @@ get_slurm_dependency_opt()
 }
 
 ########
+determine_scheduler()
+{
+    if [ -z "${SBATCH}" ]; then
+        echo ${NO_SCHEDULER}
+    else
+        echo ${SLURM_SCHEDULER}        
+    fi
+}
+
+########
 launch()
 {
     # Initialize variables
@@ -278,38 +302,41 @@ launch()
     local jobspec=$2
     local jobdeps=$3
     local outvar=$4
-
+    
     # Launch file
-    if [ -z "${SBATCH}" ]; then
-        ## Launch without using any scheduler
-        ${file} > ${file}.log 2>&1 || return 1
-        local pid=$!
-        eval "${outvar}='${pid}'"
-    else
-        ## Launch using slurm
-        # Retrieve specification
-        local account=`extract_account_from_jobspec "$jobspec"`
-        local partition=`extract_partition_from_jobspec "$jobspec"`
-        local cpus=`extract_cpus_from_jobspec "$jobspec"`
-        local mem=`extract_mem_from_jobspec "$jobspec"`
-        local time=`extract_time_from_jobspec "$jobspec"`
+    local sched=`determine_scheduler`
+    case $sched in
+        ${SLURM_SCHEDULER}) ## Launch using slurm
+            # Retrieve specification
+            local account=`extract_account_from_jobspec "$jobspec"`
+            local partition=`extract_partition_from_jobspec "$jobspec"`
+            local cpus=`extract_cpus_from_jobspec "$jobspec"`
+            local mem=`extract_mem_from_jobspec "$jobspec"`
+            local time=`extract_time_from_jobspec "$jobspec"`
 
-        # Define options for sbatch
-        local account_opt=`get_account_opt ${account}`
-        local partition_opt=`get_partition_opt ${partition}`
-        local dependency_opt=`get_slurm_dependency_opt "${jobdeps}"`
+            # Define options for sbatch
+            local account_opt=`get_account_opt ${account}`
+            local partition_opt=`get_partition_opt ${partition}`
+            local dependency_opt=`get_slurm_dependency_opt "${jobdeps}"`
 
-        # Submit job
-        local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${file})
+            # Submit job
+            local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${file})
 
-        # Check for errors
-        if [ -z "$jid" ]; then
-            jid=${INVALID_JID}
-        fi
+            # Check for errors
+            if [ -z "$jid" ]; then
+                jid=${INVALID_JID}
+            fi
 
-        # Assign output variable to job identifier
-        eval "${outvar}='${jid}'"
-    fi
+            # Assign output variable to job identifier
+            eval "${outvar}='${jid}'"           
+            ;;
+
+        *) # No scheduler will be used
+            ${file} > ${file}.log 2>&1 || return 1
+            local pid=$!
+            eval "${outvar}='${pid}'"
+            ;;
+    esac
 }
 
 ########
@@ -548,7 +575,67 @@ read_step_id_from_file()
     local stepname=$2
     local filename=$dirname/scripts/$stepname.id
 
-    cat $filename
+    if [ -f $filename ]; then
+        cat $filename
+    else
+        echo ${INVALID_JID}
+    fi
+}
+
+########
+check_if_pid_exists()
+{
+    local pid=$1
+
+    pid_exists=1
+    kill -0 $pid  > /dev/null 2>&1 || pid_exists=0
+
+    echo ${pid_exists}
+}
+
+########
+check_if_slurm_jid_exists()
+{
+    local jid=$1
+    
+    jid_exists=1
+#    ${SQUEUE} -j $jid -h -o %t || jid_exists=0
+    ${SQUEUE} -j $jid > /dev/null 2>&1 || jid_exists=0
+
+    echo ${jid_exists}
+}
+
+########
+check_if_id_exists()
+{
+    local id=$1
+
+    # Check id depending on the scheduler
+    local sched=`determine_scheduler`
+    case $sched in
+        ${SLURM_SCHEDULER})
+            check_if_slurm_jid_exists $id
+        ;;
+        *) # No scheduler is being used
+            check_if_pid_exists $id
+        ;;
+    esac
+}
+
+########
+check_step_is_in_progress()
+{
+    local dirname=$1
+    local stepname=$2
+
+    local stepid=`read_step_id_from_file $dirname $stepname`
+    local stepid_exists=`check_if_id_exists $stepid`
+
+    if [ ${stepid_exists} -eq 1 ]; then
+        echo 1
+    else
+        echo 0
+    fi
 }
 
 ########
@@ -562,7 +649,13 @@ get_step_status()
         if [ -f ${stepdirname}/finished ]; then
             echo "${FINISHED_STEP_STATUS}"
         else
-            echo "${UNFINISHED_STEP_STATUS}"
+            # Determine if step is unfinished or in progress
+            local step_is_in_progress=`check_step_is_in_progress $dirname $stepname`
+            if [ ${step_is_in_progress} -eq 1 ]; then
+                echo "${INPROGRESS_STEP_STATUS}"
+            else
+                echo "${UNFINISHED_STEP_STATUS}"
+            fi
         fi
     else
         echo "${TODO_STEP_STATUS}"

@@ -154,7 +154,8 @@ get_partition_opt()
 ########
 get_script_filename() 
 {
-    local stepname=$1
+    local dirname=$1
+    local stepname=$2
     
     echo ${dirname}/scripts/${stepname}
 }
@@ -282,7 +283,8 @@ launch()
     if [ -z "${SBATCH}" ]; then
         ## Launch without using any scheduler
         ${file} > ${file}.log 2>&1 || return 1
-        eval "${outvar}=\"\""
+        local pid=$!
+        eval "${outvar}='${pid}'"
     else
         ## Launch using slurm
         # Retrieve specification
@@ -526,6 +528,27 @@ reset_outdir_for_step()
     else
         mkdir ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
     fi
+}
+
+########
+write_step_id_to_file()
+{
+    local dirname=$1
+    local stepname=$2
+    local id=$3
+    local filename=$dirname/scripts/$stepname.id
+
+    echo $id > $filename
+}
+
+########
+read_step_id_from_file()
+{
+    local dirname=$1
+    local stepname=$2
+    local filename=$dirname/scripts/$stepname.id
+
+    cat $filename
 }
 
 ########

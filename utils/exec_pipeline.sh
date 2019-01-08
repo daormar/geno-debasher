@@ -326,7 +326,7 @@ execute_step()
     # Execute step
 
     # Initialize script variables
-    local script_filename=`get_script_filename ${stepname}`
+    local script_filename=`get_script_filename ${dirname} ${stepname}`
     local step_function=`get_step_function ${stepname}`
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
     ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
@@ -353,6 +353,9 @@ execute_step()
         
         # Update variables storing jids
         step_jids="${step_jids}:${!stepname_jid}"
+
+        # Write id to file
+        write_step_id_to_file ${dirname} ${stepname} ${!stepname_jid}
     else
         local script_filename=`get_script_filename ${stepname}`
         prev_script_older=0
@@ -449,11 +452,12 @@ else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
     else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
-
-        ensure_exclusive_execution || { echo "Error: exec_pipeline is being executed for the same output directory" ; exit 1; }
         
         create_dirs || exit 1
-        
+
+        # NOTE: exclusive execution should be ensured after creating the output directory
+        ensure_exclusive_execution || { echo "Error: exec_pipeline is being executed for the same output directory" ; exit 1; }
+
         print_command_line || exit 1
         
         execute_pipeline_steps "${command_line}" ${outd} ${afile} || exit 1    

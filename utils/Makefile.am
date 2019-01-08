@@ -58,6 +58,7 @@ SUFFIXES= .sh .py .r .R
 	echo "QRLS="$(QRLS) >> $@
 	echo "SRUN="$(SRUN) >> $@
 	echo "SBATCH="$(SBATCH) >> $@
+	echo "SQUEUE="$(SQUEUE) >> $@
 	echo "WGET="$(WGET) >> $@
 	echo "PANDOC="$(PANDOC) >> $@
 	echo "PYTHON="$(PYTHON) >> $@

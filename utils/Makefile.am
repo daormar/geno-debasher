@@ -49,6 +49,7 @@ SUFFIXES= .sh .py .r .R
 	echo "DIFF="$(DIFF) >> $@
 	echo "FIND="$(FIND) >> $@
 	echo "MKTEMP="$(MKTEMP) >> $@
+	echo "FLOCK="$(FLOCK) >> $@
 	echo "QSUB=\""$(QSUB)"\"" >> $@
 	echo "QSUB_WORKS=\""$(QSUB_WORKS)"\"" >> $@
 	echo "QSUB_TERSE_OPT=\""$(QSUB_TERSE_OPT)"\"" >> $@

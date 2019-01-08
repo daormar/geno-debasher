@@ -337,7 +337,7 @@ execute_step()
     echo "STEP: ${stepname} ; STATUS: ${status} ; JOBSPEC: ${jobspec}" >&2
 
     ## Decide whether the step should be executed
-    if [ "${status}" != "${FINISHED_STEP_STATUS}" ]; then
+    if [ "${status}" != "${FINISHED_STEP_STATUS}" -a "${status}" != "${INPROGRESS_STEP_STATUS}" ]; then
         # Create script
         create_script ${script_filename} ${step_function} "${script_opts}"
 
@@ -361,7 +361,7 @@ execute_step()
         prev_script_older=0
         check_script_is_older_than_modules ${script_filename} "${fullmodnames}" || prev_script_older=1
         if [ ${prev_script_older} -eq 1 ]; then
-            echo "Warning: last execution of this script used outdated modules">&2
+            echo "Warning: current or last execution of this script used outdated modules">&2
         fi
     fi
 }

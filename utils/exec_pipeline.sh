@@ -3,6 +3,12 @@
 # INCLUDE BASH LIBRARY
 . ${bindir}/bam_utils_lib
 
+#############
+# CONSTANTS #
+#############
+
+LOCKFD=99
+
 ########
 print_desc()
 {
@@ -180,6 +186,34 @@ check_pipeline_opts()
     done < ${afile}
 
     echo "" >&2
+}
+
+########
+release_lock()
+{
+    local fd=$1
+    local file=$2
+
+    $FLOCK -u $fd
+    $FLOCK -xn $fd && rm -f $file
+}
+
+########
+prepare_lock()
+{
+    local fd=$1
+    local file=$2
+    eval "exec $fd>\"$file\""; trap "release_lock $fd $file" EXIT;
+}
+
+########
+ensure_exclusive_execution()
+{
+    local lockfile=${outd}/lock
+
+    prepare_lock $LOCKFD $lockfile
+
+    $FLOCK -xn $LOCKFD || return 1
 }
 
 ########
@@ -415,6 +449,8 @@ else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
     else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
+
+        ensure_exclusive_execution || { echo "Error: exec_pipeline is being executed for the same output directory" ; exit 1; }
         
         create_dirs || exit 1
         

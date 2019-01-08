@@ -445,7 +445,7 @@ strelka_somatic_define_opts()
     local manta_dep=`find_dependency_for_step "${jobspec}" manta_somatic`
     if [ ${manta_dep} != ${DEP_NOT_FOUND} ]; then
         local manta_outd=`get_default_outd_for_dep ${outd} "${manta_dep}"`
-        define_indir_opt "-manta-outd" ${manta_outd} optlist || exit 1
+        define_opt "-manta-outd" ${manta_outd} optlist || exit 1
     fi
     
     # -callregf option

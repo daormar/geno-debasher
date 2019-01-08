@@ -130,7 +130,7 @@ process_status_for_afile()
             fi
 
             local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+            ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
 
             # Check step status
             local status=`get_step_status ${dirname} ${stepname}`
@@ -143,8 +143,8 @@ process_status_for_afile()
                 analysis_finished=0
             fi
         else
-            if [ ${jobspec_ok} = "no" ]; then
-                echo "Error: incorrect job specification at line $lineno" >&2
+            if [ ${jobspec_comment} = "no" -a ${jobspec_ok} = "no" ]; then
+                echo "Error: incorrect job specification at line $lineno of ${afile}" >&2
                 return 1
             fi
         fi

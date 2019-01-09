@@ -133,8 +133,30 @@ absolutize_file_paths()
 }
 
 ########
+check_pipeline_file()
+{
+    echo "* Checking pipeline file ($afile)..." >&2
+
+    ${bindir}/check_pipeline -a ${afile} || return 1
+
+    echo "" >&2
+}
+
+########
+reorder_pipeline_file()
+{
+    echo "* Obtaining reordered pipeline file ($afile)..." >&2
+
+    ${bindir}/check_pipeline -a ${afile} -r > ${outd}/reordered_pipeline.csv 2> /dev/null || return 1
+
+    echo "" >&2
+}
+
+########
 show_pipeline_opts()
 {
+    echo "* Pipeline options..." >&2
+
     # Read input parameters
     local cmdline=$1
     local afile=$2
@@ -152,10 +174,9 @@ show_pipeline_opts()
             local script_explain_cmdline_opts_funcname=`get_script_explain_cmdline_opts_funcname ${stepname}`
             ${script_explain_cmdline_opts_funcname} || exit 1
         fi
-    done < ${afile}
+    done < ${outd}/reordered_pipeline.csv
 
     # Print options
-    echo "* Pipeline options..." >&2
     print_pipeline_opts
 }
 
@@ -183,7 +204,7 @@ check_pipeline_opts()
             local script_opts=${SCRIPT_OPT_LIST}
             echo "STEP: ${stepname} ; OPTIONS: ${script_opts}" >&2
         fi
-    done < ${afile}
+    done < ${outd}/reordered_pipeline.csv
 
     echo "" >&2
 }
@@ -424,7 +445,7 @@ execute_pipeline_steps()
                 debug_step "${cmdline}" "${fullmodnames}" ${dirname} ${stepname} "${jobspec}" || return 1                
             fi
         fi
-    done < ${afile}
+    done < ${outd}/reordered_pipeline.csv
 
     echo "" >&2
 }
@@ -444,6 +465,10 @@ read_pars $@ || exit 1
 check_pars || exit 1
 
 absolutize_file_paths || exit 1
+
+check_pipeline_file || exit 1
+
+reorder_pipeline_file || exit 1
 
 if [ ${showopts_given} -eq 1 ]; then
     show_pipeline_opts "${command_line}" ${afile} || exit 1

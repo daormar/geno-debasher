@@ -665,11 +665,7 @@ get_step_status()
 ########
 display_begin_step_message()
 {
-    if [ -z "${SLURM_JOB_ID}" ]; then
-        echo "Step started at `date`" >&2
-    else
-        echo "Step started at `date` (SLURM_JOB_ID= ${SLURM_JOB_ID})" >&2
-    fi
+    echo "Step started at `date`" >&2
 }
 
 ########

@@ -7,7 +7,7 @@
 print_desc()
 {
     echo "get_analysis_status get status of analysis steps"
-    echo "type \"submit_bam_analysis --help\" to get usage information"
+    echo "type \"get_analysis_status --help\" to get usage information"
 }
 
 ########

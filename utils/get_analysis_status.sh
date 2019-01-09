@@ -114,6 +114,8 @@ process_status_for_afile()
     load_pipeline_modules $afile 2>/dev/null || return 1
         
     # Read information about the steps to be executed
+    lineno=1
+    analysis_finished=1
     while read jobspec; do
         local jobspec_comment=`analysis_jobspec_is_comment "$jobspec"`
         local jobspec_ok=`analysis_jobspec_is_ok "$jobspec"`
@@ -128,15 +130,34 @@ process_status_for_afile()
             fi
 
             local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+            ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
 
             # Check step status
             local status=`get_step_status ${dirname} ${stepname}`
 
             # Print status
             echo "STEP: $stepname ; STATUS: $status"
+
+            # Revise value of analysis_finished variable
+            if [ "${status}" != "${FINISHED_STEP_STATUS}" ]; then
+                analysis_finished=0
+            fi
+        else
+            if [ ${jobspec_comment} = "no" -a ${jobspec_ok} = "no" ]; then
+                echo "Error: incorrect job specification at line $lineno of ${afile}" >&2
+                return 1
+            fi
         fi
+        
+        # Increase lineno
+        lineno=`expr $lineno + 1`
+        
     done < ${afile}
+
+    # Return error if analysis is not finished
+    if [ ${analysis_finished} -eq 0 ]; then
+        return 1
+    fi
 }
 
 ########

@@ -3,6 +3,12 @@
 # INCLUDE BASH LIBRARY
 . ${bindir}/bam_utils_lib
 
+#############
+# CONSTANTS #
+#############
+
+LOCKFD=99
+
 ########
 print_desc()
 {
@@ -183,6 +189,34 @@ check_pipeline_opts()
 }
 
 ########
+release_lock()
+{
+    local fd=$1
+    local file=$2
+
+    $FLOCK -u $fd
+    $FLOCK -xn $fd && rm -f $file
+}
+
+########
+prepare_lock()
+{
+    local fd=$1
+    local file=$2
+    eval "exec $fd>\"$file\""; trap "release_lock $fd $file" EXIT;
+}
+
+########
+ensure_exclusive_execution()
+{
+    local lockfile=${outd}/lock
+
+    prepare_lock $LOCKFD $lockfile
+
+    $FLOCK -xn $LOCKFD || return 1
+}
+
+########
 create_dirs()
 {
     mkdir -p ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
@@ -292,7 +326,7 @@ execute_step()
     # Execute step
 
     # Initialize script variables
-    local script_filename=`get_script_filename ${stepname}`
+    local script_filename=`get_script_filename ${dirname} ${stepname}`
     local step_function=`get_step_function ${stepname}`
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
     ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
@@ -303,7 +337,7 @@ execute_step()
     echo "STEP: ${stepname} ; STATUS: ${status} ; JOBSPEC: ${jobspec}" >&2
 
     ## Decide whether the step should be executed
-    if [ "${status}" != "FINISHED" ]; then
+    if [ "${status}" != "${FINISHED_STEP_STATUS}" -a "${status}" != "${INPROGRESS_STEP_STATUS}" ]; then
         # Create script
         create_script ${script_filename} ${step_function} "${script_opts}"
 
@@ -319,12 +353,15 @@ execute_step()
         
         # Update variables storing jids
         step_jids="${step_jids}:${!stepname_jid}"
+
+        # Write id to file
+        write_step_id_to_file ${dirname} ${stepname} ${!stepname_jid}
     else
         local script_filename=`get_script_filename ${stepname}`
         prev_script_older=0
         check_script_is_older_than_modules ${script_filename} "${fullmodnames}" || prev_script_older=1
         if [ ${prev_script_older} -eq 1 ]; then
-            echo "Warning: last execution of this script used outdated modules">&2
+            echo "Warning: current or last execution of this script used outdated modules">&2
         fi
     fi
 }
@@ -417,7 +454,10 @@ else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
         
         create_dirs || exit 1
-        
+
+        # NOTE: exclusive execution should be ensured after creating the output directory
+        ensure_exclusive_execution || { echo "Error: exec_pipeline is being executed for the same output directory" ; exit 1; }
+
         print_command_line || exit 1
         
         execute_pipeline_steps "${command_line}" ${outd} ${afile} || exit 1    

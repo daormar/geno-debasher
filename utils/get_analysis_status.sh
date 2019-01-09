@@ -26,7 +26,6 @@ read_pars()
 {
     d_given=0
     s_given=0
-    debug=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage

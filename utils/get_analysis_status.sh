@@ -176,7 +176,7 @@ process_status_for_afile()
             if [ ${analysis_one_or_more_steps_in_progress} -eq 1 ]; then
                 return ${ANALYSIS_ONE_OR_MORE_STEPS_IN_PROGRESS_EXIT_CODE}
             else
-                return ${ANALYSIS_STOPPED_EXIT_CODE}
+                return ${ANALYSIS_UNFINISHED_EXIT_CODE}
             fi
         fi
     fi

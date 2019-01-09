@@ -116,6 +116,7 @@ process_status_for_afile()
     lineno=1
     analysis_finished=1
     analysis_in_progress=1
+    analysis_one_or_more_steps_in_progress=0
     while read jobspec; do
         local jobspec_comment=`analysis_jobspec_is_comment "$jobspec"`
         local jobspec_ok=`analysis_jobspec_is_ok "$jobspec"`
@@ -147,6 +148,12 @@ process_status_for_afile()
             if [ "${status}" != "${FINISHED_STEP_STATUS}" -a "${status}" != "${INPROGRESS_STEP_STATUS}" ]; then
                 analysis_in_progress=0
             fi
+
+            # Revise value of analysis_in_progress variable
+            if [ "${status}" = "${INPROGRESS_STEP_STATUS}" ]; then
+                analysis_one_or_more_steps_in_progress=1
+            fi
+            
         else
             if [ ${jobspec_comment} = "no" -a ${jobspec_ok} = "no" ]; then
                 echo "Error: incorrect job specification at line $lineno of ${afile}" >&2
@@ -161,12 +168,16 @@ process_status_for_afile()
 
     # Return error if analysis is not finished
     if [ ${analysis_finished} -eq 1 ]; then
-        return 0
+        return ${ANALYSIS_FINISHED_EXIT_CODE}
     else
         if [ ${analysis_in_progress} -eq 1 ]; then
-            return 1
+            return ${ANALYSIS_IN_PROGRESS_EXIT_CODE}
         else
-            return 2
+            if [ ${analysis_one_or_more_steps_in_progress} -eq 1 ]; then
+                return ${ANALYSIS_ONE_OR_MORE_STEPS_IN_PROGRESS_EXIT_CODE}
+            else
+                return ${ANALYSIS_STOPPED_EXIT_CODE}
+            fi
         fi
     fi
 }

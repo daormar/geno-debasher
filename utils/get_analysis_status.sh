@@ -116,6 +116,7 @@ process_status_for_afile()
     # Read information about the steps to be executed
     lineno=1
     analysis_finished=1
+    analysis_in_progress=1
     while read jobspec; do
         local jobspec_comment=`analysis_jobspec_is_comment "$jobspec"`
         local jobspec_ok=`analysis_jobspec_is_ok "$jobspec"`
@@ -142,6 +143,11 @@ process_status_for_afile()
             if [ "${status}" != "${FINISHED_STEP_STATUS}" ]; then
                 analysis_finished=0
             fi
+
+            # Revise value of analysis_in_progress variable
+            if [ "${status}" != "${FINISHED_STEP_STATUS}" -a "${status}" != "${INPROGRESS_STEP_STATUS}" ]; then
+                analysis_in_progress=0
+            fi
         else
             if [ ${jobspec_comment} = "no" -a ${jobspec_ok} = "no" ]; then
                 echo "Error: incorrect job specification at line $lineno of ${afile}" >&2
@@ -155,8 +161,14 @@ process_status_for_afile()
     done < ${afile}
 
     # Return error if analysis is not finished
-    if [ ${analysis_finished} -eq 0 ]; then
-        return 1
+    if [ ${analysis_finished} -eq 1 ]; then
+        return 0
+    else
+        if [ ${analysis_in_progress} -eq 1 ]; then
+            return 1
+        else
+            return 2
+        fi
     fi
 }
 
@@ -171,4 +183,6 @@ read_pars $@ || exit 1
 
 check_pars || exit 1
 
-process_status_for_afile ${adir} ${afile} || exit 1
+process_status_for_afile ${adir} ${afile}
+
+exit $?

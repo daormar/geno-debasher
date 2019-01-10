@@ -65,19 +65,89 @@ read_pars()
 ########
 wait_simul_exec_reduction()
 {
-    # TBD
+    local maxp=$1
+    local -n assoc_array=$2
+    local SLEEP_TIME=10
+    end=0
+    
+    while [ ${end} -eq 0 ] ; do
+        # Iterate over active pipelines
+        num_finished_pipelines=0
+        num_unfinished_pipelines=0
+        for pipeline_outd in "${!assoc_array[@]}"; do
+            # Check if pipeline has finished execution
+            ${bindir}/get_analysis_status -d ${pipeline_outd}
+            local exit_code=$?
+
+            case ${exit_code} in
+                ${ANALYSIS_FINISHED_EXIT_CODE})
+                    num_finished_pipelines=`expr ${num_finished_pipelines} + 1`
+                    ;;
+                ${ANALYSIS_UNFINISHED_EXIT_CODE})
+                    num_unfinished_pipelines=`expr ${num_unfinished_pipelines} + 1`                    
+                    ;;
+            esac
+        done
+
+        num_active_pipelines=${#assoc_array[@]} 
+
+        # Sanity check: if all pipelines are unfinished, then it is not
+        # possible to continue execution
+        if [ ${num_unfinished_pipelines} -eq ${num_active_pipelines} ]; then
+            echo "Error: all active pipelines are unfinished" >&2
+            return 1
+        fi
+        
+        # Obtain number of pending pipelines
+        pending_pipelines=`expr ${num_active_pipelines} - ${num_finished_pipelines}`
+
+        # Wait if number of pending pipelines is equal or greater than
+        # maximum
+        if [ ${pending_pipelines} -ge ${maxp} ]; then
+            sleep ${SLEEP_TIME}
+        else
+            end=1
+        fi
+    done
 }
 
 ########
-move_outdirs()
+update_active_pipelines()
 {
-    # TBD
+    local outd=$1
+    local -n assoc_array=$2
+
+    # Iterate over active pipelines
+    for pipeline_outd in "${!assoc_array[@]}"; do
+        # Check if pipeline has finished execution
+        ${bindir}/get_analysis_status -d ${pipeline_outd}
+        local exit_code=$?
+        
+        if [ ${exit_code} -eq ${ANALYSIS_FINISHED_EXIT_CODE} ]; then
+            # Remove pipeline from array of active pipelines
+            unset assoc_array[${pipeline_outd}]
+            
+            # Move directory if requested
+            if [ ! -z "${outd}" ]; then
+                mv ${pipeline_outd} ${outd}
+            fi            
+        fi
+    done
 }
 
 ########
-add_cmd_to_array()
+add_cmd_to_assoc_array()
 {
-    # TBD
+    local cmd=$1
+    local -n assoc_array=$2
+
+    # Extract output directory from command
+    local dir=`read_opt_value_from_line "-o" ${cmd}`
+
+    # Add command to associative array if directory was sucessfully retrieved
+    if [ ${dir} != ${OPT_NOT_FOUND} ]; then
+        assoc_array[${dir}]=${cmd}
+    fi
 }
 
 ########
@@ -89,20 +159,16 @@ execute_batches()
     while exec_pipeline_cmd; do
 
         # Wait until number of simultaneous executions is below the given maximum
-        if [ ${#PIPELINE_COMMANDS[@]} -ge ${maxp} ]; then
-            wait_simul_exec_reduction "PIPELINE_COMMANDS"
-        fi
-        
-        # Move output directories if requested
-        if [ ${o_given} -eq 1 ]; then
-            move_outdirs ${outd} "PIPELINE_COMMANDS"
-        fi
+        wait_simul_exec_reduction ${maxp} "PIPELINE_COMMANDS" || return 1
+            
+        # Update array of active pipelines
+        update_active_pipelines ${outd} "PIPELINE_COMMANDS"
 
         # Execute command
-        ${exec_pipeline_cmd}
+        ${exec_pipeline_cmd} || return 1
 
         # Add command to associative array
-        add_cmd_to_array "${exec_pipeline_cmd}" "PIPELINE_COMMANDS"
+        add_cmd_to_assoc_array "${exec_pipeline_cmd}" "PIPELINE_COMMANDS"
         
         # Increase lineno
         lineno=`expr $lineno + 1`

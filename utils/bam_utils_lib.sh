@@ -1140,19 +1140,36 @@ get_default_shdirname()
     local shdiropt=$2
 
     # Get full path of directory
-    # local outd
-    # outd=`read_opt_value_from_line "$cmdline" "-o"` || return 1
     read_opt_value_from_line_memoiz "$cmdline" "-o" || return 1
     local outd=${_OPT_VALUE_}
     outd=`get_absolute_path ${outd}`
 
     # Get name of shared dir
-    # local shdir
-    # shdir=`read_opt_value_from_line "$cmdline" "${shdiropt}"` || return 1
     read_opt_value_from_line_memoiz "$cmdline" "${shdiropt}" || return 1
     local shdir=${_OPT_VALUE_}
 
     get_absolute_shdirname $outd $shdir
+}
+
+########
+get_default_nonmandatory_opt_shdirname()
+{
+    local cmdline=$1
+    local shdiropt=$2
+    local default_value=$3
+
+    # Get full path of directory
+    read_opt_value_from_line_memoiz "$cmdline" "-o" || return 1
+    local outd=${_OPT_VALUE_}
+    outd=`get_absolute_path ${outd}`
+
+    # Get name of shared dir
+    if read_opt_value_from_line_memoiz "$cmdline" "${shdiropt}"; then
+        local shdir=${_OPT_VALUE_}
+        get_absolute_shdirname $outd $shdir
+    else
+        get_absolute_shdirname $outd ${default_value}
+    fi
 }
 
 ########

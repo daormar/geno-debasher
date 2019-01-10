@@ -76,7 +76,7 @@ wait_simul_exec_reduction()
         num_unfinished_pipelines=0
         for pipeline_outd in "${!assoc_array[@]}"; do
             # Check if pipeline has finished execution
-            ${bindir}/get_analysis_status -d ${pipeline_outd}
+            ${bindir}/get_analysis_status -d ${pipeline_outd} > /dev/null 2>&1
             local exit_code=$?
 
             case ${exit_code} in
@@ -120,7 +120,7 @@ update_active_pipelines()
     # Iterate over active pipelines
     for pipeline_outd in "${!assoc_array[@]}"; do
         # Check if pipeline has finished execution
-        ${bindir}/get_analysis_status -d ${pipeline_outd}
+        ${bindir}/get_analysis_status -d ${pipeline_outd} > /dev/null 2>&1
         local exit_code=$?
         
         if [ ${exit_code} -eq ${ANALYSIS_FINISHED_EXIT_CODE} ]; then

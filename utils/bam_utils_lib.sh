@@ -8,6 +8,7 @@ NOFILE="_NONE_"
 OPT_NOT_FOUND="_OPT_NOT_FOUND_"
 DEP_NOT_FOUND="_DEP_NOT_FOUND_"
 INVALID_JID="_INVALID_JID_"
+INVALID_PID="_INVALID_PID_"
 VOID_VALUE="_VOID_VALUE_"
 FINISHED_STEP_STATUS="FINISHED"
 INPROGRESS_STEP_STATUS="IN-PROGRESS"
@@ -19,6 +20,10 @@ ANALYSIS_FINISHED_EXIT_CODE=0
 ANALYSIS_IN_PROGRESS_EXIT_CODE=1
 ANALYSIS_ONE_OR_MORE_STEPS_IN_PROGRESS_EXIT_CODE=2
 ANALYSIS_UNFINISHED_EXIT_CODE=3
+AFTER_JOBDEP_TYPE="after"
+AFTEROK_JOBDEP_TYPE="afterok"
+AFTERNOTOK_JOBDEP_TYPE="afternotok"
+AFTERANY_JOBDEP_TYPE="afterany"
 
 ####################
 # GLOBAL VARIABLES #
@@ -99,6 +104,20 @@ exclude_readonly_vars()
 exclude_bashisms()
 {
     $AWK '{if(index($1,"=(")==0) printf"%s\n",$0}'
+}
+
+########
+determine_scheduler()
+{
+    if [ ${DISABLE_SCHEDULERS} = "yes" ]; then
+        echo ${NO_SCHEDULER}
+    else
+        if [ -z "${SBATCH}" ]; then
+            echo ${NO_SCHEDULER}
+        else
+            echo ${SLURM_SCHEDULER}
+        fi
+    fi
 }
 
 ########
@@ -220,7 +239,7 @@ find_dependency_for_step()
     prevIFS=$IFS
     IFS=','
     for local_dep in ${jobdeps}; do
-        local stepname_part_in_dep=`echo ${local_dep} | $AWK -F ":" '{print $2}'`
+        local stepname_part_in_dep=`get_stepname_part_in_dep ${local_dep}`
         if [ ${stepname_part_in_dep} = ${stepname_part} ]; then
             echo ${local_dep}
             IFS=${prevIFS}
@@ -289,13 +308,117 @@ get_slurm_dependency_opt()
 }
 
 ########
-determine_scheduler()
+get_deptype_part_in_dep()
 {
-    if [ -z "${SBATCH}" ]; then
-        echo ${NO_SCHEDULER}
+    local dep=$1
+    echo ${dep} | $AWK -F ":" '{print $1}'
+}
+
+########
+get_stepname_part_in_dep()
+{
+    local dep=$1
+    echo ${dep} | $AWK -F ":" '{print $2}'
+}
+
+########
+get_id_part_in_dep()
+{
+    local dep=$1
+    echo ${dep} | $AWK -F ":" '{print $2}'
+}
+
+########
+wait_for_deps_no_scheduler()
+{
+    # Initialize variables
+    local jobdeps=$3
+
+    # Iterate over dependencies
+    prevIFS=$IFS
+    IFS=','
+    for local_dep in ${jobdeps}; do
+        # Extract information from dependency
+        local deptype=`get_deptype_part_in_dep ${local_dep}`
+        local pid=`get_id_part_in_dep ${local_dep}`
+
+        # Wait for process to finish (except for "after" dependency
+        # types)
+        if [ ${deptype} != ${AFTER_JOBDEP_TYPE} ]; then
+            wait $pid
+            local exit_code=$?
+
+            # Process exit code
+            case ${deptype} in
+                ${AFTEROK_JOBDEP_TYPE})
+                    if [ ${exit_code} -ne 0 ]; then
+                        return 1
+                        IFS=${prevIFS}
+                    fi
+                ;;
+                ${AFTERNOTOK_JOBDEP_TYPE})
+                    if [ ${exit_code} -eq 0 ]; then
+                        return 1
+                        IFS=${prevIFS}
+                    fi 
+                ;;
+                ${AFTERANY_JOBDEP_TYPE})
+                # No actions required
+                    :
+                ;;
+            esac
+        fi
+    done
+    IFS=${prevIFS}
+    return 0
+}
+
+########
+no_scheduler_launch()
+{
+    # Initialize variables
+    local file=$1
+    local jobdeps=$2
+
+    if wait_for_deps_no_scheduler "${jobdeps}"; then
+        ${file} > ${file}.log 2>&1 &
+        local pid=$!
+        echo $pid
     else
-        echo ${SLURM_SCHEDULER}        
+        local pid=${INVALID_PID}
+        echo $pid
     fi
+}
+
+########
+slurm_launch()
+{
+    # Initialize variables
+    local file=$1
+    local jobspec=$2
+    local jobdeps=$3
+
+    # Retrieve specification
+    local account=`extract_account_from_jobspec "$jobspec"`
+    local partition=`extract_partition_from_jobspec "$jobspec"`
+    local cpus=`extract_cpus_from_jobspec "$jobspec"`
+    local mem=`extract_mem_from_jobspec "$jobspec"`
+    local time=`extract_time_from_jobspec "$jobspec"`
+
+    # Define options for sbatch
+    local account_opt=`get_account_opt ${account}`
+    local partition_opt=`get_partition_opt ${partition}`
+    local dependency_opt=`get_slurm_dependency_opt "${jobdeps}"`
+    
+    # Submit job
+    local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${file})
+    
+    # Check for errors
+    if [ -z "$jid" ]; then
+        jid=${INVALID_JID}
+    fi
+
+    echo $jid
 }
 
 ########
@@ -311,33 +434,12 @@ launch()
     local sched=`determine_scheduler`
     case $sched in
         ${SLURM_SCHEDULER}) ## Launch using slurm
-            # Retrieve specification
-            local account=`extract_account_from_jobspec "$jobspec"`
-            local partition=`extract_partition_from_jobspec "$jobspec"`
-            local cpus=`extract_cpus_from_jobspec "$jobspec"`
-            local mem=`extract_mem_from_jobspec "$jobspec"`
-            local time=`extract_time_from_jobspec "$jobspec"`
-
-            # Define options for sbatch
-            local account_opt=`get_account_opt ${account}`
-            local partition_opt=`get_partition_opt ${partition}`
-            local dependency_opt=`get_slurm_dependency_opt "${jobdeps}"`
-
-            # Submit job
-            local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${file})
-
-            # Check for errors
-            if [ -z "$jid" ]; then
-                jid=${INVALID_JID}
-            fi
-
-            # Assign output variable to job identifier
+            local jid=`slurm_launch ${file} "${jobspec}" ${jobdeps}`
             eval "${outvar}='${jid}'"           
             ;;
 
         *) # No scheduler will be used
-            ${file} > ${file}.log 2>&1 || return 1
-            local pid=$!
+            local pid=`no_scheduler_launch ${file} ${jobdeps}`
             eval "${outvar}='${pid}'"
             ;;
     esac
@@ -466,7 +568,7 @@ load_pipeline_module()
 
     # Check that module file exists
     if [ -f ${fullmodname} ]; then
-        . ${fullmodname}
+        . ${fullmodname} || return 1
     else
         return 1
     fi
@@ -489,7 +591,7 @@ load_pipeline_modules()
         prevIFS=$IFS
         IFS=','
         for mod in ${comma_sep_modules}; do
-            load_pipeline_module $mod || { "Error: module ${fullmodname} does not exist" >&2 ; return 1; }
+            load_pipeline_module $mod || { echo "Error while loading ${fullmodname}" >&2 ; return 1; }
         done
         IFS=${prevIFS}
     fi

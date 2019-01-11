@@ -45,7 +45,10 @@ step_a()
 
     # sleep some time
     sleep 10
-    
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
     display_end_step_message
 }
 
@@ -84,7 +87,10 @@ step_b()
 
     # sleep some time
     sleep 10
-    
+
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
     display_end_step_message
 }
 
@@ -124,5 +130,8 @@ step_c()
     # sleep some time
     sleep 10
     
+    # Signal that step execution was completed
+    signal_step_completion ${step_outd}
+
     display_end_step_message
 }

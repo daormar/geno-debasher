@@ -433,6 +433,17 @@ AC_COMPILE_IFELSE(
 # Checks for doxygen
 AC_PATH_PROG(DOXYGEN,doxygen)
 
+# Adds an extra argument to configure (disable schedulers)
+AC_MSG_CHECKING(whether to disable job schedulers)
+AC_ARG_ENABLE(schedulers,[  --disable-schedulers   disable job schedulers], disable_schedulers=yes,
+              disable_schedulers=no)
+
+# Yes, debug is enabled
+if test "$disable_schedulers" = "yes"; then
+   AC_MSG_RESULT(yes)
+fi
+AC_SUBST(DISABLE_SCHEDULERS,$disable_schedulers)
+
 # Adds an extra argument to configure (enable use of Platypus)
 AC_MSG_CHECKING(whether to enable platypus library)
 AC_ARG_WITH([platypus],

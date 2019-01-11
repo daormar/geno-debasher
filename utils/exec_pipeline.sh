@@ -46,6 +46,7 @@ save_command_line()
 read_pars()
 {
     a_given=0
+    o_given=0
     showopts_given=0
     checkopts_given=0
     debug=0
@@ -94,10 +95,8 @@ check_pars()
     fi
     
     if [ ${o_given} -eq 0 ]; then
-        if [ ${showopts_given} -eq 0 ]; then
-            echo "Error! -o parameter not given!" >&2
-            exit 1
-        fi
+        echo "Error! -o parameter not given!" >&2
+        exit 1
     else
         if [ -d ${outd} ]; then
             echo "Warning! output directory does exist" >&2 

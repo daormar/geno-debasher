@@ -244,6 +244,7 @@ def process_pars(flags,values):
             print_graph(ordered_job_entries,jobdeps_map)
     else:
         print >> sys.stderr, "Pipeline file is not correct"
+        return 1
         
 ##################################################
 def main(argv):
@@ -254,7 +255,9 @@ def main(argv):
     check_pars(flags,values)
 
     # process parameters
-    process_pars(flags,values)
+    success=process_pars(flags,values)
+
+    exit(success)
     
 if __name__ == "__main__":
     main(sys.argv)

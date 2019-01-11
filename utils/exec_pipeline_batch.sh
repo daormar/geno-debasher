@@ -67,7 +67,7 @@ wait_simul_exec_reduction()
 {
     local -n assoc_array=$1
     local maxp=$2
-    local SLEEP_TIME=10
+    local SLEEP_TIME=100
     end=0
     
     while [ ${end} -eq 0 ] ; do

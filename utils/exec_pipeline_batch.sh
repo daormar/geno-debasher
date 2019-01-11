@@ -165,6 +165,7 @@ execute_batches()
     while read exec_pipeline_cmd; do
 
         echo "* Processing line ${lineno}..." >&2
+        echo "" >&2
         
         echo "** Wait until number of simultaneous executions is below the given maximum..." >&2
         wait_simul_exec_reduction "PIPELINE_COMMANDS" ${maxp} || return 1
@@ -175,7 +176,8 @@ execute_batches()
         echo "" >&2
         
         echo "** Execute pipeline..." >&2
-        ${exec_pipeline_cmd} || return 1
+        echo ${exec_pipeline_cmd} >&2
+        ${exec_pipeline_cmd} > /dev/null 2>&1 || return 1
         echo "" >&2
 
         echo "** Add pipeline command to associative array..." >&2

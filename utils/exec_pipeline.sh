@@ -267,8 +267,8 @@ get_jobdeps_from_detailed_spec()
     prevIFS=$IFS
     IFS=','
     for dep_spec in ${jobdeps_spec}; do
-        local deptype=`echo ${dep_spec} | $AWK -F ":" '{print $1}'`
-        local step=`echo ${dep_spec} | $AWK -F ":" '{print $2}'`
+        local deptype=`get_deptype_part_in_dep ${dep_spec}`
+        local step=`get_stepname_part_in_dep ${dep_spec}`
         
         # Check if there is a jid for the step
         local step_jid=${step}_jid
@@ -378,11 +378,15 @@ execute_step()
         # Write id to file
         write_step_id_to_file ${dirname} ${stepname} ${!stepname_jid}
     else
-        local script_filename=`get_script_filename ${stepname}`
+        local script_filename=`get_script_filename ${dirname} ${stepname}`
         prev_script_older=0
         check_script_is_older_than_modules ${script_filename} "${fullmodnames}" || prev_script_older=1
         if [ ${prev_script_older} -eq 1 ]; then
-            echo "Warning: current or last execution of this script used outdated modules">&2
+            if [ "${status}" = "${INPROGRESS_STEP_STATUS}" ]; then
+                echo "Warning: current execution of this script is using outdated modules">&2
+            else
+                echo "Warning: last execution of this script used outdated modules">&2
+            fi
         fi
     fi
 }

@@ -16,6 +16,7 @@ step_a_cmdline_opts()
     # # -r option
     # description="Reference genome file (required)"
     # explain_cmdline_opt "-r" "<string>" "$description"
+    :
 }
 
 ########
@@ -54,6 +55,7 @@ step_b_cmdline_opts()
     # # -r option
     # description="Reference genome file (required)"
     # explain_cmdline_opt "-r" "<string>" "$description"
+    :
 }
 
 ########
@@ -92,6 +94,7 @@ step_c_cmdline_opts()
     # # -r option
     # description="Reference genome file (required)"
     # explain_cmdline_opt "-r" "<string>" "$description"
+    :
 }
 
 ########

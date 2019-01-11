@@ -65,15 +65,16 @@ read_pars()
 ########
 wait_simul_exec_reduction()
 {
-    local maxp=$1
-    local -n assoc_array=$2
+    local -n assoc_array=$1
+    local maxp=$2
     local SLEEP_TIME=10
     end=0
     
     while [ ${end} -eq 0 ] ; do
         # Iterate over active pipelines
-        num_finished_pipelines=0
-        num_unfinished_pipelines=0
+        local num_active_pipelines=${#assoc_array[@]}
+        local num_finished_pipelines=0
+        local num_unfinished_pipelines=0
         for pipeline_outd in "${!assoc_array[@]}"; do
             # Check if pipeline has finished execution
             ${bindir}/get_analysis_status -d ${pipeline_outd} > /dev/null 2>&1
@@ -88,18 +89,17 @@ wait_simul_exec_reduction()
                     ;;
             esac
         done
-
-        num_active_pipelines=${#assoc_array[@]} 
-
-        # Sanity check: if all pipelines are unfinished, then it is not
+        
+        # Sanity check: if maximum number of active pipelines has been
+        # reached and all pipelines are unfinished, then it is not
         # possible to continue execution
-        if [ ${num_unfinished_pipelines} -eq ${num_active_pipelines} ]; then
-            echo "Error: all active pipelines are unfinished" >&2
+        if [ ${num_active_pipelines} -ge ${maxp} -a ${num_unfinished_pipelines} -eq ${num_active_pipelines} ]; then
+            echo "Error: all active pipelines are unfinished and it is not possible to execute new ones" >&2
             return 1
         fi
         
         # Obtain number of pending pipelines
-        pending_pipelines=`expr ${num_active_pipelines} - ${num_finished_pipelines}`
+        local pending_pipelines=`expr ${num_active_pipelines} - ${num_finished_pipelines}`
 
         # Wait if number of pending pipelines is equal or greater than
         # maximum
@@ -114,9 +114,12 @@ wait_simul_exec_reduction()
 ########
 update_active_pipelines()
 {
-    local outd=$1
-    local -n assoc_array=$2
-
+    local -n assoc_array=$1
+    local outd=$2
+    
+    local num_active_pipelines=${#assoc_array[@]}
+    echo "Previous number of active pipelines: ${num_active_pipelines}" >&2
+    
     # Iterate over active pipelines
     for pipeline_outd in "${!assoc_array[@]}"; do
         # Check if pipeline has finished execution
@@ -133,16 +136,19 @@ update_active_pipelines()
             fi            
         fi
     done
+
+    local num_active_pipelines=${#assoc_array[@]}
+    echo "Updated number of active pipelines: ${num_active_pipelines}" >&2
 }
 
 ########
 add_cmd_to_assoc_array()
 {
-    local cmd=$1
-    local -n assoc_array=$2
+    local -n assoc_array=$1
+    local cmd=$2
 
     # Extract output directory from command
-    local dir=`read_opt_value_from_line "-o" ${cmd}`
+    local dir=`read_opt_value_from_line "${cmd}" "-o"`
 
     # Add command to associative array if directory was sucessfully retrieved
     if [ ${dir} != ${OPT_NOT_FOUND} ]; then
@@ -156,23 +162,29 @@ execute_batches()
     # Read file with exec_pipeline commands
     lineno=1
     declare -A PIPELINE_COMMANDS
-    while exec_pipeline_cmd; do
+    while read exec_pipeline_cmd; do
 
-        # Wait until number of simultaneous executions is below the given maximum
-        wait_simul_exec_reduction ${maxp} "PIPELINE_COMMANDS" || return 1
+        echo "* Processing line ${lineno}..." >&2
+        
+        echo "** Wait until number of simultaneous executions is below the given maximum..." >&2
+        wait_simul_exec_reduction "PIPELINE_COMMANDS" ${maxp} || return 1
+        echo "" >&2
             
-        # Update array of active pipelines
-        update_active_pipelines ${outd} "PIPELINE_COMMANDS"
-
-        # Execute command
+        echo "** Update array of active pipelines..." >&2
+        update_active_pipelines "PIPELINE_COMMANDS" "${outd}"
+        echo "" >&2
+        
+        echo "** Execute pipeline..." >&2
         ${exec_pipeline_cmd} || return 1
+        echo "" >&2
 
-        # Add command to associative array
-        add_cmd_to_assoc_array "${exec_pipeline_cmd}" "PIPELINE_COMMANDS"
+        echo "** Add pipeline command to associative array..." >&2
+        add_cmd_to_assoc_array "PIPELINE_COMMANDS" "${exec_pipeline_cmd}"
+        echo "" >&2
         
         # Increase lineno
         lineno=`expr $lineno + 1`
-
+        
     done < ${file}
 }
 

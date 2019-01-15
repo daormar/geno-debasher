@@ -237,12 +237,16 @@ ensure_exclusive_execution()
 }
 
 ########
-create_dirs()
+create_basic_dirs()
 {
     mkdir -p ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
 
     mkdir -p ${outd}/scripts || { echo "Error! cannot create scripts directory" >&2; return 1; }
+}
 
+########
+create_shared_dirs()
+{
     # Create shared directories required by the pipeline steps
     # IMPORTANT NOTE: the following function can only be executed after
     # executing check_pipeline_pars
@@ -469,6 +473,8 @@ check_pars || exit 1
 
 absolutize_file_paths || exit 1
 
+create_basic_dirs || exit 1
+
 check_pipeline_file || exit 1
 
 reorder_pipeline_file || exit 1
@@ -480,8 +486,8 @@ else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
     else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
-        
-        create_dirs || exit 1
+
+        create_shared_dirs
 
         # NOTE: exclusive execution should be ensured after creating the output directory
         ensure_exclusive_execution || { echo "Error: exec_pipeline is being executed for the same output directory" ; exit 1; }

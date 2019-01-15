@@ -938,6 +938,97 @@ ascatngs()
 }
 
 ########
+sequenza_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+}
+
+########
+sequenza_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+sequenza()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
+
+    # Generate pileup files
+    samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz || exit 1
+    samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sequenza)..."
+    conda activate sequenza 2>&1 || exit 1
+    
+    # Generate GC content file
+    sequenza-utils.py GC-windows -w 50 $ref | gzip > ${step_outd}/ref.gc50Base.txt.gz || exit 1
+
+    # Generate seqz file
+    sequenza-utils.py pileup2seqz -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz || exit 1
+
+    # Execute sequenza
+    # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
+    # installation is used (otherwise, general R installation given in
+    # shebang directive would be executed)
+    Rscript ${bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
 download_ega_norm_bam_explain_cmdline_opts()
 {
     # -bamdir option

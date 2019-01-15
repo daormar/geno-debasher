@@ -332,7 +332,7 @@ get_id_part_in_dep()
 wait_for_deps_no_scheduler()
 {
     # Initialize variables
-    local jobdeps=$3
+    local jobdeps=$1
 
     # Iterate over dependencies
     prevIFS=$IFS
@@ -379,14 +379,15 @@ no_scheduler_launch()
     # Initialize variables
     local file=$1
     local jobdeps=$2
+    local outvar=$3
 
     if wait_for_deps_no_scheduler "${jobdeps}"; then
         ${file} > ${file}.log 2>&1 &
         local pid=$!
-        echo $pid
+        eval "${outvar}='${pid}'"
     else
         local pid=${INVALID_PID}
-        echo $pid
+        eval "${outvar}='${pid}'"
     fi
 }
 
@@ -397,6 +398,7 @@ slurm_launch()
     local file=$1
     local jobspec=$2
     local jobdeps=$3
+    local outvar=$4
 
     # Retrieve specification
     local account=`extract_account_from_jobspec "$jobspec"`
@@ -418,7 +420,7 @@ slurm_launch()
         jid=${INVALID_JID}
     fi
 
-    echo $jid
+    eval "${outvar}='${jid}'"
 }
 
 ########
@@ -434,13 +436,11 @@ launch()
     local sched=`determine_scheduler`
     case $sched in
         ${SLURM_SCHEDULER}) ## Launch using slurm
-            local jid=`slurm_launch ${file} "${jobspec}" ${jobdeps}`
-            eval "${outvar}='${jid}'"           
+            slurm_launch ${file} "${jobspec}" "${jobdeps}" ${outvar}
             ;;
 
         *) # No scheduler will be used
-            local pid=`no_scheduler_launch ${file} ${jobdeps}`
-            eval "${outvar}='${pid}'"
+            no_scheduler_launch ${file} "${jobdeps}" ${outvar}
             ;;
     esac
 }

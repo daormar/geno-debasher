@@ -146,9 +146,6 @@ manta_germline()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -225,9 +222,6 @@ cnvkit()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -317,9 +311,6 @@ manta_somatic()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -393,9 +384,6 @@ strelka_germline()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -514,9 +502,6 @@ strelka_somatic()
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -578,9 +563,6 @@ platypus_germline_conda()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -597,9 +579,6 @@ platypus_germline_local()
     # Run Platypus
     logmsg "* Executing Platypus.py..."
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 2>&1 || exit 1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -697,9 +676,6 @@ msisensor()
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
     
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -771,9 +747,6 @@ wisecondorx()
     # Deactivate conda environment
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -859,9 +832,6 @@ facets()
         logmsg "* Dectivating conda environment..."
         conda deactivate 2>&1
     fi
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -963,9 +933,6 @@ ascatngs()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -1095,9 +1062,6 @@ download_ega_norm_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     # Create file indicating that execution was finished
     touch ${step_outd}/finished
 
@@ -1193,9 +1157,6 @@ download_ega_tum_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1287,9 +1248,6 @@ download_aws_norm_bam()
     # Move file
     mv ${bam_file_name} ${normalbam} || exit 1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1365,9 +1323,6 @@ download_aws_tum_bam()
 
     # Move file
     mv ${bam_file_name} ${tumorbam} || exit 1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -1445,9 +1400,6 @@ download_collab_norm_bam()
     # Move file
     mv ${bam_file_name} ${normalbam} || exit 1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1523,9 +1475,6 @@ download_collab_tum_bam()
 
     # Move file
     mv ${bam_file_name} ${tumorbam} || exit 1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -1643,9 +1592,6 @@ download_ega_asp_norm_bam()
     # Remove encrypted file
     rm ${step_outd}/normal.bam.crypt || exit 1
     
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1762,9 +1708,6 @@ download_ega_asp_tum_bam()
     # Remove encrypted file
     rm ${step_outd}/tumor.bam.crypt || exit 1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1827,9 +1770,6 @@ index_norm_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1891,9 +1831,6 @@ index_tum_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -1971,9 +1908,6 @@ sort_norm_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -2050,9 +1984,6 @@ sort_tum_bam()
     logmsg "* Dectivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -2124,9 +2055,6 @@ filter_norm_bam_contigs()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -2200,9 +2128,6 @@ filter_tum_bam_contigs()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -2260,9 +2185,6 @@ delete_bam_files()
     # Delete tumor bam file
     logmsg "Removing tumor bam file..."
     rm ${tumorbam} 2>&1 || exit 1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }

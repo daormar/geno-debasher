@@ -926,7 +926,7 @@ ascatngs()
     logmsg "* Activating conda environment..."
     conda activate ascatngs 2>&1 || exit 1
 
-    # Run cnvkit
+    # Run ascat
     logmsg "* Executing ascat.pl..."
     ascat.pl -n ${normalbam} -t ${tumorbam} -r ${ref} -sg ${snpgccorr} -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o ${step_outd} 2>&1 || exit 1
 
@@ -1760,7 +1760,7 @@ index_norm_bam()
         
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Execute samtools
     logmsg "* Executing samtools index..."
@@ -1822,7 +1822,7 @@ index_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
     
     # Execute samtools
     logmsg "* Executing samtools index..."
@@ -1885,7 +1885,7 @@ sort_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate samtools > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Verify if bam file is already sorted
     local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l` || exit 1
@@ -1961,7 +1961,7 @@ sort_tum_bam()
     
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Verify if bam file is already sorted
     local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l` || exit 1
@@ -2039,7 +2039,7 @@ filter_norm_bam_contigs()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Generate bed file for genome reference
     logmsg "* Executing gen_bed_for_genome..."
@@ -2111,7 +2111,7 @@ filter_tum_bam_contigs()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Generate bed file for genome reference
     logmsg "* Executing gen_bed_for_genome..."

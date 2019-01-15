@@ -11,7 +11,7 @@
 ########
 
 ########
-step_a_cmdline_opts()
+step_a_explain_cmdline_opts()
 {
     :
 }
@@ -50,7 +50,7 @@ step_a()
 }
 
 ########
-step_b_cmdline_opts()
+step_b_explain_cmdline_opts()
 {
     :
 }
@@ -89,7 +89,7 @@ step_b()
 }
 
 ########
-step_c_cmdline_opts()
+step_c_explain_cmdline_opts()
 {
     :
 }

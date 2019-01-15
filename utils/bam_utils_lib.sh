@@ -145,8 +145,11 @@ create_script()
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
     
     # Write command to be executed
-    echo "${command} ${script_opts}" >> ${name} || return 1
+    echo "${command} ${script_opts} || exit 1" >> ${name} || return 1
 
+    # Write command to signal step completion
+    echo "signal_step_completion ${name}" >> ${name} || return 1
+    
     # Give execution permission
     chmod u+x ${name} || return 1
 }
@@ -749,10 +752,11 @@ get_step_status()
 {
     local dirname=$1
     local stepname=$2
+    local script_filename=`get_script_filename ${dirname} ${stepname}`
     local stepdirname=`get_step_dirname ${dirname} ${stepname}`
     
     if [ -d ${stepdirname} ]; then
-        if [ -f ${stepdirname}/finished ]; then
+        if [ -f ${script_filename}.finished ]; then
             echo "${FINISHED_STEP_STATUS}"
         else
             # Determine if step is unfinished or in progress
@@ -819,8 +823,8 @@ dir_exists()
 ########
 signal_step_completion()
 {
-    local step_outd=$1
-    touch ${step_outd}/finished
+    local script_filename=$1
+    touch ${script_filename}.finished
 }
 
 ########

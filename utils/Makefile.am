@@ -3,7 +3,7 @@ pipeline_software_test bam_analysis analyze_dataset exec_pipeline_batch	\
 get_analysis_status gen_bed_for_genome check_ref_and_bam_contigs	\
 gen_wisecondorx_ref convert_snppos_to_snpgcc create_snv_pos_ascat	\
 query_ega_metadata query_icgc_metadata filter_contig_from_genref	\
-run_facets
+run_facets run_sequenza
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
@@ -15,7 +15,7 @@ exec_pipeline_batch.sh get_analysis_status.sh gen_bed_for_genome.sh	\
 check_ref_and_bam_contigs.sh gen_wisecondorx_ref.sh			\
 convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
 query_ega_metadata.py query_icgc_metadata.py				\
-filter_contig_from_genref.py run_facets.R
+filter_contig_from_genref.py run_facets.R run_sequenza.R
 
 # Build rules for libraries
 bam_utils_lib: bam_utils_lib.sh

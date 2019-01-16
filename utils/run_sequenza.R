@@ -42,19 +42,14 @@ if(!"o" %in% keys)
 # Specific libraries
 library(sequenza)
 
-# Read data file
-seqz.data <- read.seqz(s)
+# Extract information from seqz file (incorporates normalization steps)
+seqzinfo <- sequenza.extract(s)
 
-# Normalization of depth ratio
-gc.stats <- gc.sample.stats(s)
-gc.vect <- setNames(gc.stats$raw.mean, gc.stats$gc.values)
-seqz.data$adjusted.ratio <- seqz.data$depth.ratio / gc.vect[as.character(seqz.data$GC.percent)]
-
-# Extract information from seqz file
-test <- sequenza.extract(s)
+# Save file
+save(seqzinfo,file=paste(o,"/info.seqz",sep=""))
 
 # Infer cellularity and ploidy
-CP.example <- sequenza.fit(test)
+CP.example <- sequenza.fit(seqzinfo)
 
 # Report results
-sequenza.results(sequenza.extract = test, cp.table = CP.example, sample.id = "Unnamed", out.dir=o)
+sequenza.results(sequenza.extract = seqzinfo, cp.table = CP.example, sample.id = "seqzout", out.dir=o)

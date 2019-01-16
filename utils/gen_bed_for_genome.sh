@@ -85,7 +85,7 @@ print_pars()
 ########
 process_pars()
 {
-    conda activate base || exit 1
+    conda activate samtools || exit 1
 
     samtools faidx ${ref}
 

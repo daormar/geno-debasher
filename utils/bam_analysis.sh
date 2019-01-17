@@ -999,8 +999,8 @@ sequenza()
 
     # Generate pileup files
     logmsg "* Generating pileup files..."
-    samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz || exit 1
-    samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz || exit 1
+    samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz || pipe_fail
+    samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz || pipe_fail
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1012,11 +1012,11 @@ sequenza()
     
     # Generate GC content file
     logmsg "* Generating GC content file..."
-    sequenza-utils.py GC-windows -w 50 $ref | gzip > ${step_outd}/ref.gc50Base.txt.gz || exit 1
+    sequenza-utils.py GC-windows -w 50 $ref | gzip > ${step_outd}/ref.gc50Base.txt.gz || pipe_fail
 
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils.py pileup2seqz -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz || exit 1
+    sequenza-utils.py pileup2seqz -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz || pipe_fail
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R

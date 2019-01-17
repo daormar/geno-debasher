@@ -998,6 +998,7 @@ sequenza()
     conda activate samtools 2>&1 || exit 1
 
     # Generate pileup files
+    logmsg "* Generating pileup files..."
     samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz || exit 1
     samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz || exit 1
     
@@ -1010,15 +1011,18 @@ sequenza()
     conda activate sequenza 2>&1 || exit 1
     
     # Generate GC content file
+    logmsg "* Generating GC content file..."
     sequenza-utils.py GC-windows -w 50 $ref | gzip > ${step_outd}/ref.gc50Base.txt.gz || exit 1
 
     # Generate seqz file
+    logmsg "* Generating seqz file..."
     sequenza-utils.py pileup2seqz -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz || exit 1
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
+    logmsg "* Executing sequenza..."
     Rscript ${bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment

@@ -1092,6 +1092,7 @@ lumpy()
     logmsg "* Activating conda environment..."
     conda activate lumpy 2>&1 || exit 1
 
+    logmsg "* Executing lumpyexpress..."
     lumpyexpress -B ${normalbam},${tumorbam} -o ${step_outd}/out.vcf
 
     # Deactivate conda environment

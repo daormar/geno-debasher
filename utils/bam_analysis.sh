@@ -1012,7 +1012,7 @@ sequenza()
     
     # Generate GC content file
     logmsg "* Generating GC content file..."
-    sequenza-utils.py GC-windows -w 50 $ref | gzip > ${step_outd}/ref.gc50Base.txt.gz || pipe_fail
+    sequenza-utils GC-windows -w 50 $ref | gzip > ${step_outd}/ref.gc50Base.txt.gz || pipe_fail
 
     # Generate seqz file
     logmsg "* Generating seqz file..."

@@ -1012,11 +1012,11 @@ sequenza()
     
     # Generate GC content file
     logmsg "* Generating GC content file..."
-    sequenza-utils GC-windows -w 50 $ref | gzip > ${step_outd}/ref.gc50Base.txt.gz || pipe_fail
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | gzip > ${step_outd}/ref.gc50Base.txt.gz || pipe_fail
 
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils.py pileup2seqz -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz || pipe_fail
+    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz || pipe_fail
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R

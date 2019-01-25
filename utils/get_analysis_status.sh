@@ -130,8 +130,7 @@ process_status_for_afile()
                 continue
             fi
 
-            local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
+            define_opts_for_script "${cmdline}" "${jobspec}" || return 1
 
             # Check step status
             local status=`get_step_status ${dirname} ${stepname}`

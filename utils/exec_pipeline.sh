@@ -196,10 +196,9 @@ check_pipeline_opts()
         if [ ${jobspec_comment} = "no" -a ${jobspec_ok} = "yes" ]; then
             # Extract step information
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
-            local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
-            local script_opts=${SCRIPT_OPT_LIST}
-            echo "STEP: ${stepname} ; OPTIONS: ${script_opts}" >&2
+            define_opts_for_script "${cmdline}" "${jobspec}" || return 1
+            local script_opts_array=${SCRIPT_OPT_LIST_ARRAY}
+            echo "STEP: ${stepname} ; OPTIONS: ${script_opts_array}" >&2
         fi
     done < ${outd}/reordered_pipeline.csv
 
@@ -350,9 +349,8 @@ execute_step()
     # Initialize script variables
     local script_filename=`get_script_filename ${dirname} ${stepname}`
     local step_function=`get_step_function ${stepname}`
-    local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-    ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
-    local script_opts=${SCRIPT_OPT_LIST}
+    define_opts_for_script "${cmdline}" "${jobspec}" || return 1
+    script_opts_array=${SCRIPT_OPT_LIST_ARRAY}
     
     ## Obtain step status
     local status=`get_step_status ${dirname} ${stepname}`
@@ -361,12 +359,13 @@ execute_step()
     ## Decide whether the step should be executed
     if [ "${status}" != "${FINISHED_STEP_STATUS}" -a "${status}" != "${INPROGRESS_STEP_STATUS}" ]; then
         # Create script
-        create_script ${script_filename} ${step_function} "${script_opts}"
+        create_script ${script_filename} ${step_function} "script_opts_array"
 
         # Archive script
         archive_script ${script_filename}
 
         # Execute script
+        reset_scriptdir_for_step ${script_filename} || return 1
         reset_outdir_for_step ${dirname} ${stepname} || return 1
         local jobdeps_spec=`extract_jobdeps_from_jobspec "$jobspec"`
         local jobdeps="`get_jobdeps ${jobdeps_spec}`"

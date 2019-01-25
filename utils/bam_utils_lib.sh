@@ -47,8 +47,11 @@ declare -A MEMOIZED_OPTS
 # memoizing options
 LAST_PROC_LINE_MEMOPTS=""
 
-# Declare variable used to save option lists for scripts
-declare SCRIPT_OPT_LIST
+# # Declare variable used to save option lists for scripts
+# declare SCRIPT_OPT_LIST
+
+# Declare array used to save option lists for scripts
+declare -a SCRIPT_OPT_LIST_ARRAY
 
 #####################
 # GENERAL FUNCTIONS #
@@ -136,37 +139,88 @@ determine_scheduler()
 }
 
 ########
-create_script()
+create_no_scheduler_script()
 {
     # Init variables
     local name=$1
     local command=$2
-    local script_opts=$3
+    local script_opts_array=$3
+
+    # Write bash shebang
+    local BASH_SHEBANG=`init_bash_shebang_var`
+    echo ${BASH_SHEBANG} > ${name} || return 1
+    
+    # Write environment variables
+    set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
+
+    # Iterate over options array
+    lineno=0
+    num_scripts=${#script_opts_array[@]}
+    for script_opts in ${!script_opts_array}; do
+        # Write command to be executed
+        echo "${command} ${script_opts} || exit 1" >> ${name} || return 1
+
+        # Write command to signal step completion
+        echo "signal_step_completion ${name} ${lineno} ${num_scripts}" >> ${name} || return 1
+
+        lineno=`expr $lineno + 1`
+    done
+    
+    # Give execution permission
+    chmod u+x ${name} || return 1
+}
+
+########
+create_slurm_script()
+{
+    # Init variables
+    local name=$1
+    local command=$2
+    local -n script_opts_array=$3
 
     # Write bash shebang
     local BASH_SHEBANG=`init_bash_shebang_var`
     echo ${BASH_SHEBANG} > ${name} || return 1
 
-    # Write scheduler-specific commands
-    local sched=`determine_scheduler`
-    case $sched in
-        ${SLURM_SCHEDULER})
-            echo "#SBATCH --job-name=${command}" >> ${name} || return 1
-            echo "#SBATCH --output=${name}.slurm_out" >> ${name} || return 1
-        ;;
-    esac
+    # Set SLURM options
+    echo "#SBATCH --job-name=${command}" >> ${name} || return 1
+    echo "#SBATCH --output=${name}.slurm_out" >> ${name} || return 1
     
     # Write environment variables
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
-    
-    # Write command to be executed
-    echo "${command} ${script_opts} || exit 1" >> ${name} || return 1
 
-    # Write command to signal step completion
-    echo "signal_step_completion ${name}" >> ${name} || return 1
+    # Iterate over options array
+    lineno=0
+    for script_opts in ${!script_opts_array}; do
+        # Write command to be executed
+        echo "${command} ${script_opts} || exit 1" >> ${name} || return 1
+
+        # Write command to signal step completion
+        echo "signal_step_completion ${name} ${lineno} ${num_scripts}" >> ${name} || return 1
+
+        lineno=`expr $lineno + 1`
+    done
     
     # Give execution permission
     chmod u+x ${name} || return 1
+}
+
+########
+create_script()
+{
+    # Init variables
+    local name=$1
+    local command=$2
+    local script_opts_array=$3
+
+    local sched=`determine_scheduler`
+    case $sched in
+        ${SLURM_SCHEDULER})
+            create_slurm_script $name $command ${script_opts_array}
+            ;;
+        ${NO_SCHEDULER})
+            create_no_scheduler_script $name $command ${script_opts_array}
+            ;;
 }
 
 ########
@@ -245,6 +299,18 @@ get_script_define_opts_funcname()
     local stepname_wo_suffix=`remove_suffix_from_stepname ${stepname}`
 
     echo ${stepname_wo_suffix}_define_opts
+}
+
+########
+define_opts_for_script()
+{
+    local cmdline=$1
+    local jobspec=$2
+    local stepname=`extract_stepname_from_jobspec "$jobspec"`
+    
+    clear_opt_list_array
+    local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
+    ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
 }
 
 ########
@@ -487,11 +553,11 @@ launch_step()
     local stepname=$1
     local jobspec=$2
     local jobdeps=$3
-    local script_opts=$4
+    local script_opts_array=$4
     local jid=$5
 
     # Create script
-    create_script ${tmpdir}/scripts/${stepname} ${stepname} "${script_opts}" || return 1
+    create_script ${tmpdir}/scripts/${stepname} ${stepname} ${script_opts_array} || return 1
 
     # Launch script
     launch ${tmpdir}/scripts/${stepname} "${jobspec}" ${jobdeps} ${jid} || return 1
@@ -699,6 +765,16 @@ reset_outdir_for_step()
 }
 
 ########
+reset_scriptdir_for_step() 
+{
+    local script_filename=$1
+
+    rm -f ${script_filename}.log
+    rm -f ${script_filename}.id
+    rm -f ${script_filename}.finished
+}
+
+########
 write_step_id_to_file()
 {
     local dirname=$1
@@ -856,7 +932,10 @@ dir_exists()
 signal_step_completion()
 {
     local script_filename=$1
-    touch ${script_filename}.finished
+    local id=$2
+    local total=$3
+    # TBD: Obtain file lock
+    echo "$id $total" > ${script_filename}.finished
 }
 
 ########
@@ -1311,8 +1390,17 @@ get_default_nonmandatory_opt_shdirname()
 }
 
 ########
+clear_opt_list_array()
+{
+    unset SCRIPT_OPT_LIST_ARRAY
+}
+
+########
 save_opt_list()
 {
+    # local optlist_varname=$1
+    # SCRIPT_OPT_LIST=${!optlist_varname}
+
     local optlist_varname=$1
-    SCRIPT_OPT_LIST=${!optlist_varname}
+    SCRIPT_OPT_LIST_ARRAY+=${!optlist_varname}
 }

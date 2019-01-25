@@ -29,6 +29,9 @@ AFTERANY_JOBDEP_TYPE="afterany"
 # GLOBAL VARIABLES #
 ####################
 
+# Declare associative array to store exit code for processes
+declare -A EXIT_CODE
+
 # Declare associative arrays to store help about pipeline options
 declare -A PIPELINE_OPT_DESC
 declare -A PIPELINE_OPT_TYPE
@@ -344,6 +347,23 @@ get_id_part_in_dep()
 }
 
 ########
+get_exit_code()
+{
+    local pid=$1
+    local outvar=$2
+
+    # Search for exit code in associative array
+    if [ -z "${EXIT_CODE[$pid]}" ]; then
+        wait $pid
+        local exit_code=$?
+        EXIT_CODE[$pid]=${exit_code}
+        eval "${outvar}='${exit_code}'"
+    else
+        eval "${outvar}='${EXIT_CODE[$pid]}'"
+    fi
+}
+
+########
 wait_for_deps_no_scheduler()
 {
     # Initialize variables
@@ -360,9 +380,9 @@ wait_for_deps_no_scheduler()
         # Wait for process to finish (except for "after" dependency
         # types)
         if [ ${deptype} != ${AFTER_JOBDEP_TYPE} ]; then
-            wait $pid
-            local exit_code=$?
-
+            get_exit_code $pid _exit_code
+            local exit_code=${_exit_code}
+            
             # Process exit code
             case ${deptype} in
                 ${AFTEROK_JOBDEP_TYPE})

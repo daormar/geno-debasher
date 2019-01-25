@@ -410,7 +410,6 @@ debug_step()
 
     ## Obtain step options
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-    local script_opts
     ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
 }
 

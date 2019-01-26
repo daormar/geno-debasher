@@ -98,7 +98,8 @@ step_c_define_opts()
     # which will have the same name of the step
     define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
 
-    # Save option list
+    # Save option list twice (step will be executed two times)
+    save_opt_list optlist
     save_opt_list optlist
 }
 

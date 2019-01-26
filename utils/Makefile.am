@@ -50,6 +50,7 @@ SUFFIXES= .sh .py .r .R
 	echo "TAIL="$(TAIL) >> $@
 	echo "DIFF="$(DIFF) >> $@
 	echo "FIND="$(FIND) >> $@
+	echo "WC="$(WC) >> $@
 	echo "MKTEMP="$(MKTEMP) >> $@
 	echo "FLOCK="$(FLOCK) >> $@
 	echo "QSUB=\""$(QSUB)"\"" >> $@

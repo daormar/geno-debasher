@@ -47,9 +47,6 @@ declare -A MEMOIZED_OPTS
 # memoizing options
 LAST_PROC_LINE_MEMOPTS=""
 
-# # Declare variable used to save option lists for scripts
-# declare SCRIPT_OPT_LIST
-
 # Declare array used to save option lists for scripts
 declare -a SCRIPT_OPT_LIST_ARRAY
 
@@ -144,7 +141,7 @@ create_no_scheduler_script()
     # Init variables
     local name=$1
     local command=$2
-    local script_opts_array=$3
+    local -n opts_array=$3
 
     # Write bash shebang
     local BASH_SHEBANG=`init_bash_shebang_var`
@@ -155,8 +152,8 @@ create_no_scheduler_script()
 
     # Iterate over options array
     lineno=0
-    num_scripts=${#script_opts_array[@]}
-    for script_opts in ${!script_opts_array}; do
+    num_scripts=${#opts_array[@]}
+    for script_opts in "${opts_array[@]}"; do
         # Write command to be executed
         echo "${command} ${script_opts} || exit 1" >> ${name} || return 1
 
@@ -176,7 +173,7 @@ create_slurm_script()
     # Init variables
     local name=$1
     local command=$2
-    local -n script_opts_array=$3
+    local -n opts_array=$3
 
     # Write bash shebang
     local BASH_SHEBANG=`init_bash_shebang_var`
@@ -191,12 +188,23 @@ create_slurm_script()
 
     # Iterate over options array
     lineno=0
-    for script_opts in ${!script_opts_array}; do
+    num_scripts=${#opts_array[@]}
+    for script_opts in "${opts_array[@]}"; do
+        # Write treatment for task id
+        if [ ${num_scripts} -gt 1 ]; then
+            echo "if [ ${SLURM_ARRAY_TASK_ID} -eq $lineno ]; then" >> ${name} || return 1
+        fi
+        
         # Write command to be executed
         echo "${command} ${script_opts} || exit 1" >> ${name} || return 1
 
         # Write command to signal step completion
         echo "signal_step_completion ${name} ${lineno} ${num_scripts}" >> ${name} || return 1
+
+        # Close if statement
+        if [ ${num_scripts} -gt 1 ]; then
+            echo "fi" >> ${name} || return 1
+        fi
 
         lineno=`expr $lineno + 1`
     done
@@ -211,16 +219,17 @@ create_script()
     # Init variables
     local name=$1
     local command=$2
-    local script_opts_array=$3
+    local opts_array=$3
 
     local sched=`determine_scheduler`
     case $sched in
         ${SLURM_SCHEDULER})
-            create_slurm_script $name $command ${script_opts_array}
+            create_slurm_script $name $command ${opts_array}
             ;;
         ${NO_SCHEDULER})
-            create_no_scheduler_script $name $command ${script_opts_array}
+            create_no_scheduler_script $name $command ${opts_array}
             ;;
+    esac
 }
 
 ########
@@ -553,11 +562,11 @@ launch_step()
     local stepname=$1
     local jobspec=$2
     local jobdeps=$3
-    local script_opts_array=$4
+    local opts_array=$4
     local jid=$5
 
     # Create script
-    create_script ${tmpdir}/scripts/${stepname} ${stepname} ${script_opts_array} || return 1
+    create_script ${tmpdir}/scripts/${stepname} ${stepname} ${opts_array} || return 1
 
     # Launch script
     launch ${tmpdir}/scripts/${stepname} "${jobspec}" ${jobdeps} ${jid} || return 1
@@ -856,15 +865,36 @@ check_step_is_in_progress()
 }
 
 ########
-get_step_status()
+check_step_is_finished()
 {
     local dirname=$1
     local stepname=$2
     local script_filename=`get_script_filename ${dirname} ${stepname}`
+
+    if [ -f ${script_filename}.finished ]; then
+        # Check that all jobs are finished
+        local num_jobs_finished=`$WC -l ${script_filename}.finished | $AWK '{print $1}'`
+        local num_jobs=`$HEAD -1 ${script_filename}.finished | $AWK '{print $2}'`
+        if [ ${num_jobs_finished} -eq ${num_jobs} ]; then
+            echo 1
+        else
+            echo 0
+        fi
+    else
+        echo 0
+    fi     
+}
+
+########
+get_step_status()
+{
+    local dirname=$1
+    local stepname=$2
     local stepdirname=`get_step_dirname ${dirname} ${stepname}`
     
     if [ -d ${stepdirname} ]; then
-        if [ -f ${script_filename}.finished ]; then
+        step_is_finished=`check_step_is_finished $dirname $stepname`
+        if [ ${step_is_finished} -eq 1 ]; then
             echo "${FINISHED_STEP_STATUS}"
         else
             # Determine if step is unfinished or in progress
@@ -935,7 +965,7 @@ signal_step_completion()
     local id=$2
     local total=$3
     # TBD: Obtain file lock
-    echo "$id $total" > ${script_filename}.finished
+    echo "$id $total" >> ${script_filename}.finished
 }
 
 ########
@@ -1285,7 +1315,11 @@ define_opt()
     local value=$2
     local varname=$3
 
-    eval "${varname}='${!varname} ${opt} ${value}'"
+    if [ -z ${!varname} ]; then
+        eval "${varname}='${opt} ${value}'"
+    else
+        eval "${varname}='${!varname} ${opt} ${value}'"
+    fi
 }
 
 ########
@@ -1294,7 +1328,11 @@ define_opt_wo_value()
     local opt=$1
     local varname=$2
 
-    eval "${varname}='${!varname} ${opt}'"
+    if [ -z ${!varname} ]; then
+        eval "${varname}='${opt}'"
+    else
+        eval "${varname}='${!varname} ${opt}'"
+    fi
 }
 
 ########
@@ -1310,7 +1348,11 @@ define_infile_opt()
     # Absolutize path
     value=`get_absolute_path ${value}`
 
-    eval "${varname}='${!varname} ${opt} ${value}'"
+    if [ -z ${!varname} ]; then
+        eval "${varname}='${opt} ${value}'"
+    else
+        eval "${varname}='${!varname} ${opt} ${value}'"
+    fi
 }
 
 ########
@@ -1326,7 +1368,11 @@ define_indir_opt()
     # Absolutize path
     value=`get_absolute_path ${value}`
 
-    eval "${varname}='${!varname} ${opt} ${value}'"
+    if [ -z ${!varname} ]; then
+        eval "${varname}='${opt} ${value}'"
+    else
+        eval "${varname}='${!varname} ${opt} ${value}'"
+    fi
 }
 
 ########
@@ -1398,9 +1444,6 @@ clear_opt_list_array()
 ########
 save_opt_list()
 {
-    # local optlist_varname=$1
-    # SCRIPT_OPT_LIST=${!optlist_varname}
-
     local optlist_varname=$1
-    SCRIPT_OPT_LIST_ARRAY+=${!optlist_varname}
+    SCRIPT_OPT_LIST_ARRAY+=("${!optlist_varname}")
 }

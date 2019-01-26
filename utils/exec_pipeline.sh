@@ -197,8 +197,8 @@ check_pipeline_opts()
             # Extract step information
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
             define_opts_for_script "${cmdline}" "${jobspec}" || return 1
-            local script_opts_array=${SCRIPT_OPT_LIST_ARRAY}
-            echo "STEP: ${stepname} ; OPTIONS: ${script_opts_array}" >&2
+            local script_opts_array=("${SCRIPT_OPT_LIST_ARRAY[@]}")
+            echo "STEP: ${stepname} ; OPTIONS: ${script_opts_array[@]}" >&2
         fi
     done < ${outd}/reordered_pipeline.csv
 
@@ -350,7 +350,7 @@ execute_step()
     local script_filename=`get_script_filename ${dirname} ${stepname}`
     local step_function=`get_step_function ${stepname}`
     define_opts_for_script "${cmdline}" "${jobspec}" || return 1
-    script_opts_array=${SCRIPT_OPT_LIST_ARRAY}
+    script_opts_array=("${SCRIPT_OPT_LIST_ARRAY[@]}")
     
     ## Obtain step status
     local status=`get_step_status ${dirname} ${stepname}`

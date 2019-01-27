@@ -151,7 +151,7 @@ create_no_scheduler_script()
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
 
     # Iterate over options array
-    lineno=0
+    lineno=1
     num_scripts=${#opts_array[@]}
     for script_opts in "${opts_array[@]}"; do
         # Write command to be executed
@@ -187,12 +187,12 @@ create_slurm_script()
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
 
     # Iterate over options array
-    lineno=0
+    lineno=1
     num_scripts=${#opts_array[@]}
     for script_opts in "${opts_array[@]}"; do
         # Write treatment for task id
         if [ ${num_scripts} -gt 1 ]; then
-            echo "if [ ${SLURM_ARRAY_TASK_ID} -eq $lineno ]; then" >> ${name} || return 1
+            echo "if [ \${SLURM_ARRAY_TASK_ID} -eq $lineno ]; then" >> ${name} || return 1
         fi
         
         # Write command to be executed
@@ -401,6 +401,18 @@ get_slurm_dependency_opt()
 }
 
 ########
+get_slurm_job_array_opt()
+{
+    local array_size=$1
+
+    if [ ${array_size} -eq 1 ]; then
+        echo ""
+    else
+        echo "--array=1-${array_size}"
+    fi
+}
+
+########
 get_deptype_part_in_dep()
 {
     local dep=$1
@@ -506,9 +518,10 @@ slurm_launch()
 {
     # Initialize variables
     local file=$1
-    local jobspec=$2
-    local jobdeps=$3
-    local outvar=$4
+    local array_size=$2
+    local jobspec=$3
+    local jobdeps=$4
+    local outvar=$5
 
     # Retrieve specification
     local account=`extract_account_from_jobspec "$jobspec"`
@@ -521,9 +534,10 @@ slurm_launch()
     local account_opt=`get_account_opt ${account}`
     local partition_opt=`get_partition_opt ${partition}`
     local dependency_opt=`get_slurm_dependency_opt "${jobdeps}"`
+    local jobarray_opt=`get_slurm_job_array_opt ${array_size}`
     
     # Submit job
-    local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${file})
+    local jid=$($SBATCH --cpus-per-task=${cpus} --mem=${mem} --time ${time} --parsable ${account_opt} ${partition_opt} ${dependency_opt} ${jobarray_opt} ${file})
     
     # Check for errors
     if [ -z "$jid" ]; then
@@ -538,15 +552,16 @@ launch()
 {
     # Initialize variables
     local file=$1
-    local jobspec=$2
-    local jobdeps=$3
-    local outvar=$4
+    local array_size=$2
+    local jobspec=$3
+    local jobdeps=$4
+    local outvar=$5
     
     # Launch file
     local sched=`determine_scheduler`
     case $sched in
         ${SLURM_SCHEDULER}) ## Launch using slurm
-            slurm_launch ${file} "${jobspec}" "${jobdeps}" ${outvar}
+            slurm_launch ${file} ${array_size} "${jobspec}" "${jobdeps}" ${outvar}
             ;;
 
         *) # No scheduler will be used
@@ -874,7 +889,7 @@ check_step_is_finished()
     if [ -f ${script_filename}.finished ]; then
         # Check that all jobs are finished
         local num_jobs_finished=`$WC -l ${script_filename}.finished | $AWK '{print $1}'`
-        local num_jobs=`$HEAD -1 ${script_filename}.finished | $AWK '{print $2}'`
+        local num_jobs=`$HEAD -1 ${script_filename}.finished | $AWK '{print $NF}'`
         if [ ${num_jobs_finished} -eq ${num_jobs} ]; then
             echo 1
         else
@@ -965,7 +980,7 @@ signal_step_completion()
     local id=$2
     local total=$3
     # TBD: Obtain file lock
-    echo "$id $total" >> ${script_filename}.finished
+    echo "Finished step id: $id ; Total: $total" >> ${script_filename}.finished
 }
 
 ########

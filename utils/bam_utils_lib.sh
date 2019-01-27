@@ -976,10 +976,16 @@ dir_exists()
 ########
 signal_step_completion()
 {
+    # Initialize variables
     local script_filename=$1
     local id=$2
     local total=$3
-    # TBD: Obtain file lock
+
+    # Signal completion
+    # NOTE: A file lock is not necessary for the following operation
+    # since echo is atomic when writing short lines (for safety, up to
+    # 512 bytes, source:
+    # https://stackoverflow.com/questions/9926616/is-echo-atomic-when-writing-single-lines/9927415#9927415)
     echo "Finished step id: $id ; Total: $total" >> ${script_filename}.finished
 }
 

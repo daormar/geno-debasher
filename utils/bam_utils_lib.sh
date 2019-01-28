@@ -1381,7 +1381,7 @@ define_opt()
     local varname=$3
 
     # Check parameters
-    if [ -z "${opt}" -o -z "${value}" -o -z "${varname}" ]; then
+    if [ "${opt}" = "" -o "${value}" = "" -o "${varname}" = "" ]; then
         errmsg "define_opt: wrong input parameters"
         return 1
     fi
@@ -1400,7 +1400,7 @@ define_opt_wo_value()
     local varname=$2
 
     # Check parameters
-    if [ -z "${opt}" -o -z "${varname}" ]; then
+    if [ "${opt}" = "" -o "${varname}" = "" ]; then
         errmsg "define_opt_wo_value: wrong input parameters"
         return 1
     fi
@@ -1420,7 +1420,7 @@ define_infile_opt()
     local varname=$3
 
     # Check parameters
-    if [ -z "${opt}" -o -z "${value}" -o -z "${varname}" ]; then
+    if [ "${opt}" = "" -o "${value}" = "" -o "${varname}" = "" ]; then
         errmsg "define_infile_opt: wrong input parameters"
         return 1
     fi
@@ -1446,7 +1446,7 @@ define_indir_opt()
     local varname=$3
 
     # Check parameters
-    if [ -z "${opt}" -o -z "${value}" -o -z "${varname}" ]; then
+    if [ "${opt}" = "" -o "${value}" = "" -o "${varname}" = "" ]; then
         errmsg "define_indir_opt: wrong input parameters"
         return 1
     fi

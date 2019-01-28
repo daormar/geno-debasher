@@ -77,7 +77,7 @@ manta_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
     
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -171,7 +171,7 @@ cnvkit_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -248,7 +248,7 @@ manta_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -332,7 +332,7 @@ strelka_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -410,7 +410,7 @@ strelka_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -523,7 +523,7 @@ platypus_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -620,7 +620,7 @@ msisensor_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -697,7 +697,7 @@ wisecondorx_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -773,7 +773,7 @@ facets_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -870,7 +870,7 @@ ascatngs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -959,7 +959,7 @@ sequenza_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1054,7 +1054,7 @@ lumpy_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1133,7 +1133,7 @@ download_ega_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1265,7 +1265,7 @@ download_ega_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1348,7 +1348,7 @@ download_aws_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1439,7 +1439,7 @@ download_aws_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1515,7 +1515,7 @@ download_collab_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1591,7 +1591,7 @@ download_collab_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1683,7 +1683,7 @@ download_ega_asp_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1799,7 +1799,7 @@ download_ega_asp_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1891,7 +1891,7 @@ index_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1953,7 +1953,7 @@ index_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2015,7 +2015,7 @@ sort_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2091,7 +2091,7 @@ sort_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2171,7 +2171,7 @@ filter_norm_bam_contigs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2243,7 +2243,7 @@ filter_tum_bam_contigs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2311,7 +2311,7 @@ delete_bam_files_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step

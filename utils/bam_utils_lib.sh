@@ -1353,9 +1353,9 @@ define_opt()
     local varname=$3
 
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt} ${value}'"
+        eval "${varname}='${opt} ${value}'" || { errmsg "define_opt: wrong input parameters" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt} ${value}'"
+        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_opt: wrong input parameters" ; return 1; }
     fi
 }
 
@@ -1366,9 +1366,9 @@ define_opt_wo_value()
     local varname=$2
 
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt}'"
+        eval "${varname}='${opt}'" || { errmsg "define_opt_wo_value: wrong input parameters" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt}'"
+        eval "${varname}='${!varname} ${opt}'" || { errmsg "define_opt_wo_value: wrong input parameters" ; return 1; }
     fi
 }
 
@@ -1380,15 +1380,15 @@ define_infile_opt()
     local varname=$3
 
     # Check if file exists
-    file_exists $value || { errmsg "file $value does not exist ($opt option)" ; return 1; }
+    file_exists "$value" || { errmsg "file $value does not exist ($opt option)" ; return 1; }
 
     # Absolutize path
     value=`get_absolute_path ${value}`
 
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt} ${value}'"
+        eval "${varname}='${opt} ${value}'" || { errmsg "define_infile_opt: wrong input parameters" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt} ${value}'"
+        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_infile_opt: wrong input parameters" ; return 1; }
     fi
 }
 
@@ -1400,15 +1400,15 @@ define_indir_opt()
     local varname=$3
 
     # Check if file exists
-    dir_exists $value || { errmsg "directory $value does not exist ($opt option)" ; return 1; }
+    dir_exists "$value" || { errmsg "directory $value does not exist ($opt option)" ; return 1; }
 
     # Absolutize path
     value=`get_absolute_path ${value}`
 
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt} ${value}'"
+        eval "${varname}='${opt} ${value}'" || { errmsg "define_indir_opt: wrong input parameters" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt} ${value}'"
+        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_indir_opt: wrong input parameters" ; return 1; }
     fi
 }
 

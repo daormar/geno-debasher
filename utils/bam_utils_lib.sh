@@ -880,6 +880,22 @@ check_step_is_in_progress()
 }
 
 ########
+get_num_jobs_finished()
+{
+    local script_filename=$1
+
+    echo `$WC -l ${script_filename}.finished | $AWK '{print $1}'`
+}
+
+########
+get_num_jobs_to_finish()
+{
+    local script_filename=$1
+
+    echo `$HEAD -1 ${script_filename}.finished | $AWK '{print $NF}'`
+}
+
+########
 check_step_is_finished()
 {
     local dirname=$1
@@ -888,8 +904,8 @@ check_step_is_finished()
 
     if [ -f ${script_filename}.finished ]; then
         # Check that all jobs are finished
-        local num_jobs_finished=`$WC -l ${script_filename}.finished | $AWK '{print $1}'`
-        local num_jobs=`$HEAD -1 ${script_filename}.finished | $AWK '{print $NF}'`
+        local num_jobs_finished=`get_num_jobs_finished ${script_filename}`
+        local num_jobs=`get_num_jobs_to_finish ${script_filename}`
         if [ ${num_jobs_finished} -eq ${num_jobs} ]; then
             echo 1
         else

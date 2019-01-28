@@ -1352,10 +1352,16 @@ define_opt()
     local value=$2
     local varname=$3
 
+    # Check parameters
+    if [ -z "${opt}" -o -z "${value}" -o -z "${varname}" ]; then
+        errmsg "define_opt: wrong input parameters"
+        return 1
+    fi
+
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt} ${value}'" || { errmsg "define_opt: wrong input parameters" ; return 1; }
+        eval "${varname}='${opt} ${value}'" || { errmsg "define_opt: execution error" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_opt: wrong input parameters" ; return 1; }
+        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_opt: execution error" ; return 1; }
     fi
 }
 
@@ -1365,10 +1371,16 @@ define_opt_wo_value()
     local opt=$1
     local varname=$2
 
+    # Check parameters
+    if [ -z "${opt}" -o -z "${varname}" ]; then
+        errmsg "define_opt_wo_value: wrong input parameters"
+        return 1
+    fi
+
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt}'" || { errmsg "define_opt_wo_value: wrong input parameters" ; return 1; }
+        eval "${varname}='${opt}'" || { errmsg "define_opt_wo_value: execution error" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt}'" || { errmsg "define_opt_wo_value: wrong input parameters" ; return 1; }
+        eval "${varname}='${!varname} ${opt}'" || { errmsg "define_opt_wo_value: execution error" ; return 1; }
     fi
 }
 
@@ -1379,6 +1391,12 @@ define_infile_opt()
     local value=$2
     local varname=$3
 
+    # Check parameters
+    if [ -z "${opt}" -o -z "${value}" -o -z "${varname}" ]; then
+        errmsg "define_infile_opt: wrong input parameters"
+        return 1
+    fi
+    
     # Check if file exists
     file_exists "$value" || { errmsg "file $value does not exist ($opt option)" ; return 1; }
 
@@ -1386,9 +1404,9 @@ define_infile_opt()
     value=`get_absolute_path ${value}`
 
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt} ${value}'" || { errmsg "define_infile_opt: wrong input parameters" ; return 1; }
+        eval "${varname}='${opt} ${value}'" || { errmsg "define_infile_opt: execution error" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_infile_opt: wrong input parameters" ; return 1; }
+        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_infile_opt: execution error" ; return 1; }
     fi
 }
 
@@ -1399,6 +1417,12 @@ define_indir_opt()
     local value=$2
     local varname=$3
 
+    # Check parameters
+    if [ -z "${opt}" -o -z "${value}" -o -z "${varname}" ]; then
+        errmsg "define_indir_opt: wrong input parameters"
+        return 1
+    fi
+
     # Check if file exists
     dir_exists "$value" || { errmsg "directory $value does not exist ($opt option)" ; return 1; }
 
@@ -1406,9 +1430,9 @@ define_indir_opt()
     value=`get_absolute_path ${value}`
 
     if [ -z "${!varname}" ]; then
-        eval "${varname}='${opt} ${value}'" || { errmsg "define_indir_opt: wrong input parameters" ; return 1; }
+        eval "${varname}='${opt} ${value}'" || { errmsg "define_indir_opt: execution error" ; return 1; }
     else
-        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_indir_opt: wrong input parameters" ; return 1; }
+        eval "${varname}='${!varname} ${opt} ${value}'" || { errmsg "define_indir_opt: execution error" ; return 1; }
     fi
 }
 

@@ -350,7 +350,7 @@ execute_step()
     local script_filename=`get_script_filename ${dirname} ${stepname}`
     local step_function=`get_step_function ${stepname}`
     define_opts_for_script "${cmdline}" "${jobspec}" || return 1
-    script_opts_array=("${SCRIPT_OPT_LIST_ARRAY[@]}")
+    local script_opts_array=("${SCRIPT_OPT_LIST_ARRAY[@]}")
     local array_size=${#script_opts_array[@]}
     
     ## Obtain step status
@@ -432,7 +432,7 @@ execute_pipeline_steps()
     local fullmodnames=`get_pipeline_fullmodnames $afile` || return 1
     
     # step_jids will store the job ids of the analysis steps
-    step_jids=""
+    local step_jids=""
     
     # Read information about the steps to be executed
     while read jobspec; do

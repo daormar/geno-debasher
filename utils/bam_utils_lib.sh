@@ -151,8 +151,8 @@ create_no_scheduler_script()
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
 
     # Iterate over options array
-    lineno=1
-    num_scripts=${#opts_array[@]}
+    local lineno=1
+    local num_scripts=${#opts_array[@]}
     for script_opts in "${opts_array[@]}"; do
         # Write command to be executed
         echo "${command} ${script_opts} || exit 1" >> ${name} || return 1
@@ -187,8 +187,8 @@ create_slurm_script()
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
 
     # Iterate over options array
-    lineno=1
-    num_scripts=${#opts_array[@]}
+    local lineno=1
+    local num_scripts=${#opts_array[@]}
     for script_opts in "${opts_array[@]}"; do
         # Write treatment for task id
         if [ ${num_scripts} -gt 1 ]; then
@@ -329,7 +329,7 @@ find_dependency_for_step()
     local stepname_part=$2
 
     jobdeps=`extract_jobdeps_from_jobspec "$jobspec"`
-    prevIFS=$IFS
+    local prevIFS=$IFS
     IFS=','
     for local_dep in ${jobdeps}; do
         local stepname_part_in_dep=`get_stepname_part_in_dep ${local_dep}`
@@ -372,8 +372,8 @@ apply_deptype_to_jobids()
     local deptype=$2
 
     # Apply deptype
-    result=""
-    prevIFS=$IFS
+    local result=""
+    local prevIFS=$IFS
     IFS=','
     for local_jid in ${jids}; do
         if [ -z "" ]; then
@@ -457,7 +457,7 @@ wait_for_deps_no_scheduler()
     local jobdeps=$1
 
     # Iterate over dependencies
-    prevIFS=$IFS
+    local prevIFS=$IFS
     IFS=','
     for local_dep in ${jobdeps}; do
         # Extract information from dependency
@@ -687,7 +687,7 @@ load_pipeline_module()
     local module=$1
 
     # Determine full module name
-    fullmodname=`determine_full_module_name $module`
+    local fullmodname=`determine_full_module_name $module`
 
     echo "Loading module $module (${fullmodname})..." >&2
 
@@ -706,7 +706,7 @@ load_pipeline_modules()
 
     file_exists $afile || { echo "Error: file $afile does not exist" >&2 ; return 1; }
     
-    comma_sep_modules=`get_pipeline_modules $afile`
+    local comma_sep_modules=`get_pipeline_modules $afile`
     
     if [ -z "${comma_sep_modules}" ]; then
         echo "Error: no pipeline modules were given" >&2
@@ -729,14 +729,14 @@ get_pipeline_fullmodnames()
 
     file_exists $afile || { echo "Error: file $afile does not exist" >&2 ; return 1; }
     
-    comma_sep_modules=`get_pipeline_modules $afile`
+    local comma_sep_modules=`get_pipeline_modules $afile`
     
     if [ -z "${comma_sep_modules}" ]; then
         echo "Warning: no pipeline modules were given" >&2
     else
         # Get names
         local fullmodnames
-        prevIFS=$IFS
+        local prevIFS=$IFS
         IFS=','
         for mod in ${comma_sep_modules}; do
             local fullmodname=`determine_full_module_name $mod`
@@ -828,7 +828,7 @@ check_if_pid_exists()
 {
     local pid=$1
 
-    pid_exists=1
+    local pid_exists=1
     kill -0 $pid  > /dev/null 2>&1 || pid_exists=0
 
     echo ${pid_exists}
@@ -839,7 +839,7 @@ check_if_slurm_jid_exists()
 {
     local jid=$1
     
-    jid_exists=1
+    local jid_exists=1
 #    ${SQUEUE} -j $jid -h -o %t || jid_exists=0
     ${SQUEUE} -j $jid > /dev/null 2>&1 || jid_exists=0
 
@@ -1040,8 +1040,8 @@ memoize_opts()
 ########
 check_opt_given()
 {
-    line=$1
-    opt=$2
+    local line=$1
+    local opt=$2
     # Convert string to array
     local array
     IFS=' ' read -r -a array <<< $line
@@ -1074,8 +1074,8 @@ check_memoized_opt()
 ########
 check_opt_given_memoiz()
 {
-    line=$1
-    opt=$2
+    local line=$1
+    local opt=$2
 
     if [ "${LAST_PROC_LINE_MEMOPTS}" = "$line" ]; then
         # Given line was previously processed, return memoized result
@@ -1095,8 +1095,8 @@ check_opt_given_memoiz()
 ########
 read_opt_value_from_line()
 {
-    line=$1
-    opt=$2
+    local line=$1
+    local opt=$2
     
     # Convert string to array
     local array
@@ -1137,8 +1137,8 @@ read_memoized_opt_value()
 ########
 read_opt_value_from_line_memoiz()
 {
-    line=$1
-    opt=$2
+    local line=$1
+    local opt=$2
 
     if [ "${LAST_PROC_LINE_MEMOPTS}" = "$line" ]; then
         # Given line was previously processed, return memoized result

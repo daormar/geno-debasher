@@ -8,6 +8,7 @@
 #############
 
 LOCKFD=99
+MAX_NUM_SCRIPT_OPTS_TO_DISPLAY=10
 
 ########
 print_desc()
@@ -198,7 +199,8 @@ check_pipeline_opts()
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
             define_opts_for_script "${cmdline}" "${jobspec}" || return 1
             local script_opts_array=("${SCRIPT_OPT_LIST_ARRAY[@]}")
-            echo "STEP: ${stepname} ; OPTIONS: ${script_opts_array[@]}" >&2
+            local serial_script_opts=`serialize_string_array "script_opts_array" " ||| " ${MAX_NUM_SCRIPT_OPTS_TO_DISPLAY}`
+            echo "STEP: ${stepname} ; OPTIONS: ${serial_script_opts}" >&2
         fi
     done < ${outd}/reordered_pipeline.csv
 

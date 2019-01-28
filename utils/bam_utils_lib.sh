@@ -131,6 +131,17 @@ serialize_string_array()
     local num_elem=0
     
     for str in "${str_array[@]}"; do
+        # Check if number of elements has been exceeded
+        if [ ! -z "${max_elems}" ]; then
+            if [ ${num_elem} -ge ${max_elems} ]; then
+                if [ ! -z "${result}" ]; then
+                    result="${result}${sep}..."
+                    break
+                fi
+            fi
+        fi
+
+        # Add new element
         if [ -z "${result}" ]; then
             result=${str}
         else
@@ -138,12 +149,6 @@ serialize_string_array()
         fi
 
         num_elem=`expr ${num_elem} + 1`
-        if [ ! -z "${max_elems}" ]; then
-            if [ ${num_elem} -gt ${max_elems} ]; then
-                result="${result}${sep}..."
-                break
-            fi
-        fi
     done
 
     echo $result

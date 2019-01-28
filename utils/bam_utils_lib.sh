@@ -122,6 +122,34 @@ exclude_bashisms()
 }
 
 ########
+serialize_string_array()
+{
+    local -n str_array=$1
+    local sep=$2
+    local max_elems=$3
+    local result=""
+    local num_elem=0
+    
+    for str in "${str_array[@]}"; do
+        if [ -z "${result}" ]; then
+            result=${str}
+        else
+            result="${result}${sep}${str}"
+        fi
+
+        num_elem=`expr ${num_elem} + 1`
+        if [ ! -z "${max_elems}" ]; then
+            if [ ${num_elem} -gt ${max_elems} ]; then
+                result="${result}${sep}..."
+                break
+            fi
+        fi
+    done
+
+    echo $result
+}
+
+########
 determine_scheduler()
 {
     if [ ${DISABLE_SCHEDULERS} = "yes" ]; then

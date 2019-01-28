@@ -14,6 +14,54 @@ DEFAULT_BAMDIR="data"
 ######################
 
 ########
+get_ref_contig_list()
+{
+    local ref=$1
+
+    if [ ! -f ${ref}.fai ]; then
+        conda activate samtools 2>&1 || exit 1
+        samtools faidx ${ref}
+        conda deactivate
+    fi
+    
+    $AWK '{printf " %s",$1}' ${ref}.fai
+}
+
+########
+get_ref_filename()
+{
+    local cmdline=$1
+    local given=0
+    local ref
+    ref=`read_opt_value_from_line "$cmdline" "-r"` && given=1
+    if [ $given -eq 1 ]; then
+        # -r option was given
+        file_exists $ref || { errmsg "file $ref does not exist" ; return 1; }
+        echo $ref
+    else
+        errmsg "-r option should be given"
+        echo $ref
+        return 1
+    fi
+}
+
+########
+filter_bam_stats()
+{
+    ${AWK} '{if($3>0 || $4>0) printf" %s",$1}'
+}
+
+########
+get_bam_contig_list()
+{
+    local bam=$1
+
+    conda activate samtools 2>&1 || exit 1
+    samtools idxstats $bam | filter_bam_stats
+    conda deactivate
+}
+
+########
 get_normal_bam_filename()
 {
     local cmdline=$1
@@ -1035,10 +1083,6 @@ sequenza()
 ########
 lumpy_explain_cmdline_opts()
 {
-    # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
-
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
@@ -1060,9 +1104,6 @@ lumpy_define_opts()
     # which will have the same name of the step
     define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
 
-    # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
-
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
@@ -1083,7 +1124,6 @@ lumpy()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -1099,6 +1139,92 @@ lumpy()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
+    display_end_step_message
+}
+
+########
+parallel_lumpy_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+}
+
+########
+parallel_lumpy_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # Generate option lists for each contig
+    local contigs=`get_bam_contig_list $normalbam` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_lumpy()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
+
+    # Extract contigs
+    logmsg "* Extracting contigs..."
+    normalcont=${step_outd}/normal_${contig}.bam
+    samtools view -h $normalbam $contig >  ${normalcont} || exit 1
+    tumorcont=${step_outd}/tumor_${contig}.bam
+    samtools view -h $tumorbam $contig >  ${tumorcont} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (lumpy)"
+    conda activate lumpy 2>&1 || exit 1
+    
+    logmsg "* Executing lumpyexpress..."
+    lumpyexpress -B ${normalcont},${tumorcont} -o ${step_outd}/out${contig}.vcf
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Delete extracted contigs
+    rm ${normalcont} ${tumorcont}
+    
     display_end_step_message
 }
 

@@ -1352,7 +1352,7 @@ define_opt()
     local value=$2
     local varname=$3
 
-    if [ -z ${!varname} ]; then
+    if [ -z "${!varname}" ]; then
         eval "${varname}='${opt} ${value}'"
     else
         eval "${varname}='${!varname} ${opt} ${value}'"
@@ -1365,7 +1365,7 @@ define_opt_wo_value()
     local opt=$1
     local varname=$2
 
-    if [ -z ${!varname} ]; then
+    if [ -z "${!varname}" ]; then
         eval "${varname}='${opt}'"
     else
         eval "${varname}='${!varname} ${opt}'"
@@ -1385,7 +1385,7 @@ define_infile_opt()
     # Absolutize path
     value=`get_absolute_path ${value}`
 
-    if [ -z ${!varname} ]; then
+    if [ -z "${!varname}" ]; then
         eval "${varname}='${opt} ${value}'"
     else
         eval "${varname}='${!varname} ${opt} ${value}'"
@@ -1405,7 +1405,7 @@ define_indir_opt()
     # Absolutize path
     value=`get_absolute_path ${value}`
 
-    if [ -z ${!varname} ]; then
+    if [ -z "${!varname}" ]; then
         eval "${varname}='${opt} ${value}'"
     else
         eval "${varname}='${!varname} ${opt} ${value}'"

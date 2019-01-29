@@ -1140,7 +1140,7 @@ lumpy()
     conda activate lumpy 2>&1 || exit 1
 
     logmsg "* Executing lumpyexpress..."
-    lumpyexpress -B ${normalbam},${tumorbam} -o ${step_outd}/out.vcf || exit 1
+    lumpyexpress -B ${tumorbam},${normalbam} -o ${step_outd}/out.vcf || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1161,7 +1161,7 @@ parallel_lumpy_exclude_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (to execute Lumpy)"
+    description="File with list of contig names to process (required by parallel SV callers)"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -1260,7 +1260,7 @@ parallel_lumpy_split_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (to execute Lumpy)"
+    description="File with list of contig names to process (required by parallel SV callers)"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -1345,6 +1345,75 @@ parallel_lumpy_split()
     # Delete extracted contigs and related files
     rm ${normalcont}* ${tumorcont}*
     
+    display_end_step_message
+}
+
+########
+delly_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+}
+
+########
+delly_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+delly()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate delly 2>&1 || exit 1
+
+    logmsg "* Executing delly..."
+    delly call -o ${step_outd}/out.bcf ${tumorbam} ${normalbam}|| exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
     display_end_step_message
 }
 

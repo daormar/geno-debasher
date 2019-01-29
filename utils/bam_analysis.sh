@@ -1400,6 +1400,7 @@ delly()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
 
@@ -1408,12 +1409,120 @@ delly()
     conda activate delly 2>&1 || exit 1
 
     logmsg "* Executing delly..."
-    delly call -o ${step_outd}/out.bcf ${tumorbam} ${normalbam}|| exit 1
+    delly call -g $ref -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
+    display_end_step_message
+}
+
+########
+parallel_delly_split_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_delly_split_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_delly_split()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Extract contigs
+    logmsg "* Extracting contigs..."
+    normalcont=${step_outd}/normal_${contig}.bam
+    sambamba view -h -f bam $normalbam $contig >  ${normalcont} || exit 1
+    tumorcont=${step_outd}/tumor_${contig}.bam
+    sambamba view -h -f bam $tumorbam $contig >  ${tumorcont} || exit 1
+
+    # Index contigs
+    logmsg "* Indexing contigs..."
+    sambamba index ${normalcont} || exit 1
+    sambamba index ${tumorcont} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (delly)"
+    conda activate delly 2>&1 || exit 1
+    
+    logmsg "* Executing delly..."
+    delly -g $ref -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Delete extracted contigs and related files
+    rm ${normalcont}* ${tumorcont}*
+    
     display_end_step_message
 }
 

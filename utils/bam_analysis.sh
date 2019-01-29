@@ -1342,8 +1342,8 @@ parallel_lumpy_split()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Delete extracted contigs
-    rm ${normalcont} ${tumorcont}
+    # Delete extracted contigs and related files
+    rm ${normalcont}* ${tumorcont}*
     
     display_end_step_message
 }

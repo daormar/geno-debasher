@@ -1054,8 +1054,8 @@ sequenza()
 
     # Generate pileup files
     logmsg "* Generating pileup files..."
-    samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz || pipe_fail
-    samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz || pipe_fail
+    samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz ; pipe_fail || exit 1
+    samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz ; pipe_fail || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1067,11 +1067,11 @@ sequenza()
     
     # Generate GC content file
     logmsg "* Generating GC content file..."
-    sequenza-utils gc_wiggle -w 50 -f $ref -o - | gzip > ${step_outd}/ref.gc50Base.txt.gz || pipe_fail
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | gzip > ${step_outd}/ref.gc50Base.txt.gz ; pipe_fail || exit 1
 
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz || pipe_fail
+    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz ; pipe_fail || exit 1
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
@@ -1140,7 +1140,7 @@ lumpy()
     conda activate lumpy 2>&1 || exit 1
 
     logmsg "* Executing lumpyexpress..."
-    lumpyexpress -B ${normalbam},${tumorbam} -o ${step_outd}/out.vcf
+    lumpyexpress -B ${normalbam},${tumorbam} -o ${step_outd}/out.vcf || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1150,7 +1150,7 @@ lumpy()
 }
 
 ########
-parallel_lumpy_explain_cmdline_opts()
+parallel_lumpy_exclude_explain_cmdline_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -1166,7 +1166,7 @@ parallel_lumpy_explain_cmdline_opts()
 }
 
 ########
-parallel_lumpy_define_opts()
+parallel_lumpy_exclude_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1202,7 +1202,106 @@ parallel_lumpy_define_opts()
 }
 
 ########
-parallel_lumpy()
+get_contig_names_from_bam()
+{
+    local bam=$1
+
+    conda activate samtools 2>&1 || return 1
+    samtools idxstats $bam | $AWK '{printf"%s\n",$1}' ; pipe_fail || return 1
+    conda deactivate
+}
+
+########
+gen_exclusion_bed_given_bam()
+{
+    local bam=$1
+    local contig=$2
+
+    get_contig_names_from_bam $bam | $AWK -v contig=$contig '{if($1!=contig){printf"%s\n",$1}}' ; pipe_fail || return 1
+}
+
+########
+parallel_lumpy_exclude()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Generate exclusion bed file
+    gen_exclusion_bed_given_bam ${normalbam} ${contig} > ${step_outd}/${contig}.bed
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (lumpy)"
+    conda activate lumpy 2>&1 || exit 1
+    
+    logmsg "* Executing lumpyexpress..."
+    lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -x ${step_outd}/${contig}.bed -o ${step_outd}/out${contig}.vcf || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    display_end_step_message
+}
+
+########
+parallel_lumpy_split_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (to execute Lumpy)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_lumpy_split_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_lumpy_split()
 {
     display_begin_step_message
 
@@ -1213,15 +1312,20 @@ parallel_lumpy()
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Activate conda environment
-    logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || exit 1
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
 
     # Extract contigs
     logmsg "* Extracting contigs..."
     normalcont=${step_outd}/normal_${contig}.bam
-    samtools view -h $normalbam $contig >  ${normalcont} || exit 1
+    sambamba view -h -f bam $normalbam $contig >  ${normalcont} || exit 1
     tumorcont=${step_outd}/tumor_${contig}.bam
-    samtools view -h $tumorbam $contig >  ${tumorcont} || exit 1
+    sambamba view -h -f bam $tumorbam $contig >  ${tumorcont} || exit 1
+
+    # Index contigs
+    logmsg "* Indexing contigs..."
+    sambamba index ${normalcont} || exit 1
+    sambamba index ${tumorcont} || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1232,7 +1336,7 @@ parallel_lumpy()
     conda activate lumpy 2>&1 || exit 1
     
     logmsg "* Executing lumpyexpress..."
-    lumpyexpress -B ${normalcont},${tumorcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+    lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

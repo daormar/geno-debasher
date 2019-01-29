@@ -207,6 +207,7 @@ create_slurm_script()
     local name=$1
     local command=$2
     local -n opts_array=$3
+    local num_scripts=${#opts_array[@]}
 
     # Write bash shebang
     local BASH_SHEBANG=`init_bash_shebang_var`
@@ -214,14 +215,17 @@ create_slurm_script()
 
     # Set SLURM options
     echo "#SBATCH --job-name=${command}" >> ${name} || return 1
-    echo "#SBATCH --output=${name}.slurm_out" >> ${name} || return 1
+    if [ ${num_scripts} -eq 1 ]; then
+        echo "#SBATCH --output=${name}.slurm_out" >> ${name} || return 1
+    else
+        echo "#SBATCH --output=${name}_%a.slurm_out" >> ${name} || return 1
+    fi
     
     # Write environment variables
     set | exclude_readonly_vars | exclude_bashisms >> ${name} || return 1
 
     # Iterate over options array
     local lineno=1
-    local num_scripts=${#opts_array[@]}
     for script_opts in "${opts_array[@]}"; do
         # Write treatment for task id
         if [ ${num_scripts} -gt 1 ]; then

@@ -14,6 +14,13 @@ DEFAULT_BAMDIR="data"
 ######################
 
 ########
+get_contig_list_from_file()
+{
+    local file=$1
+    cat $file
+}
+
+########
 get_ref_contig_list()
 {
     local ref=$1
@@ -1152,6 +1159,10 @@ parallel_lumpy_explain_cmdline_opts()
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (to execute Lumpy)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -1176,8 +1187,13 @@ parallel_lumpy_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
 
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
     # Generate option lists for each contig
-    local contigs=`get_bam_contig_list $normalbam` || exit 1
+    local contigs=`get_contig_list_from_file $clist` || exit 1
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         define_opt "-contig" $contig optlist || exit 1
@@ -1216,7 +1232,7 @@ parallel_lumpy()
     conda activate lumpy 2>&1 || exit 1
     
     logmsg "* Executing lumpyexpress..."
-    lumpyexpress -B ${normalcont},${tumorcont} -o ${step_outd}/out${contig}.vcf
+    lumpyexpress -B ${normalcont},${tumorcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

@@ -1,8 +1,7 @@
 examplesdir = $(datadir)/$(PACKAGE)/examples
-examples_DATA= basic_analysis_test.csv ega_asp_analysis_test.csv	\
-aws_analysis_test.csv collab_analysis_test.csv basic_analysis.csv	\
-extended_analysis.csv ega_dataset_analysis.csv				\
-ega_dataset_rfilt_analysis.csv ega_asp_dataset_analysis.csv		\
-ega_asp_dataset_rfilt_analysis.csv gen_wisecondorx_ref_req.csv
+examples_DATA= basic_test.ppl ega_asp_test.ppl aws_test.ppl		\
+collab_test.ppl basic.ppl extended.ppl ega_dataset.ppl			\
+ega_dataset_rfilt.ppl ega_asp_dataset.ppl ega_asp_dataset_rfilt.ppl	\
+gen_wisecondorx_ref_req.csv
 
 EXTRA_DIST= $(examples_DATA)

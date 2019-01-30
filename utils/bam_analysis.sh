@@ -14,6 +14,61 @@ DEFAULT_BAMDIR="data"
 ######################
 
 ########
+get_contig_list_from_file()
+{
+    local file=$1
+    cat $file
+}
+
+########
+get_ref_contig_list()
+{
+    local ref=$1
+
+    if [ ! -f ${ref}.fai ]; then
+        conda activate samtools 2>&1 || exit 1
+        samtools faidx ${ref}
+        conda deactivate
+    fi
+    
+    $AWK '{printf " %s",$1}' ${ref}.fai
+}
+
+########
+get_ref_filename()
+{
+    local cmdline=$1
+    local given=0
+    local ref
+    ref=`read_opt_value_from_line "$cmdline" "-r"` && given=1
+    if [ $given -eq 1 ]; then
+        # -r option was given
+        file_exists $ref || { errmsg "file $ref does not exist" ; return 1; }
+        echo $ref
+    else
+        errmsg "-r option should be given"
+        echo $ref
+        return 1
+    fi
+}
+
+########
+filter_bam_stats()
+{
+    ${AWK} '{if($3>0 || $4>0) printf" %s",$1}'
+}
+
+########
+get_bam_contig_list()
+{
+    local bam=$1
+
+    conda activate samtools 2>&1 || exit 1
+    samtools idxstats $bam | filter_bam_stats
+    conda deactivate
+}
+
+########
 get_normal_bam_filename()
 {
     local cmdline=$1
@@ -28,7 +83,7 @@ get_normal_bam_filename()
         # Check -extn option
         check_opt_given "$cmdline" "-extn" || { errmsg "-n or -extn option should be given" ; return 1; }
         local bamdir_fullname
-        bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || { errmsg "-bamdir option not given" ; return 1; }
+        bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || { return 1; }
         normalbam=${bamdir_fullname}/normal.bam
         echo $normalbam
     fi
@@ -49,7 +104,7 @@ get_tumor_bam_filename()
         # Check -extt option
         check_opt_given "$cmdline" "-extt" || { errmsg "-t or -extt option should be given" ; return 1; }
         local bamdir_fullname
-        bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || { errmsg "-bamdir option not given" ; return 1; }
+        bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || { return 1; }
         tumorbam=${bamdir_fullname}/tumor.bam
         echo $tumorbam
     fi
@@ -77,7 +132,7 @@ manta_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
     
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -146,9 +201,6 @@ manta_germline()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -174,7 +226,7 @@ cnvkit_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -226,9 +278,6 @@ cnvkit()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -254,7 +303,7 @@ manta_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -317,9 +366,6 @@ manta_somatic()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -341,7 +387,7 @@ strelka_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -394,9 +440,6 @@ strelka_germline()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -422,7 +465,7 @@ strelka_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -444,8 +487,8 @@ strelka_somatic_define_opts()
     # -manta-outd option
     local manta_dep=`find_dependency_for_step "${jobspec}" manta_somatic`
     if [ ${manta_dep} != ${DEP_NOT_FOUND} ]; then
-        local manta_outd=`get_default_outd_for_dep ${outd} "${manta_dep}"`
-        define_indir_opt "-manta-outd" ${manta_outd} optlist || exit 1
+        local manta_outd=`get_default_outd_for_dep "${cmdline}" "${manta_dep}"`
+        define_opt "-manta-outd" ${manta_outd} optlist || exit 1
     fi
     
     # -callregf option
@@ -514,9 +557,6 @@ strelka_somatic()
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -538,7 +578,7 @@ platypus_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -578,9 +618,6 @@ platypus_germline_conda()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -597,9 +634,6 @@ platypus_germline_local()
     # Run Platypus
     logmsg "* Executing Platypus.py..."
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 2>&1 || exit 1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -641,7 +675,7 @@ msisensor_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -697,9 +731,6 @@ msisensor()
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
     
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -721,7 +752,7 @@ wisecondorx_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -772,9 +803,6 @@ wisecondorx()
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -800,7 +828,7 @@ snp_pileup_plus_facets_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -861,9 +889,6 @@ snp_pileup_plus_facets()
         conda deactivate 2>&1
     fi
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -901,7 +926,7 @@ ascatngs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -957,7 +982,7 @@ ascatngs()
     logmsg "* Activating conda environment..."
     conda activate ascatngs 2>&1 || exit 1
 
-    # Run ascatngs
+    # Run ascat
     logmsg "* Executing ascat.pl..."
     ascat.pl -n ${normalbam} -t ${tumorbam} -r ${ref} -sg ${snpgccorr} -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o ${step_outd} 2>&1 || exit 1
 
@@ -965,9 +990,662 @@ ascatngs()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
+    display_end_step_message
+}
 
+########
+sequenza_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+}
+
+########
+sequenza_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+sequenza()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
+
+    # Generate pileup files
+    logmsg "* Generating pileup files..."
+    samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz ; pipe_fail || exit 1
+    samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz ; pipe_fail || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sequenza)..."
+    conda activate sequenza 2>&1 || exit 1
+    
+    # Generate GC content file
+    logmsg "* Generating GC content file..."
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | gzip > ${step_outd}/ref.gc50Base.txt.gz ; pipe_fail || exit 1
+
+    # Generate seqz file
+    logmsg "* Generating seqz file..."
+    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz ; pipe_fail || exit 1
+
+    # Execute sequenza
+    # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
+    # installation is used (otherwise, general R installation given in
+    # shebang directive would be executed)
+    logmsg "* Executing sequenza..."
+    Rscript ${bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
+lumpy_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+}
+
+########
+lumpy_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+lumpy()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate lumpy 2>&1 || exit 1
+
+    logmsg "* Executing lumpyexpress..."
+    lumpyexpress -B ${tumorbam},${normalbam} -o ${step_outd}/out.vcf || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
+parallel_lumpy_exclude_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_lumpy_exclude_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+get_contig_names_from_bam()
+{
+    local bam=$1
+
+    conda activate samtools 2>&1 || return 1
+    samtools idxstats $bam | $AWK '{printf"%s\n",$1}' ; pipe_fail || return 1
+    conda deactivate
+}
+
+########
+gen_exclusion_bed_given_bam()
+{
+    local bam=$1
+    local contig=$2
+
+    get_contig_names_from_bam $bam | $AWK -v contig=$contig '{if($1!=contig){printf"%s\n",$1}}' ; pipe_fail || return 1
+}
+
+########
+parallel_lumpy_exclude()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Generate exclusion bed file
+    gen_exclusion_bed_given_bam ${normalbam} ${contig} > ${step_outd}/${contig}.bed
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (lumpy)"
+    conda activate lumpy 2>&1 || exit 1
+    
+    logmsg "* Executing lumpyexpress (contig $contig)..."
+    lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -x ${step_outd}/${contig}.bed -o ${step_outd}/out${contig}.vcf || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    display_end_step_message
+}
+
+########
+parallel_lumpy_split_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_lumpy_split_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_lumpy_split()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Extract contigs
+    logmsg "* Extracting contigs..."
+    normalcont=${step_outd}/normal_${contig}.bam
+    sambamba view -h -f bam $normalbam $contig >  ${normalcont} || exit 1
+    tumorcont=${step_outd}/tumor_${contig}.bam
+    sambamba view -h -f bam $tumorbam $contig >  ${tumorcont} || exit 1
+
+    # Index contigs
+    logmsg "* Indexing contigs..."
+    sambamba index ${normalcont} || exit 1
+    sambamba index ${tumorcont} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (lumpy)"
+    conda activate lumpy 2>&1 || exit 1
+    
+    logmsg "* Executing lumpyexpress (contig $contig)..."
+    lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Delete extracted contigs and related files
+    rm ${normalcont}* ${tumorcont}*
+    
+    display_end_step_message
+}
+
+########
+delly_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+}
+
+########
+delly_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+delly()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment... (delly)"
+    conda activate delly 2>&1 || exit 1
+
+    logmsg "* Executing delly..."
+    delly call -g $ref -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment... (bcftools)"
+    conda activate bcftools 2>&1 || exit 1
+
+    # Convert bcf output to vcf
+    logmsg "* Converting bcf output into vcf... (bcftools)"
+    bcftools view ${step_outd}/out.bcf > ${step_outd}/out.vcf
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
+parallel_delly_split_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_delly_split_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_delly_split()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Extract contigs
+    logmsg "* Extracting contigs..."
+    normalcont=${step_outd}/normal_${contig}.bam
+    sambamba view -h -f bam $normalbam $contig >  ${normalcont} || exit 1
+    tumorcont=${step_outd}/tumor_${contig}.bam
+    sambamba view -h -f bam $tumorbam $contig >  ${tumorcont} || exit 1
+
+    # Index contigs
+    logmsg "* Indexing contigs..."
+    sambamba index ${normalcont} || exit 1
+    sambamba index ${tumorcont} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (delly)"
+    conda activate delly 2>&1 || exit 1
+    
+    logmsg "* Executing delly (contig $contig)..."
+    delly -g $ref -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment... (bcftools)"
+    conda activate bcftools 2>&1 || exit 1
+
+    # Convert bcf output to vcf
+    logmsg "* Converting bcf output into vcf... (bcftools)"
+    bcftools view ${step_outd}/out${contig}.bcf > ${step_outd}/out${contig}.vcf
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Delete extracted contigs and related files
+    rm ${normalcont}* ${tumorcont}*
+    
+    display_end_step_message
+}
+
+########
+parallel_svtyper_split_explain_cmdline_opts()
+{
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+get_vcfdir_for_svtyper()
+{
+    local jobspec=$1
+
+    # Check dependency with parallel_lumpy
+    local parallel_lumpy_split_dep=`find_dependency_for_step "${jobspec}" parallel_lumpy_split`
+    if [ ${parallel_lumpy_split_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_lumpy_split_dep}"`
+        echo $vcfdir
+        return 0
+    fi
+
+    # Check dependency with parallel_delly
+    local parallel_delly_split_dep=`find_dependency_for_step "${jobspec}" parallel_delly_split`
+    if [ ${parallel_delly_split_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_delly_split_dep}"`
+        echo $vcfdir
+        return 0
+    fi
+
+    return 1
+}
+
+########
+parallel_svtyper_split_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Determine vcf directory
+    vcfdir=`get_vcfdir_for_svtyper "${jobspec}"` || { errmsg "Error: vcf directory for svtyper could not be determined"; exit 1; }
+    
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        vcf=${vcfdir}/out${contig}.vcf
+        define_opt "-vcf" $vcf optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_svtyper_split()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+    local vcf=`read_opt_value_from_line "$*" "-vcf"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (svtyper)..."
+    conda activate svtyper 2>&1 || exit 1
+
+    # Execute svtyper
+    logmsg "* Executing svtyper (contig $contig)..."
+    svtyper -i ${vcf} -B ${tumorbam} > ${step_outd}/out${contig}.vcf
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
     display_end_step_message
 }
 
@@ -995,13 +1673,14 @@ download_ega_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-nt" "<int>" "$description"
 }
 
+
 ########
 download_ega_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1024,7 +1703,7 @@ download_ega_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -1096,9 +1775,6 @@ download_ega_norm_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     # Create file indicating that execution was finished
     touch ${step_outd}/finished
 
@@ -1136,7 +1812,7 @@ download_ega_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1159,7 +1835,7 @@ download_ega_tum_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -1194,9 +1870,6 @@ download_ega_tum_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1222,7 +1895,7 @@ download_aws_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1239,7 +1912,7 @@ download_aws_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -1288,9 +1961,6 @@ download_aws_norm_bam()
     # Move file
     mv ${bam_file_name} ${normalbam} || exit 1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1316,7 +1986,7 @@ download_aws_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1333,7 +2003,7 @@ download_aws_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -1367,9 +2037,6 @@ download_aws_tum_bam()
     # Move file
     mv ${bam_file_name} ${tumorbam} || exit 1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1395,7 +2062,7 @@ download_collab_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1412,7 +2079,7 @@ download_collab_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -1446,9 +2113,6 @@ download_collab_norm_bam()
     # Move file
     mv ${bam_file_name} ${normalbam} || exit 1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1474,7 +2138,7 @@ download_collab_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1491,7 +2155,7 @@ download_collab_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -1524,9 +2188,6 @@ download_collab_tum_bam()
 
     # Move file
     mv ${bam_file_name} ${tumorbam} || exit 1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -1569,7 +2230,7 @@ download_ega_asp_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1598,7 +2259,7 @@ download_ega_asp_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -1644,9 +2305,6 @@ download_ega_asp_norm_bam()
     # Remove encrypted file
     rm ${step_outd}/normal.bam.crypt || exit 1
     
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1688,7 +2346,7 @@ download_ega_asp_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1717,7 +2375,7 @@ download_ega_asp_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -1763,9 +2421,6 @@ download_ega_asp_tum_bam()
     # Remove encrypted file
     rm ${step_outd}/tumor.bam.crypt || exit 1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1783,7 +2438,7 @@ index_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1794,7 +2449,7 @@ index_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -1818,7 +2473,7 @@ index_norm_bam()
         
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Execute samtools
     logmsg "* Executing samtools index..."
@@ -1827,9 +2482,6 @@ index_norm_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -1848,7 +2500,7 @@ index_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1859,7 +2511,7 @@ index_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -1883,7 +2535,7 @@ index_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
     
     # Execute samtools
     logmsg "* Executing samtools index..."
@@ -1892,9 +2544,6 @@ index_tum_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -1913,7 +2562,7 @@ sort_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -1924,7 +2573,7 @@ sort_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -1949,7 +2598,7 @@ sort_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate samtools > ${step_outd}/conda_activate.log 2>&1 || exit 1
 
     # Verify if bam file is already sorted
     local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l` || exit 1
@@ -1972,9 +2621,6 @@ sort_norm_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -1992,7 +2638,7 @@ sort_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2003,7 +2649,7 @@ sort_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2028,7 +2674,7 @@ sort_tum_bam()
     
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Verify if bam file is already sorted
     local bam_is_sorted=`samtools view -H ${tumorbam} | $GREP SO:coordinate | wc -l` || exit 1
@@ -2051,9 +2697,6 @@ sort_tum_bam()
     logmsg "* Dectivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -2075,7 +2718,7 @@ filter_norm_bam_contigs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2089,7 +2732,7 @@ filter_norm_bam_contigs_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2109,7 +2752,7 @@ filter_norm_bam_contigs()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Generate bed file for genome reference
     logmsg "* Executing gen_bed_for_genome..."
@@ -2125,9 +2768,6 @@ filter_norm_bam_contigs()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -2150,7 +2790,7 @@ filter_tum_bam_contigs_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2164,7 +2804,7 @@ filter_tum_bam_contigs_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2184,7 +2824,7 @@ filter_tum_bam_contigs()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate base 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Generate bed file for genome reference
     logmsg "* Executing gen_bed_for_genome..."
@@ -2200,9 +2840,6 @@ filter_tum_bam_contigs()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }
@@ -2221,7 +2858,7 @@ delete_bam_files_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -2232,7 +2869,7 @@ delete_bam_files_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_shdirname "${cmdline}" "-bamdir"` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2261,9 +2898,6 @@ delete_bam_files()
     # Delete tumor bam file
     logmsg "Removing tumor bam file..."
     rm ${tumorbam} 2>&1 || exit 1
-
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
 
     display_end_step_message
 }

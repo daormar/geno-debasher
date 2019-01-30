@@ -7,7 +7,7 @@
 print_desc()
 {
     echo "analyze_dataset analyses samples of a given dataset"
-    echo "type \"analyze_ega_study --help\" to get usage information"
+    echo "type \"analyze_dataset --help\" to get usage information"
 }
 
 ########

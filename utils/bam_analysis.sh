@@ -1405,11 +1405,23 @@ delly()
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
 
     # Activate conda environment
-    logmsg "* Activating conda environment..."
+    logmsg "* Activating conda environment... (delly)"
     conda activate delly 2>&1 || exit 1
 
     logmsg "* Executing delly..."
     delly call -g $ref -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment... (bcftools)"
+    conda activate bcftools 2>&1 || exit 1
+
+    # Convert bcf output to vcf
+    logmsg "* Converting bcf output into vcf... (bcftools)"
+    bcftools view ${step_outd}/out.bcf > ${step_outd}/out.vcf
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1515,6 +1527,18 @@ parallel_delly_split()
     
     logmsg "* Executing delly..."
     delly -g $ref -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment... (bcftools)"
+    conda activate bcftools 2>&1 || exit 1
+
+    # Convert bcf output to vcf
+    logmsg "* Converting bcf output into vcf... (bcftools)"
+    bcftools view ${step_outd}/out${contig}.bcf > ${step_outd}/out${contig}.vcf
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

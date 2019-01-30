@@ -1,8 +1,5 @@
 # *- bash -*
 
-# INCLUDE BASH LIBRARY
-. ${bindir}/bam_utils_lib
-
 ########
 print_desc()
 {
@@ -40,7 +37,6 @@ usage()
     echo "-asperapwd <string>  Password for Aspera server"
     echo "-asperaserv <string> Name of Aspera server"
     echo "-egadecrpwd <string> File with EGA decryptor password"
-    echo "-p                   Only print the commands executing the analysis"
     echo "--help               Display this help and exit"
 }
 
@@ -73,7 +69,6 @@ read_pars()
     asperaserv=${NOFILE}
     egadecrpwd_given=0
     egadecrpwd=${NOFILE}
-    p_given=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -171,8 +166,6 @@ read_pars()
                       egadecrpwd=$1
                       egadecrpwd_given=1
                   fi
-                  ;;
-            "-p") p_given=1
                   ;;
         esac
         shift
@@ -484,12 +477,8 @@ process_pars()
             # Set name of output directory for analysis
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
-            # Execute bam analysis for normal and tumor samples
-            if [ ${p_given} -eq 0 ]; then
-                ${bindir}/exec_pipeline -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
-            else
-                echo ${bindir}/exec_pipeline -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
-            fi
+            # Print command to execute pipeline
+            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi

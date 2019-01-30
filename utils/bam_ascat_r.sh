@@ -11,7 +11,7 @@ allele_counter_norm_explain_cmdline_opts()
     description="Loci (SNP position) file"
     explain_cmdline_opt "-l" "<string>" "$description"
 
-     # -r optionsnpgccorr
+     # -r option
     description="Reference genome file (required)"
     explain_cmdline_opt "-r" "<string>" "$description"
 
@@ -227,7 +227,7 @@ ascatr()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate ascat_r 2>&1 || exit 1
+    conda activate /home/jespinosa/conda_local_env/ascat_r 2>&1 || exit 1
     
     # Run convert allele count
     logmsg "* Executing convert_allele_counts..."

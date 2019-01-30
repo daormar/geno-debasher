@@ -1,20 +1,23 @@
-SCRIPTS_TO_BE_BUILT= bam_utils_lib exec_pipeline check_pipeline		\
-bam_analysis analyze_dataset get_analysis_status gen_bed_for_genome	\
+SCRIPTS_TO_BE_BUILT= bam_utils_lib exec_pipeline exec_pipeline_batch	\
+check_pipeline pipeline_software_test bam_analysis bam_facets		\
+bam_ascat_r analyze_dataset get_analysis_status gen_bed_for_genome	\
 check_ref_and_bam_contigs gen_wisecondorx_ref convert_snppos_to_snpgcc	\
 create_snv_pos_ascat query_ega_metadata query_icgc_metadata		\
-filter_contig_from_genref run_facets convert_allele_counts run_ascat
+filter_contig_from_genref run_facets run_sequenza convert_allele_counts	\
+run_ascat
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = bam_utils_lib.sh exec_pipeline.sh check_pipeline.py	\
-bam_analysis.sh analyze_dataset.sh get_analysis_status.sh		\
+EXTRA_DIST = bam_utils_lib.sh exec_pipeline.sh exec_pipeline_batch.sh	\
+check_pipeline.py pipeline_software_test.sh bam_analysis.sh		\
+bam_facets.sh bam_ascat_r.sh analyze_dataset.sh get_analysis_status.sh	\
 gen_bed_for_genome.sh check_ref_and_bam_contigs.sh			\
 gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
 create_snv_pos_ascat.py query_ega_metadata.py query_icgc_metadata.py	\
-filter_contig_from_genref.py run_facets.R convert_allele_counts.R       \
-run_ascat.R
+filter_contig_from_genref.py run_facets.R run_sequenza.R		\
+convert_allele_counts.R run_ascat.R
 
 # Build rules for libraries
 bam_utils_lib: bam_utils_lib.sh
@@ -24,6 +27,14 @@ bam_utils_lib: bam_utils_lib.sh
 bam_analysis: bam_analysis.sh
 	rm -f $@
 	cat bam_analysis.sh >> $@
+
+bam_facets: bam_facets.sh
+	rm -f $@
+	cat bam_facets.sh >> $@
+
+bam_ascat_r: bam_ascat_r.sh
+	rm -f $@
+	cat bam_ascat_r.sh >> $@
 
 # Build using suffix rules (portable)
 SUFFIXES= .sh .py .r .R

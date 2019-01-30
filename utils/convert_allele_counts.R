@@ -31,10 +31,11 @@ if(length(args)<5){
     normal_id = args[3]
     normal_ac = args[4]
     gender = args[5]
+    out_dir = args[6]
 }
 
-tumor_counts <- read.table(tumor_ac, header=F, sep="\t")
-normal_counts <- read.table(normal_ac, header=F, sep="\t")
+tumor_counts <- read.table(tumor_ac, header=F, skip=1, sep="\t")
+normal_counts <- read.table(normal_ac, header=F, skip=1, sep="\t")
 
 SNP_pos <- matrix(nrow = dim(normal_counts)[1], ncol = 2)
 
@@ -96,7 +97,7 @@ germline_BAF <- round(germline_BAF,4)
 SNP_pos <- gsub("chr", "", SNP_pos)
 
 # write output to files
-write.table(cbind (SNP_pos, tumor_LogR), paste(tumor_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
-write.table(cbind (SNP_pos, tumor_BAF), paste(tumor_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
-write.table(cbind (SNP_pos, germline_LogR), paste(normal_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
-write.table(cbind (SNP_pos, germline_BAF), paste(normal_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, tumor_LogR), paste(out_dir,"/", tumor_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, tumor_BAF), paste(out_dir, "/", tumor_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, germline_LogR), paste(out_dir,"/", normal_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, germline_BAF), paste(out_dir, "/", normal_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)

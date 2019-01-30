@@ -182,7 +182,7 @@ ascatr_define_opts()
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
-    
+        
     # Define alleleCounter-normal option or retrieve dependency
     local allelecountnorm_dep=`find_dependency_for_step "${jobspec}" allele_counter_norm`
     if [ ${allelecountnorm_dep} != ${DEP_NOT_FOUND} ]; then
@@ -219,6 +219,7 @@ ascatr()
     display_begin_step_message
 
     # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local allelecounternormal=`read_opt_value_from_line "$*" "-alleleCounter-normal"`
     local allelecountertumor=`read_opt_value_from_line "$*" "-alleleCounter-tumor"`
     local gender=`read_opt_value_from_line "$*" "-g"`
@@ -230,11 +231,18 @@ ascatr()
     
     # Run convert allele count
     logmsg "* Executing convert_allele_counts..."
-    Rscript ${bindir}/convert_allele_counts "tumor" ${allelecountertumor} "normal" ${allelecounternormal} ${gender}
+    echo "****************************${allelecountertumor}"
+    echo "****************************${allelecounternormal}"
+    echo "step out directory****************************${step_outd}"
+
+    Rscript ${bindir}/convert_allele_counts "tumor" ${allelecountertumor} "normal" ${allelecounternormal} ${gender} ${step_outd}
+    
+    echo "convert_allele_counts finished****************************"
+    echo "gc_correction file********************************$snpgccorr" 
 
     # Run ascatr 
     logmsg "* Executing run_ascat..."
-    Rscript ${bindir}/run_ascat --tumor_baf="tumor.BAF" --tumor_logr="tumor.LogR" --normal_baf="normal.BAF" --normal_logr="tumor.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} 2>&1 || exit 1
+    Rscript ${bindir}/run_ascat --tumor_baf="${step_outd}/tumor.BAF" --tumor_logr="${step_outd}/tumor.LogR" --normal_baf="${step_outd}/normal.BAF" --normal_logr="${step_outd}/tumor.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

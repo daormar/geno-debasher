@@ -44,7 +44,7 @@ if("--help" %in% args) {
       --help                       - print this text
 
       Example:
-      ./run_ascat.R --tumor_baf=\"path_tumor_baf\" --tumor_logr=\"path_tumor_logr\" --normal_baf=\"path_ctrl_baf\" --normal_logr=\"path_ctrl_logr\" --tumor_name=\"tumor_name\" --gc_correction=\"path_gc_correction\" \n")
+      ./run_ascat.R --tumor_baf=\"path_tumor_baf\" --tumor_logr=\"path_tumor_logr\" --normal_baf=\"path_ctrl_baf\" --normal_logr=\"path_ctrl_logr\" --tumor_name=\"tumor_name\" --gc_correction=\"path_gc_correction\" --out_dir=\"path_out_dir\" \n")
 
   q (save="no")
 }
@@ -120,6 +120,16 @@ names (argsL) <- argsDF$V1
   }
 }
 
+# output directory
+{
+  if (is.null (argsL$out_dir)) {
+      stop ("[FATAL]: Output directory must be provided")
+  }
+  else {
+      out_dir <- argsL$out_dir
+  }
+}
+
 library("ASCAT")
 
 options(bitmapType='cairo')
@@ -136,13 +146,14 @@ ascat.bc <- ascat.loadData(Tumor_LogR_file = tumor_logr,
 
 {
     if (gc_correction==FALSE) {
+        # ascat.bc <- ascat.runAscat(ascat.bc) ## do not apply anything if file for GC corrections is not provided by the user
         write("[INFO]: File for GC correction not provided, skipped.", stderr())
 
     }
-    else {
+    else {        	
+	write(paste0("[INFO]: GC file used for the correction.", gc_correction), stderr())
         ascat.bc <- ascat.GCcorrect(ascat.bc, gc_correction)
-        write("[INFO]: GC correction has being performed.", stderr())
-
+	write("[INFO]: GC correction has being performed.", stderr())
     }
 }
 
@@ -153,13 +164,13 @@ ascat.bc <- ascat.loadData(Tumor_LogR_file = tumor_logr,
 #######################################################
 ### This part is performed with the GC uncorrected data
 ## Plot the raw data
-ascat.plotRawData(ascat.bc)
+ascat.plotRawData(ascat.bc, img.dir=out_dir)
 
 ## Segment the data
 ascat.bc <- ascat.aspcf(ascat.bc)
 
 ## Plot the segmented data
-ascat.plotSegmentedData(ascat.bc)
+ascat.plotSegmentedData(ascat.bc, img.dir=out_dir)
 
 #####################################################
 ### This part is performed with the GC corrected data
@@ -167,11 +178,11 @@ ascat.plotSegmentedData(ascat.bc)
 ascat.output <- ascat.runAscat(ascat.bc)
 
 #Write out segmented regions (including regions with one copy of each allele)
-write.table(ascat.output$segments, file=paste(tumor_name, ".segments.txt", sep=""), sep="\t", quote=F, row.names=F)
+write.table(ascat.output$segments, file=paste0(out_dir, tumor_name, ".segments.txt"), sep="\t", quote=F, row.names=F)
 
 ## Write out CNVs in bed format
 cnvs <- ascat.output$segments[ascat.output$segments[,"nMajor"]!=1 | ascat.output$segments[,"nMinor"]!=1,2:6]
-write.table(cnvs, file=paste(tumor_name,".cnvs.txt",sep=""), sep="\t", quote=F, row.names=F, col.names=T)
+write.table(cnvs, file=paste0(out_dir, tumor_name,".cnvs.txt"), sep="\t", quote=F, row.names=F, col.names=T)
 
 ## Write out purity and ploidy info
 summary <- tryCatch({
@@ -182,4 +193,4 @@ summary <- tryCatch({
            })
 
 colnames(summary) <- c("aberrant_cell_fraction","ploidy")
-write.table(summary, file=paste(tumor_name,".purityploidy.txt",sep=""), sep="\t", quote=F, row.names=F, col.names=T)
+write.table(summary, file=paste0(out_dir, tumor_name,".purityploidy.txt"), sep="\t", quote=F, row.names=F, col.names=T)

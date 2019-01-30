@@ -68,6 +68,7 @@ SUFFIXES= .sh .py .r .R
 	echo "PANDOC="$(PANDOC) >> $@
 	echo "PYTHON="$(PYTHON) >> $@
 	echo "JAVA="$(JAVA) >> $@
+	echo "PANPIPE_HOME_DIR="$(PANPIPE_HOME_DIR) >> $@
 	echo "SAMTOOLS="$(SAMTOOLS) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@

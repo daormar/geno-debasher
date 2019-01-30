@@ -433,6 +433,22 @@ AC_COMPILE_IFELSE(
 # Checks for doxygen
 AC_PATH_PROG(DOXYGEN,doxygen)
 
+# Adds an extra argument to configure (enable use of Panpipe)
+AC_MSG_CHECKING(whether to enable panpipe library)
+AC_ARG_WITH([panpipe],
+ [AS_HELP_STRING([--with-panpipe=DIR],
+   [installs the package with the necessary code to combine it with the panpipe library @<:@default=no@:>@])],
+ [with_panpipe=$withval],
+ [with_panpipe=""])
+if test "$with_panpipe" = ""; then
+ enable_panpipe_lib="no"
+ AC_MSG_RESULT(no)
+else
+ enable_panpipe_lib="yes"
+ AC_MSG_RESULT(yes)
+fi
+AC_SUBST(PANPIPE_HOME_DIR,$with_panpipe)
+
 # Adds an extra argument to configure (enable use of Platypus)
 AC_MSG_CHECKING(whether to enable platypus library)
 AC_ARG_WITH([platypus],

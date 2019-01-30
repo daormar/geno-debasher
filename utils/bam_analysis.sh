@@ -1238,7 +1238,7 @@ parallel_lumpy_exclude()
     logmsg "* Activating conda environment... (lumpy)"
     conda activate lumpy 2>&1 || exit 1
     
-    logmsg "* Executing lumpyexpress..."
+    logmsg "* Executing lumpyexpress (contig $contig)..."
     lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -x ${step_outd}/${contig}.bed -o ${step_outd}/out${contig}.vcf || exit 1
 
     # Deactivate conda environment
@@ -1335,7 +1335,7 @@ parallel_lumpy_split()
     logmsg "* Activating conda environment... (lumpy)"
     conda activate lumpy 2>&1 || exit 1
     
-    logmsg "* Executing lumpyexpress..."
+    logmsg "* Executing lumpyexpress (contig $contig)..."
     lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
 
     # Deactivate conda environment
@@ -1525,7 +1525,7 @@ parallel_delly_split()
     logmsg "* Activating conda environment... (delly)"
     conda activate delly 2>&1 || exit 1
     
-    logmsg "* Executing delly..."
+    logmsg "* Executing delly (contig $contig)..."
     delly -g $ref -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
 
     # Deactivate conda environment
@@ -1546,6 +1546,104 @@ parallel_delly_split()
 
     # Delete extracted contigs and related files
     rm ${normalcont}* ${tumorcont}*
+    
+    display_end_step_message
+}
+
+########
+parallel_svtyper_split_explain_cmdline_opts()
+{
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+get_vcfdir_for_svtyper()
+{
+    local jobspec=$1
+
+    # Check dependency with parallel_lumpy
+    local parallel_lumpy_split_dep=`find_dependency_for_step "${jobspec}" parallel_lumpy_split`
+    if [ ${parallel_lumpy_split_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_lumpy_split_dep}"`
+        echo $vcfdir
+        return 0
+    fi
+
+    # Check dependency with parallel_delly
+    local parallel_delly_split_dep=`find_dependency_for_step "${jobspec}" parallel_delly_split`
+    if [ ${parallel_delly_split_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_delly_split_dep}"`
+        echo $vcfdir
+        return 0
+    fi
+
+    return 1
+}
+
+########
+parallel_svtyper_split_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Determine vcf directory
+    vcfdir=`get_vcfdir_for_svtyper "${jobspec}"` || { errmsg "Error: vcf directory for svtyper could not be determined"; exit 1; }
+    
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        vcf=${vcfdir}/out${contig}.vcf
+        define_opt "-vcf" $vcf optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_svtyper_split()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+    local vcf=`read_opt_value_from_line "$*" "-vcf"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (svtyper)..."
+    conda activate svtyper 2>&1 || exit 1
+
+    # Execute svtyper
+    logmsg "* Executing svtyper (contig $contig)..."
+    svtyper -i ${vcf} -B ${tumorbam} > ${step_outd}/out${contig}.vcf
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
     
     display_end_step_message
 }

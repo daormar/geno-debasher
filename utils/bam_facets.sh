@@ -26,7 +26,7 @@ snp_pileup_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -80,9 +80,6 @@ snp_pileup()
         conda deactivate 2>&1
     fi
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -100,7 +97,7 @@ facets_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -150,9 +147,5 @@ facets()
         conda deactivate 2>&1
     fi
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
-

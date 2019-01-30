@@ -26,7 +26,7 @@ allele_counter_norm_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -71,9 +71,6 @@ allele_counter_norm()
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
     
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -99,7 +96,7 @@ allele_counter_tumor_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -145,9 +142,6 @@ allele_counter_tumor()
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
     
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
 
@@ -177,7 +171,7 @@ ascatr_define_opts()
     # Initialize variables
     local cmdline=$1
     local jobspec=$2
-    optlist=""
+    local optlist=""
     
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
@@ -248,9 +242,5 @@ ascatr()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Signal that step execution was completed
-    signal_step_completion ${step_outd}
-
     display_end_step_message
 }
-

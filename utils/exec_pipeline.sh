@@ -3,6 +3,13 @@
 # INCLUDE BASH LIBRARY
 . ${bindir}/bam_utils_lib
 
+#############
+# CONSTANTS #
+#############
+
+LOCKFD=99
+MAX_NUM_SCRIPT_OPTS_TO_DISPLAY=10
+
 ########
 print_desc()
 {
@@ -17,14 +24,12 @@ usage()
     echo "                     [--showopts|--checkopts|--debug]"
     echo "                     [--version] [--help]"
     echo ""
-    echo "-a <string>          File with analysis steps to be performed."
-    echo "                     Expected format:"
-    echo "                     <stepname> <account> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
+    echo "-a <string>          File with analysis steps to be performed (see manual"
+    echo "                     for additional information)"
     echo "-o <string>          Output directory"
-    echo "--showopts           Show pipeline options (-a option should be provided)"
-    echo "--checkopts          Check pipeline options (-a option should be provided)"
-    echo "--debug              Do everything except launching pipeline steps (-a and"
-    echo "                     -o options should be given)"
+    echo "--showopts           Show pipeline options"
+    echo "--checkopts          Check pipeline options"
+    echo "--debug              Do everything except launching pipeline steps"
     echo "--version            Display version information and exit"
     echo "--help               Display this help and exit"
 }
@@ -40,6 +45,7 @@ save_command_line()
 read_pars()
 {
     a_given=0
+    o_given=0
     showopts_given=0
     checkopts_given=0
     debug=0
@@ -88,10 +94,8 @@ check_pars()
     fi
     
     if [ ${o_given} -eq 0 ]; then
-        if [ ${showopts_given} -eq 0 ]; then
-            echo "Error! -o parameter not given!" >&2
-            exit 1
-        fi
+        echo "Error! -o parameter not given!" >&2
+        exit 1
     else
         if [ -d ${outd} ]; then
             echo "Warning! output directory does exist" >&2 
@@ -127,8 +131,30 @@ absolutize_file_paths()
 }
 
 ########
+check_pipeline_file()
+{
+    echo "* Checking pipeline file ($afile)..." >&2
+
+    ${bindir}/check_pipeline -a ${afile} || return 1
+
+    echo "" >&2
+}
+
+########
+reorder_pipeline_file()
+{
+    echo "* Obtaining reordered pipeline file ($afile)..." >&2
+
+    ${bindir}/check_pipeline -a ${afile} -r > ${outd}/reordered_pipeline.csv 2> /dev/null || return 1
+
+    echo "" >&2
+}
+
+########
 show_pipeline_opts()
 {
+    echo "* Pipeline options..." >&2
+
     # Read input parameters
     local cmdline=$1
     local afile=$2
@@ -146,10 +172,9 @@ show_pipeline_opts()
             local script_explain_cmdline_opts_funcname=`get_script_explain_cmdline_opts_funcname ${stepname}`
             ${script_explain_cmdline_opts_funcname} || exit 1
         fi
-    done < ${afile}
+    done < ${outd}/reordered_pipeline.csv
 
     # Print options
-    echo "* Pipeline options..." >&2
     print_pipeline_opts
 }
 
@@ -172,23 +197,55 @@ check_pipeline_opts()
         if [ ${jobspec_comment} = "no" -a ${jobspec_ok} = "yes" ]; then
             # Extract step information
             local stepname=`extract_stepname_from_jobspec "$jobspec"`
-            local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
-            local script_opts=${SCRIPT_OPT_LIST}
-            echo "STEP: ${stepname} ; OPTIONS: ${script_opts}" >&2
+            define_opts_for_script "${cmdline}" "${jobspec}" || return 1
+            local script_opts_array=("${SCRIPT_OPT_LIST_ARRAY[@]}")
+            local serial_script_opts=`serialize_string_array "script_opts_array" " ||| " ${MAX_NUM_SCRIPT_OPTS_TO_DISPLAY}`
+            echo "STEP: ${stepname} ; OPTIONS: ${serial_script_opts}" >&2
         fi
-    done < ${afile}
+    done < ${outd}/reordered_pipeline.csv
 
     echo "" >&2
 }
 
 ########
-create_dirs()
+release_lock()
+{
+    local fd=$1
+    local file=$2
+
+    $FLOCK -u $fd
+    $FLOCK -xn $fd && rm -f $file
+}
+
+########
+prepare_lock()
+{
+    local fd=$1
+    local file=$2
+    eval "exec $fd>\"$file\""; trap "release_lock $fd $file" EXIT;
+}
+
+########
+ensure_exclusive_execution()
+{
+    local lockfile=${outd}/lock
+
+    prepare_lock $LOCKFD $lockfile
+
+    $FLOCK -xn $LOCKFD || return 1
+}
+
+########
+create_basic_dirs()
 {
     mkdir -p ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
 
     mkdir -p ${outd}/scripts || { echo "Error! cannot create scripts directory" >&2; return 1; }
+}
 
+########
+create_shared_dirs()
+{
     # Create shared directories required by the pipeline steps
     # IMPORTANT NOTE: the following function can only be executed after
     # executing check_pipeline_pars
@@ -212,8 +269,8 @@ get_jobdeps_from_detailed_spec()
     prevIFS=$IFS
     IFS=','
     for dep_spec in ${jobdeps_spec}; do
-        local deptype=`echo ${dep_spec} | $AWK -F ":" '{print $1}'`
-        local step=`echo ${dep_spec} | $AWK -F ":" '{print $2}'`
+        local deptype=`get_deptype_part_in_dep ${dep_spec}`
+        local step=`get_stepname_part_in_dep ${dep_spec}`
         
         # Check if there is a jid for the step
         local step_jid=${step}_jid
@@ -292,39 +349,47 @@ execute_step()
     # Execute step
 
     # Initialize script variables
-    local script_filename=`get_script_filename ${stepname}`
+    local script_filename=`get_script_filename ${dirname} ${stepname}`
     local step_function=`get_step_function ${stepname}`
-    local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-    ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
-    local script_opts=${SCRIPT_OPT_LIST}
+    define_opts_for_script "${cmdline}" "${jobspec}" || return 1
+    local script_opts_array=("${SCRIPT_OPT_LIST_ARRAY[@]}")
+    local array_size=${#script_opts_array[@]}
     
     ## Obtain step status
     local status=`get_step_status ${dirname} ${stepname}`
     echo "STEP: ${stepname} ; STATUS: ${status} ; JOBSPEC: ${jobspec}" >&2
 
     ## Decide whether the step should be executed
-    if [ "${status}" != "FINISHED" ]; then
+    if [ "${status}" != "${FINISHED_STEP_STATUS}" -a "${status}" != "${INPROGRESS_STEP_STATUS}" ]; then
         # Create script
-        create_script ${script_filename} ${step_function} "${script_opts}"
+        create_script ${script_filename} ${step_function} "script_opts_array"
 
         # Archive script
         archive_script ${script_filename}
 
         # Execute script
+        reset_scriptdir_for_step ${script_filename} || return 1
         reset_outdir_for_step ${dirname} ${stepname} || return 1
         local jobdeps_spec=`extract_jobdeps_from_jobspec "$jobspec"`
         local jobdeps="`get_jobdeps ${jobdeps_spec}`"
         local stepname_jid=${stepname}_jid
-        launch ${script_filename} "${jobspec}" "${jobdeps}" ${stepname_jid} || return 1
+        launch ${script_filename} ${array_size} "${jobspec}" "${jobdeps}" ${stepname_jid} || return 1
         
         # Update variables storing jids
         step_jids="${step_jids}:${!stepname_jid}"
+
+        # Write id to file
+        write_step_id_to_file ${dirname} ${stepname} ${!stepname_jid}
     else
-        local script_filename=`get_script_filename ${stepname}`
+        local script_filename=`get_script_filename ${dirname} ${stepname}`
         prev_script_older=0
         check_script_is_older_than_modules ${script_filename} "${fullmodnames}" || prev_script_older=1
         if [ ${prev_script_older} -eq 1 ]; then
-            echo "Warning: last execution of this script used outdated modules">&2
+            if [ "${status}" = "${INPROGRESS_STEP_STATUS}" ]; then
+                echo "Warning: current execution of this script is using outdated modules">&2
+            else
+                echo "Warning: last execution of this script used outdated modules">&2
+            fi
         fi
     fi
 }
@@ -347,7 +412,6 @@ debug_step()
 
     ## Obtain step options
     local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-    local script_opts
     ${script_define_opts_funcname} "${cmdline}" "${jobspec}" || return 1
 }
 
@@ -370,7 +434,7 @@ execute_pipeline_steps()
     local fullmodnames=`get_pipeline_fullmodnames $afile` || return 1
     
     # step_jids will store the job ids of the analysis steps
-    step_jids=""
+    local step_jids=""
     
     # Read information about the steps to be executed
     while read jobspec; do
@@ -387,7 +451,7 @@ execute_pipeline_steps()
                 debug_step "${cmdline}" "${fullmodnames}" ${dirname} ${stepname} "${jobspec}" || return 1                
             fi
         fi
-    done < ${afile}
+    done < ${outd}/reordered_pipeline.csv
 
     echo "" >&2
 }
@@ -408,6 +472,12 @@ check_pars || exit 1
 
 absolutize_file_paths || exit 1
 
+create_basic_dirs || exit 1
+
+check_pipeline_file || exit 1
+
+reorder_pipeline_file || exit 1
+
 if [ ${showopts_given} -eq 1 ]; then
     show_pipeline_opts "${command_line}" ${afile} || exit 1
 else
@@ -415,9 +485,12 @@ else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
     else
         check_pipeline_opts "${command_line}" ${afile} || exit 1
-        
-        create_dirs || exit 1
-        
+
+        create_shared_dirs
+
+        # NOTE: exclusive execution should be ensured after creating the output directory
+        ensure_exclusive_execution || { echo "Error: exec_pipeline is being executed for the same output directory" ; exit 1; }
+
         print_command_line || exit 1
         
         execute_pipeline_steps "${command_line}" ${outd} ${afile} || exit 1    

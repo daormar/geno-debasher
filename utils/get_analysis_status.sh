@@ -7,7 +7,7 @@
 print_desc()
 {
     echo "get_analysis_status get status of analysis steps"
-    echo "type \"submit_bam_analysis --help\" to get usage information"
+    echo "type \"get_analysis_status --help\" to get usage information"
 }
 
 ########
@@ -26,7 +26,6 @@ read_pars()
 {
     d_given=0
     s_given=0
-    debug=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -114,6 +113,10 @@ process_status_for_afile()
     load_pipeline_modules $afile 2>/dev/null || return 1
         
     # Read information about the steps to be executed
+    lineno=1
+    analysis_finished=1
+    analysis_in_progress=1
+    analysis_one_or_more_steps_in_progress=0
     while read jobspec; do
         local jobspec_comment=`analysis_jobspec_is_comment "$jobspec"`
         local jobspec_ok=`analysis_jobspec_is_ok "$jobspec"`
@@ -127,16 +130,55 @@ process_status_for_afile()
                 continue
             fi
 
-            local script_define_opts_funcname=`get_script_define_opts_funcname ${stepname}`
-            ${script_define_opts_funcname} ${cmdline} ${jobspec} || return 1
+            define_opts_for_script "${cmdline}" "${jobspec}" || return 1
 
             # Check step status
             local status=`get_step_status ${dirname} ${stepname}`
 
             # Print status
             echo "STEP: $stepname ; STATUS: $status"
+
+            # Revise value of analysis_finished variable
+            if [ "${status}" != "${FINISHED_STEP_STATUS}" ]; then
+                analysis_finished=0
+            fi
+
+            # Revise value of analysis_in_progress variable
+            if [ "${status}" != "${FINISHED_STEP_STATUS}" -a "${status}" != "${INPROGRESS_STEP_STATUS}" ]; then
+                analysis_in_progress=0
+            fi
+
+            # Revise value of analysis_in_progress variable
+            if [ "${status}" = "${INPROGRESS_STEP_STATUS}" ]; then
+                analysis_one_or_more_steps_in_progress=1
+            fi
+            
+        else
+            if [ ${jobspec_comment} = "no" -a ${jobspec_ok} = "no" ]; then
+                echo "Error: incorrect job specification at line $lineno of ${afile}" >&2
+                return 1
+            fi
         fi
+        
+        # Increase lineno
+        lineno=`expr $lineno + 1`
+        
     done < ${afile}
+
+    # Return error if analysis is not finished
+    if [ ${analysis_finished} -eq 1 ]; then
+        return ${ANALYSIS_FINISHED_EXIT_CODE}
+    else
+        if [ ${analysis_in_progress} -eq 1 ]; then
+            return ${ANALYSIS_IN_PROGRESS_EXIT_CODE}
+        else
+            if [ ${analysis_one_or_more_steps_in_progress} -eq 1 ]; then
+                return ${ANALYSIS_ONE_OR_MORE_STEPS_IN_PROGRESS_EXIT_CODE}
+            else
+                return ${ANALYSIS_UNFINISHED_EXIT_CODE}
+            fi
+        fi
+    fi
 }
 
 ########
@@ -150,4 +192,6 @@ read_pars $@ || exit 1
 
 check_pars || exit 1
 
-process_status_for_afile ${adir} ${afile} || exit 1
+process_status_for_afile ${adir} ${afile}
+
+exit $?

@@ -36,11 +36,13 @@ AC_PATH_PROGS(WC, wc)
 AC_PATH_PROGS(BASENAME, basename)
 AC_PATH_PROGS(DIRNAME, dirname)
 AC_PATH_PROGS(MKTEMP, mktemp)
+AC_PATH_PROGS(FLOCK, flock)
 AC_PATH_PROGS(SSH, ssh)
 AC_PATH_PROGS(QSUB, qsub)
 AC_PATH_PROGS(QSTAT, qstat)
 AC_PATH_PROGS(QRLS, qrls)
 AC_PATH_PROGS(SBATCH, sbatch)
+AC_PATH_PROGS(SQUEUE, squeue)
 AC_PATH_PROGS(SRUN, srun)
 AC_PATH_PROGS(WGET, wget)
 AC_PATH_PROGS(PANDOC, pandoc)
@@ -430,6 +432,17 @@ AC_COMPILE_IFELSE(
 
 # Checks for doxygen
 AC_PATH_PROG(DOXYGEN,doxygen)
+
+# Adds an extra argument to configure (disable schedulers)
+AC_MSG_CHECKING(whether to disable job schedulers)
+AC_ARG_ENABLE(schedulers,[  --disable-schedulers   disable job schedulers], disable_schedulers=yes,
+              disable_schedulers=no)
+
+# Yes, debug is enabled
+if test "$disable_schedulers" = "yes"; then
+   AC_MSG_RESULT(yes)
+fi
+AC_SUBST(DISABLE_SCHEDULERS,$disable_schedulers)
 
 # Adds an extra argument to configure (enable use of Platypus)
 AC_MSG_CHECKING(whether to enable platypus library)

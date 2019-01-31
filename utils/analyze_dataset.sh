@@ -1,6 +1,34 @@
 # *- bash -*
 
 ########
+is_absolute_path()
+{
+    case $1 in
+        /*) echo 1 ;;
+       *) echo 0 ;;
+    esac
+}
+
+########
+get_absolute_path()
+{
+    local file=$1
+    # Check if an absolute path was given
+    local absolute=`is_absolute_path $file`
+    if [ $absolute -eq 1 ]; then
+        echo $file
+    else
+        local oldpwd=$PWD
+        local basetmp=`$BASENAME $PWD/$file`
+        local dirtmp=`$DIRNAME $PWD/$file`
+        cd $dirtmp
+        local result=${PWD}/${basetmp}
+        cd $oldpwd
+        echo $result
+    fi
+}
+
+########
 print_desc()
 {
     echo "analyze_dataset analyses samples of a given dataset"

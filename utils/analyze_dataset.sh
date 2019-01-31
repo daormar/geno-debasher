@@ -22,7 +22,7 @@ usage()
     echo "-r <string>          File with reference genome"
     echo "-m <string>          File with metadata, one entry per line."
     echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
-    echo "-a <string>          File with analysis steps to be performed."
+    echo "-p <string>          File with pipeline steps to be performed."
     echo "                     Expected format:"
     echo "                     <stepname> <account> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
     echo "-o <string>          Output directory"
@@ -45,7 +45,7 @@ read_pars()
 {
     r_given=0
     m_given=0
-    a_given=0
+    p_given=0
     o_given=0
     cr_given=0
     callregf=${NOFILE}
@@ -89,10 +89,10 @@ read_pars()
                       m_given=1
                   fi
                   ;;
-            "-a") shift
+            "-p") shift
                   if [ $# -ne 0 ]; then
-                      afile=$1
-                      a_given=1
+                      pfile=$1
+                      p_given=1
                   fi
                   ;;
             "-o") shift
@@ -200,8 +200,8 @@ check_pars()
         echo "Error! -a parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${afile} ]; then
-            echo "Error! file ${afile} does not exist" >&2
+        if [ ! -f ${pfile} ]; then
+            echo "Error! file ${pfile} does not exist" >&2
             exit 1
         fi
     fi
@@ -270,7 +270,7 @@ absolutize_file_paths()
     fi
 
     if [ ${a_given} -eq 1 ]; then   
-        afile=`get_absolute_path ${afile}`
+        pfile=`get_absolute_path ${pfile}`
     fi
 
     if [ ${o_given} -eq 1 ]; then
@@ -314,7 +314,7 @@ print_pars()
     fi
 
     if [ ${a_given} -eq 1 ]; then
-        echo "-a is ${afile}" >&2
+        echo "-p is ${pfile}" >&2
     fi
 
     if [ ${o_given} -eq 1 ]; then
@@ -360,12 +360,6 @@ print_pars()
     if [ ${egadecrpwd_given} -eq 1 ]; then
         echo "-egadecrpwd is ${egadecrpwd}" >&2
     fi
-}
-
-########
-create_dirs()
-{
-    mkdir -p ${outd} || { echo "Error! cannot create output directory" >&2; return 1; }
 }
 
 ########
@@ -478,7 +472,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -a ${afile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -p ${pfile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi
@@ -502,9 +496,5 @@ check_pars || exit 1
 absolutize_file_paths || exit 1
 
 print_pars || exit 1
-
-if [ ${p_given} -eq 0 ]; then
-    create_dirs || exit 1
-fi
 
 process_pars || exit 1

@@ -1,3 +1,3 @@
-# bam-utils
+# bio-panpipe
 
-Utilities to analyze bam files
+Utilities to execute bioinformatic pipelines

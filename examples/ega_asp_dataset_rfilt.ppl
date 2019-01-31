@@ -17,6 +17,6 @@ strelka_somatic           dortiz normal_prio 8  6144  6:00:00 jobdeps=afterok:in
 msisensor                 dortiz normal_prio 8  6144  5:00:00 jobdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 snp_pileup_plus_facets    dortiz normal_prio 1 25000  6:00:00 jobdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 cnvkit                    dortiz normal_prio 8 25000 10:00:00 jobdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
-ascatngs                  dortiz normal_prio 8 25000 12:00:00 jobdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
+#ascatngs                  dortiz normal_prio 8 25000 12:00:00 jobdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 platypus_germline         dortiz normal_prio 1  4096  5:00:00 jobdeps=afterok:index_norm_bam__second
 delete_bam_files          dortiz normal_prio 1  1024  0:10:00 jobdeps=afterok:manta_somatic,afterok:strelka_somatic,afterok:msisensor,afterok:cnvkit,afterok:facets,afterok:ascatngs,afterok:platypus_germline

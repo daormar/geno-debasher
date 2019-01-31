@@ -27,6 +27,8 @@ usage()
     echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
     echo "-p <string>          File with pipeline steps to be performed"
     echo "-o <string>          Output directory"
+    echo "-lc <string>         File with list of contig names to process (required"
+    echo "                     by parallel SV callers)"
     echo "-wcr <string>        Reference file in npz format for WisecondorX"
     echo "-sv <string>         SNP vcf file required by Facets"
     echo "-sg <string>         SNP GC correction file required by AscatNGS"
@@ -48,6 +50,8 @@ read_pars()
     m_given=0
     p_given=0
     o_given=0
+    lc_given=0
+    contigfile=${NOFILE}
     cr_given=0
     callregf=${NOFILE}
     wcr_given=0
@@ -100,6 +104,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       outd=$1
                       o_given=1
+                  fi
+                  ;;
+            "-lc") shift
+                  if [ $# -ne 0 ]; then
+                      contigfile=$1
+                      lc_given=1
                   fi
                   ;;
             "-cr") shift
@@ -216,6 +226,13 @@ check_pars()
         fi
     fi
 
+    if [ ${lc_given} -eq 1 ]; then
+        if [ "${contigfile}" != ${NOFILE} -a ! -f ${contigfile} ]; then
+            echo "Error! file ${contigfile} does not exist" >&2
+            exit 1
+        fi
+    fi
+
     if [ ${cr_given} -eq 1 ]; then
         if [ "${callregf}" != ${NOFILE} -a ! -f ${callregf} ]; then
             echo "Error! file ${callregf} does not exist" >&2
@@ -278,6 +295,10 @@ absolutize_file_paths()
         outd=`get_absolute_path ${outd}`
     fi
 
+    if [ ${lc_given} -eq 1 ]; then
+        contigfile=`get_absolute_path ${contigfile}`
+    fi
+
     if [ ${cr_given} -eq 1 -a "${callrefg}" != ${NOFILE} ]; then
         callregf=`get_absolute_path ${callregf}`
     fi
@@ -320,6 +341,10 @@ print_pars()
 
     if [ ${o_given} -eq 1 ]; then
         echo "-o is ${outd}" >&2
+    fi
+
+    if [ ${lc_given} -eq 1 ]; then
+        echo "-lc is ${contigfile}" >&2
     fi
 
     if [ ${sg_given} -eq 1 ]; then
@@ -473,7 +498,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -p ${pfile} -g ${gender_opt} -o ${outd}/${analysis_outd} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -p ${pfile} -g ${gender_opt} -o ${outd}/${analysis_outd} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi

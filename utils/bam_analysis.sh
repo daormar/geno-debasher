@@ -1302,6 +1302,41 @@ parallel_lumpy_split_define_opts()
 }
 
 ########
+check_contig_does_not_exist_given_log_file()
+{
+    local logfile=$1
+
+    if $GREP "does not exist" ${logfile} >/dev/null 2>&1; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+########
+filter_bam_contig()
+{
+    local inbam=$1
+    local contig=$2
+    local outbam=$3    
+    local error=0
+    
+    sambamba view -h -f bam $inbam $contig > ${outbam} 2> ${outbam}.log || error=1
+
+    if [ error -eq 1 ]; then
+        if check_contig_does_not_exist_given_log_file ${outbam}.log; then
+            errmsg "Warning: contig ${contig} does not exist in ${inbam} file (see ${outbam}.log)"
+            return 0
+        else
+            errmsg "Error while filtering ${contig} in ${inbam} file (see ${outbam}.log)"
+            return 1
+        fi
+    else
+        return 0
+    fi
+}
+
+########
 parallel_lumpy_split()
 {
     display_begin_step_message
@@ -1319,9 +1354,9 @@ parallel_lumpy_split()
     # Extract contigs
     logmsg "* Extracting contigs..."
     normalcont=${step_outd}/normal_${contig}.bam
-    sambamba view -h -f bam $normalbam $contig >  ${normalcont} || exit 1
+    filter_bam_contig $normalbam $contig $normalcont || exit 1
     tumorcont=${step_outd}/tumor_${contig}.bam
-    sambamba view -h -f bam $tumorbam $contig >  ${tumorcont} || exit 1
+    filter_bam_contig $tumorbam $contig $tumorcont || exit 1
 
     # Index contigs
     logmsg "* Indexing contigs..."
@@ -1509,9 +1544,9 @@ parallel_delly_split()
     # Extract contigs
     logmsg "* Extracting contigs..."
     normalcont=${step_outd}/normal_${contig}.bam
-    sambamba view -h -f bam $normalbam $contig >  ${normalcont} || exit 1
+    filter_bam_contig $normalbam $contig $normalcont || exit 1
     tumorcont=${step_outd}/tumor_${contig}.bam
-    sambamba view -h -f bam $tumorbam $contig >  ${tumorcont} || exit 1
+    filter_bam_contig $tumorbam $contig $tumorcont || exit 1
 
     # Index contigs
     logmsg "* Indexing contigs..."

@@ -11,7 +11,7 @@ print_desc()
 usage()
 {
     echo "analyze_dataset      -r <string> -m <string>"
-    echo "                     -a <string> -o <string>"
+    echo "                     -p <string> -o <string>"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
@@ -22,9 +22,7 @@ usage()
     echo "-r <string>          File with reference genome"
     echo "-m <string>          File with metadata, one entry per line."
     echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
-    echo "-p <string>          File with pipeline steps to be performed."
-    echo "                     Expected format:"
-    echo "                     <stepname> <account> <partition> <cpus> <mem> <time> <jobdeps=stepname1:...>"
+    echo "-p <string>          File with pipeline steps to be performed"
     echo "-o <string>          Output directory"
     echo "-wcr <string>        Reference file in npz format for WisecondorX"
     echo "-sv <string>         SNP vcf file required by Facets"

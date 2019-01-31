@@ -194,7 +194,7 @@ check_pars()
         fi
     fi
 
-    if [ ${a_given} -eq 0 ]; then   
+    if [ ${p_given} -eq 0 ]; then   
         echo "Error! -a parameter not given!" >&2
         exit 1
     else
@@ -267,7 +267,7 @@ absolutize_file_paths()
         metadata=`get_absolute_path ${metadata}`
     fi
 
-    if [ ${a_given} -eq 1 ]; then   
+    if [ ${p_given} -eq 1 ]; then   
         pfile=`get_absolute_path ${pfile}`
     fi
 
@@ -311,7 +311,7 @@ print_pars()
         echo "-m is ${metadata}" >&2
     fi
 
-    if [ ${a_given} -eq 1 ]; then
+    if [ ${p_given} -eq 1 ]; then
         echo "-p is ${pfile}" >&2
     fi
 

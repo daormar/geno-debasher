@@ -1472,6 +1472,10 @@ delly_explain_cmdline_opts()
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -dx option
+    description="File with regions to exclude in bed format for Delly"
+    explain_cmdline_opt "-dx" "<string>" "$description"    
 }
 
 ########
@@ -1499,6 +1503,9 @@ delly_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
+    # -dx option
+    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
+
     # Save option list
     save_opt_list optlist    
 }
@@ -1513,13 +1520,14 @@ delly()
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local exclude=`read_opt_value_from_line "$*" "-dx"`
 
     # Activate conda environment
     logmsg "* Activating conda environment... (delly)"
     conda activate delly 2>&1 || exit 1
 
     logmsg "* Executing delly..."
-    delly call -g $ref -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
+    delly call -g ${ref} -x ${exclude} -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1555,6 +1563,10 @@ parallel_delly_split_explain_cmdline_opts()
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"    
 
+    # -dx option
+    description="File with regions to exclude in bed format for Delly"
+    explain_cmdline_opt "-dx" "<string>" "$description"    
+
     # -lc option
     description="File with list of contig names to process (required by parallel SV callers)"
     explain_cmdline_opt "-lc" "<string>" "$description"   
@@ -1585,6 +1597,9 @@ parallel_delly_split_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
 
+    # -dx option
+    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
+
     # -lc option
     define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
     local clist
@@ -1610,6 +1625,7 @@ parallel_delly_split()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
+    local exclude=`read_opt_value_from_line "$*" "-dx"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sambamba)..."
@@ -1636,7 +1652,7 @@ parallel_delly_split()
     conda activate delly 2>&1 || exit 1
     
     logmsg "* Executing delly (contig $contig)..."
-    delly -g $ref -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
+    delly -g $ref -x ${exclude} -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

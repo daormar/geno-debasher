@@ -994,7 +994,7 @@ ascatngs()
 }
 
 ########
-sequenza_explain_cmdline_opts()
+mpileup_plus_sequenza_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file (required)"
@@ -1010,7 +1010,7 @@ sequenza_explain_cmdline_opts()
 }
 
 ########
-sequenza_define_opts()
+mpileup_plus_sequenza_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1039,7 +1039,7 @@ sequenza_define_opts()
 }
 
 ########
-sequenza()
+mpileup_plus_sequenza()
 {
     display_begin_step_message
 

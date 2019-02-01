@@ -1589,6 +1589,10 @@ parallel_delly_split()
 ########
 parallel_svtyper_split_explain_cmdline_opts()
 {
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"    
@@ -1634,6 +1638,11 @@ parallel_svtyper_split_define_opts()
     # which will have the same name of the step
     define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
 
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
@@ -1665,6 +1674,7 @@ parallel_svtyper_split()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
     local vcf=`read_opt_value_from_line "$*" "-vcf"`
@@ -1675,7 +1685,7 @@ parallel_svtyper_split()
 
     # Execute svtyper
     logmsg "* Executing svtyper (contig $contig)..."
-    svtyper -i ${vcf} -B ${tumorbam} > ${step_outd}/out${contig}.vcf
+    svtyper -i ${vcf} -B ${tumorbam},${normalbam} > ${step_outd}/out${contig}.vcf
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

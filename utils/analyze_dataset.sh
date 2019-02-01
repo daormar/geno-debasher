@@ -15,6 +15,7 @@ usage()
 {
     echo "analyze_dataset      -r <string> -m <string>"
     echo "                     -p <string> -o <string>"
+    echo "                     [-dx <string>] [-lc <string>]"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
@@ -27,6 +28,7 @@ usage()
     echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
     echo "-p <string>          File with pipeline steps to be performed"
     echo "-o <string>          Output directory"
+    echo "-dx <string>         File with regions to exclude in bed format for Delly"
     echo "-lc <string>         File with list of contig names to process (required"
     echo "                     by parallel SV callers)"
     echo "-wcr <string>        Reference file in npz format for WisecondorX"
@@ -50,6 +52,8 @@ read_pars()
     m_given=0
     p_given=0
     o_given=0
+    dx_given=0
+    dxfile=${NOFILE}
     lc_given=0
     contigfile=${NOFILE}
     cr_given=0
@@ -110,6 +114,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       contigfile=$1
                       lc_given=1
+                  fi
+                  ;;
+            "-dx") shift
+                  if [ $# -ne 0 ]; then
+                      dxfile=$1
+                      dx_given=1
                   fi
                   ;;
             "-cr") shift
@@ -223,6 +233,13 @@ check_pars()
     else
         if [ -d ${outd} ]; then
             echo "Warning! output directory does exist" >&2 
+        fi
+    fi
+
+    if [ ${dx_given} -eq 1 ]; then
+        if [ "${dxfile}" != ${NOFILE} -a ! -f ${dxfile} ]; then
+            echo "Error! file ${dxfile} does not exist" >&2
+            exit 1
         fi
     fi
 
@@ -341,6 +358,10 @@ print_pars()
 
     if [ ${o_given} -eq 1 ]; then
         echo "-o is ${outd}" >&2
+    fi
+
+    if [ ${lc_given} -eq 1 ]; then
+        echo "-dx is ${dxfile}" >&2
     fi
 
     if [ ${lc_given} -eq 1 ]; then
@@ -498,7 +519,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -p ${pfile} -g ${gender_opt} -o ${outd}/${analysis_outd} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -p ${pfile} -g ${gender_opt} -o ${outd}/${analysis_outd} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi

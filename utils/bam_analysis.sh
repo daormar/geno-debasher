@@ -2890,6 +2890,148 @@ filter_tum_bam_contigs()
 }
 
 ########
+sambamba_mpileup_normalbam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+}
+
+########
+sambamba_mpileup_normalbam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+sambamba_mpileup_normalbam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Generate pileup file
+    logmsg "* Generating pileup file..."
+    sambamba mpileup -t ${cpus} -o ${step_outd}/normal.pileup $normalbam --samtools "-f ${ref}" || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Compress pileup file
+    logmsg "* Compressing pileup file..."
+    ${GZIP} ${step_outd}/normal.pileup
+
+    display_end_step_message
+}
+
+########
+sambamba_mpileup_tumorbam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+}
+
+########
+sambamba_mpileup_tumorbam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+sambamba_mpileup_tumorbam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Generate pileup file
+    logmsg "* Generating pileup file..."
+    sambamba mpileup -t ${cpus} -o ${step_outd}/tumor.pileup $tumorbam --samtools "-f ${ref}" || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Compress pileup file
+    logmsg "* Compressing pileup file..."
+    ${GZIP} ${step_outd}/tumor.pileup
+
+    display_end_step_message
+}
+
+########
 delete_bam_files_explain_cmdline_opts()
 {    
     # -bamdir option

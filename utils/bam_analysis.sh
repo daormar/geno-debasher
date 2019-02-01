@@ -1055,8 +1055,8 @@ mpileup_plus_sequenza()
 
     # Generate pileup files
     logmsg "* Generating pileup files..."
-    samtools mpileup -f $ref $normalbam | gzip > ${step_outd}/normal.pileup.gz ; pipe_fail || exit 1
-    samtools mpileup -f $ref $tumorbam | gzip > ${step_outd}/tumor.pileup.gz ; pipe_fail || exit 1
+    samtools mpileup -f $ref $normalbam | ${GZIP} > ${step_outd}/normal.pileup.gz ; pipe_fail || exit 1
+    samtools mpileup -f $ref $tumorbam | ${GZIP} > ${step_outd}/tumor.pileup.gz ; pipe_fail || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1068,11 +1068,85 @@ mpileup_plus_sequenza()
     
     # Generate GC content file
     logmsg "* Generating GC content file..."
-    sequenza-utils gc_wiggle -w 50 -f $ref -o - | gzip > ${step_outd}/ref.gc50Base.txt.gz ; pipe_fail || exit 1
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/ref.gc50Base.txt.gz ; pipe_fail || exit 1
 
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | gzip > ${step_outd}/seqz.gz ; pipe_fail || exit 1
+    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
+
+    # Execute sequenza
+    # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
+    # installation is used (otherwise, general R installation given in
+    # shebang directive would be executed)
+    logmsg "* Executing sequenza..."
+    Rscript ${bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
+sequenza_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+}
+
+########
+sequenza_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+
+    # Get normal pileup file
+    npileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_normalbam` || { errmsg "Error: dependency sambamba_mpileup_normalbam not defined for sequenza"; exit 1 }
+    npileup=${npileupdir}/normal.pileup
+    define_opt "-npileup" ${npileup} optlist || exit 1
+
+    # Get tumor pileup file
+    tpileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_tumorbam` || { errmsg "Error: dependency sambamba_mpileup_tumorbam not defined for sequenza"; exit 1 }
+    tpileup=${tpileupdir}/tumor.pileup
+    define_opt "-tpileup" ${tpileup} optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+sequenza()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local npileup=`read_opt_value_from_line "$*" "-npileup"`
+    local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sequenza)..."
+    conda activate sequenza 2>&1 || exit 1
+    
+    # Generate GC content file
+    logmsg "* Generating GC content file..."
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/ref.gc50Base.txt.gz ; pipe_fail || exit 1
+
+    # Generate seqz file
+    logmsg "* Generating seqz file..."
+    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R

@@ -1,5 +1,5 @@
 #import bam_analysis
 #
-manta_somatic         dortiz normal_prio 8 2048 4:00:00 jobdeps=none
-strelka_somatic       dortiz normal_prio 8 2048 5:00:00 jobdeps=none
-msisensor             dortiz normal_prio 8 3072 5:00:00 jobdeps=none
+manta_somatic         cpus=8 mem=2048 time=4:00:00 jobdeps=none
+strelka_somatic       cpus=8 mem=2048 time=5:00:00 jobdeps=none
+msisensor             cpus=8 mem=3072 time=5:00:00 jobdeps=none

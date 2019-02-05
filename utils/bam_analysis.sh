@@ -1397,7 +1397,7 @@ filter_bam_contig()
     
     sambamba view -h -f bam $inbam $contig > ${outbam} 2> ${outbam}.log || error=1
 
-    if [ error -eq 1 ]; then
+    if [ $error -eq 1 ]; then
         if check_contig_does_not_exist_given_log_file ${outbam}.log; then
             errmsg "Warning: contig ${contig} does not exist in ${inbam} file (see ${outbam}.log)"
             return 0

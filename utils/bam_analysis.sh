@@ -2984,7 +2984,7 @@ filter_tum_bam_contigs()
 }
 
 ########
-sambamba_mpileup_normalbam_explain_cmdline_opts()
+sambamba_mpileup_norm_bam_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file (required)"
@@ -2996,7 +2996,7 @@ sambamba_mpileup_normalbam_explain_cmdline_opts()
 }
 
 ########
-sambamba_mpileup_normalbam_define_opts()
+sambamba_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -3025,7 +3025,7 @@ sambamba_mpileup_normalbam_define_opts()
 }
 
 ########
-sambamba_mpileup_normalbam()
+sambamba_mpileup_norm_bam()
 {
     display_begin_step_message
 
@@ -3055,7 +3055,7 @@ sambamba_mpileup_normalbam()
 }
 
 ########
-sambamba_mpileup_tumorbam_explain_cmdline_opts()
+sambamba_mpileup_tum_bam_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file (required)"
@@ -3067,7 +3067,7 @@ sambamba_mpileup_tumorbam_explain_cmdline_opts()
 }
 
 ########
-sambamba_mpileup_tumorbam_define_opts()
+sambamba_mpileup_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -3096,7 +3096,7 @@ sambamba_mpileup_tumorbam_define_opts()
 }
 
 ########
-sambamba_mpileup_tumorbam()
+sambamba_mpileup_tum_bam()
 {
     display_begin_step_message
 

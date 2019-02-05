@@ -247,10 +247,11 @@ process_pars()
         
         # Process EGA id
         local stepname=bam_download_and_npz_conv
+        local job_array_list="1"
         local stepinfo=`get_step_info ${stepname} ${infofile}`
         local jobdeps=""
         local script_pars=`get_pars_${stepname}`
-        launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
+        launch_step ${stepname} ${job_array_list} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
 
         # Update variables storing jids
         if [ -z "${jids}" ]; then

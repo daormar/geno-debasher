@@ -1527,8 +1527,8 @@ delly()
     conda activate delly 2>&1 || exit 1
 
     logmsg "* Executing delly..."
-    # "command" built-in is used here to execute "delly" program instead
-    # of "delly" function
+    # "command" built-in is used here to execute the "delly" program
+    # instead of the "delly" function
     command delly call -g ${ref} -x ${exclude} -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
 
     # Deactivate conda environment
@@ -1654,8 +1654,8 @@ parallel_delly_split()
     conda activate delly 2>&1 || exit 1
     
     logmsg "* Executing delly (contig $contig)..."
-    # "command" built-in is used here to execute "delly" program instead
-    # of "delly" function
+    # "command" built-in is used here to execute the "delly" program
+    # instead of the "delly" function
     command delly -g $ref -x ${exclude} -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
 
     # Deactivate conda environment

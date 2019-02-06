@@ -1743,7 +1743,7 @@ parallel_svtyper_split_define_opts()
     define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
 
     # -lc option
-    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 

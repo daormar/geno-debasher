@@ -1263,7 +1263,7 @@ parallel_lumpy_exclude_define_opts()
     define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
 
     # -lc option
-    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
@@ -1362,7 +1362,7 @@ parallel_lumpy_split_define_opts()
     define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
 
     # -lc option
-    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
@@ -1587,7 +1587,7 @@ parallel_delly_split_define_opts()
     define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1600,10 +1600,10 @@ parallel_delly_split_define_opts()
     define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
 
     # -dx option
-    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-dx" basic_optlist || exit 1
 
     # -lc option
-    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 

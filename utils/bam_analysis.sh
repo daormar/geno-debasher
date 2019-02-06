@@ -1656,7 +1656,7 @@ parallel_delly_split()
     logmsg "* Executing delly (contig $contig)..."
     # "command" built-in is used here to execute the "delly" program
     # instead of the "delly" function
-    command delly -g $ref -x ${exclude} -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
+    command delly call -g $ref -x ${exclude} -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

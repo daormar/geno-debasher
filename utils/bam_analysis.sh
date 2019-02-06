@@ -1112,12 +1112,12 @@ sequenza_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # Get normal pileup file
-    npileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_normalbam` || { errmsg "Error: dependency sambamba_mpileup_normalbam not defined for sequenza"; exit 1; }
+    npileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
     npileup=${npileupdir}/normal.pileup
     define_opt "-npileup" ${npileup} optlist || exit 1
 
     # Get tumor pileup file
-    tpileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_tumorbam` || { errmsg "Error: dependency sambamba_mpileup_tumorbam not defined for sequenza"; exit 1; }
+    tpileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_tum_bam` || { errmsg "Error: dependency sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
     tpileup=${tpileupdir}/tumor.pileup
     define_opt "-tpileup" ${tpileup} optlist || exit 1
 

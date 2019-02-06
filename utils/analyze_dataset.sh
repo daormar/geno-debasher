@@ -13,21 +13,23 @@ print_desc()
 ########
 usage()
 {
-    echo "analyze_dataset      -r <string> -m <string>"
-    echo "                     -p <string> -o <string>"
+    echo "analyze_dataset      --pfile <string> --outdir <string>"
+    echo "                     --sched <string>"
+    echo "                     -r <string> -m <string>"
     echo "                     [-dx <string>] [-lc <string>]"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
     echo "                     [-egastr <int>] [-egacred <string>]"
     echo "                     [-asperausr <string>] [-asperapwd <string>]"
     echo "                     [-asperaserv <string>] [-egadecrpwd <string>]"
-    echo "                     [-p] [--help]"
+    echo "                     [--help]"
     echo ""
+    echo "--pfile <string>     File with pipeline steps to be performed"
+    echo "--outdir <string>    Output directory"
+    echo "--sched <string>     Scheduler used to execute the pipelines"
     echo "-r <string>          File with reference genome"
     echo "-m <string>          File with metadata, one entry per line."
     echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
-    echo "-p <string>          File with pipeline steps to be performed"
-    echo "-o <string>          Output directory"
     echo "-dx <string>         File with regions to exclude in bed format for Delly"
     echo "-lc <string>         File with list of contig names to process (required"
     echo "                     by parallel SV callers)"
@@ -48,10 +50,11 @@ usage()
 ########
 read_pars()
 {
+    pfile_given=0
+    outdir_given=0
+    sched_given=0
     r_given=0
     m_given=0
-    p_given=0
-    o_given=0
     dx_given=0
     dxfile=${NOFILE}
     lc_given=0
@@ -86,6 +89,24 @@ read_pars()
             "--version") version
                          exit 1
                          ;;
+            "--pfile") shift
+                  if [ $# -ne 0 ]; then
+                      pfile=$1
+                      pfile_given=1
+                  fi
+                  ;;
+            "--outdir") shift
+                  if [ $# -ne 0 ]; then
+                      outd=$1
+                      outdir_given=1
+                  fi
+                  ;;
+            "--sched") shift
+                  if [ $# -ne 0 ]; then
+                      sched=$1
+                      sched_given=1
+                  fi
+                  ;;
             "-r") shift
                   if [ $# -ne 0 ]; then
                       ref=$1
@@ -96,18 +117,6 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       metadata=$1
                       m_given=1
-                  fi
-                  ;;
-            "-p") shift
-                  if [ $# -ne 0 ]; then
-                      pfile=$1
-                      p_given=1
-                  fi
-                  ;;
-            "-o") shift
-                  if [ $# -ne 0 ]; then
-                      outd=$1
-                      o_given=1
                   fi
                   ;;
             "-lc") shift
@@ -196,6 +205,29 @@ read_pars()
 ########
 check_pars()
 {
+    if [ ${pfile_given} -eq 0 ]; then   
+        echo "Error! --pfile parameter not given!" >&2
+        exit 1
+    else
+        if [ ! -f ${pfile} ]; then
+            echo "Error! file ${pfile} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${outdir_given} -eq 0 ]; then
+        echo "Error! --outdir parameter not given!" >&2
+        exit 1
+    else
+        if [ -d ${outd} ]; then
+            echo "Warning! output directory does exist" >&2 
+        fi
+    fi
+
+    if [ ${sched_given} -eq 0 ]; then
+        echo "Error, --sched option should be given" >&2
+    fi
+
     if [ ${r_given} -eq 0 ]; then   
         echo "Error! -r parameter not given!" >&2
         exit 1
@@ -214,25 +246,6 @@ check_pars()
         if [ ! -f ${metadata} ]; then
             echo "Error! file ${metadata} does not exist" >&2
             exit 1
-        fi
-    fi
-
-    if [ ${p_given} -eq 0 ]; then   
-        echo "Error! -a parameter not given!" >&2
-        exit 1
-    else
-        if [ ! -f ${pfile} ]; then
-            echo "Error! file ${pfile} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${o_given} -eq 0 ]; then
-        echo "Error! -o parameter not given!" >&2
-        exit 1
-    else
-        if [ -d ${outd} ]; then
-            echo "Warning! output directory does exist" >&2 
         fi
     fi
 
@@ -304,11 +317,11 @@ absolutize_file_paths()
         metadata=`get_absolute_path ${metadata}`
     fi
 
-    if [ ${p_given} -eq 1 ]; then   
+    if [ ${pfile_given} -eq 1 ]; then   
         pfile=`get_absolute_path ${pfile}`
     fi
 
-    if [ ${o_given} -eq 1 ]; then
+    if [ ${outdir_given} -eq 1 ]; then
         outd=`get_absolute_path ${outd}`
     fi
 
@@ -344,20 +357,24 @@ absolutize_file_paths()
 ########
 print_pars()
 {
+    if [ ${pfile_given} -eq 1 ]; then
+        echo "--pfile is ${pfile}" >&2
+    fi
+
+    if [ ${outdir_given} -eq 1 ]; then
+        echo "--outdir is ${outd}" >&2
+    fi
+
+    if [ ${sched_given} -eq 1 ]; then
+        echo "--sched is ${sched}" >&2
+    fi
+
     if [ ${r_given} -eq 1 ]; then
         echo "-r is ${ref}" >&2
     fi
 
     if [ ${m_given} -eq 1 ]; then
         echo "-m is ${metadata}" >&2
-    fi
-
-    if [ ${p_given} -eq 1 ]; then
-        echo "-p is ${pfile}" >&2
-    fi
-
-    if [ ${o_given} -eq 1 ]; then
-        echo "-o is ${outd}" >&2
     fi
 
     if [ ${lc_given} -eq 1 ]; then
@@ -519,7 +536,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${bindir}/pipe_exec -r ${ref} -extn ${normal_id} -extt ${tumor_id} -p ${pfile} -g ${gender_opt} -o ${outd}/${analysis_outd} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${bindir}/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} -r ${ref} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi

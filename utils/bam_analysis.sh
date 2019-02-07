@@ -1459,6 +1459,25 @@ parallel_lumpy_split()
 }
 
 ########
+parallel_lumpy_split_clean()
+{
+    logmsg "Cleaning directory..."
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Delete extracted contigs and related files
+    normalcont=${step_outd}/normal_${contig}.bam
+    tumorcont=${step_outd}/tumor_${contig}.bam
+    rm -f ${normalcont}* ${tumorcont}*
+
+    logmsg "Cleaning finished..."
+}
+
+########
 delly_explain_cmdline_opts()
 {
     # -r option
@@ -1678,6 +1697,27 @@ parallel_delly_split()
     rm ${normalcont}* ${tumorcont}*
     
     display_end_step_message
+}
+
+########
+parallel_delly_split_clean()
+{
+    logmsg "Cleaning directory..."
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+    local exclude=`read_opt_value_from_line "$*" "-dx"`
+
+    # Delete extracted contigs and related files
+    normalcont=${step_outd}/normal_${contig}.bam
+    tumorcont=${step_outd}/tumor_${contig}.bam
+    rm ${normalcont}* ${tumorcont}*
+
+    logmsg "Cleaning finished..."
 }
 
 ########

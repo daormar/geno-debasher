@@ -3245,7 +3245,7 @@ parallel_split_norm_bam()
     conda deactivate 2>&1
 
     # Move bam and index file to bamdir
-    mv ${normalcont}* ${abs_bamdir}
+    mv ${normalcont}* ${abs_bamdir} || exit 1
 
     display_end_step_message
 }
@@ -3330,7 +3330,7 @@ parallel_split_tum_bam()
     conda deactivate 2>&1
         
     # Move bam and index file to bamdir
-    mv ${tumorcont}* ${abs_bamdir}
+    mv ${tumorcont}* ${abs_bamdir} || exit 1
 
     display_end_step_message
 }

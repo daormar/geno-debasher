@@ -1225,7 +1225,7 @@ lumpy()
 }
 
 ########
-parallel_lumpy_exclude_explain_cmdline_opts()
+parallel_exclude_plus_lumpy_explain_cmdline_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -1241,7 +1241,7 @@ parallel_lumpy_exclude_explain_cmdline_opts()
 }
 
 ########
-parallel_lumpy_exclude_define_opts()
+parallel_exclude_plus_lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1296,7 +1296,7 @@ gen_exclusion_bed_given_bam()
 }
 
 ########
-parallel_lumpy_exclude()
+parallel_exclude_plus_lumpy()
 {
     display_begin_step_message
 
@@ -1324,7 +1324,7 @@ parallel_lumpy_exclude()
 }
 
 ########
-parallel_lumpy_split_explain_cmdline_opts()
+parallel_split_plus_lumpy_explain_cmdline_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -1340,7 +1340,7 @@ parallel_lumpy_split_explain_cmdline_opts()
 }
 
 ########
-parallel_lumpy_split_define_opts()
+parallel_split_plus_lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1411,7 +1411,7 @@ filter_bam_contig()
 }
 
 ########
-parallel_lumpy_split()
+parallel_split_plus_lumpy()
 {
     display_begin_step_message
 
@@ -1459,7 +1459,7 @@ parallel_lumpy_split()
 }
 
 ########
-parallel_lumpy_split_clean()
+parallel_split_plus_lumpy_clean()
 {
     logmsg "Cleaning directory..."
 
@@ -1741,15 +1741,15 @@ get_vcfdir_for_svtyper()
 {
     local jobspec=$1
 
-    # Check dependency with parallel_lumpy
-    local parallel_lumpy_split_dep=`find_dependency_for_step "${jobspec}" parallel_lumpy_split`
-    if [ ${parallel_lumpy_split_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_lumpy_split_dep}"`
+    # Check dependency with parallel lumpy
+    local parallel_split_plus_lumpy_dep=`find_dependency_for_step "${jobspec}" parallel_split_plus_lumpy`
+    if [ ${parallel_split_plus_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_split_plus_lumpy_dep}"`
         echo $vcfdir
         return 0
     fi
 
-    # Check dependency with parallel_delly
+    # Check dependency with parallel delly
     local parallel_delly_split_dep=`find_dependency_for_step "${jobspec}" parallel_delly_split`
     if [ ${parallel_delly_split_dep} != ${DEP_NOT_FOUND} ]; then
         local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_delly_split_dep}"`

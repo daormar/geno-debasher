@@ -1570,7 +1570,7 @@ delly()
 }
 
 ########
-parallel_delly_split_explain_cmdline_opts()
+parallel_split_plus_delly_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file (required)"
@@ -1594,7 +1594,7 @@ parallel_delly_split_explain_cmdline_opts()
 }
 
 ########
-parallel_delly_split_define_opts()
+parallel_split_plus_delly_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1636,7 +1636,7 @@ parallel_delly_split_define_opts()
 }
 
 ########
-parallel_delly_split()
+parallel_split_plus_delly()
 {
     display_begin_step_message
 
@@ -1700,7 +1700,7 @@ parallel_delly_split()
 }
 
 ########
-parallel_delly_split_clean()
+parallel_split_plus_delly_clean()
 {
     logmsg "Cleaning directory..."
 
@@ -1750,9 +1750,9 @@ get_vcfdir_for_svtyper()
     fi
 
     # Check dependency with parallel delly
-    local parallel_delly_split_dep=`find_dependency_for_step "${jobspec}" parallel_delly_split`
-    if [ ${parallel_delly_split_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_delly_split_dep}"`
+    local parallel_split_plus_delly_dep=`find_dependency_for_step "${jobspec}" parallel_split_plus_delly`
+    if [ ${parallel_split_plus_delly_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_split_plus_delly_dep}"`
         echo $vcfdir
         return 0
     fi

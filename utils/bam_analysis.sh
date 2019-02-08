@@ -3166,6 +3166,152 @@ sambamba_mpileup_tum_bam()
 }
 
 ########
+parallel_split_norm_bam_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_split_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_split_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Extract contig
+    logmsg "* Extracting contig..."
+    normalcont=${step_outd}/normal_${contig}.bam
+    filter_bam_contig $normalbam $contig $normalcont || exit 1
+
+    # Index contig
+    logmsg "* Indexing contig..."
+    sambamba index ${normalcont} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+        
+    display_end_step_message
+}
+
+########
+parallel_split_tum_bam_explain_cmdline_opts()
+{
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_split_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local jobspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step,
+    # which will have the same name of the step
+    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_split_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Extract contig
+    logmsg "* Extracting contig..."
+    tumorcont=${step_outd}/tumor_${contig}.bam
+    filter_bam_contig $tumorbam $contig $tumorcont || exit 1
+
+    # Index contig
+    logmsg "* Indexing contig..."
+    sambamba index ${tumorcont} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+        
+    display_end_step_message
+}
+
+########
 delete_bam_files_explain_cmdline_opts()
 {    
     # -bamdir option

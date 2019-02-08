@@ -3233,7 +3233,7 @@ parallel_split_norm_bam()
 
     # Extract contig
     logmsg "* Extracting contig..."
-    normalcont=${abs_bamdir}/normal_${contig}.bam
+    normalcont=${step_outd}/normal_${contig}.bam
     filter_bam_contig $normalbam $contig $normalcont || exit 1
 
     # Index contig
@@ -3243,7 +3243,10 @@ parallel_split_norm_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-        
+
+    # Move bam and index file to bamdir
+    mv ${normalcont}* ${abs_bamdir}
+
     display_end_step_message
 }
 
@@ -3315,7 +3318,7 @@ parallel_split_tum_bam()
 
     # Extract contig
     logmsg "* Extracting contig..."
-    tumorcont=${abs_bamdir}/tumor_${contig}.bam
+    tumorcont=${step_outd}/tumor_${contig}.bam
     filter_bam_contig $tumorbam $contig $tumorcont || exit 1
 
     # Index contig
@@ -3326,6 +3329,9 @@ parallel_split_tum_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
         
+    # Move bam and index file to bamdir
+    mv ${tumorcont}* ${abs_bamdir}
+
     display_end_step_message
 }
 

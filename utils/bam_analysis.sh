@@ -1474,7 +1474,7 @@ parallel_lumpy_split_clean()
     tumorcont=${step_outd}/tumor_${contig}.bam
     rm -f ${normalcont}* ${tumorcont}*
 
-    logmsg "Cleaning finished..."
+    logmsg "Cleaning finished"
 }
 
 ########
@@ -1717,7 +1717,7 @@ parallel_delly_split_clean()
     tumorcont=${step_outd}/tumor_${contig}.bam
     rm ${normalcont}* ${tumorcont}*
 
-    logmsg "Cleaning finished..."
+    logmsg "Cleaning finished"
 }
 
 ########

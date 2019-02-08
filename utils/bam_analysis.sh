@@ -3222,16 +3222,18 @@ parallel_split_norm_bam()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local bamdir=`read_opt_value_from_line "$*" "-bamdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
-
+    local abs_bamdir=`get_absolute_shdirname ${step_outd} ${bamdir}`
+    
     # Activate conda environment
     logmsg "* Activating conda environment (sambamba)..."
     conda activate sambamba 2>&1 || exit 1
 
     # Extract contig
     logmsg "* Extracting contig..."
-    normalcont=${step_outd}/normal_${contig}.bam
+    normalcont=${abs_bamdir}/normal_${contig}.bam
     filter_bam_contig $normalbam $contig $normalcont || exit 1
 
     # Index contig
@@ -3255,6 +3257,10 @@ parallel_split_tum_bam_explain_cmdline_opts()
     # -lc option
     description="File with list of contig names to process (required by parallel SV callers)"
     explain_cmdline_opt "-lc" "<string>" "$description"   
+
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
+    explain_cmdline_opt "-bamdir" "<string>" "$description"
 }
 
 ########
@@ -3268,6 +3274,9 @@ parallel_split_tum_bam_define_opts()
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_nonmandatory_opt_shdir "$cmdline" "-bamdir" ${DEFAULT_BAMDIR} basic_optlist || exit 1
 
     # -tumorbam option
     local tumorbam
@@ -3295,8 +3304,10 @@ parallel_split_tum_bam()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local bamdir=`read_opt_value_from_line "$*" "-bamdir"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
+    local abs_bamdir=`get_absolute_shdirname ${step_outd} ${bamdir}`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sambamba)..."
@@ -3304,7 +3315,7 @@ parallel_split_tum_bam()
 
     # Extract contig
     logmsg "* Extracting contig..."
-    tumorcont=${step_outd}/tumor_${contig}.bam
+    tumorcont=${abs_bamdir}/tumor_${contig}.bam
     filter_bam_contig $tumorbam $contig $tumorcont || exit 1
 
     # Index contig

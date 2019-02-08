@@ -83,7 +83,7 @@ get_normal_bam_filename()
         # Check -extn option
         check_opt_given "$cmdline" "-extn" || { errmsg "-n or -extn option should be given" ; return 1; }
         local bamdir_fullname
-        bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || { return 1; }
+        bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || { return 1; }
         normalbam=${bamdir_fullname}/normal.bam
         echo $normalbam
     fi
@@ -104,7 +104,7 @@ get_tumor_bam_filename()
         # Check -extt option
         check_opt_given "$cmdline" "-extt" || { errmsg "-t or -extt option should be given" ; return 1; }
         local bamdir_fullname
-        bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || { return 1; }
+        bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || { return 1; }
         tumorbam=${bamdir_fullname}/tumor.bam
         echo $tumorbam
     fi
@@ -1882,7 +1882,7 @@ download_ega_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2014,7 +2014,7 @@ download_ega_tum_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2091,7 +2091,7 @@ download_aws_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2182,7 +2182,7 @@ download_aws_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2258,7 +2258,7 @@ download_collab_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2334,7 +2334,7 @@ download_collab_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2438,7 +2438,7 @@ download_ega_asp_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2554,7 +2554,7 @@ download_ega_asp_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2628,7 +2628,7 @@ index_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2690,7 +2690,7 @@ index_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2752,7 +2752,7 @@ sort_norm_bam_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2828,7 +2828,7 @@ sort_tum_bam_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -2911,7 +2911,7 @@ filter_norm_bam_contigs_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
@@ -2983,7 +2983,7 @@ filter_tum_bam_contigs_define_opts()
 
     # -tumorbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local tumorbam=${bamdir_fullname}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
@@ -3174,7 +3174,11 @@ parallel_split_norm_bam_explain_cmdline_opts()
 
     # -lc option
     description="File with list of contig names to process (required by parallel SV callers)"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_opt "-lc" "<string>" "$description"
+
+    # -bamdir option
+    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
+    explain_cmdline_opt "-bamdir" "<string>" "$description"
 }
 
 ########
@@ -3188,6 +3192,9 @@ parallel_split_norm_bam_define_opts()
     # Define the -step-outd option, the output directory for the step,
     # which will have the same name of the step
     define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+
+    # -bamdir option
+    define_cmdline_nonmandatory_opt_shdir "$cmdline" "-bamdir" ${DEFAULT_BAMDIR} basic_optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -3336,7 +3343,7 @@ delete_bam_files_define_opts()
 
     # -normalbam option
     local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
+    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
     local normalbam=${bamdir_fullname}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 

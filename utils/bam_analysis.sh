@@ -1721,7 +1721,7 @@ parallel_delly_split_clean()
 }
 
 ########
-parallel_svtyper_split_explain_cmdline_opts()
+parallel_svtyper_explain_cmdline_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -1761,7 +1761,7 @@ get_vcfdir_for_svtyper()
 }
 
 ########
-parallel_svtyper_split_define_opts()
+parallel_svtyper_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1802,7 +1802,7 @@ parallel_svtyper_split_define_opts()
 }
 
 ########
-parallel_svtyper_split()
+parallel_svtyper()
 {
     display_begin_step_message
 

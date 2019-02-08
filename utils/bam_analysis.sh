@@ -3352,16 +3352,6 @@ delete_bam_files_define_opts()
     # -bamdir option
     define_cmdline_nonmandatory_opt_shdir "$cmdline" "-bamdir" ${DEFAULT_BAMDIR} optlist || exit 1
 
-    # -normalbam option
-    local bamdir_fullname
-    bamdir_fullname=`get_default_nonmandatory_opt_abs_shdirname "${cmdline}" "-bamdir" ${DEFAULT_BAMDIR}` || exit 1
-    local normalbam=${bamdir_fullname}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
-
-    # -tumorbam option
-    local tumorbam=${bamdir_fullname}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
-
     # Save option list
     save_opt_list optlist
 }
@@ -3372,17 +3362,12 @@ delete_bam_files()
     display_begin_step_message
 
     # Initialize variables
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local bamdir=`read_opt_value_from_line "$*" "-bamdir"`
+    local abs_bamdir=`get_absolute_shdirname ${step_outd} ${bamdir}`
 
-    # Delete normal bam file
-    logmsg "Removing normal bam file..."
-    rm ${normalbam} 2>&1 || exit 1
-    
-    # Delete tumor bam file
-    logmsg "Removing tumor bam file..."
-    rm ${tumorbam} 2>&1 || exit 1
+    # Delete bam files
+    rm -f ${abs_bamdir}/*.bam
 
     display_end_step_message
 }

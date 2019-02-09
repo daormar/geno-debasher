@@ -3081,7 +3081,7 @@ sambamba_mpileup_norm_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    sambamba mpileup -t ${cpus} -o ${step_outd}/normal.pileup $normalbam --samtools "-f ${ref}" || exit 1
+    sambamba mpileup -t ${cpus} --tmpdir ${step_outd} -o ${step_outd}/normal.pileup $normalbam --samtools "-f ${ref}" || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -3152,7 +3152,7 @@ sambamba_mpileup_tum_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    sambamba mpileup -t ${cpus} -o ${step_outd}/tumor.pileup $tumorbam --samtools "-f ${ref}" || exit 1
+    sambamba mpileup -t ${cpus} --tmpdir ${step_outd} -o ${step_outd}/tumor.pileup $tumorbam --samtools "-f ${ref}" || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

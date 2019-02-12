@@ -1,11 +1,11 @@
 #import bam_analysis
 #
-download_collab_norm_bam cpus=1  mem=2048 time=48:00:00 jobdeps=none
-download_collab_tum_bam  cpus=1  mem=2048 time=48:00:00 jobdeps=none
-sort_norm_bam            cpus=2  mem=8192 time=48:00:00 jobdeps=afterok:download_collab_norm_bam
-sort_tum_bam             cpus=2  mem=8192 time=48:00:00 jobdeps=afterok:download_collab_tum_bam
-index_norm_bam           cpus=1  mem=1024 time=48:00:00 jobdeps=afterok:sort_norm_bam
-index_tum_bam            cpus=1  mem=1024 time=48:00:00 jobdeps=afterok:sort_tum_bam
-manta_somatic            cpus=8  mem=4096 time=48:00:00 jobdeps=afterok:index_norm_bam,afterok:index_tum_bam
-strelka_somatic          cpus=8  mem=4096 time=48:00:00 jobdeps=afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
-delete_bam_files         cpus=1  mem=1024 time=48:00:00 jobdeps=afterok:manta_somatic,afterok:strelka_somatic,afterok:msisensor
+download_collab_norm_bam cpus=1  mem=2048 time=48:00:00 stepdeps=none
+download_collab_tum_bam  cpus=1  mem=2048 time=48:00:00 stepdeps=none
+sort_norm_bam            cpus=2  mem=8192 time=48:00:00 stepdeps=afterok:download_collab_norm_bam
+sort_tum_bam             cpus=2  mem=8192 time=48:00:00 stepdeps=afterok:download_collab_tum_bam
+index_norm_bam           cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:sort_norm_bam
+index_tum_bam            cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:sort_tum_bam
+manta_somatic            cpus=8  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
+strelka_somatic          cpus=8  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
+delete_bam_files         cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:manta_somatic,afterok:strelka_somatic,afterok:msisensor

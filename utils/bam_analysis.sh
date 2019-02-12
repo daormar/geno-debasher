@@ -1263,7 +1263,7 @@ parallel_exclude_plus_lumpy_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1362,7 +1362,7 @@ parallel_split_plus_lumpy_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1616,7 +1616,7 @@ parallel_split_plus_delly_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
@@ -1783,7 +1783,7 @@ parallel_svtyper_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -3134,7 +3134,7 @@ parallel_split_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
 
     # -bamdir option    
     abs_bamdir=`get_absolute_shdirname "data"`
@@ -3215,7 +3215,7 @@ parallel_split_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
 
     # -bamdir option
     abs_bamdir=`get_absolute_shdirname "data"`
@@ -3294,7 +3294,7 @@ delete_bam_files_define_opts()
 
     # -bamdir option
     abs_bamdir=`get_absolute_shdirname "data"`
-    define_opt "-bamdir" ${abs_bamdir} basic_optlist || exit 1
+    define_opt "-bamdir" ${abs_bamdir} optlist || exit 1
 
     # Save option list
     save_opt_list optlist

@@ -144,13 +144,13 @@ manta_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
     
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
-
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
@@ -164,7 +164,7 @@ manta_germline_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -238,12 +238,12 @@ cnvkit_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -260,7 +260,7 @@ cnvkit_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -315,12 +315,12 @@ manta_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -340,7 +340,7 @@ manta_somatic_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -399,12 +399,12 @@ strelka_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -416,7 +416,7 @@ strelka_germline_define_opts()
     
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -477,12 +477,12 @@ strelka_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -498,9 +498,9 @@ strelka_somatic_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -manta-outd option
-    local manta_dep=`find_dependency_for_step "${jobspec}" manta_somatic`
+    local manta_dep=`find_dependency_for_step "${stepspec}" manta_somatic`
     if [ ${manta_dep} != ${DEP_NOT_FOUND} ]; then
-        local manta_outd=`get_default_outd_for_dep "${cmdline}" "${manta_dep}"`
+        local manta_outd=`get_outd_for_dep "${manta_dep}"`
         define_opt "-manta-outd" ${manta_outd} optlist || exit 1
     fi
     
@@ -509,7 +509,7 @@ strelka_somatic_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -590,12 +590,12 @@ platypus_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -687,12 +687,12 @@ msisensor_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -709,7 +709,7 @@ msisensor_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -764,12 +764,12 @@ wisecondorx_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -wcr option
     define_cmdline_infile_opt "$cmdline" "-wcr" optlist || exit 1
@@ -781,7 +781,7 @@ wisecondorx_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -840,12 +840,12 @@ snp_pileup_plus_facets_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -sv option
     define_cmdline_infile_opt "$cmdline" "-sv" optlist || exit 1
@@ -938,12 +938,12 @@ ascatngs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -969,7 +969,7 @@ ascatngs_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -1027,12 +1027,12 @@ mpileup_plus_sequenza_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -1114,23 +1114,23 @@ sequenza_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # Get normal pileup file
-    npileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
+    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
     npileup=${npileupdir}/normal.pileup
     define_opt "-npileup" ${npileup} optlist || exit 1
 
     # Get tumor pileup file
-    tpileupdir=`get_default_outd_for_dep_given_jobspec "${jobspec}" sambamba_mpileup_tum_bam` || { errmsg "Error: dependency sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
+    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_tum_bam` || { errmsg "Error: dependency sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
     tpileup=${tpileupdir}/tumor.pileup
     define_opt "-tpileup" ${tpileup} optlist || exit 1
 
@@ -1192,12 +1192,12 @@ lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1258,12 +1258,12 @@ parallel_exclude_plus_lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local basic_optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1357,12 +1357,12 @@ parallel_split_plus_lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local basic_optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1515,12 +1515,12 @@ delly_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -1611,12 +1611,12 @@ parallel_split_plus_delly_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local basic_optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
@@ -1752,20 +1752,20 @@ parallel_svtyper_explain_cmdline_opts()
 ########
 get_vcfdir_for_svtyper()
 {
-    local jobspec=$1
+    local stepspec=$1
 
     # Check dependency with parallel lumpy
-    local parallel_split_plus_lumpy_dep=`find_dependency_for_step "${jobspec}" parallel_split_plus_lumpy`
+    local parallel_split_plus_lumpy_dep=`find_dependency_for_step "${stepspec}" parallel_split_plus_lumpy`
     if [ ${parallel_split_plus_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_split_plus_lumpy_dep}"`
+        local vcfdir=`get_outd_for_dep "${parallel_split_plus_lumpy_dep}"`
         echo $vcfdir
         return 0
     fi
 
     # Check dependency with parallel delly
-    local parallel_split_plus_delly_dep=`find_dependency_for_step "${jobspec}" parallel_split_plus_delly`
+    local parallel_split_plus_delly_dep=`find_dependency_for_step "${stepspec}" parallel_split_plus_delly`
     if [ ${parallel_split_plus_delly_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_default_outd_for_dep "${cmdline}" "${parallel_split_plus_delly_dep}"`
+        local vcfdir=`get_outd_for_dep "${parallel_split_plus_delly_dep}"`
         echo $vcfdir
         return 0
     fi
@@ -1778,12 +1778,12 @@ parallel_svtyper_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local basic_optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1801,7 +1801,7 @@ parallel_svtyper_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Determine vcf directory
-    vcfdir=`get_vcfdir_for_svtyper "${jobspec}"` || { errmsg "Error: vcf directory for svtyper could not be determined"; exit 1; }
+    vcfdir=`get_vcfdir_for_svtyper "${stepspec}"` || { errmsg "Error: vcf directory for svtyper could not be determined"; exit 1; }
     
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
@@ -1871,12 +1871,12 @@ download_ega_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -1995,13 +1995,13 @@ download_ega_tum_bam_define_opts()
     echo "$tumorbam ${extid_tumorbam} $egastr $egacred ${download_tries} ${step_outd}"
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
-    
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
 
@@ -2070,13 +2070,13 @@ download_aws_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
-    
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
 
@@ -2153,12 +2153,12 @@ download_aws_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -2221,12 +2221,12 @@ download_collab_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -2289,12 +2289,12 @@ download_collab_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
     
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -2373,12 +2373,12 @@ download_ega_asp_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
     
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -2481,12 +2481,12 @@ download_ega_asp_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
     
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -2567,12 +2567,12 @@ index_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local abs_bamdir=`get_absolute_shdirname "data"`
@@ -2623,12 +2623,12 @@ index_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -tumorbam option
     local abs_bamdir=`get_absolute_shdirname "data"`
@@ -2679,12 +2679,12 @@ sort_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local abs_bamdir=`get_absolute_shdirname "data"`        
@@ -2693,7 +2693,7 @@ sort_norm_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -2749,12 +2749,12 @@ sort_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -tumorbam option
     local abs_bamdir=`get_absolute_shdirname "data"`
@@ -2763,7 +2763,7 @@ sort_tum_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -2821,12 +2821,12 @@ filter_norm_bam_contigs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -2885,12 +2885,12 @@ filter_tum_bam_contigs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -2957,12 +2957,12 @@ sambamba_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -2977,7 +2977,7 @@ sambamba_mpileup_norm_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -3051,12 +3051,12 @@ sambamba_mpileup_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -3071,7 +3071,7 @@ sambamba_mpileup_tum_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -3129,12 +3129,12 @@ parallel_split_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local basic_optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -bamdir option    
     abs_bamdir=`get_absolute_shdirname "data"`
@@ -3210,12 +3210,12 @@ parallel_split_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local basic_optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" basic_optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -bamdir option
     abs_bamdir=`get_absolute_shdirname "data"`
@@ -3285,12 +3285,12 @@ delete_bam_files_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local stepspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -bamdir option
     abs_bamdir=`get_absolute_shdirname "data"`

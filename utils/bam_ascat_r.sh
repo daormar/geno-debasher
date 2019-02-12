@@ -28,9 +28,9 @@ allele_counter_norm_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -l option
     define_cmdline_infile_opt "$cmdline" "-l" optlist || exit 1
@@ -98,9 +98,9 @@ allele_counter_tumor_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -l option
     define_cmdline_infile_opt "$cmdline" "-l" optlist || exit 1
@@ -173,10 +173,10 @@ ascatr_define_opts()
     local jobspec=$2
     local optlist=""
     
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
-        
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
     # Define alleleCounter-normal option or retrieve dependency
     local allelecountnorm_dep=`find_dependency_for_step "${jobspec}" allele_counter_norm`
     if [ ${allelecountnorm_dep} != ${DEP_NOT_FOUND} ]; then

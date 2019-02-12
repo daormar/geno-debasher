@@ -28,9 +28,9 @@ snp_pileup_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "$cmdline" "$jobspec" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -sv option
     define_cmdline_infile_opt "$cmdline" "-sv" optlist || exit 1
@@ -99,9 +99,9 @@ facets_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step,
-    # which will have the same name of the step
-    define_default_step_outd_opt "${cmdline}" "${jobspec}" optlist || exit 1
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     local pileup_dep=`find_dependency_for_step "${jobspec}" snp_pileup`
     if [ ${pileup_dep} != ${DEP_NOT_FOUND} ]; then

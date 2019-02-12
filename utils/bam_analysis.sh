@@ -2946,6 +2946,10 @@ sambamba_mpileup_norm_bam_explain_cmdline_opts()
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -mpb option
+    description="BED file for mpileup (optional)"
+    explain_cmdline_opt "-mpb" "<string>" "$description"
 }
 
 ########
@@ -2968,6 +2972,9 @@ sambamba_mpileup_norm_bam_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
+    # -mpb option
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
@@ -2975,6 +2982,18 @@ sambamba_mpileup_norm_bam_define_opts()
 
     # Save option list
     save_opt_list optlist    
+}
+
+########
+get_sambamba_mpileup_l_opt()
+{
+    local mbpfile=$1
+
+    if [ "${mbpfile}" = ${OPT_NOT_FOUND} ]; then
+        echo ""
+    else
+        echo "-L ${mbpfile}"
+    fi
 }
 
 ########
@@ -2986,16 +3005,20 @@ sambamba_mpileup_norm_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sambamba)..."
     conda activate sambamba 2>&1 || exit 1
 
+    # Obtain sambamba mpileup -L opt
+    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
+
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    sambamba mpileup -t ${cpus} --tmpdir ${step_outd} -o ${step_outd}/normal.pileup $normalbam --samtools "-f ${ref}" || exit 1
-    
+    sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${step_outd} -o ${step_outd}/normal.pileup $normalbam --samtools "-f ${ref}" || exit 1
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
@@ -3017,6 +3040,10 @@ sambamba_mpileup_tum_bam_explain_cmdline_opts()
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -mpb option
+    description="BED file for mpileup (optional)"
+    explain_cmdline_opt "-mpb" "<string>" "$description"
 }
 
 ########
@@ -3039,6 +3066,9 @@ sambamba_mpileup_tum_bam_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
+    # -mpb option
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_jobspec "$jobspec"` || exit 1
@@ -3057,15 +3087,19 @@ sambamba_mpileup_tum_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sambamba)..."
     conda activate sambamba 2>&1 || exit 1
 
+    # Obtain sambamba mpileup -L opt
+    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
+    
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    sambamba mpileup -t ${cpus} --tmpdir ${step_outd} -o ${step_outd}/tumor.pileup $tumorbam --samtools "-f ${ref}" || exit 1
+    sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${step_outd} -o ${step_outd}/tumor.pileup $tumorbam --samtools "-f ${ref}" || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

@@ -14,8 +14,8 @@ print_desc()
 usage()
 {
     echo "analyze_dataset      --pfile <string> --outdir <string>"
-    echo "                     --sched <string>"
-    echo "                     -r <string> -m <string>"
+    echo "                     --sched <string> --metadata <string>"
+    echo "                     -r <string>"
     echo "                     [-dx <string>] [-lc <string>]"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
@@ -27,9 +27,9 @@ usage()
     echo "--pfile <string>     File with pipeline steps to be performed"
     echo "--outdir <string>    Output directory"
     echo "--sched <string>     Scheduler used to execute the pipelines"
-    echo "-r <string>          File with reference genome"
-    echo "-m <string>          File with metadata, one entry per line."
+    echo "--metadata <string>  File with metadata, one entry per line."
     echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
+    echo "-r <string>          File with reference genome"
     echo "-dx <string>         File with regions to exclude in bed format for Delly"
     echo "-lc <string>         File with list of contig names to process (required"
     echo "                     by parallel SV callers)"
@@ -54,7 +54,7 @@ read_pars()
     outdir_given=0
     sched_given=0
     r_given=0
-    m_given=0
+    metadata_given=0
     dx_given=0
     dxfile=${NOFILE}
     lc_given=0
@@ -113,10 +113,10 @@ read_pars()
                       r_given=1
                   fi
                   ;;
-            "-m") shift
+            "--metadata") shift
                   if [ $# -ne 0 ]; then
                       metadata=$1
-                      m_given=1
+                      metadata_given=1
                   fi
                   ;;
             "-lc") shift
@@ -238,11 +238,11 @@ check_pars()
         fi
     fi
     
-    if [ ${m_given} -eq 0 ]; then
-        echo "Error, -m option should be given" >&2
+    if [ ${metadata_given} -eq 0 ]; then
+        echo "Error, --metadata option should be given" >&2
     fi
 
-    if [ ${m_given} -eq 1 ]; then
+    if [ ${metadata_given} -eq 1 ]; then
         if [ ! -f ${metadata} ]; then
             echo "Error! file ${metadata} does not exist" >&2
             exit 1
@@ -313,7 +313,7 @@ absolutize_file_paths()
         ref=`get_absolute_path ${ref}`
     fi
     
-    if [ ${m_given} -eq 1 ]; then
+    if [ ${metadata_given} -eq 1 ]; then
         metadata=`get_absolute_path ${metadata}`
     fi
 
@@ -373,8 +373,8 @@ print_pars()
         echo "-r is ${ref}" >&2
     fi
 
-    if [ ${m_given} -eq 1 ]; then
-        echo "-m is ${metadata}" >&2
+    if [ ${metadata_given} -eq 1 ]; then
+        echo "--metadata is ${metadata}" >&2
     fi
 
     if [ ${lc_given} -eq 1 ]; then

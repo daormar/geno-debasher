@@ -15,7 +15,7 @@ usage()
 {
     echo "analyze_dataset      --pfile <string> --outdir <string>"
     echo "                     --sched <string> --metadata <string>"
-    echo "                     -r <string>"
+    echo "                     -r <string> [-mpb <string>]"
     echo "                     [-dx <string>] [-lc <string>]"
     echo "                     [-wcr <string>] [-sv <string>]"
     echo "                     [-sg <string>] [-mc <string>]"
@@ -29,6 +29,7 @@ usage()
     echo "--sched <string>     Scheduler used to execute the pipelines"
     echo "--metadata <string>  File with metadata, one entry per line."
     echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
+    echo "-mpb <string>        BED file for mpileup"
     echo "-r <string>          File with reference genome"
     echo "-dx <string>         File with regions to exclude in bed format for Delly"
     echo "-lc <string>         File with list of contig names to process (required"
@@ -53,8 +54,10 @@ read_pars()
     pfile_given=0
     outdir_given=0
     sched_given=0
-    r_given=0
     metadata_given=0
+    r_given=0
+    mpb_given=0
+    mpbed=${NOFILE}
     dx_given=0
     dxfile=${NOFILE}
     lc_given=0
@@ -105,6 +108,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       sched=$1
                       sched_given=1
+                  fi
+                  ;;
+            "-mpb") shift
+                  if [ $# -ne 0 ]; then
+                      mpbed=$1
+                      mpb_given=1
                   fi
                   ;;
             "-r") shift
@@ -227,16 +236,6 @@ check_pars()
     if [ ${sched_given} -eq 0 ]; then
         echo "Error, --sched option should be given" >&2
     fi
-
-    if [ ${r_given} -eq 0 ]; then   
-        echo "Error! -r parameter not given!" >&2
-        exit 1
-    else
-        if [ ! -f ${ref} ]; then
-            echo "Error! file ${ref} does not exist" >&2
-            exit 1
-        fi
-    fi
     
     if [ ${metadata_given} -eq 0 ]; then
         echo "Error, --metadata option should be given" >&2
@@ -245,6 +244,23 @@ check_pars()
     if [ ${metadata_given} -eq 1 ]; then
         if [ ! -f ${metadata} ]; then
             echo "Error! file ${metadata} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${mpb_given} -eq 1 ]; then
+        if [ "${mpbed}" != ${NOFILE} -a ! -f ${mpbed} ]; then
+            echo "Error! file ${mpbed} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${r_given} -eq 0 ]; then   
+        echo "Error! -r parameter not given!" >&2
+        exit 1
+    else
+        if [ ! -f ${ref} ]; then
+            echo "Error! file ${ref} does not exist" >&2
             exit 1
         fi
     fi
@@ -309,14 +325,6 @@ check_pars()
 ########
 absolutize_file_paths()
 {
-    if [ ${r_given} -eq 1 ]; then   
-        ref=`get_absolute_path ${ref}`
-    fi
-    
-    if [ ${metadata_given} -eq 1 ]; then
-        metadata=`get_absolute_path ${metadata}`
-    fi
-
     if [ ${pfile_given} -eq 1 ]; then   
         pfile=`get_absolute_path ${pfile}`
     fi
@@ -325,6 +333,18 @@ absolutize_file_paths()
         outd=`get_absolute_path ${outd}`
     fi
 
+    if [ ${metadata_given} -eq 1 ]; then
+        metadata=`get_absolute_path ${metadata}`
+    fi
+
+    if [ ${mpb_given} -eq 1 -a "${mpbed}" != ${NOFILE} ]; then
+        mpbed=`get_absolute_path ${mpbed}`
+    fi
+
+    if [ ${r_given} -eq 1 ]; then   
+        ref=`get_absolute_path ${ref}`
+    fi
+    
     if [ ${lc_given} -eq 1 ]; then
         contigfile=`get_absolute_path ${contigfile}`
     fi
@@ -369,12 +389,16 @@ print_pars()
         echo "--sched is ${sched}" >&2
     fi
 
-    if [ ${r_given} -eq 1 ]; then
-        echo "-r is ${ref}" >&2
-    fi
-
     if [ ${metadata_given} -eq 1 ]; then
         echo "--metadata is ${metadata}" >&2
+    fi
+
+    if [ ${mpb_given} -eq 1 ]; then
+        echo "-mpb is ${mpbed}" >&2
+    fi
+
+    if [ ${r_given} -eq 1 ]; then
+        echo "-r is ${ref}" >&2
     fi
 
     if [ ${lc_given} -eq 1 ]; then
@@ -536,7 +560,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${bindir}/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} -r ${ref} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${bindir}/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} -r ${ref} -mpb ${mpbed} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi

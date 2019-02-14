@@ -39,16 +39,9 @@ AC_PATH_PROGS(MKTEMP, mktemp)
 AC_PATH_PROGS(FLOCK, flock)
 AC_PATH_PROGS(GZIP, gzip)
 AC_PATH_PROGS(SSH, ssh)
-AC_PATH_PROGS(QSUB, qsub)
-AC_PATH_PROGS(QSTAT, qstat)
-AC_PATH_PROGS(QRLS, qrls)
-AC_PATH_PROGS(SBATCH, sbatch)
-AC_PATH_PROGS(SQUEUE, squeue)
-AC_PATH_PROGS(SRUN, srun)
 AC_PATH_PROGS(WGET, wget)
 AC_PATH_PROGS(PANDOC, pandoc)
 AC_PATH_PROGS(JAVA, java)
-AC_PATH_PROGS(SAMTOOLS, samtools)
 
 # BASH may already be set in the shell, if the admin then changes the
 # the /bin/sh symlink to a non-bash shell, then the installation will

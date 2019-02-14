@@ -139,7 +139,7 @@ facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript ${bindir}/run_facets -c ${pileup_counts} -o ${step_outd} 2>&1 || exit 1
+    ${RSCRIPT} ${biopanpipe_bindir}/run_facets -c ${pileup_counts} -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     if [ -z "${FACETS_HOME_DIR}" ]; then

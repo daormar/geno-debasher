@@ -894,7 +894,7 @@ snp_pileup_plus_facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
  
-    Rscript ${bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv -o ${step_outd} 2>&1 || exit 1
+    ${RSCRIPT} ${biopanpipe_bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     if [ -z "${FACETS_HOME_DIR}" ]; then
@@ -1092,7 +1092,7 @@ mpileup_plus_sequenza()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing sequenza..."
-    Rscript ${bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
+    Rscript ${biopanpipe_bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1166,7 +1166,7 @@ sequenza()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing sequenza..."
-    Rscript ${bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
+    Rscript ${biopanpipe_bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2856,7 +2856,7 @@ filter_norm_bam_contigs()
 
     # Generate bed file for genome reference
     logmsg "* Executing gen_bed_for_genome..."
-    ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    ${biopanpipe_bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
     
     # Filter normal bam file
     logmsg "* Executing samtools view..."
@@ -2920,7 +2920,7 @@ filter_tum_bam_contigs()
 
     # Generate bed file for genome reference
     logmsg "* Executing gen_bed_for_genome..."
-    ${bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    ${biopanpipe_bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
     
     # Filter tumor bam file
     logmsg "* Executing samtools view..."

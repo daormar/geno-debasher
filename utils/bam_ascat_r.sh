@@ -229,14 +229,14 @@ ascatr()
     echo "****************************${allelecounternormal}"
     echo "step out directory****************************${step_outd}"
 
-    Rscript ${bindir}/convert_allele_counts "tumor" ${allelecountertumor} "normal" ${allelecounternormal} ${gender} ${step_outd}
+    ${RSCRIPT} ${biopanpipe_bindir}/convert_allele_counts "tumor" ${allelecountertumor} "normal" ${allelecounternormal} ${gender} ${step_outd}
     
     echo "convert_allele_counts finished****************************"
     echo "gc_correction file********************************$snpgccorr" 
 
     # Run ascatr 
     logmsg "* Executing run_ascat..."
-    Rscript ${bindir}/run_ascat --tumor_baf="${step_outd}/tumor.BAF" --tumor_logr="${step_outd}/tumor.LogR" --normal_baf="${step_outd}/normal.BAF" --normal_logr="${step_outd}/tumor.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" 2>&1 || exit 1
+    ${RSCRIPT} ${biopanpipe_bindir}/run_ascat --tumor_baf="${step_outd}/tumor.BAF" --tumor_logr="${step_outd}/tumor.LogR" --normal_baf="${step_outd}/normal.BAF" --normal_logr="${step_outd}/tumor.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

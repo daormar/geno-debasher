@@ -28,9 +28,6 @@ read_pars()
             "--help") usage
                       exit 1
                       ;;
-            "--version") version
-                         exit 1
-                         ;;
             "-r") shift
                   if [ $# -ne 0 ]; then
                       ref=$1

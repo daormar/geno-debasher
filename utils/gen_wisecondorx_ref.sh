@@ -48,9 +48,6 @@ read_pars()
             "--help") usage
                       exit 1
                       ;;
-            "--version") version
-                         exit 1
-                         ;;
             "-egalist") shift
                   if [ $# -ne 0 ]; then
                       egalist=$1

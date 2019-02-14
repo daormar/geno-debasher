@@ -18,14 +18,53 @@ convert_allele_counts.R run_ascat.R
 # Build rules for libraries
 bam_analysis: bam_analysis.sh
 	rm -f $@
+	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "AWK="$(AWK) >> $@
+	echo "RSCRIPT="$(RSCRIPT) >> $@
+	echo "GREP="$(GREP) >> $@
+	echo "SED="$(SED) >> $@
+	echo "GZIP="$(GZIP) >> $@
+	echo "BASENAME="$(BASENAME) >> $@
+	echo "DIRNAME="$(DIRNAME) >> $@
+	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@
+	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
+	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_analysis.sh >> $@
 
 bam_facets: bam_facets.sh
 	rm -f $@
+	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "AWK="$(AWK) >> $@
+	echo "RSCRIPT="$(RSCRIPT) >> $@
+	echo "GREP="$(GREP) >> $@
+	echo "SED="$(SED) >> $@
+	echo "GZIP="$(GZIP) >> $@
+	echo "BASENAME="$(BASENAME) >> $@
+	echo "DIRNAME="$(DIRNAME) >> $@
+	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@
+	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
+	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_facets.sh >> $@
 
 bam_ascat_r: bam_ascat_r.sh
 	rm -f $@
+	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "AWK="$(AWK) >> $@
+	echo "RSCRIPT="$(RSCRIPT) >> $@
+	echo "GREP="$(GREP) >> $@
+	echo "SED="$(SED) >> $@
+	echo "GZIP="$(GZIP) >> $@
+	echo "BASENAME="$(BASENAME) >> $@
+	echo "DIRNAME="$(DIRNAME) >> $@
+	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@
+	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
+	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_ascat_r.sh >> $@
 
 # Build using suffix rules (portable)
@@ -56,21 +95,12 @@ SUFFIXES= .sh .py .r .R
 	echo "MKTEMP="$(MKTEMP) >> $@
 	echo "FLOCK="$(FLOCK) >> $@
 	echo "GZIP="$(GZIP) >> $@
-	echo "QSUB=\""$(QSUB)"\"" >> $@
-	echo "QSUB_WORKS=\""$(QSUB_WORKS)"\"" >> $@
-	echo "QSUB_TERSE_OPT=\""$(QSUB_TERSE_OPT)"\"" >> $@
-	echo "QSTAT="$(QSTAT) >> $@
-	echo "QSTAT_J_OPT=\""$(QSTAT_J_OPT)"\"" >> $@
-	echo "QRLS="$(QRLS) >> $@
-	echo "SRUN="$(SRUN) >> $@
-	echo "SBATCH="$(SBATCH) >> $@
-	echo "SQUEUE="$(SQUEUE) >> $@
 	echo "WGET="$(WGET) >> $@
 	echo "PANDOC="$(PANDOC) >> $@
 	echo "PYTHON="$(PYTHON) >> $@
+	echo "RSCRIPT="$(RSCRIPT) >> $@
 	echo "JAVA="$(JAVA) >> $@
 	echo "PANPIPE_HOME_DIR="$(PANPIPE_HOME_DIR) >> $@
-	echo "SAMTOOLS="$(SAMTOOLS) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@
 	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@

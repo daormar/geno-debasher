@@ -1126,12 +1126,12 @@ sequenza_define_opts()
 
     # Get normal pileup file
     npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
-    npileup=${npileupdir}/normal.pileup
-    define_opt "-npileup" ${npileup} optlist || exit 1
+    npileup=${npileupdir}/normal.pileup.gz
+    define_opt "-npilepup" ${npileup} optlist || exit 1
 
     # Get tumor pileup file
     tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_tum_bam` || { errmsg "Error: dependency sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
-    tpileup=${tpileupdir}/tumor.pileup
+    tpileup=${tpileupdir}/tumor.pileup.gz
     define_opt "-tpileup" ${tpileup} optlist || exit 1
 
     # Save option list

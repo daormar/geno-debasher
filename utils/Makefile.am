@@ -73,9 +73,9 @@ SUFFIXES= .sh .py .r .R
 .sh :
 	rm -f $@
 	echo "#! " $(BASH) > $@
-	echo "pkgname=\""$(PACKAGE_NAME)"\"" >> $@
-	echo "version=\""$(PACKAGE_VERSION)"\"" >> $@
-	echo "bindir="$(prefix)/bin/ >> $@
+	echo "biopanpipe_pkgname=\""$(PACKAGE_NAME)"\"" >> $@
+	echo "biopanpipe_version=\""$(PACKAGE_VERSION)"\"" >> $@
+	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
 	echo "BASH="$(BASH) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "SORT="$(SORT) >> $@

@@ -1009,9 +1009,9 @@ ascatngs()
 ########
 mpileup_plus_sequenza_explain_cmdline_opts()
 {
-    # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    # -gcc option
+    description="GC content wiggle file for sequenza (required)"
+    explain_cmdline_opt "-gcc" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -1034,8 +1034,8 @@ mpileup_plus_sequenza_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    # -gcc option
+    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1057,8 +1057,8 @@ mpileup_plus_sequenza()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local gccont=`read_opt_value_from_line "$*" "-gcc"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
 
@@ -1079,13 +1079,9 @@ mpileup_plus_sequenza()
     logmsg "* Activating conda environment (sequenza)..."
     conda activate sequenza 2>&1 || exit 1
     
-    # Generate GC content file
-    logmsg "* Generating GC content file..."
-    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/ref.gc50Base.txt.gz ; pipe_fail || exit 1
-
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
+    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R

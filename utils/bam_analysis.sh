@@ -741,7 +741,7 @@ msisensor()
     msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} 2>&1 || exit 1
 
     # Deactivate conda environment
-    logmsg "* Dectivating conda environment..."
+    logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
     
     display_end_step_message
@@ -813,7 +813,7 @@ wisecondorx()
     WisecondorX predict ${step_outd}/tumor.npz ${wcref} ${step_outd}/out 2>&1 || exit 1
 
     # Deactivate conda environment
-    logmsg "* Dectivating conda environment..."
+    logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
     display_end_step_message
@@ -898,7 +898,7 @@ snp_pileup_plus_facets()
 
     # Deactivate conda environment if needed
     if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Dectivating conda environment..."
+        logmsg "* Deactivating conda environment..."
         conda deactivate 2>&1
     fi
 
@@ -2802,7 +2802,7 @@ sort_tum_bam()
     fi
     
     # Deactivate conda environment
-    logmsg "* Dectivating conda environment..."
+    logmsg "* Deactivating conda environment..."
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     display_end_step_message

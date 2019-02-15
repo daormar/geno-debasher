@@ -20,7 +20,6 @@ bam_analysis: bam_analysis.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
 	echo "AWK="$(AWK) >> $@
-	echo "RSCRIPT="$(RSCRIPT) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
 	echo "GZIP="$(GZIP) >> $@
@@ -37,7 +36,6 @@ bam_facets: bam_facets.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
 	echo "AWK="$(AWK) >> $@
-	echo "RSCRIPT="$(RSCRIPT) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
 	echo "GZIP="$(GZIP) >> $@
@@ -54,7 +52,6 @@ bam_ascat_r: bam_ascat_r.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
 	echo "AWK="$(AWK) >> $@
-	echo "RSCRIPT="$(RSCRIPT) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
 	echo "GZIP="$(GZIP) >> $@

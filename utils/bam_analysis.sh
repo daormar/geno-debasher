@@ -1104,9 +1104,9 @@ mpileup_plus_sequenza()
 ########
 sequenza_explain_cmdline_opts()
 {
-    # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    # -gcc option
+    description="GC content wiggle file for sequenza (required)"
+    explain_cmdline_opt "-gcc" "<string>" "$description"
 }
 
 ########
@@ -1121,8 +1121,8 @@ sequenza_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    # -gcc option
+    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
 
     # Get normal pileup file
     npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
@@ -1144,8 +1144,8 @@ sequenza()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local gccont=`read_opt_value_from_line "$*" "-gcc"`
     local npileup=`read_opt_value_from_line "$*" "-npileup"`
     local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
 
@@ -1153,13 +1153,9 @@ sequenza()
     logmsg "* Activating conda environment (sequenza)..."
     conda activate sequenza 2>&1 || exit 1
     
-    # Generate GC content file
-    logmsg "* Generating GC content file..."
-    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/ref.gc50Base.txt.gz ; pipe_fail || exit 1
-
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc ${step_outd}/ref.gc50Base.txt.gz -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
+    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
@@ -1167,6 +1163,91 @@ sequenza()
     # shebang directive would be executed)
     logmsg "* Executing sequenza..."
     Rscript ${biopanpipe_bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
+parallel_sequenza_explain_cmdline_opts()
+{
+    # -gcc option
+    description="GC content wiggle file for sequenza (required)"
+    explain_cmdline_opt "-gcc" "<string>" "$description"
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_sequenza_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+
+    # -gcc option
+    define_cmdline_infile_opt "$cmdline" "-gcc" basic_optlist || exit 1
+
+    # Get normal pileup file
+    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
+    npileup=${npileupdir}/normal.pileup.gz
+    define_opt "-npileup" ${npileup} basic_optlist || exit 1
+
+    # Get tumor pileup file
+    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_tum_bam` || { errmsg "Error: dependency sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
+    tpileup=${tpileupdir}/tumor.pileup.gz
+    define_opt "-tpileup" ${tpileup} basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_sequenza()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local gccont=`read_opt_value_from_line "$*" "-gcc"`
+    local npileup=`read_opt_value_from_line "$*" "-npileup"`
+    local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sequenza)..."
+    conda activate sequenza 2>&1 || exit 1
+    
+    # Generate seqz file
+    logmsg "* Generating seqz file..."
+    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} --chromosome ${contig} | ${GZIP} > ${step_outd}/${contig}_seqz.gz ; pipe_fail || exit 1
+
+    # Execute sequenza
+    # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
+    # installation is used (otherwise, general R installation given in
+    # shebang directive would be executed)
+    logmsg "* Executing sequenza..."
+    Rscript ${biopanpipe_bindir}/run_sequenza -s ${step_outd}/${contig}_seqz.gz -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

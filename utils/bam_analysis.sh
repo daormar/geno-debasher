@@ -1194,15 +1194,11 @@ parallel_sequenza_define_opts()
     # -gcc option
     define_cmdline_infile_opt "$cmdline" "-gcc" basic_optlist || exit 1
 
-    # Get normal pileup file
-    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
-    npileup=${npileupdir}/normal.pileup.gz
-    define_opt "-npileup" ${npileup} basic_optlist || exit 1
+    # Get normal pileup directory
+    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
 
-    # Get tumor pileup file
-    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_tum_bam` || { errmsg "Error: dependency sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
-    tpileup=${tpileupdir}/tumor.pileup.gz
-    define_opt "-tpileup" ${tpileup} basic_optlist || exit 1
+    # Get tumor pileup directory
+    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_tum_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
 
     # -lc option
     define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
@@ -1213,7 +1209,11 @@ parallel_sequenza_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
-        define_opt "-contig" $contig optlist || exit 1
+        npileup=${npileupdir}/normal_${contig}.pileup.gz
+        define_opt "-npileup" ${npileup} optlist || exit 1
+        tpileup=${tpileupdir}/tumor_${contig}.pileup.gz
+        define_opt "-tpileup" ${tpileup} optlist || exit 1
+        
         save_opt_list optlist
     done
 }
@@ -1228,7 +1228,6 @@ parallel_sequenza()
     local gccont=`read_opt_value_from_line "$*" "-gcc"`
     local npileup=`read_opt_value_from_line "$*" "-npileup"`
     local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sequenza)..."
@@ -1236,7 +1235,7 @@ parallel_sequenza()
     
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} --chromosome ${contig} | ${GZIP} > ${step_outd}/${contig}_seqz.gz ; pipe_fail || exit 1
+    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/${contig}_seqz.gz ; pipe_fail || exit 1
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R

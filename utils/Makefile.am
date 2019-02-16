@@ -1,4 +1,4 @@
-SCRIPTS_TO_BE_BUILT= bam_analysis bam_facets bam_ascat_r		\
+SCRIPTS_TO_BE_BUILT= bam_analysis bam_facets bam_ascat_r bam_ascatngs	\
 analyze_dataset gen_bed_for_genome check_ref_and_bam_contigs		\
 gen_wisecondorx_ref convert_snppos_to_snpgcc create_snv_pos_ascat	\
 query_ega_metadata query_icgc_metadata filter_contig_from_genref	\
@@ -8,11 +8,12 @@ bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = bam_analysis.sh bam_facets.sh bam_ascat_r.sh		\
-analyze_dataset.sh gen_bed_for_genome.sh check_ref_and_bam_contigs.sh	\
-gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
-create_snv_pos_ascat.py query_ega_metadata.py query_icgc_metadata.py	\
-filter_contig_from_genref.py run_facets.R run_sequenza.R		\
+EXTRA_DIST = bam_analysis.sh bam_facets.sh bam_ascat_r.sh	\
+bam_ascatngs.sh analyze_dataset.sh gen_bed_for_genome.sh	\
+check_ref_and_bam_contigs.sh gen_wisecondorx_ref.sh		\
+convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py		\
+query_ega_metadata.py query_icgc_metadata.py			\
+filter_contig_from_genref.py run_facets.R run_sequenza.R	\
 convert_allele_counts.R run_ascat.R
 
 # Build rules for libraries
@@ -49,6 +50,22 @@ bam_facets: bam_facets.sh
 	cat bam_facets.sh >> $@
 
 bam_ascat_r: bam_ascat_r.sh
+	rm -f $@
+	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "AWK="$(AWK) >> $@
+	echo "GREP="$(GREP) >> $@
+	echo "SED="$(SED) >> $@
+	echo "GZIP="$(GZIP) >> $@
+	echo "BASENAME="$(BASENAME) >> $@
+	echo "DIRNAME="$(DIRNAME) >> $@
+	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "FACETS_HOME_DIR="$(FACETS_HOME_DIR) >> $@
+	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
+	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
+	cat bam_ascat_r.sh >> $@
+
+bam_ascat_ngs: bam_ascat_r.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
 	echo "AWK="$(AWK) >> $@

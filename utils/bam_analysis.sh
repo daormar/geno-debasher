@@ -1508,6 +1508,7 @@ parallel_lumpy_define_opts()
         define_opt "-normalbam" ${normalbam} optlist || exit 1
         tumorbam=${tbamdir}/tumor_${contig}.bam
         define_opt "-tumorbam" ${tumorbam} optlist || exit 1
+        define_opt "-contig" ${contig} optlist || exit 1
         
         save_opt_list optlist
     done
@@ -1522,20 +1523,18 @@ parallel_lumpy()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
     
     # Activate conda environment
     logmsg "* Activating conda environment... (lumpy)"
     conda activate lumpy 2>&1 || exit 1
     
     logmsg "* Executing lumpyexpress (contig $contig)..."
-    lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+    lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Delete extracted contigs and related files
-    rm ${normalcont}* ${tumorcont}*
     
     display_end_step_message
 }
@@ -1782,6 +1781,106 @@ parallel_split_plus_delly_clean()
     rm ${normalcont}* ${tumorcont}*
 
     logmsg "Cleaning finished"
+}
+
+########
+parallel_delly_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file (required)"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -dx option
+    description="File with regions to exclude in bed format for Delly"
+    explain_cmdline_opt "-dx" "<string>" "$description"    
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_delly_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
+
+    # Get normal bam directory
+    nbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_norm_bam` || { errmsg "Error: dependency parallel_split_norm_bam not defined for parallel_lumpy"; exit 1; }
+
+    # Get tumor bam directory
+    tbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_tum_bam` || { errmsg "Error: dependency parallel_split_tum_bam not defined for parallel_lumpy"; exit 1; }
+
+    # -dx option
+    define_cmdline_infile_opt "$cmdline" "-dx" basic_optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        normalbam=${nbamdir}/normal_${contig}.bam
+        define_opt "-normalbam" ${normalbam} optlist || exit 1
+        tumorbam=${tbamdir}/tumor_${contig}.bam
+        define_opt "-tumorbam" ${tumorbam} optlist || exit 1
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_delly()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+    local exclude=`read_opt_value_from_line "$*" "-dx"`
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (delly)"
+    conda activate delly 2>&1 || exit 1
+    
+    logmsg "* Executing delly (contig $contig)..."
+    # "command" built-in is used here to execute the "delly" program
+    # instead of the "delly" function
+    command delly call -g $ref -x ${exclude} -o ${step_outd}/out${contig}.bcf ${tumorbam} ${normalbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment... (bcftools)"
+    conda activate bcftools 2>&1 || exit 1
+
+    # Convert bcf output to vcf
+    logmsg "* Converting bcf output into vcf... (bcftools)"
+    bcftools view ${step_outd}/out${contig}.bcf > ${step_outd}/out${contig}.vcf
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    display_end_step_message
 }
 
 ########

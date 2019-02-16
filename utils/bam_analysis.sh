@@ -1094,10 +1094,10 @@ parallel_sequenza_define_opts()
     define_cmdline_infile_opt "$cmdline" "-gcc" basic_optlist || exit 1
 
     # Get normal pileup directory
-    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
+    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for parallel_sequenza"; exit 1; }
 
     # Get tumor pileup directory
-    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_tum_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
+    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_tum_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_tum_bam not defined for parallel_sequenza"; exit 1; }
 
     # -lc option
     define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
@@ -1106,6 +1106,7 @@ parallel_sequenza_define_opts()
 
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         npileup=${npileupdir}/normal_${contig}.pileup.gz
@@ -1257,6 +1258,7 @@ parallel_exclude_plus_lumpy_define_opts()
 
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         define_opt "-contig" $contig optlist || exit 1
@@ -1356,6 +1358,7 @@ parallel_split_plus_lumpy_define_opts()
 
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         define_opt "-contig" $contig optlist || exit 1
@@ -1463,6 +1466,78 @@ parallel_split_plus_lumpy_clean()
     rm -f ${normalcont}* ${tumorcont}*
 
     logmsg "Cleaning finished"
+}
+
+########
+parallel_lumpy_explain_cmdline_opts()
+{
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+parallel_lumpy_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local basic_optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+
+    # Get normal bam directory
+    nbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_norm_bam` || { errmsg "Error: dependency parallel_split_norm_bam not defined for parallel_lumpy"; exit 1; }
+
+    # Get tumor bam directory
+    tbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_tum_bam` || { errmsg "Error: dependency parallel_split_tum_bam not defined for parallel_lumpy"; exit 1; }
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" basic_optlist || exit 1
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        normalbam=${nbamdir}/normal_${contig}.bam
+        define_opt "-normalbam" ${normalbam} optlist || exit 1
+        tumorbam=${tbamdir}/tumor_${contig}.bam
+        define_opt "-tumorbam" ${tumorbam} optlist || exit 1
+        
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_lumpy()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment... (lumpy)"
+    conda activate lumpy 2>&1 || exit 1
+    
+    logmsg "* Executing lumpyexpress (contig $contig)..."
+    lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Delete extracted contigs and related files
+    rm ${normalcont}* ${tumorcont}*
+    
+    display_end_step_message
 }
 
 ########
@@ -1616,6 +1691,7 @@ parallel_split_plus_delly_define_opts()
 
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         define_opt "-contig" $contig optlist || exit 1
@@ -1780,6 +1856,7 @@ parallel_svtyper_define_opts()
     
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         define_opt "-contig" $contig optlist || exit 1
@@ -3127,6 +3204,7 @@ parallel_split_norm_bam_define_opts()
 
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         define_opt "-contig" $contig optlist || exit 1
@@ -3208,6 +3286,7 @@ parallel_split_tum_bam_define_opts()
 
     # Generate option lists for each contig
     local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
     for contig in ${contigs}; do
         local optlist=${basic_optlist}
         define_opt "-contig" $contig optlist || exit 1

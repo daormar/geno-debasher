@@ -90,6 +90,7 @@ SUFFIXES= .sh .py .r .R
 	echo "biopanpipe_pkgname=\""$(PACKAGE_NAME)"\"" >> $@
 	echo "biopanpipe_version=\""$(PACKAGE_VERSION)"\"" >> $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "biopanpipe_datadir="$(datadir)/$(PACKAGE_NAME) >> $@
 	echo "BASH="$(BASH) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "SORT="$(SORT) >> $@

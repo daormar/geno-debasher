@@ -3351,6 +3351,98 @@ parallel_sambamba_mpileup_norm_bam()
 }
 
 ########
+parallel_sambamba_mpileup_tum_bam_explain_cmdline_opts()
+{
+    # -mpb option
+    description="BED file for mpileup (optional)"
+    explain_cmdline_opt "-mpb" "<string>" "$description"
+
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"
+}
+
+########
+parallel_sambamba_mpileup_tum_bam_define_opts()
+{ 
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+
+    # -r option
+    define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
+
+    # -bamdir option    
+    abs_bamdir=`get_absolute_shdirname "data"`
+
+    # -mpb option
+    define_cmdline_opt_if_given "$cmdline" "-mpb" basic_optlist
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus basic_optlist
+
+    # Get name of contig list file
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
+    for contig in ${contigs}; do
+        local optlist=${basic_optlist}
+        tumorbam=${abs_bamdir}/tumor_${contig}.bam
+        define_opt "-tumorbam" ${tumorbam} optlist || exit 1
+        define_opt "-contig" $contig optlist || exit 1
+        save_opt_list optlist
+    done
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+parallel_sambamba_mpileup_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (sambamba)..."
+    conda activate sambamba 2>&1 || exit 1
+
+    # Obtain sambamba mpileup -L opt
+    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
+
+    # Generate pileup file
+    logmsg "* Generating pileup file..."
+    sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${step_outd} -o ${step_outd}/tumor_${contig}.pileup $tumorbam --samtools "-f ${ref}" || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Compress pileup file
+    logmsg "* Compressing pileup file..."
+    ${GZIP} ${step_outd}/tumor_${contig}.pileup
+
+    display_end_step_message
+}
+
+########
 parallel_split_norm_bam_explain_cmdline_opts()
 {
     # -n option

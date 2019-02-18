@@ -218,6 +218,12 @@ manta_germline()
 }
 
 ########
+manta_germline_conda_envs()
+{
+    define_conda_env manta manta.yml
+}
+
+########
 cnvkit_explain_cmdline_opts()
 {
     # -r option
@@ -292,6 +298,12 @@ cnvkit()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+cnvkit_conda_envs()
+{
+    define_conda_env cnvkit cnvkit.yml
 }
 
 ########
@@ -383,6 +395,12 @@ manta_somatic()
 }
 
 ########
+manta_somatic_conda_envs()
+{
+    define_conda_env manta manta.yml
+}
+
+########
 strelka_germline_explain_cmdline_opts()
 {
     # -r option
@@ -454,6 +472,12 @@ strelka_germline()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+strelka_germline_conda_envs()
+{
+    define_conda_env strelka strelka.yml
 }
 
 ########
@@ -574,6 +598,12 @@ strelka_somatic()
 }
 
 ########
+strelka_somatic_conda_envs()
+{
+    define_conda_env strelka strelka.yml
+}
+
+########
 platypus_germline_explain_cmdline_opts()
 {
     # -r option
@@ -667,6 +697,12 @@ platypus_germline()
 }
 
 ########
+platypus_conda_envs()
+{
+    define_conda_env platypus platypus.yml
+}
+
+########
 msisensor_explain_cmdline_opts()
 {
     # -r option
@@ -748,6 +784,12 @@ msisensor()
 }
 
 ########
+msisensor_conda_envs()
+{
+    define_conda_env msisensor msisensor.yml
+}
+
+########
 wisecondorx_explain_cmdline_opts()
 {
     # -wcr option
@@ -817,6 +859,12 @@ wisecondorx()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+wisecondorx_conda_envs()
+{
+    define_conda_env wisecondorx wisecondorx.yml
 }
 
 ########
@@ -903,6 +951,12 @@ snp_pileup_plus_facets()
     fi
 
     display_end_step_message
+}
+
+########
+snp_pileup_plus_facets_conda_envs()
+{
+    define_conda_env facets facets.yml
 }
 
 ########
@@ -997,6 +1051,13 @@ mpileup_plus_sequenza()
 }
 
 ########
+mpileup_plus_sequenza_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+    define_conda_env sequenza sequenza.yml
+}
+
+########
 sequenza_explain_cmdline_opts()
 {
     # -gcc option
@@ -1064,6 +1125,12 @@ sequenza()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+sequenza_conda_envs()
+{
+    define_conda_env sequenza sequenza.yml
 }
 
 ########
@@ -1153,6 +1220,12 @@ parallel_sequenza()
 }
 
 ########
+parallel_sequenza_conda_envs()
+{
+    define_conda_env sequenza sequenza.yml
+}
+
+########
 lumpy_explain_cmdline_opts()
 {
     # -n option
@@ -1212,6 +1285,12 @@ lumpy()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+manta_somatic_conda_envs()
+{
+    define_conda_env lumpy lumpy.yml
 }
 
 ########
@@ -1311,6 +1390,13 @@ parallel_exclude_plus_lumpy()
     conda deactivate 2>&1
     
     display_end_step_message
+}
+
+########
+parallel_exclude_plus_lumpy_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+    define_conda_env lumpy lumpy.yml
 }
 
 ########
@@ -1468,6 +1554,13 @@ parallel_split_plus_lumpy_clean()
 }
 
 ########
+parallel_split_plus_lumpy_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
+    define_conda_env lumpy lumpy.yml
+}
+
+########
 parallel_lumpy_explain_cmdline_opts()
 {
     # -lc option
@@ -1535,6 +1628,12 @@ parallel_lumpy()
     conda deactivate 2>&1
     
     display_end_step_message
+}
+
+########
+parallel_lumpy_conda_envs()
+{
+    define_conda_env lumpy lumpy.yml
 }
 
 ########
@@ -1627,6 +1726,13 @@ delly()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+parallel_lumpy_conda_envs()
+{
+    define_conda_env bcftools bcftools.yml
+    define_conda_env delly delly.yml
 }
 
 ########
@@ -1781,6 +1887,14 @@ parallel_split_plus_delly_clean()
 }
 
 ########
+parallel_split_plus_delly_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
+    define_conda_env bcftools bcftools.yml
+    define_conda_env delly delly.yml
+}
+
+########
 parallel_delly_explain_cmdline_opts()
 {
     # -r option
@@ -1877,6 +1991,13 @@ parallel_delly()
     conda deactivate 2>&1
     
     display_end_step_message
+}
+
+########
+parallel_delly_conda_envs()
+{
+    define_conda_env bcftools bcftools.yml
+    define_conda_env delly delly.yml
 }
 
 ########
@@ -1985,6 +2106,12 @@ parallel_svtyper()
     conda deactivate 2>&1
     
     display_end_step_message
+}
+
+########
+parallel_svtyper_conda_envs()
+{
+    define_conda_env svtyper svtyper.yml
 }
 
 ########
@@ -2116,6 +2243,12 @@ download_ega_norm_bam()
 }
 
 ########
+download_ega_norm_bam_conda_envs()
+{
+    define_conda_env pyega3 pyega3.yml
+}
+
+########
 download_ega_tum_bam_explain_cmdline_opts()
 {
     # -extt option
@@ -2197,6 +2330,12 @@ download_ega_tum_bam()
     conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
 
     display_end_step_message
+}
+
+########
+download_ega_tum_bam_conda_envs()
+{
+    define_conda_env pyega3 pyega3.yml
 }
 
 ########
@@ -2759,6 +2898,12 @@ index_norm_bam()
 }
 
 ########
+index_norm_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
 index_tum_bam_explain_cmdline_opts()
 {
     :
@@ -2812,6 +2957,12 @@ index_tum_bam()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+index_tum_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
 }
 
 ########
@@ -2885,6 +3036,12 @@ sort_norm_bam()
 }
 
 ########
+sort_norm_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
 sort_tum_bam_explain_cmdline_opts()
 {
     :
@@ -2955,6 +3112,12 @@ sort_tum_bam()
 }
 
 ########
+sort_tum_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
 filter_norm_bam_contigs_explain_cmdline_opts()
 {
     # -r option
@@ -3019,6 +3182,12 @@ filter_norm_bam_contigs()
 }
 
 ########
+filter_norm_bam_contigs_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
 filter_tum_bam_contigs_explain_cmdline_opts()
 {
     # -r option
@@ -3080,6 +3249,12 @@ filter_tum_bam_contigs()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+filter_tum_bam_contigs_conda_envs()
+{
+    define_conda_env samtools samtools.yml
 }
 
 ########
@@ -3177,6 +3352,12 @@ sambamba_mpileup_norm_bam()
 }
 
 ########
+sambamba_mpileup_norm_bam_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
+}
+
+########
 sambamba_mpileup_tum_bam_explain_cmdline_opts()
 {
     # -r option
@@ -3256,6 +3437,12 @@ sambamba_mpileup_tum_bam()
     ${GZIP} ${step_outd}/tumor.pileup
 
     display_end_step_message
+}
+
+########
+sambamba_mpileup_tum_bam_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
 }
 
 ########
@@ -3351,6 +3538,12 @@ parallel_sambamba_mpileup_norm_bam()
 }
 
 ########
+parallel_sambamba_mpileup_norm_bam_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
+}
+
+########
 parallel_sambamba_mpileup_tum_bam_explain_cmdline_opts()
 {
     # -mpb option
@@ -3443,6 +3636,12 @@ parallel_sambamba_mpileup_tum_bam()
 }
 
 ########
+parallel_sambamba_mpileup_tum_bam_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
+}
+
+########
 parallel_split_norm_bam_explain_cmdline_opts()
 {
     # -n option
@@ -3524,6 +3723,12 @@ parallel_split_norm_bam()
 }
 
 ########
+parallel_split_norm_bam_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
+}
+
+########
 parallel_split_tum_bam_explain_cmdline_opts()
 {
     # -t option
@@ -3602,6 +3807,12 @@ parallel_split_tum_bam()
     mv ${tumorcont}* ${abs_bamdir} || exit 1
 
     display_end_step_message
+}
+
+########
+parallel_split_tum_bam_conda_envs()
+{
+    define_conda_env sambamba sambamba.yml
 }
 
 ########

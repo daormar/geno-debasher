@@ -1,0 +1,19 @@
+name: sambamba
+channels:
+  - anaconda
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bzip2=1.0.6=h14c3975_1002
+  - ca-certificates=2018.12.5=0
+  - ldc=1.11.0=hb2c9046_0
+  - libgcc-ng=7.3.0=hdf63c60_0
+  - libstdcxx-ng=7.3.0=hdf63c60_0
+  - ncurses=6.1=hf484d3e_1002
+  - openssl=1.0.2p=h14c3975_0
+  - sambamba=0.6.8=h682856c_1
+  - xz=5.2.4=h14c3975_1001
+  - zlib=1.2.11=h14c3975_1004
+prefix: /home/dortiz/miniconda3/envs/sambamba
+

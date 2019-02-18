@@ -1,0 +1,24 @@
+name: bcftools
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bcftools=1.9=h4da6232_0
+  - bzip2=1.0.6=h14c3975_1002
+  - ca-certificates=2018.11.29=ha4d7672_0
+  - curl=7.63.0=h646f8bb_1000
+  - krb5=1.16.3=hc83ff2d_1000
+  - libcurl=7.63.0=h01ee5af_1000
+  - libdeflate=1.0=h470a237_0
+  - libedit=3.1.20170329=hf8c457e_1001
+  - libgcc-ng=7.3.0=hdf63c60_0
+  - libssh2=1.8.0=h1ad7b7a_1003
+  - libstdcxx-ng=7.3.0=hdf63c60_0
+  - ncurses=6.1=hf484d3e_1002
+  - openssl=1.0.2p=h14c3975_1002
+  - tk=8.6.9=h84994c4_1000
+  - xz=5.2.4=h14c3975_1001
+  - zlib=1.2.11=h14c3975_1004
+prefix: /home/dortiz/miniconda3/envs/bcftools
+

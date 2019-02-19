@@ -1151,14 +1151,14 @@ parallel_sequenza_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -gcc option
-    define_cmdline_infile_opt "$cmdline" "-gcc" basic_optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
 
     # Get normal pileup directory
     npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for parallel_sequenza"; exit 1; }
@@ -1174,14 +1174,14 @@ parallel_sequenza_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
+        local specific_optlist=${optlist}
         npileup=${npileupdir}/normal_${contig}.pileup.gz
-        define_opt "-npileup" ${npileup} optlist || exit 1
+        define_opt "-npileup" ${npileup} specific_optlist || exit 1
         tpileup=${tpileupdir}/tumor_${contig}.pileup.gz
-        define_opt "-tpileup" ${tpileup} optlist || exit 1
-        define_opt "-contig" $contig optlist || exit 1
+        define_opt "-tpileup" ${tpileup} specific_optlist || exit 1
+        define_opt "-contig" $contig specific_optlist || exit 1
         
-        save_opt_list optlist
+        save_opt_list specific_optlist
     done
 }
 
@@ -1315,21 +1315,21 @@ parallel_exclude_plus_lumpy_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -1339,9 +1339,9 @@ parallel_exclude_plus_lumpy_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        local specific_optlist=${optlist}
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -1421,21 +1421,21 @@ parallel_split_plus_lumpy_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -1445,9 +1445,9 @@ parallel_split_plus_lumpy_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        local specific_optlist=${optlist}
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -1574,11 +1574,11 @@ parallel_lumpy_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # Get normal bam directory
     nbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_norm_bam` || { errmsg "Error: dependency parallel_split_norm_bam not defined for parallel_lumpy"; exit 1; }
@@ -1594,14 +1594,14 @@ parallel_lumpy_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
+        local specific_optlist=${optlist}
         normalbam=${nbamdir}/normal_${contig}.bam
-        define_opt "-normalbam" ${normalbam} optlist || exit 1
+        define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
         tumorbam=${tbamdir}/tumor_${contig}.bam
-        define_opt "-tumorbam" ${tumorbam} optlist || exit 1
-        define_opt "-contig" ${contig} optlist || exit 1
+        define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
+        define_opt "-contig" ${contig} specific_optlist || exit 1
         
-        save_opt_list optlist
+        save_opt_list specific_optlist
     done
 }
 
@@ -1765,27 +1765,27 @@ parallel_split_plus_delly_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -dx option
-    define_cmdline_infile_opt "$cmdline" "-dx" basic_optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -1795,9 +1795,9 @@ parallel_split_plus_delly_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        local specific_optlist=${optlist}
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -1916,14 +1916,14 @@ parallel_delly_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # Get normal bam directory
     nbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_norm_bam` || { errmsg "Error: dependency parallel_split_norm_bam not defined for parallel_lumpy"; exit 1; }
@@ -1932,7 +1932,7 @@ parallel_delly_define_opts()
     tbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_tum_bam` || { errmsg "Error: dependency parallel_split_tum_bam not defined for parallel_lumpy"; exit 1; }
 
     # -dx option
-    define_cmdline_infile_opt "$cmdline" "-dx" basic_optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -1942,13 +1942,13 @@ parallel_delly_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
+        local specific_optlist=${optlist}
         normalbam=${nbamdir}/normal_${contig}.bam
-        define_opt "-normalbam" ${normalbam} optlist || exit 1
+        define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
         tumorbam=${tbamdir}/tumor_${contig}.bam
-        define_opt "-tumorbam" ${tumorbam} optlist || exit 1
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -2046,21 +2046,21 @@ parallel_svtyper_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -2073,11 +2073,11 @@ parallel_svtyper_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
-        define_opt "-contig" $contig optlist || exit 1
+        local specific_optlist=${optlist}
+        define_opt "-contig" $contig specific_optlist || exit 1
         vcf=${vcfdir}/out${contig}.vcf
-        define_opt "-vcf" $vcf optlist || exit 1
-        save_opt_list optlist
+        define_opt "-vcf" $vcf specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -3463,25 +3463,25 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -bamdir option    
     abs_bamdir=`get_absolute_shdirname "data"`
 
     # -mpb option
-    define_cmdline_opt_if_given "$cmdline" "-mpb" basic_optlist
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
 
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
-    define_opt "-cpus" $cpus basic_optlist
+    define_opt "-cpus" $cpus optlist
 
     # Get name of contig list file
     local clist
@@ -3491,11 +3491,11 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
+        local specific_optlist=${optlist}
         normalbam=${abs_bamdir}/normal_${contig}.bam
-        define_opt "-normalbam" ${normalbam} optlist || exit 1
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -3558,25 +3558,25 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" basic_optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -bamdir option    
     abs_bamdir=`get_absolute_shdirname "data"`
 
     # -mpb option
-    define_cmdline_opt_if_given "$cmdline" "-mpb" basic_optlist
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
 
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
-    define_opt "-cpus" $cpus basic_optlist
+    define_opt "-cpus" $cpus optlist
 
     # Get name of contig list file
     local clist
@@ -3586,11 +3586,11 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
+        local specific_optlist=${optlist}
         tumorbam=${abs_bamdir}/tumor_${contig}.bam
-        define_opt "-tumorbam" ${tumorbam} optlist || exit 1
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -3653,20 +3653,20 @@ parallel_split_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -bamdir option    
     abs_bamdir=`get_absolute_shdirname "data"`
-    define_opt "-bamdir" ${abs_bamdir} basic_optlist || exit 1
+    define_opt "-bamdir" ${abs_bamdir} optlist || exit 1
 
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam basic_optlist || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -3676,9 +3676,9 @@ parallel_split_norm_bam_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        local specific_optlist=${optlist}
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 
@@ -3740,20 +3740,20 @@ parallel_split_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local basic_optlist=""
+    local optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} basic_optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -bamdir option
     abs_bamdir=`get_absolute_shdirname "data"`
-    define_opt "-bamdir" ${abs_bamdir} basic_optlist || exit 1
+    define_opt "-bamdir" ${abs_bamdir} optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam basic_optlist || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -3763,9 +3763,9 @@ parallel_split_tum_bam_define_opts()
     local contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
-        local optlist=${basic_optlist}
-        define_opt "-contig" $contig optlist || exit 1
-        save_opt_list optlist
+        local specific_optlist=${optlist}
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
     done
 }
 

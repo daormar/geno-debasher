@@ -1202,7 +1202,7 @@ parallel_sequenza()
     conda activate sequenza 2>&1 || exit 1
     
     # Generate seqz file
-    logmsg "* Generating seqz file..."
+    logmsg "* Generating seqz file (contig $contig)..."
     sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/${contig}_seqz.gz ; pipe_fail || exit 1
 
     # Execute sequenza
@@ -1502,7 +1502,7 @@ parallel_split_plus_lumpy()
     conda activate sambamba 2>&1 || exit 1
 
     # Extract contigs
-    logmsg "* Extracting contigs..."
+    logmsg "* Extracting contigs (contig $contig)..."
     normalcont=${step_outd}/normal_${contig}.bam
     filter_bam_contig $normalbam $contig $normalcont || exit 1
     tumorcont=${step_outd}/tumor_${contig}.bam
@@ -3520,7 +3520,7 @@ parallel_sambamba_mpileup_norm_bam()
     local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
 
     # Generate pileup file
-    logmsg "* Generating pileup file..."
+    logmsg "* Generating pileup file (contig $contig)..."
     sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${step_outd} -o ${step_outd}/normal_${contig}.pileup $normalbam --samtools "-f ${ref}" || exit 1
 
     # Deactivate conda environment
@@ -3615,7 +3615,7 @@ parallel_sambamba_mpileup_tum_bam()
     local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
 
     # Generate pileup file
-    logmsg "* Generating pileup file..."
+    logmsg "* Generating pileup file (contig $contig)..."
     sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${step_outd} -o ${step_outd}/tumor_${contig}.pileup $tumorbam --samtools "-f ${ref}" || exit 1
 
     # Deactivate conda environment
@@ -3698,7 +3698,7 @@ parallel_split_norm_bam()
     conda activate sambamba 2>&1 || exit 1
 
     # Extract contig
-    logmsg "* Extracting contig..."
+    logmsg "* Extracting contig (contig $contig)..."
     normalcont=${step_outd}/normal_${contig}.bam
     filter_bam_contig $normalbam $contig $normalcont || exit 1
 
@@ -3785,7 +3785,7 @@ parallel_split_tum_bam()
     conda activate sambamba 2>&1 || exit 1
 
     # Extract contig
-    logmsg "* Extracting contig..."
+    logmsg "* Extracting contig (contig $contig)..."
     tumorcont=${step_outd}/tumor_${contig}.bam
     filter_bam_contig $tumorbam $contig $tumorcont || exit 1
 

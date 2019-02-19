@@ -2093,7 +2093,7 @@ parallel_svtyper()
 
     # Execute svtyper
     logmsg "* Executing svtyper (contig $contig)..."
-    svtyper -i ${vcf} -B ${tumorbam},${normalbam} > ${step_outd}/out${contig}.vcf
+    svtyper -i ${vcf} -B ${tumorbam},${normalbam} > ${step_outd}/out${contig}.vcf || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

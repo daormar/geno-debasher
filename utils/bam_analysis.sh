@@ -3497,9 +3497,6 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
         define_opt "-contig" $contig optlist || exit 1
         save_opt_list optlist
     done
-
-    # Save option list
-    save_opt_list optlist    
 }
 
 ########
@@ -3595,9 +3592,6 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
         define_opt "-contig" $contig optlist || exit 1
         save_opt_list optlist
     done
-
-    # Save option list
-    save_opt_list optlist    
 }
 
 ########

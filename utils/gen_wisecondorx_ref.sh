@@ -237,7 +237,7 @@ get_pars_remove_dir()
 process_pars()
 {
     # Read file with list of EGA ids
-    local jids=""
+    local ids=""
     while read entry; do
         # Extract EGA id
         egaid=`extract_egaid_from_entry $entry`
@@ -248,13 +248,13 @@ process_pars()
         local stepinfo=`get_step_info ${stepname} ${infofile}`
         local jobdeps=""
         local script_pars=`get_pars_${stepname}`
-        launch_step ${stepname} ${job_array_list} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
+        launch_step ${stepname} ${job_array_list} "${stepinfo}" "${jobdeps}" "${script_pars}" id
 
-        # Update variables storing jids
-        if [ -z "${jids}" ]; then
-            jids=${jid}
+        # Update variables storing ids
+        if [ -z "${ids}" ]; then
+            ids=${id}
         else
-            jids="${jids},${jid}"
+            ids="${ids},${id}"
         fi
 
     done < ${egalist}
@@ -262,20 +262,20 @@ process_pars()
     # Generate reference file
     local stepname=gen_reffile_wisecondorx
     local stepinfo=`get_step_info ${stepname} ${infofile}`
-    local jobdeps=`apply_deptype_to_jobids ${jids} afterok`
+    local jobdeps=`apply_deptype_to_jobids ${ids} afterok`
     local script_pars=`get_pars_${stepname}`
-    launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
+    launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" id
 
-    # Update variables storing jids
-    jids="${jids},${jid}"
+    # Update variables storing ids
+    ids="${ids},${id}"
 
     if [ ${debug} -eq 0 ]; then
         # Remove directory with temporary files
         local stepname=remove_dir
         local stepinfo=`get_step_info ${stepname} ${infofile}`
-        local jobdeps=`apply_deptype_to_jobids ${jids} afterok`
+        local jobdeps=`apply_deptype_to_jobids ${ids} afterok`
         local script_pars=`get_pars_${stepname}`
-        launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" jid
+        launch_step ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" id
     fi
 }
 

@@ -3463,7 +3463,7 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local optlist=""
+    local basic_optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
@@ -3558,7 +3558,7 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local stepspec=$2
-    local optlist=""
+    local basic_optlist=""
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`

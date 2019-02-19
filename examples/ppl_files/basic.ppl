@@ -1,5 +1,6 @@
 #import bam_analysis
 #
+manta_germline        cpus=8 mem=2048 time=4:00:00 stepdeps=none
 manta_somatic         cpus=8 mem=2048 time=4:00:00 stepdeps=none
 strelka_somatic       cpus=8 mem=2048 time=5:00:00 stepdeps=none
 msisensor             cpus=8 mem=3072 time=5:00:00 stepdeps=none

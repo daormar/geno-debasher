@@ -10,13 +10,11 @@ filter_norm_bam_contigs   cpus=1  mem=1024  time=12:00:00 stepdeps=afterok:index
 filter_tum_bam_contigs    cpus=1  mem=1024  time=12:00:00 stepdeps=afterok:index_tum_bam__first
 index_norm_bam__second    cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:filter_norm_bam_contigs
 index_tum_bam__second     cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:filter_tum_bam_contigs
-manta_germline            cpus=8  mem=3072  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 strelka_germline          cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 manta_somatic             cpus=8  mem=3072  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 strelka_somatic           cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second,afterok:manta_somatic
 msisensor                 cpus=8  mem=6144  time=5:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 snp_pileup_plus_facets    cpus=1  mem=25000 time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 cnvkit                    cpus=8  mem=25000 time=10:00:00 stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
-ascatngs                  cpus=8  mem=25000 time=12:00:00 stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 platypus_germline         cpus=1  mem=4096  time=5:00:00  stepdeps=afterok:index_norm_bam__second
-delete_bam_files          cpus=1  mem=1024  time=0:10:00  stepdeps=afterok:manta_somatic,afterok:strelka_somatic,afterok:msisensor,afterok:cnvkit,afterok:facets,afterok:ascatngs,afterok:platypus_germline
+delete_bam_files          cpus=1  mem=1024  time=0:10:00  stepdeps=afterok:manta_somatic,afterok:strelka_germline,afterok:strelka_somatic,afterok:msisensor,afterok:cnvkit,afterok:facets,afterok:ascatngs,afterok:platypus_germline

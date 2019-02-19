@@ -1580,11 +1580,8 @@ parallel_lumpy_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # Get normal bam directory
-    nbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_norm_bam` || { errmsg "Error: dependency parallel_split_norm_bam not defined for parallel_lumpy"; exit 1; }
-
-    # Get tumor bam directory
-    tbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_tum_bam` || { errmsg "Error: dependency parallel_split_tum_bam not defined for parallel_lumpy"; exit 1; }
+    # Get bam directory
+    local abs_bamdir=`get_absolute_shdirname "data"`
 
     # Get name of contig list file
     local clist
@@ -1595,9 +1592,9 @@ parallel_lumpy_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        normalbam=${nbamdir}/normal_${contig}.bam
+        normalbam=${abs_bamdir}/normal_${contig}.bam
         define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
-        tumorbam=${tbamdir}/tumor_${contig}.bam
+        tumorbam=${abs_bamdir}/tumor_${contig}.bam
         define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
         define_opt "-contig" ${contig} specific_optlist || exit 1
         
@@ -1925,11 +1922,8 @@ parallel_delly_define_opts()
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
-    # Get normal bam directory
-    nbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_norm_bam` || { errmsg "Error: dependency parallel_split_norm_bam not defined for parallel_lumpy"; exit 1; }
-
-    # Get tumor bam directory
-    tbamdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_split_tum_bam` || { errmsg "Error: dependency parallel_split_tum_bam not defined for parallel_lumpy"; exit 1; }
+    # Get bam directory
+    local abs_bamdir=`get_absolute_shdirname "data"`
 
     # -dx option
     define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
@@ -1943,9 +1937,9 @@ parallel_delly_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        normalbam=${nbamdir}/normal_${contig}.bam
+        normalbam=${abs_bamdir}/normal_${contig}.bam
         define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
-        tumorbam=${tbamdir}/tumor_${contig}.bam
+        tumorbam=${abs_bamdir}/tumor_${contig}.bam
         define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
         define_opt "-contig" $contig specific_optlist || exit 1
         save_opt_list specific_optlist

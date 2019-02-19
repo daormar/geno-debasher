@@ -2021,18 +2021,18 @@ get_vcfdir_for_svtyper()
 {
     local stepspec=$1
 
-    # Check dependency with parallel lumpy
-    local parallel_split_plus_lumpy_dep=`find_dependency_for_step "${stepspec}" parallel_split_plus_lumpy`
-    if [ ${parallel_split_plus_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_outd_for_dep "${parallel_split_plus_lumpy_dep}"`
+    # Check dependency with parallel_lumpy
+    local parallel_lumpy_dep=`find_dependency_for_step "${stepspec}" parallel_lumpy`
+    if [ ${parallel_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_outd_for_dep "${parallel_lumpy_dep}"`
         echo $vcfdir
         return 0
     fi
 
-    # Check dependency with parallel delly
-    local parallel_split_plus_delly_dep=`find_dependency_for_step "${stepspec}" parallel_split_plus_delly`
-    if [ ${parallel_split_plus_delly_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_outd_for_dep "${parallel_split_plus_delly_dep}"`
+    # Check dependency with parallel_split_plus_lumpy
+    local parallel_split_plus_lumpy_dep=`find_dependency_for_step "${stepspec}" parallel_split_plus_lumpy`
+    if [ ${parallel_split_plus_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
+        local vcfdir=`get_outd_for_dep "${parallel_split_plus_lumpy_dep}"`
         echo $vcfdir
         return 0
     fi

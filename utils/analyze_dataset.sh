@@ -13,39 +13,40 @@ print_desc()
 ########
 usage()
 {
-    echo "analyze_dataset      --pfile <string> --outdir <string>"
-    echo "                     --sched <string> --metadata <string>"
-    echo "                     -r <string> [-mpb <string>]"
-    echo "                     [-dx <string>] [-lc <string>]"
-    echo "                     [-wcr <string>] [-sv <string>]"
-    echo "                     [-sg <string>] [-mc <string>]"
-    echo "                     [-egastr <int>] [-egacred <string>]"
-    echo "                     [-asperausr <string>] [-asperapwd <string>]"
-    echo "                     [-asperaserv <string>] [-egadecrpwd <string>]"
-    echo "                     [--help]"
+    echo "analyze_dataset       --pfile <string> --outdir <string>"
+    echo "                      --sched <string> [--dflt-nodes <string>]"
+    echo "                      --metadata <string> -r <string> [-mpb <string>]"
+    echo "                      [-dx <string>] [-lc <string>]"
+    echo "                      [-wcr <string>] [-sv <string>]"
+    echo "                      [-sg <string>] [-mc <string>]"
+    echo "                      [-egastr <int>] [-egacred <string>]"
+    echo "                      [-asperausr <string>] [-asperapwd <string>]"
+    echo "                      [-asperaserv <string>] [-egadecrpwd <string>]"
+    echo "                      [--help]"
     echo ""
-    echo "--pfile <string>     File with pipeline steps to be performed"
-    echo "--outdir <string>    Output directory"
-    echo "--sched <string>     Scheduler used to execute the pipelines"
-    echo "--metadata <string>  File with metadata, one entry per line."
-    echo "                     Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
-    echo "-mpb <string>        BED file for mpileup"
-    echo "-r <string>          File with reference genome"
-    echo "-dx <string>         File with regions to exclude in bed format for Delly"
-    echo "-lc <string>         File with list of contig names to process (required"
-    echo "                     by parallel SV callers)"
-    echo "-wcr <string>        Reference file in npz format for WisecondorX"
-    echo "-sv <string>         SNP vcf file required by Facets"
-    echo "-sg <string>         SNP GC correction file required by AscatNGS"
-    echo "-mc <string>         Name of male sex chromosome required by AscatNGS"
-    echo "-egastr <int>        Number of streams used by the EGA download client"
-    echo "                     (50 by default)"
-    echo "-egacred <string>    File with EGA download client credentials"
-    echo "-asperausr <string>  Username for Aspera server"
-    echo "-asperapwd <string>  Password for Aspera server"
-    echo "-asperaserv <string> Name of Aspera server"
-    echo "-egadecrpwd <string> File with EGA decryptor password"
-    echo "--help               Display this help and exit"
+    echo "--pfile <string>      File with pipeline steps to be performed"
+    echo "--outdir <string>     Output directory"
+    echo "--sched <string>      Scheduler used to execute the pipelines"
+    echo "--dflt-nodes <string> Default set of nodes used to execute the pipeline"
+    echo "--metadata <string>   File with metadata, one entry per line."
+    echo "                      Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
+    echo "-mpb <string>         BED file for mpileup"
+    echo "-r <string>           File with reference genome"
+    echo "-dx <string>          File with regions to exclude in bed format for Delly"
+    echo "-lc <string>          File with list of contig names to process (required"
+    echo "                      by parallel SV callers)"
+    echo "-wcr <string>         Reference file in npz format for WisecondorX"
+    echo "-sv <string>          SNP vcf file required by Facets"
+    echo "-sg <string>          SNP GC correction file required by AscatNGS"
+    echo "-mc <string>          Name of male sex chromosome required by AscatNGS"
+    echo "-egastr <int>         Number of streams used by the EGA download client"
+    echo "                      (50 by default)"
+    echo "-egacred <string>     File with EGA download client credentials"
+    echo "-asperausr <string>   Username for Aspera server"
+    echo "-asperapwd <string>   Password for Aspera server"
+    echo "-asperaserv <string>  Name of Aspera server"
+    echo "-egadecrpwd <string>  File with EGA decryptor password"
+    echo "--help                Display this help and exit"
 }
 
 ########
@@ -54,6 +55,7 @@ read_pars()
     pfile_given=0
     outdir_given=0
     sched_given=0
+    dflt_nodes_given=0
     metadata_given=0
     r_given=0
     mpb_given=0
@@ -105,6 +107,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       sched=$1
                       sched_given=1
+                  fi
+                  ;;
+            "--dflt-nodes") shift
+                  if [ $# -ne 0 ]; then
+                      dflt_nodes=$1
+                      dflt_nodes_given=1
                   fi
                   ;;
             "-mpb") shift
@@ -390,6 +398,10 @@ print_pars()
         echo "--metadata is ${metadata}" >&2
     fi
 
+    if [ ${dflt_nodes_given} -eq 1 ]; then
+        echo "--dflt-nodes is ${dflt_nodes}" >&2
+    fi
+
     if [ ${mpb_given} -eq 1 ]; then
         echo "-mpb is ${mpbed}" >&2
     fi
@@ -530,8 +542,21 @@ get_outd_name()
 }
 
 ########
+get_dfltnodes_opt()
+{
+    if [ ${dflt_nodes_given} -eq 1 ]; then
+        echo "--dflt-nodes ${dflt_nodes}"
+    else
+        echo ""
+    fi
+}
+
+########
 process_pars()
 {
+    # Set options
+    dfltnodes_opt=`get_dfltnodes_opt`
+    
     # Read metadata file
     entry_num=1
     while read entry; do
@@ -557,7 +582,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${bindir}/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} -r ${ref} -mpb ${mpbed} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${bindir}/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dfltnodes_opt} -r ${ref} -mpb ${mpbed} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi

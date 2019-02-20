@@ -1,6 +1,7 @@
 name: sequenza
 channels:
   - biobuilds
+  - r
   - conda-forge
   - bioconda
   - defaults
@@ -68,6 +69,9 @@ dependencies:
   - r-mgcv=1.8_22=r343h086d26f_0
   - r-nlme=3.1_131=r343h4829c52_0
   - r-nnet=7.3_12=r343h086d26f_0
+  - r-r.methodss3=1.7.1=r343h889e2dd_0
+  - r-r.oo=1.21.0=r343h889e2dd_0
+  - r-r.utils=2.6.0=r343h889e2dd_0
   - r-recommended=3.4.3=r343_0
   - r-rpart=4.1_11=r343h086d26f_0
   - r-sequenza=2.1.2=r342h39d70e4_0
@@ -96,4 +100,3 @@ dependencies:
   - pip:
     - sequenza-utils==2.1.9999b0
 prefix: /home/dortiz/miniconda3/envs/sequenza
-

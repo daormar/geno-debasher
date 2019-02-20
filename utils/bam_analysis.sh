@@ -2801,7 +2801,7 @@ download_ega_asp_tum_bam()
 
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local tumorbam_file=`read_opt_value_from_line "$*" "-extn"`
+    local tumorbam_file=`read_opt_value_from_line "$*" "-extt"`
     local aspera_user=`read_opt_value_from_line "$*" "-asperausr"`
     local aspera_passwd=`read_opt_value_from_line "$*" "-asperapwd"`
     local aspera_server=`read_opt_value_from_line "$*" "-asperaserv"`

@@ -582,7 +582,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${PANPIPE_HOME_DIR}/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dfltnodes_opt} -r ${ref} -mpb ${mpbed} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dfltnodes_opt} -r ${ref} -mpb ${mpbed} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
         else
             echo "Error in entry number ${entry_num}"
         fi

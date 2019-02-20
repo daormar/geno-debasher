@@ -2703,7 +2703,7 @@ download_ega_asp_norm_bam()
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
     
     # Download file
-    logmsg "* Executing ascp..."
+    logmsg "* Executing ascp (${normalbam_file})..."
     ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${normalbam_file} ${step_outd}/normal.bam.crypt 2>&1 || exit 1
 
     # Decrypt file
@@ -2811,7 +2811,7 @@ download_ega_asp_tum_bam()
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
 
     # Download file
-    logmsg "* Executing ascp..."
+    logmsg "* Executing ascp (${tumorbam_file})..."
     ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${tumorbam_file} ${step_outd}/tumor.bam.crypt 2>&1 || exit 1
 
     # Decrypt file

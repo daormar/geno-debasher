@@ -175,8 +175,9 @@ manta_germline_define_opts()
 get_callreg_opt()
 {
     local callregf=$1
+    local basecallregf=`$BASENAME ${callregf}`
 
-    if [ "${callregf}" = ${NOFILE} -o "${callregf}" = "" ]; then
+    if [ "${basecallregf}" = ${NOFILE} -o "${callregf}" = "" ]; then
         echo ""
     else
         echo "--callRegions ${callregf}"

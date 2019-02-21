@@ -3170,9 +3170,20 @@ filter_norm_bam_contigs()
     logmsg "* Executing samtools view..."
     samtools view -b -L ${step_outd}/genref.bed ${normalbam} > ${step_outd}/filtered.bam || exit 1
 
-    # Replace initial bam file by the filtered one
-    mv ${step_outd}/filtered.bam ${normalbam} || exit 1
+    # Reheader bam file
 
+    ## Extract ref contigs to a file
+    ${AWK} '{print $1}' ${ref}.fai > ${step_outd}/refcontigs || exit 1
+
+    ## Extract sam header
+    samtools view -H ${step_outd}/filtered.bam > ${step_outd}/original_header || exit 1
+    
+    ## Generate new sam header
+    ${biopanpipe_bindir}/get_filtered_sam_header -h ${step_outd}/original_header -l ${step_outd}/refcontigs > ${step_outd}/new_header || exit 1
+    
+    ## Reheader bam
+    samtools reheader ${step_outd}/new_header ${step_outd}/filtered.bam > ${normalbam} || exit 1
+    
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
@@ -3240,8 +3251,19 @@ filter_tum_bam_contigs()
     logmsg "* Executing samtools view..."
     samtools view -b -L ${step_outd}/genref.bed ${tumorbam} > ${step_outd}/filtered.bam || exit 1
 
-    # Replace initial bam file by the filtered one
-    mv ${step_outd}/filtered.bam ${tumorbam} || exit 1
+    # Reheader bam file
+
+    ## Extract ref contigs to a file
+    ${AWK} '{print $1}' ${ref}.fai > ${step_outd}/refcontigs || exit 1
+
+    ## Extract sam header
+    samtools view -H ${step_outd}/filtered.bam > ${step_outd}/original_header || exit 1
+    
+    ## Generate new sam header
+    ${biopanpipe_bindir}/get_filtered_sam_header -h ${step_outd}/original_header -l ${step_outd}/refcontigs > ${step_outd}/new_header || exit 1
+    
+    ## Reheader bam
+    samtools reheader ${step_outd}/new_header ${step_outd}/filtered.bam > ${tumorbam} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

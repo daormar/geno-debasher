@@ -159,7 +159,7 @@ bam_download_and_npz_conv()
     ### Index bam file
     
     # Activate conda environment
-    conda activate base || exit 1
+    conda activate samtools || exit 1
 
     # Index file
     samtools index ${datadir}/${egaid}.bam || exit 1

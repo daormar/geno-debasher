@@ -9,6 +9,7 @@ def take_pars():
     values={}
     flags["c_given"]=False
     flags["g_given"]=False
+    flags["l_given"]=False
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],"c:g:l:",["contig=","genref=","listc="])
@@ -33,19 +34,19 @@ def take_pars():
 
 ##################################################
 def check_pars(flags,values):
-    if(flags["c_given"]==False):
-        print >> sys.stderr, "Error! -c parameter not given"
-        sys.exit(2)
-    if(flags["l_given"]==False):
-        print >> sys.stderr, "Error! -l parameter not given"
-        sys.exit(2)
     if(flags["g_given"]==False):
         print >> sys.stderr, "Error! -g parameter not given"
+        sys.exit(2)
+    if(flags["c_given"]==False and flags["l_given"]==False):
+        print >> sys.stderr, "Error! -c or -l parameter not given"
+        sys.exit(2)
+    if(flags["c_given"]==True and flags["l_given"]==True):
+        print >> sys.stderr, "Error! -c and -l parameters cannot be given simultaneously"
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "filter_contig_from_genref -c <string> -l <string> -g <string>"
+    print >> sys.stderr, "filter_contig_from_genref -c <string> {-l <string> | -g <string>}"
     print >> sys.stderr, ""
     print >> sys.stderr, "-c <string>    Name of contig to remove"
     print >> sys.stderr, "-l <string>    List of contigs to keep (one contig name per line)"

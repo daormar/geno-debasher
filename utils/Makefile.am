@@ -2,19 +2,20 @@ SCRIPTS_TO_BE_BUILT= bam_analysis bam_facets bam_ascat_r bam_ascatngs	\
 analyze_dataset gen_bed_for_genome check_ref_and_bam_contigs		\
 gen_wisecondorx_ref convert_snppos_to_snpgcc create_snv_pos_ascat	\
 query_ega_metadata query_icgc_metadata filter_contig_from_genref	\
-run_facets run_sequenza convert_allele_counts run_ascat
+get_filtered_sam_header run_facets run_sequenza convert_allele_counts	\
+run_ascat
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = bam_analysis.sh bam_facets.sh bam_ascat_r.sh	\
-bam_ascatngs.sh analyze_dataset.sh gen_bed_for_genome.sh	\
-check_ref_and_bam_contigs.sh gen_wisecondorx_ref.sh		\
-convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py		\
-query_ega_metadata.py query_icgc_metadata.py			\
-filter_contig_from_genref.py run_facets.R run_sequenza.R	\
-convert_allele_counts.R run_ascat.R
+EXTRA_DIST = bam_analysis.sh bam_facets.sh bam_ascat_r.sh		\
+bam_ascatngs.sh analyze_dataset.sh gen_bed_for_genome.sh		\
+check_ref_and_bam_contigs.sh gen_wisecondorx_ref.sh			\
+convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
+query_ega_metadata.py query_icgc_metadata.py				\
+filter_contig_from_genref.py get_filtered_sam_header.py run_facets.R	\
+run_sequenza.R convert_allele_counts.R run_ascat.R
 
 # Build rules for libraries
 bam_analysis: bam_analysis.sh

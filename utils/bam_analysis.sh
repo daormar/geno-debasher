@@ -775,11 +775,11 @@ msisensor()
 
     # Create homopolymer and microsatellites file
     logmsg "* Executing msisensor scan..."
-    msisensor scan -d ${ref} -o ${step_outd}/msisensor.list 2>&1 || exit 1
+    command msisensor scan -d ${ref} -o ${step_outd}/msisensor.list 2>&1 || exit 1
 
     # Run MSIsensor analysis
     logmsg "* Executing msisensor msi..."
-    msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} 2>&1 || exit 1
+    command msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

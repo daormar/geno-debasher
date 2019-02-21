@@ -33,6 +33,12 @@ def take_pars():
 
 ##################################################
 def check_pars(flags,values):
+    if(flags["c_given"]==False):
+        print >> sys.stderr, "Error! -c parameter not given"
+        sys.exit(2)
+    if(flags["l_given"]==False):
+        print >> sys.stderr, "Error! -l parameter not given"
+        sys.exit(2)
     if(flags["g_given"]==False):
         print >> sys.stderr, "Error! -g parameter not given"
         sys.exit(2)

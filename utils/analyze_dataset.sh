@@ -15,7 +15,7 @@ usage()
 {
     echo "analyze_dataset       --pfile <string> -outdir <string>"
     echo "                      --sched <string> --metadata <string>"
-    echo "                      --ppl-opts <string>"
+    echo "                      --ppl-opts <string> [--dflt-nodes <string>]"
     echo "                      [--help]"
     echo ""
     echo "--pfile <string>      File with pipeline steps to be performed"
@@ -24,6 +24,7 @@ usage()
     echo "--metadata <string>   File with metadata, one entry per line."
     echo "                      Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
     echo "--ppl-opts <string>   File containing a string with pipeline options"
+    echo "--dflt-nodes <string> Default set of nodes used to execute the pipeline"
     echo "--help                Display this help and exit"
 }
 
@@ -35,6 +36,7 @@ read_pars()
     sched_given=0
     metadata_given=0
     ppl_opts_given=0
+    dflt_nodes_given=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -68,6 +70,12 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       ppl_opts=$1
                       ppl_opts_given=1
+                  fi
+                  ;;
+            "--dflt-nodes") shift
+                  if [ $# -ne 0 ]; then
+                      dflt_nodes=$1
+                      dflt_nodes_given=1
                   fi
                   ;;
         esac
@@ -169,6 +177,10 @@ print_pars()
     if [ ${ppl_opts_given} -eq 1 ]; then
         echo "--ppl-opts is ${ppl_opts}" >&2
     fi
+
+    if [ ${dflt_nodes_given} -eq 1 ]; then
+        echo "--dflt-nodes is ${dflt_nodes}" >&2
+    fi
 }
 
 ########
@@ -260,6 +272,16 @@ get_ppl_opts_str()
 }
 
 ########
+get_dflt_nodes_opt()
+{
+    if [ ${dflt_nodes_given} -eq 1 ]; then
+        echo "--dflt-nodes ${dflt_nodes}"
+    else
+        echo ""
+    fi
+}
+
+########
 process_pars()
 {
     # Set options
@@ -270,6 +292,7 @@ process_pars()
     while read entry; do
         entry_ok=`entry_is_ok "$entry"`
         if [ ${entry_ok} = "yes" ]; then
+
             # Extract sample info
             normal_sample_info=`extract_normal_sample_info "$entry"`
             normal_id=`extract_id_from_sample_info "${normal_sample_info}"`
@@ -288,9 +311,12 @@ process_pars()
             
             # Set name of output directory for analysis
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
+
+            # Obtain --dflt-nodes option
+            dflt_nodes_opt=`get_dflt_nodes_opt`
             
             # Print command to execute pipeline
-            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dfltnodes_opt} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} ${ppl_opts_str}
+            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} ${ppl_opts_str}
         else
             echo "Error in entry number ${entry_num}"
         fi

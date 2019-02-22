@@ -1275,7 +1275,7 @@ seqzmerge()
         fi
     done
 
-    ${GZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | ${GZIP}
+    ${ZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | ${GZIP}
 }
  
 ########

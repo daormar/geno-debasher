@@ -13,39 +13,17 @@ print_desc()
 ########
 usage()
 {
-    echo "analyze_dataset       --pfile <string> --outdir <string>"
-    echo "                      --sched <string> [--dflt-nodes <string>]"
-    echo "                      --metadata <string> -r <string> [-mpb <string>]"
-    echo "                      [-dx <string>] [-lc <string>]"
-    echo "                      [-wcr <string>] [-sv <string>]"
-    echo "                      [-sg <string>] [-mc <string>]"
-    echo "                      [-egastr <int>] [-egacred <string>]"
-    echo "                      [-asperausr <string>] [-asperapwd <string>]"
-    echo "                      [-asperaserv <string>] [-egadecrpwd <string>]"
+    echo "analyze_dataset       --pfile <string> -outdir <string>"
+    echo "                      --sched <string> --metadata <string>"
+    echo "                      --ppl-opts <string>"
     echo "                      [--help]"
     echo ""
     echo "--pfile <string>      File with pipeline steps to be performed"
     echo "--outdir <string>     Output directory"
     echo "--sched <string>      Scheduler used to execute the pipelines"
-    echo "--dflt-nodes <string> Default set of nodes used to execute the pipeline"
     echo "--metadata <string>   File with metadata, one entry per line."
     echo "                      Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
-    echo "-mpb <string>         BED file for mpileup"
-    echo "-r <string>           File with reference genome"
-    echo "-dx <string>          File with regions to exclude in bed format for Delly"
-    echo "-lc <string>          File with list of contig names to process (required"
-    echo "                      by parallel SV callers)"
-    echo "-wcr <string>         Reference file in npz format for WisecondorX"
-    echo "-sv <string>          SNP vcf file required by Facets"
-    echo "-sg <string>          SNP GC correction file required by AscatNGS"
-    echo "-mc <string>          Name of male sex chromosome required by AscatNGS"
-    echo "-egastr <int>         Number of streams used by the EGA download client"
-    echo "                      (50 by default)"
-    echo "-egacred <string>     File with EGA download client credentials"
-    echo "-asperausr <string>   Username for Aspera server"
-    echo "-asperapwd <string>   Password for Aspera server"
-    echo "-asperaserv <string>  Name of Aspera server"
-    echo "-egadecrpwd <string>  File with EGA decryptor password"
+    echo "--ppl-opts <string>   File containing a string with pipeline options"
     echo "--help                Display this help and exit"
 }
 
@@ -55,37 +33,8 @@ read_pars()
     pfile_given=0
     outdir_given=0
     sched_given=0
-    dflt_nodes_given=0
     metadata_given=0
-    r_given=0
-    mpb_given=0
-    mpbed=${NOFILE}
-    dx_given=0
-    dxfile=${NOFILE}
-    lc_given=0
-    contigfile=${NOFILE}
-    cr_given=0
-    callregf=${NOFILE}
-    wcr_given=0
-    wcref=${NOFILE}
-    sv_given=0
-    snpvcf=${NOFILE}
-    sg_given=0
-    snpgccorr=${NOFILE}
-    mc_given=0
-    malesexchr="Y"
-    egastr_given=0
-    egastr=50
-    egacred_given=0
-    egacred=${NOFILE}
-    asperausr_given=0
-    asperausr=${NOFILE}
-    asperapwd_given=0
-    asperapwd=${NOFILE}
-    asperaserv_given=0
-    asperaserv=${NOFILE}
-    egadecrpwd_given=0
-    egadecrpwd=${NOFILE}
+    ppl_opts_given=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -109,106 +58,16 @@ read_pars()
                       sched_given=1
                   fi
                   ;;
-            "--dflt-nodes") shift
-                  if [ $# -ne 0 ]; then
-                      dflt_nodes=$1
-                      dflt_nodes_given=1
-                  fi
-                  ;;
-            "-mpb") shift
-                  if [ $# -ne 0 ]; then
-                      mpbed=$1
-                      mpb_given=1
-                  fi
-                  ;;
-            "-r") shift
-                  if [ $# -ne 0 ]; then
-                      ref=$1
-                      r_given=1
-                  fi
-                  ;;
             "--metadata") shift
                   if [ $# -ne 0 ]; then
                       metadata=$1
                       metadata_given=1
                   fi
                   ;;
-            "-lc") shift
+            "--ppl-opts") shift
                   if [ $# -ne 0 ]; then
-                      contigfile=$1
-                      lc_given=1
-                  fi
-                  ;;
-            "-dx") shift
-                  if [ $# -ne 0 ]; then
-                      dxfile=$1
-                      dx_given=1
-                  fi
-                  ;;
-            "-cr") shift
-                  if [ $# -ne 0 ]; then
-                      callregf=$1
-                      cr_given=1
-                  fi
-                  ;;
-            "-wcr") shift
-                  if [ $# -ne 0 ]; then
-                      wcref=$1
-                      wcr_given=1
-                  fi
-                  ;;
-            "-sv") shift
-                  if [ $# -ne 0 ]; then
-                      snpvcf=$1
-                      sv_given=1
-                  fi
-                  ;;
-            "-sg") shift
-                  if [ $# -ne 0 ]; then
-                      snpgccorr=$1
-                      sg_given=1
-                  fi
-                  ;;
-            "-mc") shift
-                  if [ $# -ne 0 ]; then
-                      malesexchr=$1
-                      mc_given=1
-                  fi
-                  ;;
-            "-egastr") shift
-                  if [ $# -ne 0 ]; then
-                      egastr=$1
-                      egastr_given=1
-                  fi
-                  ;;
-            "-egacred") shift
-                  if [ $# -ne 0 ]; then
-                      egacred=$1
-                      egacred_given=1
-                  fi
-                  ;;
-            "-asperausr") shift
-                  if [ $# -ne 0 ]; then
-                      asperausr=$1
-                      asperausr_given=1
-                  fi
-                  ;;
-            "-asperapwd") shift
-                  if [ $# -ne 0 ]; then
-                      asperapwd=$1
-                      asperapwd_given=1
-                  fi
-                  ;;
-            "-asperaserv") shift
-                  if [ $# -ne 0 ]; then
-                      asperaserv=$1
-                      asperaserv_given=1
-                  fi
-                  ;;
-            "-egadecrpwd") shift
-                  if [ $# -ne 0 ]; then
-                      egadecrpwd=$1
-                      egadecrpwd_given=1
+                      ppl_opts=$1
+                      ppl_opts_given=1
                   fi
                   ;;
         esac
@@ -240,10 +99,12 @@ check_pars()
 
     if [ ${sched_given} -eq 0 ]; then
         echo "Error, --sched option should be given" >&2
+        exit 1
     fi
     
     if [ ${metadata_given} -eq 0 ]; then
         echo "Error, --metadata option should be given" >&2
+        exit 1
     fi
 
     if [ ${metadata_given} -eq 1 ]; then
@@ -253,75 +114,14 @@ check_pars()
         fi
     fi
 
-    if [ ${mpb_given} -eq 1 ]; then
-        if [ "${mpbed}" != ${NOFILE} -a ! -f ${mpbed} ]; then
-            echo "Error! file ${mpbed} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${r_given} -eq 0 ]; then   
-        echo "Error! -r parameter not given!" >&2
+    if [ ${ppl_opts_given} -eq 0 ]; then
+        echo "Error, --ppl-opts option should be given" >&2
         exit 1
-    else
-        if [ ! -f ${ref} ]; then
-            echo "Error! file ${ref} does not exist" >&2
-            exit 1
-        fi
     fi
 
-    if [ ${dx_given} -eq 1 ]; then
-        if [ "${dxfile}" != ${NOFILE} -a ! -f ${dxfile} ]; then
-            echo "Error! file ${dxfile} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${lc_given} -eq 1 ]; then
-        if [ "${contigfile}" != ${NOFILE} -a ! -f ${contigfile} ]; then
-            echo "Error! file ${contigfile} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${cr_given} -eq 1 ]; then
-        if [ "${callregf}" != ${NOFILE} -a ! -f ${callregf} ]; then
-            echo "Error! file ${callregf} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${wcr_given} -eq 1 ]; then
-        if [ "${wcref}" != ${NOFILE} -a ! -f ${wcref} ]; then
-            echo "Error! file ${wcref} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${sv_given} -eq 1 ]; then
-        if [ "${snpvcf}" != ${NOFILE} -a ! -f ${snpvcf} ]; then
-            echo "Error! file ${snpvcf} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${sg_given} -eq 1 ]; then
-        if [ "${snpgccorr}" != ${NOFILE} -a ! -f ${snpgccorr} ]; then
-            echo "Error! file ${snpgccorr} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${egacred_given} -eq 1 ]; then
-        if [ "${egacred}" != ${NOFILE} -a ! -f ${egacred} ]; then
-            echo "Error! file ${egacred} does not exist" >&2
-            exit 1
-        fi
-    fi
-
-    if [ ${egadecrpwd_given} -eq 1 ]; then
-        if [ "${egadecrpwd}" != ${NOFILE} -a ! -f ${egadecrpwd} ]; then
-            echo "Error! file ${egadecrpwd} does not exist" >&2
+    if [ ${ppl_opts_given} -eq 1 ]; then
+        if [ ! -f ${ppl_opts} ]; then
+            echo "Error! file ${ppl_opts} does not exist" >&2
             exit 1
         fi
     fi
@@ -342,40 +142,8 @@ absolutize_file_paths()
         metadata=`get_absolute_path ${metadata}`
     fi
 
-    if [ ${mpb_given} -eq 1 -a "${mpbed}" != ${NOFILE} ]; then
-        mpbed=`get_absolute_path ${mpbed}`
-    fi
-
-    if [ ${r_given} -eq 1 ]; then   
-        ref=`get_absolute_path ${ref}`
-    fi
-    
-    if [ ${lc_given} -eq 1 ]; then
-        contigfile=`get_absolute_path ${contigfile}`
-    fi
-
-    if [ ${cr_given} -eq 1 -a "${callrefg}" != ${NOFILE} ]; then
-        callregf=`get_absolute_path ${callregf}`
-    fi
-
-    if [ ${wcr_given} -eq 1 -a "${wcref}" != ${NOFILE} ]; then
-        wcref=`get_absolute_path ${wcref}`
-    fi
-
-    if [ ${sv_given} -eq 1 -a "${snpvcf}" != ${NOFILE} ]; then
-        snpvcf=`get_absolute_path ${snpvcf}`
-    fi
-
-    if [ ${sg_given} -eq 1 -a "${snpgccorr}" != ${NOFILE} ]; then
-        snpgccorr=`get_absolute_path ${snpgccorr}`
-    fi
-
-    if [ ${egacred_given} -eq 1 -a "${egacred}" != ${NOFILE} ]; then
-        egacred=`get_absolute_path ${egacred}`
-    fi
-
-    if [ ${egadecrpwd_given} -eq 1 -a "${egadecrpwd}" != ${NOFILE} ]; then
-        egadecrpwd=`get_absolute_path ${egadecrpwd}`
+    if [ ${ppl_opts_given} -eq 1 ]; then
+        ppl_opts=`get_absolute_path ${ppl_opts}`
     fi
 }
 
@@ -398,64 +166,8 @@ print_pars()
         echo "--metadata is ${metadata}" >&2
     fi
 
-    if [ ${dflt_nodes_given} -eq 1 ]; then
-        echo "--dflt-nodes is ${dflt_nodes}" >&2
-    fi
-
-    if [ ${mpb_given} -eq 1 ]; then
-        echo "-mpb is ${mpbed}" >&2
-    fi
-
-    if [ ${r_given} -eq 1 ]; then
-        echo "-r is ${ref}" >&2
-    fi
-
-    if [ ${lc_given} -eq 1 ]; then
-        echo "-dx is ${dxfile}" >&2
-    fi
-
-    if [ ${lc_given} -eq 1 ]; then
-        echo "-lc is ${contigfile}" >&2
-    fi
-
-    if [ ${sg_given} -eq 1 ]; then
-        echo "-sg is ${snpgccorr}" >&2
-    fi
-
-    if [ ${mc_given} -eq 1 ]; then
-        echo "-mc is ${malesexchr}" >&2
-    fi
-
-    if [ ${cr_given} -eq 1 ]; then
-        echo "-cr is ${callregf}" >&2
-    fi
-
-    if [ ${wcr_given} -eq 1 ]; then
-        echo "-wcr is ${wcref}" >&2
-    fi
-
-    if [ ${egastr_given} -eq 1 ]; then
-        echo "-egastr is ${egastr}" >&2
-    fi
-
-    if [ ${egacred_given} -eq 1 ]; then
-        echo "-egacred is ${egacred}" >&2
-    fi
-
-    if [ ${asperausr_given} -eq 1 ]; then
-        echo "-asperausr is ${asperausr}" >&2
-    fi
-
-    if [ ${asperapwd_given} -eq 1 ]; then
-        echo "-asperapwd is ${asperapwd}" >&2
-    fi
-
-    if [ ${asperaserv_given} -eq 1 ]; then
-        echo "-asperaserv is ${asperaserv}" >&2
-    fi
-
-    if [ ${egadecrpwd_given} -eq 1 ]; then
-        echo "-egadecrpwd is ${egadecrpwd}" >&2
+    if [ ${ppl_opts_given} -eq 1 ]; then
+        echo "--ppl-opts is ${ppl_opts}" >&2
     fi
 }
 
@@ -542,20 +254,16 @@ get_outd_name()
 }
 
 ########
-get_dfltnodes_opt()
+get_ppl_opts_str()
 {
-    if [ ${dflt_nodes_given} -eq 1 ]; then
-        echo "--dflt-nodes ${dflt_nodes}"
-    else
-        echo ""
-    fi
+    cat ${ppl_opts}
 }
 
 ########
 process_pars()
 {
     # Set options
-    dfltnodes_opt=`get_dfltnodes_opt`
+    ppl_opts_str=`get_ppl_opts_str`
     
     # Read metadata file
     entry_num=1
@@ -582,7 +290,7 @@ process_pars()
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
             
             # Print command to execute pipeline
-            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dfltnodes_opt} -r ${ref} -mpb ${mpbed} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} -dx ${dxfile} -lc ${contigfile} -cr ${callregf} -wcr ${wcref} -sv ${snpvcf} -sg ${snpgccorr} -mc ${malesexchr} -egastr ${egastr} -egacred ${egacred} -asperausr ${asperausr} -asperapwd ${asperapwd} -asperaserv ${asperaserv} -egadecrpwd ${egadecrpwd}
+            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dfltnodes_opt} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} ${ppl_opts_str}
         else
             echo "Error in entry number ${entry_num}"
         fi

@@ -25,6 +25,7 @@ bam_analysis: bam_analysis.sh
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
+	echo "ZCAT="$(ZCAT) >> $@
 	echo "GZIP="$(GZIP) >> $@
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
@@ -41,6 +42,7 @@ bam_facets: bam_facets.sh
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
+	echo "ZCAT="$(ZCAT) >> $@
 	echo "GZIP="$(GZIP) >> $@
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
@@ -57,6 +59,7 @@ bam_ascat_r: bam_ascat_r.sh
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
+	echo "ZCAT="$(ZCAT) >> $@
 	echo "GZIP="$(GZIP) >> $@
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
@@ -111,6 +114,7 @@ SUFFIXES= .sh .py .r .R
 	echo "WC="$(WC) >> $@
 	echo "MKTEMP="$(MKTEMP) >> $@
 	echo "FLOCK="$(FLOCK) >> $@
+	echo "ZCAT="$(ZCAT) >> $@
 	echo "GZIP="$(GZIP) >> $@
 	echo "WGET="$(WGET) >> $@
 	echo "PANDOC="$(PANDOC) >> $@

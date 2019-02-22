@@ -1139,10 +1139,10 @@ sequenza_conda_envs()
 }
 
 ########
-parallel_sequenza_explain_cmdline_opts()
+parallel_bam2seqz_explain_cmdline_opts()
 {
     # -gcc option
-    description="GC content wiggle file for sequenza (required)"
+    description="GC content wiggle file for bam2seqz (required)"
     explain_cmdline_opt "-gcc" "<string>" "$description"
 
     # -lc option
@@ -1151,7 +1151,7 @@ parallel_sequenza_explain_cmdline_opts()
 }
 
 ########
-parallel_sequenza_define_opts()
+parallel_bam2seqz_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1166,10 +1166,10 @@ parallel_sequenza_define_opts()
     define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
 
     # Get normal pileup directory
-    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for parallel_sequenza"; exit 1; }
+    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for parallel_bam2seqz"; exit 1; }
 
     # Get tumor pileup directory
-    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_tum_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_tum_bam not defined for parallel_sequenza"; exit 1; }
+    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_tum_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_tum_bam not defined for parallel_bam2seqz"; exit 1; }
 
     # Get name of contig list file
     local clist
@@ -1191,7 +1191,7 @@ parallel_sequenza_define_opts()
 }
 
 ########
-parallel_sequenza()
+parallel_bam2seqz()
 {
     display_begin_step_message
 
@@ -1210,12 +1210,110 @@ parallel_sequenza()
     logmsg "* Generating seqz file (contig $contig)..."
     sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/${contig}_seqz.gz ; pipe_fail || exit 1
 
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
+parallel_bam2seqz_conda_envs()
+{
+    define_conda_env sequenza sequenza.yml
+}
+
+########
+seqzmerge_plus_sequenza_explain_cmdline_opts()
+{
+    # -lc option
+    description="File with list of contig names to process (required by parallel SV callers)"
+    explain_cmdline_opt "-lc" "<string>" "$description"   
+}
+
+########
+seqzmerge_plus_sequenza_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -gcc option
+    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
+
+    # Get seqz directory
+    seqzdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_bam2seqz` || { errmsg "Error: dependency parallel_bam2seqz not defined for seqzmerge_plus_sequenza"; exit 1; }
+    define_opt "-seqzdir" ${seqzdir} optlist || exit 1
+
+    # -lc option
+    define_cmdline_infile_opt "$cmdline" "-lc" optlist || exit 1
+
+    save_opt_list optlist
+}
+
+
+########
+seqzmerge()
+{
+    local clist=$1
+    local seqzdir=$2
+
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local filenames=""
+    local contig
+    for contig in ${contigs}; do
+        local seqzfname=${seqzdir}/${contig}_seqz.gz
+        if [ "$filenames" = "" ]; then
+            filenames=${seqzfname}
+        else
+            filenames="${filenames} ${seqzfname}"
+        fi
+    done
+
+    ${GZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | ${GZIP}
+}
+ 
+########
+seqzmerge_plus_sequenza()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local gccont=`read_opt_value_from_line "$*" "-gcc"`
+    local seqzdir=`read_opt_value_from_line "$*" "-seqzdir"`
+    local clist=`read_opt_value_from_line "$*" "-lc"`
+
+    # Merge seqz files
+    logmsg "* Merging seqz files..."
+    seqzmerge ${clist} ${seqzdir}  > ${step_outd}/merged_seqz.gz
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (tabix)..."
+    conda activate tabix 2>&1 || exit 1
+
+    logmsg "* Applying tabix over merged seqz file..."
+    tabix -f -s 1 -b 2 -e 2 -S 1 ${step_outd}/merged_seqz.gz
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+        
+    # Activate conda environment
+    logmsg "* Activating conda environment (sequenza)..."
+    conda activate sequenza 2>&1 || exit 1
+    
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing sequenza..."
-    Rscript ${biopanpipe_bindir}/run_sequenza -s ${step_outd}/${contig}_seqz.gz -o ${step_outd} 2>&1 || exit 1
+    Rscript ${biopanpipe_bindir}/run_sequenza -s ${step_outd}/merged_seqz.gz -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1225,9 +1323,10 @@ parallel_sequenza()
 }
 
 ########
-parallel_sequenza_conda_envs()
+seqzmerge_plus_sequenza_conda_envs()
 {
     define_conda_env sequenza sequenza.yml
+    define_conda_env sequenza tabix.yml
 }
 
 ########

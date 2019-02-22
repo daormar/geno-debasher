@@ -134,8 +134,8 @@ manta_germline_explain_cmdline_opts()
     description="Normal bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
-    # -callregf option
-    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka"
+    # -cr option
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
     explain_cmdline_opt "-cr" "<string>" "$description"
 }
 
@@ -159,8 +159,8 @@ manta_germline_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
-    # -callregf option
-    define_cmdline_infile_opt "$cmdline" "-cr" optlist || exit 1
+    # -cr option
+    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus
@@ -320,7 +320,11 @@ manta_somatic_explain_cmdline_opts()
 
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"    
+    explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -cr option
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
+    explain_cmdline_opt "-cr" "<string>" "$description"
 }
 
 ########
@@ -348,8 +352,8 @@ manta_somatic_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
-    # -callregf option
-    define_cmdline_infile_opt "$cmdline" "-cr" optlist || exit 1
+    # -cr option
+    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus
@@ -411,6 +415,10 @@ strelka_germline_explain_cmdline_opts()
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -cr option
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
+    explain_cmdline_opt "-cr" "<string>" "$description"
 }
 
 ########
@@ -433,8 +441,8 @@ strelka_germline_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
-    # -callregf option
-    define_cmdline_infile_opt "$cmdline" "-cr" optlist || exit 1
+    # -cr option
+    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus
@@ -498,7 +506,11 @@ strelka_somatic_explain_cmdline_opts()
 
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"        
+    explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -cr option
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
+    explain_cmdline_opt "-cr" "<string>" "$description"
 }
 
 ########
@@ -533,8 +545,8 @@ strelka_somatic_define_opts()
         define_opt "-manta-outd" ${manta_outd} optlist || exit 1
     fi
     
-    # -callregf option
-    define_cmdline_infile_opt "$cmdline" "-cr" optlist || exit 1
+    # -cr option
+    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus

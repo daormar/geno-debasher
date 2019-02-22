@@ -76,6 +76,7 @@ bam_ascat_ngs: bam_ascat_r.sh
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
+	echo "ZCAT="$(ZCAT) >> $@
 	echo "GZIP="$(GZIP) >> $@
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@

@@ -15,7 +15,7 @@ usage()
 {
     echo "analyze_dataset       --pfile <string> -outdir <string>"
     echo "                      --sched <string> --metadata <string>"
-    echo "                      --ppl-opts <string> [--dflt-nodes <string>]"
+    echo "                      [--dflt-nodes <string>] --ppl-opts <string>"
     echo "                      [--help]"
     echo ""
     echo "--pfile <string>      File with pipeline steps to be performed"
@@ -23,8 +23,8 @@ usage()
     echo "--sched <string>      Scheduler used to execute the pipelines"
     echo "--metadata <string>   File with metadata, one entry per line."
     echo "                      Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
-    echo "--ppl-opts <string>   File containing a string with pipeline options"
     echo "--dflt-nodes <string> Default set of nodes used to execute the pipeline"
+    echo "--ppl-opts <string>   File containing a string with pipeline options"
     echo "--help                Display this help and exit"
 }
 
@@ -35,8 +35,8 @@ read_pars()
     outdir_given=0
     sched_given=0
     metadata_given=0
-    ppl_opts_given=0
     dflt_nodes_given=0
+    ppl_opts_given=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -66,16 +66,16 @@ read_pars()
                       metadata_given=1
                   fi
                   ;;
-            "--ppl-opts") shift
-                  if [ $# -ne 0 ]; then
-                      ppl_opts=$1
-                      ppl_opts_given=1
-                  fi
-                  ;;
             "--dflt-nodes") shift
                   if [ $# -ne 0 ]; then
                       dflt_nodes=$1
                       dflt_nodes_given=1
+                  fi
+                  ;;
+            "--ppl-opts") shift
+                  if [ $# -ne 0 ]; then
+                      ppl_opts=$1
+                      ppl_opts_given=1
                   fi
                   ;;
         esac
@@ -174,12 +174,12 @@ print_pars()
         echo "--metadata is ${metadata}" >&2
     fi
 
-    if [ ${ppl_opts_given} -eq 1 ]; then
-        echo "--ppl-opts is ${ppl_opts}" >&2
-    fi
-
     if [ ${dflt_nodes_given} -eq 1 ]; then
         echo "--dflt-nodes is ${dflt_nodes}" >&2
+    fi
+
+    if [ ${ppl_opts_given} -eq 1 ]; then
+        echo "--ppl-opts is ${ppl_opts}" >&2
     fi
 }
 

@@ -1,0 +1,12 @@
+name: tabix
+channels:
+  - r
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - libgcc-ng=7.3.0=hdf63c60_0
+  - tabix=0.2.6=ha92aebf_0
+  - zlib=1.2.11=h14c3975_1004
+prefix: /home/dortiz/miniconda3/envs/tabix
+

@@ -1158,7 +1158,7 @@ parallel_bam2seqz_explain_cmdline_opts()
     explain_cmdline_opt "-gcc" "<string>" "$description"
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -1239,7 +1239,7 @@ parallel_bam2seqz_conda_envs()
 seqzmerge_plus_sequenza_explain_cmdline_opts()
 {
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -1421,7 +1421,7 @@ parallel_exclude_plus_lumpy_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -1527,7 +1527,7 @@ parallel_split_plus_lumpy_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -1680,7 +1680,7 @@ parallel_split_plus_lumpy_conda_envs()
 parallel_lumpy_explain_cmdline_opts()
 {
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -1868,7 +1868,7 @@ parallel_split_plus_delly_explain_cmdline_opts()
     explain_cmdline_opt "-dx" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -2019,7 +2019,7 @@ parallel_delly_explain_cmdline_opts()
     explain_cmdline_opt "-dx" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -2122,7 +2122,7 @@ parallel_svtyper_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 
@@ -3260,6 +3260,21 @@ filter_norm_bam_contigs_define_opts()
 }
 
 ########
+get_ref_contigs()
+{
+    local faifile=$1
+    
+    ${AWK} '{print $1}' ${faifile}
+}
+
+########
+remove_line_breaks_from_file()
+{
+    local file=$1
+    echo `cat ${file}`
+}
+
+########
 filter_norm_bam_contigs()
 {
     display_begin_step_message
@@ -3273,27 +3288,23 @@ filter_norm_bam_contigs()
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || exit 1
 
-    # Generate bed file for genome reference
-    logmsg "* Executing gen_bed_for_genome..."
-    ${biopanpipe_bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    # Obtain contigs given in reference
+    get_ref_contigs ${ref}.fai > ${step_outd}/refcontigs
+
+    # Obtain new header
     
-    # Filter normal bam file
-    logmsg "* Executing samtools view..."
-    samtools view -b -L ${step_outd}/genref.bed ${normalbam} > ${step_outd}/filtered.bam || exit 1
-
-    # Reheader bam file
-
-    ## Extract ref contigs to a file
-    ${AWK} '{print $1}' ${ref}.fai > ${step_outd}/refcontigs || exit 1
-
     ## Extract sam header
     samtools view -H ${step_outd}/filtered.bam > ${step_outd}/original_header || exit 1
     
     ## Generate new sam header
     ${biopanpipe_bindir}/get_filtered_sam_header -h ${step_outd}/original_header -l ${step_outd}/refcontigs > ${step_outd}/new_header || exit 1
-    
-    ## Reheader bam
-    samtools reheader ${step_outd}/new_header ${step_outd}/filtered.bam > ${normalbam} || exit 1
+
+    # Generate filtered bam
+    contigs=`remove_line_breaks_from_file ${step_outd}/refcontigs`
+    samtools view ${normalbam} ${contigs} | samtools view -bo ${step_outd}/filtered.bam -t ${step_outd}/new_header -
+
+    # Move bam file
+    mv ${step_outd}/filtered.bam ${normalbam}
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -3354,27 +3365,23 @@ filter_tum_bam_contigs()
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || exit 1
 
-    # Generate bed file for genome reference
-    logmsg "* Executing gen_bed_for_genome..."
-    ${biopanpipe_bindir}/gen_bed_for_genome -r ${ref} -o ${step_outd}/genref
+    # Obtain contigs given in reference
+    get_ref_contigs ${ref}.fai > ${step_outd}/refcontigs
+
+    # Obtain new header
     
-    # Filter tumor bam file
-    logmsg "* Executing samtools view..."
-    samtools view -b -L ${step_outd}/genref.bed ${tumorbam} > ${step_outd}/filtered.bam || exit 1
-
-    # Reheader bam file
-
-    ## Extract ref contigs to a file
-    ${AWK} '{print $1}' ${ref}.fai > ${step_outd}/refcontigs || exit 1
-
     ## Extract sam header
     samtools view -H ${step_outd}/filtered.bam > ${step_outd}/original_header || exit 1
     
     ## Generate new sam header
     ${biopanpipe_bindir}/get_filtered_sam_header -h ${step_outd}/original_header -l ${step_outd}/refcontigs > ${step_outd}/new_header || exit 1
-    
-    ## Reheader bam
-    samtools reheader ${step_outd}/new_header ${step_outd}/filtered.bam > ${tumorbam} || exit 1
+
+    # Generate filtered bam
+    contigs=`remove_line_breaks_from_file ${step_outd}/refcontigs`
+    samtools view ${tumorbam} ${contigs} | samtools view -bo ${step_outd}/filtered.bam -t ${step_outd}/new_header -
+
+    # Move bam file
+    mv ${step_outd}/filtered.bam ${tumorbam}
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -3585,7 +3592,7 @@ parallel_sambamba_mpileup_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-mpb" "<string>" "$description"
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"
 }
 
@@ -3680,7 +3687,7 @@ parallel_sambamba_mpileup_tum_bam_explain_cmdline_opts()
     explain_cmdline_opt "-mpb" "<string>" "$description"
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"
 }
 
@@ -3775,7 +3782,7 @@ parallel_split_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"
 }
 
@@ -3862,7 +3869,7 @@ parallel_split_tum_bam_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -lc option
-    description="File with list of contig names to process (required by parallel SV callers)"
+    description="File with list of contig names to process"
     explain_cmdline_opt "-lc" "<string>" "$description"   
 }
 

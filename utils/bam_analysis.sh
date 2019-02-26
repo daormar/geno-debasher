@@ -127,8 +127,8 @@ get_tumor_bam_filename()
 manta_germline_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -228,8 +228,8 @@ manta_germline_conda_envs()
 cnvkit_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -311,8 +311,8 @@ cnvkit_conda_envs()
 manta_somatic_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -409,8 +409,8 @@ manta_somatic_conda_envs()
 strelka_germline_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -497,8 +497,8 @@ strelka_germline_conda_envs()
 strelka_somatic_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -624,8 +624,8 @@ strelka_somatic_conda_envs()
 platypus_germline_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -723,8 +723,8 @@ platypus_conda_envs()
 msisensor_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -811,7 +811,7 @@ wisecondorx_explain_cmdline_opts()
 {
     # -wcr option
     description="Reference file in npz format for WisecondorX"
-    explain_cmdline_opt "-wcr" "<string>" "$description"
+    explain_cmdline_req_opt "-wcr" "<string>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
@@ -896,8 +896,8 @@ snp_pileup_plus_facets_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"        
 
     # -sv option
-    description="SNP vcf file required by Facets"
-    explain_cmdline_opt "-sv" "<string>" "$description"        
+    description="SNP vcf file"
+    explain_cmdline_req_opt "-sv" "<string>" "$description"        
 }
 
 ########
@@ -980,8 +980,8 @@ snp_pileup_plus_facets_conda_envs()
 mpileup_plus_sequenza_explain_cmdline_opts()
 {
     # -gcc option
-    description="GC content wiggle file for sequenza (required)"
-    explain_cmdline_opt "-gcc" "<string>" "$description"
+    description="GC content wiggle file for sequenza"
+    explain_cmdline_req_opt "-gcc" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -1078,8 +1078,8 @@ mpileup_plus_sequenza_conda_envs()
 sequenza_explain_cmdline_opts()
 {
     # -gcc option
-    description="GC content wiggle file for sequenza (required)"
-    explain_cmdline_opt "-gcc" "<string>" "$description"
+    description="GC content wiggle file for sequenza"
+    explain_cmdline_req_opt "-gcc" "<string>" "$description"
 }
 
 ########
@@ -1154,12 +1154,12 @@ sequenza_conda_envs()
 parallel_bam2seqz_explain_cmdline_opts()
 {
     # -gcc option
-    description="GC content wiggle file for bam2seqz (required)"
-    explain_cmdline_opt "-gcc" "<string>" "$description"
+    description="GC content wiggle file for bam2seqz"
+    explain_cmdline_req_opt "-gcc" "<string>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -1240,7 +1240,7 @@ seqzmerge_plus_sequenza_explain_cmdline_opts()
 {
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -1422,7 +1422,7 @@ parallel_exclude_plus_lumpy_explain_cmdline_opts()
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -1528,7 +1528,7 @@ parallel_split_plus_lumpy_explain_cmdline_opts()
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -1681,7 +1681,7 @@ parallel_lumpy_explain_cmdline_opts()
 {
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -1753,7 +1753,7 @@ parallel_lumpy_conda_envs()
 delly_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
+    description="Reference genome file"
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
@@ -1765,8 +1765,8 @@ delly_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -dx option
-    description="File with regions to exclude in bed format for Delly"
-    explain_cmdline_opt "-dx" "<string>" "$description"    
+    description="File with regions to exclude in bed format"
+    explain_cmdline_req_opt "-dx" "<string>" "$description"    
 }
 
 ########
@@ -1852,7 +1852,7 @@ parallel_lumpy_conda_envs()
 parallel_split_plus_delly_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
+    description="Reference genome file"
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
@@ -1864,12 +1864,12 @@ parallel_split_plus_delly_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -dx option
-    description="File with regions to exclude in bed format for Delly"
-    explain_cmdline_opt "-dx" "<string>" "$description"    
+    description="File with regions to exclude in bed format"
+    explain_cmdline_req_opt "-dx" "<string>" "$description"    
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -2011,16 +2011,16 @@ parallel_split_plus_delly_conda_envs()
 parallel_delly_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
+    description="Reference genome file"
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -dx option
-    description="File with regions to exclude in bed format for Delly"
-    explain_cmdline_opt "-dx" "<string>" "$description"    
+    description="File with regions to exclude in bed format"
+    explain_cmdline_req_opt "-dx" "<string>" "$description"    
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -2123,7 +2123,7 @@ parallel_svtyper_explain_cmdline_opts()
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########
@@ -2232,7 +2232,7 @@ download_ega_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-bamdir" "<string>" "$description"
 
     # -extn option
-    description="External database id of normal bam file to download (required)"
+    description="External database id of normal bam file to download"
     explain_cmdline_opt "-extn" "<string>" "$description"
 
     # -egastr option
@@ -2240,8 +2240,8 @@ download_ega_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-egastr" "<int>" "$description"
 
     # -egacred option
-    description="File with EGA download client credentials (required)"
-    explain_cmdline_opt "-egacred" "<string>" "$description"
+    description="File with EGA download client credentials"
+    explain_cmdline_req_opt "-egacred" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -2362,16 +2362,16 @@ download_ega_norm_bam_conda_envs()
 download_ega_tum_bam_explain_cmdline_opts()
 {
     # -extt option
-    description="External database id of tumor bam file to download (required)"
-    explain_cmdline_opt "-extt" "<string>" "$description"
+    description="External database id of tumor bam file to download"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
 
     # -egastr option
     description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
     explain_cmdline_opt "-egastr" "<int>" "$description"
 
     # -egacred option
-    description="File with EGA download client credentials (required)"
-    explain_cmdline_opt "-egacred" "<string>" "$description"
+    description="File with EGA download client credentials"
+    explain_cmdline_req_opt "-egacred" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -2452,8 +2452,8 @@ download_ega_tum_bam_conda_envs()
 download_aws_norm_bam_explain_cmdline_opts()
 {
     # -extn option
-    description="External database id of normal bam file to download (required)"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    description="External database id of normal bam file to download"
+    explain_cmdline_req_opt "-extn" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -2535,8 +2535,8 @@ download_aws_norm_bam()
 download_aws_tum_bam_explain_cmdline_opts()
 {
     # -extt option
-    description="External database id of tumor bam file to download (required)"
-    explain_cmdline_opt "-extt" "<string>" "$description"
+    description="External database id of tumor bam file to download"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -2603,8 +2603,8 @@ download_aws_tum_bam()
 download_collab_norm_bam_explain_cmdline_opts()
 {
     # -extn option
-    description="External database id of normal bam file to download (required)"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    description="External database id of normal bam file to download"
+    explain_cmdline_req_opt "-extn" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -2671,8 +2671,8 @@ download_collab_norm_bam()
 download_collab_tum_bam_explain_cmdline_opts()
 {
     # -extt option
-    description="External database id of tumor bam file to download (required)"
-    explain_cmdline_opt "-extt" "<string>" "$description"
+    description="External database id of tumor bam file to download"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -2739,24 +2739,24 @@ download_collab_tum_bam()
 download_ega_asp_norm_bam_explain_cmdline_opts()
 {
     # -extn option
-    description="External database id of normal bam file to download (required)"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    description="External database id of normal bam file to download"
+    explain_cmdline_req_opt "-extn" "<string>" "$description"
 
     # -asperausr option
-    description="Username for Aspera server (required)"
-    explain_cmdline_opt "-asperausr" "<string>" "$description"
+    description="Username for Aspera server"
+    explain_cmdline_req_opt "-asperausr" "<string>" "$description"
 
     # -asperapwd option
-    description="Password for Aspera server (required)"
-    explain_cmdline_opt "-asperapwd" "<string>" "$description"
+    description="Password for Aspera server"
+    explain_cmdline_req_opt "-asperapwd" "<string>" "$description"
 
     # -asperaserv option
-    description="Name of Aspera server (required)"
-    explain_cmdline_opt "-asperaserv" "<string>" "$description"
+    description="Name of Aspera server"
+    explain_cmdline_req_opt "-asperaserv" "<string>" "$description"
 
     # -egadecrpwd option
-    description="File with EGA decryptor password (required)"
-    explain_cmdline_opt "-egadecrpwd" "<string>" "$description"
+    description="File with EGA decryptor password"
+    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
     
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -2847,24 +2847,24 @@ download_ega_asp_norm_bam()
 download_ega_asp_tum_bam_explain_cmdline_opts()
 {
     # -extt option
-    description="External database id of normal bam file to download (required)"
-    explain_cmdline_opt "-extt" "<string>" "$description"
+    description="External database id of normal bam file to download"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
 
     # -asperausr option
-    description="Username for Aspera server (required)"
-    explain_cmdline_opt "-asperausr" "<string>" "$description"
+    description="Username for Aspera server"
+    explain_cmdline_req_opt "-asperausr" "<string>" "$description"
 
     # -asperapwd option
-    description="Password for Aspera server (required)"
-    explain_cmdline_opt "-asperapwd" "<string>" "$description"
+    description="Password for Aspera server"
+    explain_cmdline_req_opt "-asperapwd" "<string>" "$description"
 
     # -asperaserv option
-    description="Name of Aspera server (required)"
-    explain_cmdline_opt "-asperaserv" "<string>" "$description"
+    description="Name of Aspera server"
+    explain_cmdline_req_opt "-asperaserv" "<string>" "$description"
 
     # -egadecrpwd option
-    description="File with EGA decryptor password (required)"
-    explain_cmdline_opt "-egadecrpwd" "<string>" "$description"
+    description="File with EGA decryptor password"
+    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
     
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -3231,8 +3231,8 @@ sort_tum_bam_conda_envs()
 filter_norm_bam_contigs_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 }
 
 ########
@@ -3329,8 +3329,8 @@ filter_norm_bam_contigs_conda_envs()
 filter_tum_bam_contigs_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 }
 
 ########
@@ -3412,15 +3412,15 @@ filter_tum_bam_contigs_conda_envs()
 sambamba_mpileup_norm_bam_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -mpb option
-    description="BED file for mpileup (optional)"
+    description="BED file for mpileup"
     explain_cmdline_opt "-mpb" "<string>" "$description"
 }
 
@@ -3512,15 +3512,15 @@ sambamba_mpileup_norm_bam_conda_envs()
 sambamba_mpileup_tum_bam_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -mpb option
-    description="BED file for mpileup (optional)"
+    description="BED file for mpileup"
     explain_cmdline_opt "-mpb" "<string>" "$description"
 }
 
@@ -3600,12 +3600,12 @@ sambamba_mpileup_tum_bam_conda_envs()
 parallel_sambamba_mpileup_norm_bam_explain_cmdline_opts()
 {
     # -mpb option
-    description="BED file for mpileup (optional)"
+    description="BED file for mpileup"
     explain_cmdline_opt "-mpb" "<string>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"
+    explain_cmdline_req_opt "-lc" "<string>" "$description"
 }
 
 ########
@@ -3695,12 +3695,12 @@ parallel_sambamba_mpileup_norm_bam_conda_envs()
 parallel_sambamba_mpileup_tum_bam_explain_cmdline_opts()
 {
     # -mpb option
-    description="BED file for mpileup (optional)"
+    description="BED file for mpileup"
     explain_cmdline_opt "-mpb" "<string>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"
+    explain_cmdline_req_opt "-lc" "<string>" "$description"
 }
 
 ########
@@ -3795,7 +3795,7 @@ parallel_split_norm_bam_explain_cmdline_opts()
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"
+    explain_cmdline_req_opt "-lc" "<string>" "$description"
 }
 
 ########
@@ -3882,7 +3882,7 @@ parallel_split_tum_bam_explain_cmdline_opts()
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"   
 }
 
 ########

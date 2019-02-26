@@ -9,11 +9,11 @@ allele_counter_norm_explain_cmdline_opts()
 {
     # -l option
     description="Loci (SNP position) file"
-    explain_cmdline_opt "-l" "<string>" "$description"
+    explain_cmdline_req_opt "-l" "<string>" "$description"
 
      # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -79,11 +79,11 @@ allele_counter_tumor_explain_cmdline_opts()
 {
     # -l option
     description="Loci (SNP position) file"
-    explain_cmdline_opt "-l" "<string>" "$description"
+    explain_cmdline_req_opt "-l" "<string>" "$description"
 
      # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
@@ -157,12 +157,12 @@ ascatr_explain_cmdline_opts()
     explain_cmdline_opt "-act" "<string>" "$description"
 
     # -g option
-    description="Sample gender: XX|XY (required)"
-    explain_cmdline_opt "-g" "<string>" "$description"
+    description="Sample gender: XX|XY"
+    explain_cmdline_req_opt "-g" "<string>" "$description"
 
     # -sg option
-    description="SNP GC correction file required by Ascat"
-    explain_cmdline_opt "-sg" "<string>" "$description"
+    description="SNP GC correction file"
+    explain_cmdline_req_opt "-sg" "<string>" "$description"
 }
 
 ########

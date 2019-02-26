@@ -16,8 +16,8 @@ snp_pileup_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -sv option
-    description="SNP vcf file required by snp pileup"
-    explain_cmdline_opt "-sv" "<string>" "$description"
+    description="SNP vcf file"
+    explain_cmdline_req_opt "-sv" "<string>" "$description"
 }
 
 ########

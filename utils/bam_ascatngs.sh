@@ -2,8 +2,8 @@
 ascatngs_explain_cmdline_opts()
 {
     # -r option
-    description="Reference genome file (required)"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    description="Reference genome file"
+    explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -14,16 +14,16 @@ ascatngs_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"    
 
     # -g option
-    description="Sample gender: XX|XY (required)"
-    explain_cmdline_opt "-g" "<string>" "$description"    
+    description="Sample gender: XX|XY"
+    explain_cmdline_req_opt "-g" "<string>" "$description"    
 
     # -sg option
-    description="SNP GC correction file required by AscatNGS"
-    explain_cmdline_opt "-sg" "<string>" "$description"    
+    description="SNP GC correction file"
+    explain_cmdline_req_opt "-sg" "<string>" "$description"    
 
     # -mc option
-    description="Name of male sex chromosome required by AscatNGS"
-    explain_cmdline_opt "-mc" "<string>" "$description"    
+    description="Name of male sex chromosome"
+    explain_cmdline_req_opt "-mc" "<string>" "$description"    
 }
 
 ########

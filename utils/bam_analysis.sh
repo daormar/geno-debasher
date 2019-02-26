@@ -3288,20 +3288,9 @@ filter_norm_bam_contigs()
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || exit 1
 
-    # Obtain contigs given in reference
-    get_ref_contigs ${ref}.fai > ${step_outd}/refcontigs
-
-    # Obtain new header
-    
-    ## Extract sam header
-    samtools view -H ${normalbam} > ${step_outd}/original_header || exit 1
-    
-    ## Generate new sam header
-    ${biopanpipe_bindir}/get_filtered_sam_header -h ${step_outd}/original_header -l ${step_outd}/refcontigs > ${step_outd}/new_header || exit 1
-
     # Generate filtered bam
     contigs=`remove_line_breaks_from_file ${step_outd}/refcontigs`
-    samtools view ${normalbam} ${contigs} | samtools view -bo ${step_outd}/filtered.bam -t ${step_outd}/new_header -
+    samtools view ${normalbam} ${contigs} | samtools view -bo ${step_outd}/filtered.bam -t ${ref}.fai -
 
     # Move bam file
     mv ${step_outd}/filtered.bam ${normalbam}
@@ -3365,20 +3354,9 @@ filter_tum_bam_contigs()
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || exit 1
 
-    # Obtain contigs given in reference
-    get_ref_contigs ${ref}.fai > ${step_outd}/refcontigs
-
-    # Obtain new header
-    
-    ## Extract sam header
-    samtools view -H ${tumorbam} > ${step_outd}/original_header || exit 1
-    
-    ## Generate new sam header
-    ${biopanpipe_bindir}/get_filtered_sam_header -h ${step_outd}/original_header -l ${step_outd}/refcontigs > ${step_outd}/new_header || exit 1
-
     # Generate filtered bam
     contigs=`remove_line_breaks_from_file ${step_outd}/refcontigs`
-    samtools view ${tumorbam} ${contigs} | samtools view -bo ${step_outd}/filtered.bam -t ${step_outd}/new_header -
+    samtools view ${tumorbam} ${contigs} | samtools view -bo ${step_outd}/filtered.bam -t ${ref}.fai -
 
     # Move bam file
     mv ${step_outd}/filtered.bam ${tumorbam}

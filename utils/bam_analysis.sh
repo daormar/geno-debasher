@@ -135,7 +135,7 @@ manta_germline_explain_cmdline_opts()
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -cr option
-    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka"
     explain_cmdline_opt "-cr" "<string>" "$description"
 }
 
@@ -323,7 +323,7 @@ manta_somatic_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -cr option
-    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka"
     explain_cmdline_opt "-cr" "<string>" "$description"
 }
 
@@ -417,7 +417,7 @@ strelka_germline_explain_cmdline_opts()
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -cr option
-    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka"
     explain_cmdline_opt "-cr" "<string>" "$description"
 }
 
@@ -509,7 +509,7 @@ strelka_somatic_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -cr option
-    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka (optional)"
+    description="bgzipped and tabixed bed file to specify regions to call for Manta and Strelka"
     explain_cmdline_opt "-cr" "<string>" "$description"
 }
 

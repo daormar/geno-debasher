@@ -609,7 +609,7 @@ strelka_somatic()
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
-    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    conda deactivate 2>&1
 
     display_end_step_message
 }
@@ -860,7 +860,7 @@ wisecondorx()
     
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate wisecondorx > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate wisecondorx 2>&1 || exit 1
 
     # Convert tumor bam file into npz
     logmsg "* Executing WisecondorX convert..."
@@ -2427,7 +2427,7 @@ download_ega_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate pyega3 > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate pyega3 2>&1 || exit 1
 
     # Download file (with multiple tries)
     ega_download_retry ${egastr} ${egacred} ${egaid_tumorbam} ${step_outd}/tumor.bam ${download_tries} || exit 1
@@ -2437,7 +2437,7 @@ download_ega_tum_bam()
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
-    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    conda deactivate 2>&1
 
     display_end_step_message
 }
@@ -3002,7 +3002,7 @@ index_norm_bam()
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
-    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    conda deactivate 2>&1
 
     display_end_step_message
 }
@@ -3119,7 +3119,7 @@ sort_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate samtools > ${step_outd}/conda_activate.log 2>&1 || exit 1
+    conda activate samtools 2>&1 || exit 1
 
     # Verify if bam file is already sorted
     local bam_is_sorted=`samtools view -H ${normalbam} | $GREP SO:coordinate | wc -l` || exit 1
@@ -3128,19 +3128,19 @@ sort_norm_bam()
     else
         # Execute samtools
         logmsg "* Executing samtools sort..."
-        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${normalbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${normalbam} 2>&1 || exit 1
         # NOTE: -m option is used here to increase the maximum memory per
         # thread. One lateral efect of this is that the number of tmp files
         # generated is decreased. This constitutes one possible way to avoid
         # the "Too many open files" error reported by samtools
 
         # Replace initial bam file by the sorted one
-        mv ${step_outd}/sorted.bam ${normalbam} 2> ${step_outd}/mv.log || exit 1
+        mv ${step_outd}/sorted.bam ${normalbam} 2>&1 || exit 1
     fi
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
-    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    conda deactivate 2>&1
 
     display_end_step_message
 }
@@ -3204,19 +3204,19 @@ sort_tum_bam()
     else
         # Execute samtools
         logmsg "* Executing samtools sort..."
-        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${tumorbam} >  ${step_outd}/samtools.log 2>&1 || exit 1
+        samtools sort -T ${step_outd} -o ${step_outd}/sorted.bam -m 2G -@ ${cpus} ${tumorbam} 2>&1 || exit 1
         # NOTE: -m option is used here to increase the maximum memory per
         # thread. One lateral efect of this is that the number of tmp files
         # generated is decreased. This constitutes one possible way to avoid
         # the "Too many open files" error reported by samtools
 
         # Replace initial bam file by the sorted one
-        mv ${step_outd}/sorted.bam ${tumorbam} 2> ${step_outd}/mv.log || exit 1
+        mv ${step_outd}/sorted.bam ${tumorbam} 2>&1 || exit 1
     fi
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
-    conda deactivate > ${step_outd}/conda_deactivate.log 2>&1
+    conda deactivate 2>&1
 
     display_end_step_message
 }

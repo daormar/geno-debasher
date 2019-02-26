@@ -3371,7 +3371,7 @@ filter_tum_bam_contigs()
     # Obtain new header
     
     ## Extract sam header
-    samtools view -H ${normalbam} > ${step_outd}/original_header || exit 1
+    samtools view -H ${tumorbam} > ${step_outd}/original_header || exit 1
     
     ## Generate new sam header
     ${biopanpipe_bindir}/get_filtered_sam_header -h ${step_outd}/original_header -l ${step_outd}/refcontigs > ${step_outd}/new_header || exit 1

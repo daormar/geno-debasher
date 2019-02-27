@@ -3274,6 +3274,23 @@ remove_line_breaks_from_file()
     echo `cat ${file}`
 }
 
+get_contigs_from_header()
+{
+    local header=$1
+
+    while read line; do
+        local fields=( $line )
+        local num_fields=${#fields[@]}
+        if [ ${num_fields} -ge 3 ]; then
+            if [ ${fields[0]} = "@SQ" ]; then
+                contigfield=${fields[1]}
+                contig=${contigfield:3}
+                echo ${contig}
+            fi
+        fi
+    done < ${header}
+}
+
 ########
 filter_norm_bam_contigs()
 {
@@ -3305,7 +3322,7 @@ filter_norm_bam_contigs()
         cat ${step_outd}/new_header
         
         # Print contig information
-        contigs=`remove_line_breaks_from_file ${step_outd}/refcontigs`
+        contigs=`get_contigs_from_header ${step_outd}/new_header`
         samtools view ${normalbam} ${contigs} 
     } | samtools view -bo ${step_outd}/filtered.bam -
     
@@ -3388,7 +3405,7 @@ filter_tum_bam_contigs()
         cat ${step_outd}/new_header
         
         # Print contig information
-        contigs=`remove_line_breaks_from_file ${step_outd}/refcontigs`
+        contigs=`get_contigs_from_header ${step_outd}/new_header`
         samtools view ${tumorbam} ${contigs} 
     } | samtools view -bo ${step_outd}/filtered.bam -
 

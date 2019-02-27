@@ -940,20 +940,24 @@ snp_pileup_plus_facets()
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local snpvcf=`read_opt_value_from_line "$*" "-sv"`
 
-    # Activate conda environment if needed
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Activating conda environment..."
-        conda activate facets 2>&1 || exit 1
-    fi
-        
+    # Activate conda environment
+    logmsg "* Activating conda environment (snp-pileup)..."
+    conda activate snp-pileup 2>&1 || exit 1
+
     # Execute snp-pileup
     logmsg "* Executing snp-pileup..."
+    snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment if needed
     if [ -z "${FACETS_HOME_DIR}" ]; then
-        snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
-    else
-        ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
+        logmsg "* Activating conda environment (facets)..."
+        conda activate facets 2>&1 || exit 1
     fi
-    
+            
     # Execute facets
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
@@ -973,6 +977,7 @@ snp_pileup_plus_facets()
 ########
 snp_pileup_plus_facets_conda_envs()
 {
+    define_conda_env facets snp-pileup.yml
     define_conda_env facets facets.yml
 }
 

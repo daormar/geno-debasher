@@ -1390,17 +1390,22 @@ lumpy()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
 
-    # Activate conda environment
-    logmsg "* Activating conda environment..."
-    conda activate lumpy 2>&1 || exit 1
+    if [ -z "${LUMPY_HOME_DIR}" ]; then
+        # Activate conda environment
+        logmsg "* Activating conda environment..."
+        conda activate lumpy 2>&1 || exit 1
 
-    logmsg "* Executing lumpyexpress..."
-    lumpyexpress -B ${tumorbam},${normalbam} -o ${step_outd}/out.vcf || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-
+        logmsg "* Executing lumpyexpress..."
+        lumpyexpress -B ${tumorbam},${normalbam} -o ${step_outd}/out.vcf || exit 1
+        
+        # Deactivate conda environment
+        logmsg "* Deactivating conda environment..."
+        conda deactivate 2>&1
+    else
+        logmsg "* Executing lumpyexpress..."
+        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} -o ${step_outd}/out.vcf || exit 1
+    fi
+    
     display_end_step_message
 }
 
@@ -1494,17 +1499,22 @@ parallel_exclude_plus_lumpy()
 
     # Generate exclusion bed file
     gen_exclusion_bed_given_bam ${normalbam} ${contig} > ${step_outd}/${contig}.bed
-    
-    # Activate conda environment
-    logmsg "* Activating conda environment (lumpy)..."
-    conda activate lumpy 2>&1 || exit 1
-    
-    logmsg "* Executing lumpyexpress (contig $contig)..."
-    lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -x ${step_outd}/${contig}.bed -o ${step_outd}/out${contig}.vcf || exit 1
 
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
+    if [ -z "${LUMPY_HOME_DIR}" ]; then
+        # Activate conda environment
+        logmsg "* Activating conda environment (lumpy)..."
+        conda activate lumpy 2>&1 || exit 1
+    
+        logmsg "* Executing lumpyexpress (contig $contig)..."
+        lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -x ${step_outd}/${contig}.bed -o ${step_outd}/out${contig}.vcf || exit 1
+
+        # Deactivate conda environment
+        logmsg "* Deactivating conda environment..."
+        conda deactivate 2>&1
+    else
+        logmsg "* Executing lumpyexpress (contig $contig)..."
+        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -x ${step_outd}/${contig}.bed -o ${step_outd}/out${contig}.vcf || exit 1
+    fi
     
     display_end_step_message
 }
@@ -1629,22 +1639,27 @@ parallel_split_plus_lumpy()
     logmsg "* Indexing contigs..."
     sambamba index ${normalcont} || exit 1
     sambamba index ${tumorcont} || exit 1
-    
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-    
-    # Activate conda environment
-    logmsg "* Activating conda environment (lumpy)..."
-    conda activate lumpy 2>&1 || exit 1
-    
-    logmsg "* Executing lumpyexpress (contig $contig)..."
-    lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
 
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-
+    if [ -z "${LUMPY_HOME_DIR}" ]; then
+        # Deactivate conda environment
+        logmsg "* Deactivating conda environment..."
+        conda deactivate 2>&1
+    
+        # Activate conda environment
+        logmsg "* Activating conda environment (lumpy)..."
+        conda activate lumpy 2>&1 || exit 1
+        
+        logmsg "* Executing lumpyexpress (contig $contig)..."
+        lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+        
+        # Deactivate conda environment
+        logmsg "* Deactivating conda environment..."
+        conda deactivate 2>&1
+    else
+        logmsg "* Executing lumpyexpress (contig $contig)..."
+        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+    fi
+    
     # Delete extracted contigs and related files
     rm ${normalcont}* ${tumorcont}*
     
@@ -1729,17 +1744,22 @@ parallel_lumpy()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
-    
-    # Activate conda environment
-    logmsg "* Activating conda environment (lumpy)..."
-    conda activate lumpy 2>&1 || exit 1
-    
-    logmsg "* Executing lumpyexpress (contig $contig)..."
-    lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
 
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
+    if [ -z "${LUMPY_HOME_DIR}" ]; then
+        # Activate conda environment
+        logmsg "* Activating conda environment (lumpy)..."
+        conda activate lumpy 2>&1 || exit 1
+        
+        logmsg "* Executing lumpyexpress (contig $contig)..."
+        lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+        
+        # Deactivate conda environment
+        logmsg "* Deactivating conda environment..."
+        conda deactivate 2>&1
+    else
+        logmsg "* Executing lumpyexpress (contig $contig)..."
+        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+    fi
     
     display_end_step_message
 }

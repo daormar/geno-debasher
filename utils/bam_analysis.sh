@@ -1500,7 +1500,7 @@ parallel_exclude_plus_lumpy()
     gen_exclusion_bed_given_bam ${normalbam} ${contig} > ${step_outd}/${contig}.bed
     
     # Activate conda environment
-    logmsg "* Activating conda environment... (lumpy)"
+    logmsg "* Activating conda environment (lumpy)..."
     conda activate lumpy 2>&1 || exit 1
     
     logmsg "* Executing lumpyexpress (contig $contig)..."
@@ -1639,7 +1639,7 @@ parallel_split_plus_lumpy()
     conda deactivate 2>&1
     
     # Activate conda environment
-    logmsg "* Activating conda environment... (lumpy)"
+    logmsg "* Activating conda environment (lumpy)..."
     conda activate lumpy 2>&1 || exit 1
     
     logmsg "* Executing lumpyexpress (contig $contig)..."
@@ -1735,7 +1735,7 @@ parallel_lumpy()
     local contig=`read_opt_value_from_line "$*" "-contig"`
     
     # Activate conda environment
-    logmsg "* Activating conda environment... (lumpy)"
+    logmsg "* Activating conda environment (lumpy)..."
     conda activate lumpy 2>&1 || exit 1
     
     logmsg "* Executing lumpyexpress (contig $contig)..."
@@ -1819,7 +1819,7 @@ delly()
     local exclude=`read_opt_value_from_line "$*" "-dx"`
 
     # Activate conda environment
-    logmsg "* Activating conda environment... (delly)"
+    logmsg "* Activating conda environment (delly)..."
     conda activate delly 2>&1 || exit 1
 
     logmsg "* Executing delly..."
@@ -1832,7 +1832,7 @@ delly()
     conda deactivate 2>&1
 
     # Activate conda environment
-    logmsg "* Activating conda environment... (bcftools)"
+    logmsg "* Activating conda environment (bcftools)..."
     conda activate bcftools 2>&1 || exit 1
 
     # Convert bcf output to vcf

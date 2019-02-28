@@ -3279,6 +3279,7 @@ remove_line_breaks_from_file()
     echo `cat ${file}`
 }
 
+########
 get_contigs_from_header()
 {
     local header=$1

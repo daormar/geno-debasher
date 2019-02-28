@@ -1953,7 +1953,7 @@ parallel_split_plus_delly()
     conda deactivate 2>&1
     
     # Activate conda environment
-    logmsg "* Activating conda environment... (delly)"
+    logmsg "* Activating conda environment (delly)..."
     conda activate delly 2>&1 || exit 1
     
     logmsg "* Executing delly (contig $contig)..."
@@ -1966,7 +1966,7 @@ parallel_split_plus_delly()
     conda deactivate 2>&1
 
     # Activate conda environment
-    logmsg "* Activating conda environment... (bcftools)"
+    logmsg "* Activating conda environment (bcftools)..."
     conda activate bcftools 2>&1 || exit 1
 
     # Convert bcf output to vcf
@@ -2081,7 +2081,7 @@ parallel_delly()
     local exclude=`read_opt_value_from_line "$*" "-dx"`
     
     # Activate conda environment
-    logmsg "* Activating conda environment... (delly)"
+    logmsg "* Activating conda environment (delly)..."
     conda activate delly 2>&1 || exit 1
     
     logmsg "* Executing delly (contig $contig)..."
@@ -2094,7 +2094,7 @@ parallel_delly()
     conda deactivate 2>&1
 
     # Activate conda environment
-    logmsg "* Activating conda environment... (bcftools)"
+    logmsg "* Activating conda environment (bcftools)..."
     conda activate bcftools 2>&1 || exit 1
 
     # Convert bcf output to vcf

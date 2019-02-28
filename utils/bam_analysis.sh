@@ -1405,7 +1405,7 @@ lumpy()
 }
 
 ########
-manta_somatic_conda_envs()
+lumpy_conda_envs()
 {
     define_conda_env lumpy lumpy.yml
 }

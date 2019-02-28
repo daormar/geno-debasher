@@ -460,6 +460,22 @@ else
 fi
 AC_SUBST(PLATYPUS_HOME_DIR,$with_platypus)
 
+# Adds an extra argument to configure (enable use of Lumpy)
+AC_MSG_CHECKING(whether to enable lumpy library)
+AC_ARG_WITH([lumpy],
+ [AS_HELP_STRING([--with-lumpy=DIR],
+   [installs the package with the necessary code to combine it with the lumpy library @<:@default=no@:>@])],
+ [with_lumpy=$withval],
+ [with_lumpy=""])
+if test "$with_lumpy" = ""; then
+ enable_lumpy_lib="no"
+ AC_MSG_RESULT(no)
+else
+ enable_lumpy_lib="yes"
+ AC_MSG_RESULT(yes)
+fi
+AC_SUBST(LUMPY_HOME_DIR,$with_lumpy)
+
 # Adds an extra argument to configure (enable use of icgcstor)
 AC_MSG_CHECKING(whether to enable icgcstor library)
 AC_ARG_WITH([icgcstor],

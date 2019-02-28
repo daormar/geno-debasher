@@ -30,6 +30,7 @@ bam_analysis: bam_analysis.sh
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "LUMPY_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
@@ -46,6 +47,7 @@ bam_facets: bam_facets.sh
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "LUMPY_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
@@ -62,6 +64,7 @@ bam_ascat_r: bam_ascat_r.sh
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "LUMPY_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
@@ -78,6 +81,7 @@ bam_ascat_ngs: bam_ascat_r.sh
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "LUMPY_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
@@ -120,6 +124,7 @@ SUFFIXES= .sh .py .r .R
 	echo "JAVA="$(JAVA) >> $@
 	echo "PANPIPE_HOME_DIR="$(PANPIPE_HOME_DIR) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
+	echo "LUMPY_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@

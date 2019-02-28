@@ -61,24 +61,16 @@ snp_pileup()
     local snpvcf=`read_opt_value_from_line "$*" "-sv"`
 
     # Activate conda environment if needed
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Activating conda environment..."
-        conda activate facets 2>&1 || exit 1
-    fi
+    logmsg "* Activating conda environment..."
+    conda activate snp-pileup 2>&1 || exit 1
 
     # Execute snp-pileup
     logmsg "* Executing snp-pileup..."
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
-    else
-        ${FACETS_HOME_DIR}/inst/extcode/snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
-    fi
+    snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
 
     # Deactivate conda environment if needed
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Dectivating conda environment..."
-        conda deactivate 2>&1
-    fi
+    logmsg "* Dectivating conda environment..."
+    conda deactivate 2>&1
 
     display_end_step_message
 }
@@ -129,10 +121,8 @@ facets()
     # snp_pìleup_opt=`get_snp_pileup_opt "${pileup_outd}"`
 
     # Activate conda environment if needed
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Activating conda environment..."
-        conda activate facets 2>&1 || exit 1
-    fi
+    logmsg "* Activating conda environment..."
+    conda activate facets 2>&1 || exit 1
 
     # Execute facets
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
@@ -142,10 +132,8 @@ facets()
     Rscript ${biopanpipe_bindir}/run_facets -c ${pileup_counts} -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment if needed
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Dectivating conda environment..."
-        conda deactivate 2>&1
-    fi
+    logmsg "* Dectivating conda environment..."
+    conda deactivate 2>&1
 
     display_end_step_message
 }

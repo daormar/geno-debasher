@@ -460,22 +460,6 @@ else
 fi
 AC_SUBST(PLATYPUS_HOME_DIR,$with_platypus)
 
-# Adds an extra argument to configure (enable use of Facets)
-AC_MSG_CHECKING(whether to enable facets library)
-AC_ARG_WITH([facets],
- [AS_HELP_STRING([--with-facets=DIR],
-   [installs the package with the necessary code to combine it with the facets library @<:@default=no@:>@])],
- [with_facets=$withval],
- [with_facets=""])
-if test "$with_facets" = ""; then
- enable_facets_lib="no"
- AC_MSG_RESULT(no)
-else
- enable_facets_lib="yes"
- AC_MSG_RESULT(yes)
-fi
-AC_SUBST(FACETS_HOME_DIR,$with_facets)
-
 # Adds an extra argument to configure (enable use of icgcstor)
 AC_MSG_CHECKING(whether to enable icgcstor library)
 AC_ARG_WITH([icgcstor],

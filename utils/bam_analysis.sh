@@ -953,10 +953,8 @@ snp_pileup_plus_facets()
     conda deactivate 2>&1
 
     # Activate conda environment if needed
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Activating conda environment (facets)..."
-        conda activate facets 2>&1 || exit 1
-    fi
+    logmsg "* Activating conda environment (facets)..."
+    conda activate facets 2>&1 || exit 1
             
     # Execute facets
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
@@ -966,10 +964,8 @@ snp_pileup_plus_facets()
     Rscript ${biopanpipe_bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment if needed
-    if [ -z "${FACETS_HOME_DIR}" ]; then
-        logmsg "* Deactivating conda environment..."
-        conda deactivate 2>&1
-    fi
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
 
     display_end_step_message
 }

@@ -46,18 +46,18 @@ def print_help():
     print >> sys.stderr, "-l <string>    List of contigs to keep (one contig name per line)"
 
 ##################################################
-def getContigsToKeep(listc):
+def get_contigs_to_keep(listc):
     file = open(listc, 'r')
-    contigsToKeep={}
+    contigs_to_keep={}
     for line in file:
         line=line.strip("\n")
         fields=line.split()
-        contigsToKeep[fields[0]]=1
-    return contigsToKeep
+        contigs_to_keep[fields[0]]=1
+    return contigs_to_keep
     
 ##################################################
 def process_pars(flags,values):
-    contigsToKeep=getContigsToKeep(values["listc"])
+    contigs_to_keep=get_contigs_to_keep(values["listc"])
 
     # Filter header
     file = open(values["samhdrf"], 'r')
@@ -70,7 +70,7 @@ def process_pars(flags,values):
         else:
             seqname=fields[1]
             seqname_fields=seqname.split(":")
-            if(seqname_fields[1] in contigsToKeep):
+            if(seqname_fields[1] in contigs_to_keep):
                 print line
                                    
 ##################################################

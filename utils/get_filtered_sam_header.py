@@ -59,7 +59,7 @@ def getContigsToKeep(listc):
 def process_pars(flags,values):
     contigsToKeep=getContigsToKeep(values["listc"])
 
-    # Filter genome
+    # Filter header
     file = open(values["samhdrf"], 'r')
     # read file line by line
     for line in file:

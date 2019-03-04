@@ -3345,7 +3345,7 @@ filter_norm_bam_contigs()
         
         # Print contig information
         contigs=`get_contigs_from_header ${step_outd}/new_header`
-        samtools view ${normalbam} ${contigs} 
+        samtools view ${normalbam} ${contigs} | ${biopanpipe_bindir}/get_filtered_sam_align -l ${step_outd}/refcontigs
     } | samtools view -bo ${step_outd}/filtered.bam -
     
     # Move bam file
@@ -3428,7 +3428,7 @@ filter_tum_bam_contigs()
         
         # Print contig information
         contigs=`get_contigs_from_header ${step_outd}/new_header`
-        samtools view ${tumorbam} ${contigs} 
+        samtools view ${tumorbam} ${contigs} | ${biopanpipe_bindir}/get_filtered_sam_align -l ${step_outd}/refcontigs
     } | samtools view -bo ${step_outd}/filtered.bam -
 
     # Move bam file

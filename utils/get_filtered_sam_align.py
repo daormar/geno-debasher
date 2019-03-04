@@ -70,10 +70,7 @@ def filter_chim_aligs(chim_aligs,contigs_to_keep):
     chim_aligs_array=chim_aligs.split(";")
     for alig in chim_aligs_array:
         if alig_contains_contig_to_keep(alig,contigs_to_keep):
-            if filtered_chim_aligs=="":
-                filtered_chim_aligs=alig
-            else:
-                filtered_chim_aligs=filtered_chim_aligs+";"+alig
+            filtered_chim_aligs=filtered_chim_aligs+alig+";"
         
     return filtered_chim_aligs
 

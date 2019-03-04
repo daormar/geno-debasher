@@ -54,6 +54,13 @@ def extract_safield(fields):
     return -1,""
 
 ##################################################
+def extract_xafield(fields):    
+    for i in range(10,len(fields)):
+        if fields[i].startswith("XA:Z:"):
+            return i,fields[i]
+    return -1,""
+
+##################################################
 def alig_contains_contig_to_keep(alig,contigs_to_keep):
     alig_fields=alig.split(",")
     if alig_fields>=1:
@@ -75,24 +82,24 @@ def filter_chim_aligs(chim_aligs,contigs_to_keep):
     return filtered_chim_aligs
 
 ##################################################
-def filter_safield(safield,contigs_to_keep):
-    safield_parts=safield.split(":")
-    if len(safield_parts)==3:
-        chim_aligs=safield_parts[2]
+def filter_sa_xa_field(field,contigs_to_keep):
+    field_parts=field.split(":")
+    if len(field_parts)==3:
+        chim_aligs=field_parts[2]
         filtered_chim_aligs=filter_chim_aligs(chim_aligs,contigs_to_keep)
         if filtered_chim_aligs=="":
             return ""
         else:
-            return safield_parts[0]+":"+safield_parts[1]+":"+filtered_chim_aligs
+            return field_parts[0]+":"+field_parts[1]+":"+filtered_chim_aligs
     else:
-        return safield
+        return field
 
 ##################################################
-def replace_filtered_sa_field(fields,sa_idx,filtered_safield):
+def replace_field(fields,field_idx,new_field):
     filtered_entry=""
     for i in range(len(fields)):
-        if i==sa_idx:
-            field_to_add=filtered_safield
+        if i==field_idx:
+            field_to_add=new_field
         else:
             field_to_add=fields[i]
         if field_to_add!="":
@@ -101,20 +108,40 @@ def replace_filtered_sa_field(fields,sa_idx,filtered_safield):
             else:
                 filtered_entry=filtered_entry+"\t"+field_to_add
     return filtered_entry
-    
+
 ##################################################
-def obtain_filtered_entry(entry,contigs_to_keep):
+def obtain_filtered_entry_sa(entry,contigs_to_keep):
     fields=entry.split()
     sa_idx,safield=extract_safield(fields)
     if sa_idx<0:
-        return False,""
+        return False,entry
     else:
-        filtered_safield=filter_safield(safield,contigs_to_keep)
+        filtered_safield=filter_sa_xa_field(safield,contigs_to_keep)
         if safield==filtered_safield:
-            return False,""
+            return False,entry
         else:
-            filtered_entry=replace_filtered_sa_field(fields,sa_idx,filtered_safield)
+            filtered_entry=replace_field(fields,sa_idx,filtered_safield)
             return True,filtered_entry
+
+##################################################
+def obtain_filtered_entry_xa(entry,contigs_to_keep):
+    fields=entry.split()
+    xa_idx,xafield=extract_xafield(fields)
+    if xa_idx<0:
+        return False,entry
+    else:
+        filtered_xafield=filter_sa_xa_field(xafield,contigs_to_keep)
+        if xafield==filtered_xafield:
+            return False,entry
+        else:
+            filtered_entry=replace_field(fields,xa_idx,filtered_xafield)
+            return True,filtered_entry
+
+##################################################
+def obtain_filtered_entry(entry,contigs_to_keep):
+    filter_sa_required,filtered_entry=obtain_filtered_entry_sa(entry,contigs_to_keep)
+    filter_xa_required,filtered_entry=obtain_filtered_entry_xa(filtered_entry,contigs_to_keep)
+    return filter_sa_required or filter_xa_required,filtered_entry
 
 ##################################################
 def process_pars(flags,values):

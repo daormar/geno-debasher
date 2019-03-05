@@ -161,7 +161,7 @@ get_contigs()
     while read accession; do
         logmsg "Getting data for ${accession}..."
         if accession_seems_valid ${accession}; then
-            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession}
+            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} || exit 1
         else
             errmsg "Warning: $accession does not seem a valid accession, skipping"
         fi
@@ -196,7 +196,8 @@ enrich_gen_ref()
     get_contigs ${step_outd}/missing_contigs.txt >> $outfile || exit 1
 
     # Index enriched reference
-    samtools faidx ${outfile}
+    logmsg "* Indexing enriched reference..."
+    samtools faidx ${outfile} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

@@ -193,7 +193,7 @@ enrich_gen_ref()
 
     # Enrich base reference
     logmsg "* Enriching base reference..."
-    get_contigs ${step_outd}/missing_contigs.txt >> $outfile || exit 1
+    get_contigs ${step_outd}/missing_contigs.txt >> $outfile || { errmsg "Error during FASTA data downloading"; exit 1; }
 
     # Index enriched reference
     logmsg "* Indexing enriched reference..."

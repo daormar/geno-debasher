@@ -30,6 +30,168 @@ bam_analysis_fifos()
 ######################
 
 ########
+enrich_gen_ref_explain_cmdline_opts()
+{
+    # -br option
+    description="Base reference genome file"
+    explain_cmdline_req_opt "-br" "<string>" "$description"
+
+    # -bam option
+    description="bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-bam" "<string>" "$description"
+}
+
+########
+get_bam_filename()
+{
+    local cmdline=$1
+    local given=0
+    local bam
+    bam=`read_opt_value_from_line "$cmdline" "-bam"` && given=1
+    if [ $given -eq 1 ]; then
+        # -bam option was given
+        file_exists $bam || { errmsg "file $bam does not exist" ; return 1; }
+        echo $bam
+        return 0
+    else
+        # Check -extn option
+        if check_opt_given "$cmdline" "-extn"; then
+            local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+            normalbam=${abs_datadir}/normal.bam
+            echo $normalbam
+            return 0
+        fi
+
+        # Check -extt option
+        if check_opt_given "$cmdline" "-extt"; then
+            local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+            tumor=${abs_datadir}/tumor.bam
+            echo $tumorbam
+            return 0
+        fi
+
+        errmsg "-bam, -extn or -extt options should be given"
+        return 1
+    fi
+}
+
+########
+enrich_gen_ref_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+    
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    
+    # -br option
+    define_cmdline_infile_opt "$cmdline" "-br" optlist || exit 1
+
+    # -normalbam option
+    local bam
+    bam=`get_bam_filename "$cmdline"` || exit 1
+    define_opt "-bam" $bam optlist || exit 1
+
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+
+    # -outfile option
+    define_opt "-outfile" ${abs_datadir}/genref.fa optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+filter_bam_stats()
+{
+    ${AWK} '{if($3>0 || $4>0) printf"%s\n",$1}'
+}
+
+########
+contig_in_list()
+{
+    local contig=$1
+    local clist=$2
+
+    while read c; do
+        if [ "$contig" = "$c" ]; then
+            return 0
+        fi
+    done < ${clist}
+
+    return 1
+}
+
+########
+get_missing_contignames()
+{
+    local baseref=$1
+    local bam=$2
+    local outd=$3
+    
+    conda activate samtools || exit 1
+        
+    # Obtain reference contigs
+    samtools faidx ${baseref}
+    $AWK '{printf "%s %d\n",$1}' ${baseref}.fai > ${outd}/refcontigs
+
+    # Obtain bam contigs
+    samtools idxstats $bam > ${outpref}.bamstats || exit 1
+    cat ${outpref}.bamstats | filter_bam_stats > ${outd}/bamcontigs || exit 1
+
+    while read bamcontigname; do
+        if ! contig_in_list $bamcontigname ${outd}/refcontigs; then
+            echo $bamcontigname
+        fi
+    done < ${outd}/bamcontigs
+    
+    conda deactivate
+}
+
+########
+get_contigs()
+{
+    local acclist=$1
+
+    while read accession; do
+        ${biopanpipe_bindir}/get_entrez_fasta -a ${accession}
+    done < $acclist
+}
+
+########
+enrich_gen_ref()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local baseref=`read_opt_value_from_line "$*" "-br"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local bam=`read_opt_value_from_line "$*" "-bam"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
+
+    # Copy base genome reference
+    cp $baseref $outfile || exit 1
+    
+    # Obtain list of missing contigs
+    get_missing_contig_names ${baseref} ${bam} ${step_outd} > ${step_outd}/missing_contigs.txt || exit 1
+
+    # Enrich base reference
+    get_contigs ${step_outd}/missing_contigs.txt >> $outfile || exit 1
+    
+    display_end_step_message
+}
+
+########
+enrich_gen_ref_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
 get_contig_list_from_file()
 {
     local file=$1

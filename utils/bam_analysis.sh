@@ -163,7 +163,7 @@ get_contigs()
     local acclist=$1
 
     while read accession; do
-        logmsg "* Getting data for ${accession}..."
+        logmsg "Getting data for ${accession}..."
         if accession_seems_valid ${accession}; then
             ${biopanpipe_bindir}/get_entrez_fasta -a ${accession}
         else

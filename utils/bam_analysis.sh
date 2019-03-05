@@ -161,7 +161,7 @@ get_contigs()
     while read accession; do
         logmsg "Getting data for ${accession}..."
         if accession_seems_valid ${accession}; then
-            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} || exit 1
+            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} || return 1
         else
             errmsg "Warning: $accession does not seem a valid accession, skipping"
         fi

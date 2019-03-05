@@ -178,7 +178,10 @@ enrich_gen_ref()
     # Enrich base reference
     logmsg "* Enriching base reference..."
     get_contigs ${step_outd}/missing_contigs.txt >> $outfile || exit 1
-    
+
+    # Index enriched reference
+    samtools faidx ${outfile}
+
     display_end_step_message
 }
 

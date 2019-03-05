@@ -1,8 +1,8 @@
 SCRIPTS_TO_BE_BUILT= bam_analysis bam_facets bam_ascat_r bam_ascatngs	\
 analyze_dataset gen_bed_for_genome check_ref_and_bam_contigs		\
-get_bam_contigs gen_wisecondorx_ref convert_snppos_to_snpgcc		\
-create_snv_pos_ascat query_ega_metadata query_icgc_metadata		\
-filter_contig_from_genref get_filtered_sam_header			\
+get_bam_contigs get_entrez_fasta gen_wisecondorx_ref			\
+convert_snppos_to_snpgcc create_snv_pos_ascat query_ega_metadata	\
+query_icgc_metadata filter_contig_from_genref get_filtered_sam_header	\
 get_filtered_sam_align map_vcf_contnames run_facets run_sequenza	\
 convert_allele_counts run_ascat
 
@@ -12,9 +12,9 @@ CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
 EXTRA_DIST = bam_analysis.sh bam_facets.sh bam_ascat_r.sh		\
 bam_ascatngs.sh analyze_dataset.sh gen_bed_for_genome.sh		\
-check_ref_and_bam_contigs.sh get_bam_contigs.sh gen_wisecondorx_ref.sh	\
-convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
-query_ega_metadata.py query_icgc_metadata.py				\
+check_ref_and_bam_contigs.sh get_bam_contigs.sh get_entrez_fasta.py	\
+gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
+create_snv_pos_ascat.py query_ega_metadata.py query_icgc_metadata.py	\
 filter_contig_from_genref.py get_filtered_sam_header.py			\
 get_filtered_sam_align.py map_vcf_contnames.py run_facets.R		\
 run_sequenza.R convert_allele_counts.R run_ascat.R

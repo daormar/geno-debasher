@@ -39,6 +39,10 @@ enrich_gen_ref_explain_cmdline_opts()
     # -bam option
     description="bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-bam" "<string>" "$description"
+
+    # -c2a option
+    description="File containing a mapping between contig names and accession numbers"
+    explain_cmdline_opt "-c2a" "<string>" "$description"
 }
 
 ########
@@ -90,10 +94,13 @@ enrich_gen_ref_define_opts()
     # -br option
     define_cmdline_infile_opt "$cmdline" "-br" optlist || exit 1
 
-    # -normalbam option
+    # -bam option
     local bam
     bam=`get_bam_filename "$cmdline"` || exit 1
     define_opt "-bam" $bam optlist || exit 1
+
+    # -c2a option
+    define_cmdline_infile_opt "$cmdline" "-c2a" optlist || exit 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -142,11 +149,11 @@ get_missing_contig_names()
 }
 
 ########
-accession_seems_valid()
+contig_is_accession()
 {
-    local accession=$1
+    local contig=$1
 
-    if [[ $accession == *"."* ]]; then
+    if [[ $contig == *"."* ]]; then
         return 0
     else
         return 1
@@ -154,18 +161,44 @@ accession_seems_valid()
 }
 
 ########
+map_contig_to_accession()
+{
+    local contig_to_acc=$1
+    local contig=$1
+
+    while read entry; do
+        fields=($entry)
+        num_fields=${#fields[@]}
+        if [ ${num_fields} -eq 2 ]; then
+            if [ ${fields[0]} = $contig ]; then
+                echo ${fields[1]}
+                break
+            fi
+        fi
+    done < ${contig_to_acc}
+}
+
+########
 get_contigs()
 {
-    local acclist=$1
+    local contig_to_acc=$1
+    local contiglist=$2
 
-    while read accession; do
-        logmsg "Getting data for ${accession}..."
-        if accession_seems_valid ${accession}; then
-            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} || return 1
+    while read contig; do
+        if contig_is_accession ${contig}; then
+            logmsg "Getting data for ${contig}..."
+            ${biopanpipe_bindir}/get_entrez_fasta -a ${contig} || return 1
         else
-            errmsg "Warning: $accession does not seem a valid accession, skipping"
+            # contig is not an accession, try to map it to a valid one
+            mapping=`map_contig_to_accession ${contig_to_acc} ${contig}`
+            if [ "$mapping" = "" ]; then
+                errmsg "Warning: $contig is not a valid accession nor there were mappings for it, skipping"
+            else
+                logmsg "Getting data for ${contig} (mapped to $mapping)..."
+                ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | ${SED} 's/${mapping}/${contig}/'; pipe_fail || return 1
+            fi
         fi
-    done < ${acclist}
+    done < ${contiglist}
 }
 
 ########
@@ -177,6 +210,7 @@ enrich_gen_ref()
     local baseref=`read_opt_value_from_line "$*" "-br"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local bam=`read_opt_value_from_line "$*" "-bam"`
+    local contig_to_acc=`read_opt_value_from_line "$*" "-c2a"`
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Copy base genome reference
@@ -193,7 +227,7 @@ enrich_gen_ref()
 
     # Enrich base reference
     logmsg "* Enriching base reference..."
-    get_contigs ${step_outd}/missing_contigs.txt >> $outfile || { errmsg "Error during FASTA data downloading"; exit 1; }
+    get_contigs ${contig_to_acc} ${step_outd}/missing_contigs.txt >> $outfile || { errmsg "Error during FASTA data downloading"; exit 1; }
 
     # Index enriched reference
     logmsg "* Indexing enriched reference..."

@@ -24,10 +24,10 @@ def take_pars():
             if opt in ("-c", "--contig"):
                 values["contig"] = arg
                 flags["c_given"]=True
-            if opt in ("-g", "--genref"):
+            elif opt in ("-g", "--genref"):
                 values["genref"] = arg
                 flags["g_given"]=True
-            if opt in ("-l", "--listc"):
+            elif opt in ("-l", "--listc"):
                 values["listc"] = arg
                 flags["l_given"]=True
     return (flags,values)

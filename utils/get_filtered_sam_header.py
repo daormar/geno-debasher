@@ -23,7 +23,7 @@ def take_pars():
             if opt in ("-h", "--samhdrf"):
                 values["samhdrf"] = arg
                 flags["h_given"]=True
-            if opt in ("-l", "--listc"):
+            elif opt in ("-l", "--listc"):
                 values["listc"] = arg
                 flags["l_given"]=True
     return (flags,values)

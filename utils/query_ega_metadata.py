@@ -48,16 +48,16 @@ def take_pars():
             if opt in ("-s", "--sampleinfofile"):
                 values["sampleinfofile"] = arg
                 flags["s_given"]=True
-            if opt in ("-a", "--analysisinfofile"):
+            elif opt in ("-a", "--analysisinfofile"):
                 values["analysisinfofile"] = arg
                 flags["a_given"]=True
-            if opt in ("-t", "--studyinfofile"):
+            elif opt in ("-t", "--studyinfofile"):
                 values["studyinfofile"] = arg
                 flags["t_given"]=True
-            if opt in ("-f", "--format"):
+            elif opt in ("-f", "--format"):
                 values["format"] = int(arg)
                 flags["f_given"]=True
-            if opt in ("-p", "--asperacontent"):
+            elif opt in ("-p", "--asperacontent"):
                 values["asperacontent"] = arg
                 flags["p_given"]=True
             elif opt in ("-v", "--verbose"):

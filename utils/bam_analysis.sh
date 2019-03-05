@@ -164,7 +164,7 @@ contig_is_accession()
 map_contig_to_acc_using_file()
 {
     local contig_to_acc=$1
-    local contig=$1
+    local contig=$2
 
     while read entry; do
         fields=($entry)
@@ -182,7 +182,7 @@ map_contig_to_acc_using_file()
 map_contig_to_accession()
 {
     local contig_to_acc=$1
-    local contig=$1
+    local contig=$2
 
     if contig_is_accession ${contig}; then
         echo ${contig}

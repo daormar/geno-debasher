@@ -127,7 +127,7 @@ contig_in_list()
 }
 
 ########
-get_missing_contignames()
+get_missing_contig_names()
 {
     local baseref=$1
     local bam=$2
@@ -137,7 +137,7 @@ get_missing_contignames()
         
     # Obtain reference contigs
     samtools faidx ${baseref}
-    $AWK '{printf "%s %d\n",$1}' ${baseref}.fai > ${outd}/refcontigs
+    $AWK '{printf "%s\n",$1}' ${baseref}.fai > ${outd}/refcontigs
 
     # Obtain bam contigs
     samtools idxstats $bam > ${outpref}.bamstats || exit 1

@@ -146,14 +146,30 @@ get_missing_contig_names()
 }
 
 ########
+accession_seems_valid()
+{
+    local accession=$1
+
+    if [[ $accession == *"."* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+########
 get_contigs()
 {
     local acclist=$1
 
     while read accession; do
         logmsg "* Getting data for ${accession}..."
-        ${biopanpipe_bindir}/get_entrez_fasta -a ${accession}
-    done < $acclist
+        if accession_seems_valid ${accession}; then
+            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession}
+        else
+            errmsg "Warning: $accession does not seem a valid accession, skipping"
+        fi
+    done < ${acclist}
 }
 
 ########

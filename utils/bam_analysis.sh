@@ -188,7 +188,7 @@ map_contig_to_accession()
         echo ${contig}
     else
         if [ ${contig_to_acc} != ${NOFILE} ]; then
-            map_contig_to_acc_using_file ${contig_to_acc} ${contig}
+            map_contig_to_acc_using_file ${contig_to_acc} ${contig} || return 1
         fi
     fi
 }
@@ -200,13 +200,13 @@ get_contigs()
     local contiglist=$2
 
     while read contig; do
-        accession=`map_contig_to_accession ${contig_to_acc} ${contig}`
+        accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
         if [ "$accession" = "" ]; then
             errmsg "Warning: $contig is not a valid accession nor there were mappings for it, skipping"
         else
             logmsg "Getting data for ${contig} (mapped to $accession)..."
             ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} | ${SED} 's/${mapping}/${contig}/'; pipe_fail || return 1
-        fi        
+        fi
     done < ${contiglist}
 }
 

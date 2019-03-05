@@ -7,6 +7,7 @@
 DEFAULT_NUMBER_OF_DOWNLOAD_TRIES=5
 DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS=50
 DEFAULT_ASP_MAX_TRANS_RATE=100m
+DATADIR_BASENAME="data"
 
 #################
 # CFG FUNCTIONS #
@@ -15,7 +16,7 @@ DEFAULT_ASP_MAX_TRANS_RATE=100m
 ########
 bam_analysis_shared_dirs()
 {
-    define_shared_dir "data"
+    define_shared_dir ${DATADIR_BASENAME}
 }
 
 ########
@@ -97,8 +98,8 @@ get_normal_bam_filename()
     else
         # Check -extn option
         check_opt_given "$cmdline" "-extn" || { errmsg "-n or -extn option should be given" ; return 1; }
-        local abs_bamdir=`get_absolute_shdirname "data"`
-        normalbam=${abs_bamdir}/normal.bam
+        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+        normalbam=${abs_datadir}/normal.bam
         echo $normalbam
     fi
 }
@@ -117,8 +118,8 @@ get_tumor_bam_filename()
     else
         # Check -extt option
         check_opt_given "$cmdline" "-extt" || { errmsg "-t or -extt option should be given" ; return 1; }
-        local abs_bamdir=`get_absolute_shdirname "data"`
-        tumorbam=${abs_bamdir}/tumor.bam
+        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+        tumorbam=${abs_datadir}/tumor.bam
         echo $tumorbam
     fi
 }
@@ -1712,8 +1713,8 @@ parallel_lumpy_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # Get bam directory
-    local abs_bamdir=`get_absolute_shdirname "data"`
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
 
     # Get name of contig list file
     local clist
@@ -1724,9 +1725,9 @@ parallel_lumpy_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        normalbam=${abs_bamdir}/normal_${contig}.bam
+        normalbam=${abs_datadir}/normal_${contig}.bam
         define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
-        tumorbam=${abs_bamdir}/tumor_${contig}.bam
+        tumorbam=${abs_datadir}/tumor_${contig}.bam
         define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
         define_opt "-contig" ${contig} specific_optlist || exit 1
         
@@ -2059,8 +2060,8 @@ parallel_delly_define_opts()
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
-    # Get bam directory
-    local abs_bamdir=`get_absolute_shdirname "data"`
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
 
     # -dx option
     define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
@@ -2074,9 +2075,9 @@ parallel_delly_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        normalbam=${abs_bamdir}/normal_${contig}.bam
+        normalbam=${abs_datadir}/normal_${contig}.bam
         define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
-        tumorbam=${abs_bamdir}/tumor_${contig}.bam
+        tumorbam=${abs_datadir}/tumor_${contig}.bam
         define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
         define_opt "-contig" $contig specific_optlist || exit 1
         save_opt_list specific_optlist
@@ -2248,10 +2249,6 @@ parallel_svtyper_conda_envs()
 ########
 download_ega_norm_bam_explain_cmdline_opts()
 {
-    # -bamdir option
-    description="Name of shared directory (without path) to perform operations on bam files (${DEFAULT_BAMDIR} by default)"
-    explain_cmdline_opt "-bamdir" "<string>" "$description"
-
     # -extn option
     description="External database id of normal bam file to download"
     explain_cmdline_opt "-extn" "<string>" "$description"
@@ -2295,8 +2292,8 @@ download_ega_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local normalbam=${abs_bamdir}/normal.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
@@ -2425,8 +2422,8 @@ download_ega_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local tumorbam=${abs_bamdir}/tumor.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
@@ -2500,8 +2497,8 @@ download_aws_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local normalbam=${abs_bamdir}/normal.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
@@ -2583,8 +2580,8 @@ download_aws_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local tumorbam=${abs_bamdir}/tumor.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
@@ -2651,8 +2648,8 @@ download_collab_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local normalbam=${abs_bamdir}/normal.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
@@ -2719,8 +2716,8 @@ download_collab_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local tumorbam=${abs_bamdir}/tumor.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
@@ -2815,8 +2812,8 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local normalbam=${abs_bamdir}/normal.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
@@ -2923,8 +2920,8 @@ download_ega_asp_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local tumorbam=${abs_bamdir}/tumor.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
@@ -2991,8 +2988,8 @@ index_norm_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local normalbam=${abs_bamdir}/normal.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
@@ -3053,8 +3050,8 @@ index_tum_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -tumorbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local tumorbam=${abs_bamdir}/tumor.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
@@ -3115,8 +3112,8 @@ sort_norm_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`        
-    local normalbam=${abs_bamdir}/normal.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`        
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -cpus option
@@ -3191,8 +3188,8 @@ sort_tum_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -tumorbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local tumorbam=${abs_bamdir}/tumor.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cpus option
@@ -3272,8 +3269,8 @@ filter_norm_bam_contigs_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -normalbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local normalbam=${abs_bamdir}/normal.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
@@ -3388,8 +3385,8 @@ filter_tum_bam_contigs_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -tumorbam option
-    local abs_bamdir=`get_absolute_shdirname "data"`
-    local tumorbam=${abs_bamdir}/tumor.bam
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
@@ -3662,8 +3659,8 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
-    # -bamdir option    
-    abs_bamdir=`get_absolute_shdirname "data"`
+    # -datadir option    
+    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
 
     # -mpb option
     define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
@@ -3682,7 +3679,7 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        normalbam=${abs_bamdir}/normal_${contig}.bam
+        normalbam=${abs_datadir}/normal_${contig}.bam
         define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
         define_opt "-contig" $contig specific_optlist || exit 1
         save_opt_list specific_optlist
@@ -3757,8 +3754,8 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
-    # -bamdir option    
-    abs_bamdir=`get_absolute_shdirname "data"`
+    # -datadir option    
+    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
 
     # -mpb option
     define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
@@ -3777,7 +3774,7 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        tumorbam=${abs_bamdir}/tumor_${contig}.bam
+        tumorbam=${abs_datadir}/tumor_${contig}.bam
         define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
         define_opt "-contig" $contig specific_optlist || exit 1
         save_opt_list specific_optlist
@@ -3849,9 +3846,9 @@ parallel_split_norm_bam_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # -bamdir option    
-    abs_bamdir=`get_absolute_shdirname "data"`
-    define_opt "-bamdir" ${abs_bamdir} optlist || exit 1
+    # -datadir option    
+    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    define_opt "-datadir" ${abs_datadir} optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -3879,7 +3876,7 @@ parallel_split_norm_bam()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local abs_bamdir=`read_opt_value_from_line "$*" "-bamdir"`
+    local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
     
@@ -3900,8 +3897,8 @@ parallel_split_norm_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Move bam and index file to bamdir
-    mv ${normalcont}* ${abs_bamdir} || exit 1
+    # Move bam and index file to datadir
+    mv ${normalcont}* ${abs_datadir} || exit 1
 
     display_end_step_message
 }
@@ -3936,9 +3933,9 @@ parallel_split_tum_bam_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # -bamdir option
-    abs_bamdir=`get_absolute_shdirname "data"`
-    define_opt "-bamdir" ${abs_bamdir} optlist || exit 1
+    # -datadir option
+    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    define_opt "-datadir" ${abs_datadir} optlist || exit 1
 
     # -tumorbam option
     local tumorbam
@@ -3966,7 +3963,7 @@ parallel_split_tum_bam()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local abs_bamdir=`read_opt_value_from_line "$*" "-bamdir"`
+    local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
@@ -3987,8 +3984,8 @@ parallel_split_tum_bam()
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
         
-    # Move bam and index file to bamdir
-    mv ${tumorcont}* ${abs_bamdir} || exit 1
+    # Move bam and index file to datadir
+    mv ${tumorcont}* ${abs_datadir} || exit 1
 
     display_end_step_message
 }
@@ -4017,9 +4014,9 @@ delete_bam_files_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # -bamdir option
-    abs_bamdir=`get_absolute_shdirname "data"`
-    define_opt "-bamdir" ${abs_bamdir} optlist || exit 1
+    # -datadir option
+    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    define_opt "-datadir" ${abs_datadir} optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -4032,10 +4029,10 @@ delete_bam_files()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local abs_bamdir=`read_opt_value_from_line "$*" "-bamdir"`
+    local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
 
     # Delete bam files
-    rm -f ${abs_bamdir}/*.bam
+    rm -f ${abs_datadir}/*.bam
 
     display_end_step_message
 }

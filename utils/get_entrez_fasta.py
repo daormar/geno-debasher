@@ -38,15 +38,29 @@ def print_help():
     print >> sys.stderr, "-a <string>    Accession number of the FASTA data to download"
 
 ##################################################
+def get_info(url,num_retries):
+    success=False
+    for i in range(num_retries):
+        print >> sys.stderr, "Getting data from",url,"( Attempt:",i+1,")"
+        try:
+            req=requests.get(url)
+            success=True
+            break
+        except requests.exceptions.RequestException as e:
+            print e
+    if success:
+        return req
+    else:
+        print >> sys.stderr, "Maximum number of attempts exceeded, aborting"
+        sys.exit(1)
+        
+##################################################
 def extract_esearch_info(accession):
     url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"esearch.fcgi?db=nuccore&term="+accession+"&usehistory=y"
 
     # Get information
-    try:
-        req=requests.get(url)
-    except requests.exceptions.RequestException as e:
-        print e
-        sys.exit(1)
+    num_retries=1
+    req=get_info(url,num_retries)
 
     # Process information
     root = ET.fromstring(req.content)
@@ -62,11 +76,8 @@ def post_efetch_info(key,web):
     url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"efetch.fcgi?db=nuccore&query_key="+key+"&WebEnv="+web+"&rettype=fasta&retmode=text";
 
     # Get information
-    try:
-        req=requests.get(url)
-    except requests.exceptions.RequestException as e:
-        print e
-        sys.exit(1)
+    num_retries=5
+    req=get_info(url,num_retries)
 
     return req
     

@@ -59,7 +59,7 @@ def extract_esearch_info(accession):
     url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"esearch.fcgi?db=nuccore&term="+accession+"&usehistory=y"
 
     # Get information
-    num_retries=1
+    num_retries=5
     req=get_info(url,num_retries)
 
     # Process information

@@ -32,7 +32,7 @@ def check_pars(flags,values):
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "get_filtered_sam_header -l <string>"
+    print >> sys.stderr, "get_filtered_sam_align -l <string>"
     print >> sys.stderr, ""
     print >> sys.stderr, "-l <string>    List of contigs to keep (one contig name per line)"
 

@@ -151,6 +151,7 @@ get_contigs()
     local acclist=$1
 
     while read accession; do
+        logmsg "* Getting data for ${accession}..."
         ${biopanpipe_bindir}/get_entrez_fasta -a ${accession}
     done < $acclist
 }
@@ -167,12 +168,15 @@ enrich_gen_ref()
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Copy base genome reference
+    logmsg "* Copying base genome reference..."
     cp $baseref $outfile || exit 1
     
     # Obtain list of missing contigs
+    logmsg "* Obtaining list of missing contigs..."
     get_missing_contig_names ${baseref} ${bam} ${step_outd} > ${step_outd}/missing_contigs.txt || exit 1
 
     # Enrich base reference
+    logmsg "* Enriching base reference..."
     get_contigs ${step_outd}/missing_contigs.txt >> $outfile || exit 1
     
     display_end_step_message

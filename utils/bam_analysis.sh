@@ -167,8 +167,8 @@ map_contig_to_acc_using_file()
     local contig=$2
 
     while read entry; do
-        fields=($entry)
-        num_fields=${#fields[@]}
+        local fields=($entry)
+        local num_fields=${#fields[@]}
         if [ ${num_fields} -eq 2 ]; then
             if [ ${fields[0]} = $contig ]; then
                 echo ${fields[1]}
@@ -187,7 +187,7 @@ map_contig_to_accession()
     if contig_is_accession ${contig}; then
         echo ${contig}
     else
-        if [ ${contig_to_acc} != ${NOFILE} ]; then
+        if [ ${contig_to_acc} != "${NOFILE}" ]; then
             map_contig_to_acc_using_file ${contig_to_acc} ${contig} || return 1
         fi
     fi
@@ -200,7 +200,7 @@ get_contigs()
     local contiglist=$2
 
     while read contig; do
-        accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
+        local accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
         if [ "$accession" = "" ]; then
             errmsg "Warning: contig $contig is not a valid accession nor there were mappings for it, skipping"
         else

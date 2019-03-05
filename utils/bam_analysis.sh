@@ -38,7 +38,7 @@ enrich_gen_ref_explain_cmdline_opts()
 
     # -bam option
     description="bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-bam" "<string>" "$description"
+    explain_cmdline_req_opt "-bam" "<string>" "$description"
 
     # -c2a option
     description="File containing a mapping between contig names and accession numbers"
@@ -100,7 +100,7 @@ enrich_gen_ref_define_opts()
     define_opt "-bam" $bam optlist || exit 1
 
     # -c2a option
-    define_cmdline_infile_opt "$cmdline" "-c2a" optlist || exit 1
+    define_cmdline_nonmandatory_opt "$cmdline" "-c2a" ${NOFILE} optlist || exit 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -161,7 +161,7 @@ contig_is_accession()
 }
 
 ########
-map_contig_to_accession()
+map_contig_to_acc_using_file()
 {
     local contig_to_acc=$1
     local contig=$1
@@ -179,25 +179,34 @@ map_contig_to_accession()
 }
 
 ########
+map_contig_to_accession()
+{
+    local contig_to_acc=$1
+    local contig=$1
+
+    if contig_is_accession ${contig}; then
+        echo ${contig}
+    else
+        if [ ${contig_to_acc} != ${NOFILE} ]; then
+            map_contig_to_acc_using_file ${contig_to_acc} ${contig}
+        fi
+    fi
+}
+
+########
 get_contigs()
 {
     local contig_to_acc=$1
     local contiglist=$2
 
     while read contig; do
-        if contig_is_accession ${contig}; then
-            logmsg "Getting data for ${contig}..."
-            ${biopanpipe_bindir}/get_entrez_fasta -a ${contig} || return 1
+        accession=`map_contig_to_accession ${contig_to_acc} ${contig}`
+        if [ "$accession" = "" ]; then
+            errmsg "Warning: $contig is not a valid accession nor there were mappings for it, skipping"
         else
-            # contig is not an accession, try to map it to a valid one
-            mapping=`map_contig_to_accession ${contig_to_acc} ${contig}`
-            if [ "$mapping" = "" ]; then
-                errmsg "Warning: $contig is not a valid accession nor there were mappings for it, skipping"
-            else
-                logmsg "Getting data for ${contig} (mapped to $mapping)..."
-                ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | ${SED} 's/${mapping}/${contig}/'; pipe_fail || return 1
-            fi
-        fi
+            logmsg "Getting data for ${contig} (mapped to $accession)..."
+            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} | ${SED} 's/${mapping}/${contig}/'; pipe_fail || return 1
+        fi        
     done < ${contiglist}
 }
 

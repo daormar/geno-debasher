@@ -106,12 +106,6 @@ enrich_gen_ref_define_opts()
 }
 
 ########
-filter_bam_stats()
-{
-    ${AWK} '{if($3>0 || $4>0) printf"%s\n",$1}'
-}
-
-########
 contig_in_list()
 {
     local contig=$1
@@ -140,8 +134,7 @@ get_missing_contig_names()
     $AWK '{printf "%s\n",$1}' ${baseref}.fai > ${outd}/refcontigs
 
     # Obtain bam contigs
-    samtools idxstats $bam > ${outpref}.bamstats || exit 1
-    cat ${outpref}.bamstats | filter_bam_stats > ${outd}/bamcontigs || exit 1
+    samtools view -H $bam | $AWK '{if($1=="@SQ") print substr($2,4)}' > ${outd}/bamcontigs || exit 1
 
     while read bamcontigname; do
         if ! contig_in_list $bamcontigname ${outd}/refcontigs; then

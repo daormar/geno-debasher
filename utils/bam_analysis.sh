@@ -204,7 +204,7 @@ get_contigs()
         if [ "$accession" = "" ]; then
             errmsg "Warning: $contig is not a valid accession nor there were mappings for it, skipping"
         else
-            logmsg "Getting data for ${contig} (mapped to $accession)..."
+            logmsg "Getting data for contig ${contig} (mapped to $accession)..."
             ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} | ${SED} 's/${mapping}/${contig}/'; pipe_fail || return 1
         fi
     done < ${contiglist}

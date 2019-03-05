@@ -40,7 +40,15 @@ def print_help():
 ##################################################
 def extract_esearch_info(accession):
     url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"esearch.fcgi?db=nuccore&term="+accession+"&usehistory=y"
-    req=requests.get(url)
+
+    # Get information
+    try:
+        req=requests.get(url)
+    except requests.exceptions.RequestException as e:
+        print e
+        sys.exit(1)
+
+    # Process information
     root = ET.fromstring(req.content)
     for child in root:
         if child.tag=="QueryKey":
@@ -52,7 +60,14 @@ def extract_esearch_info(accession):
 ##################################################
 def post_efetch_info(key,web):
     url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"efetch.fcgi?db=nuccore&query_key="+key+"&WebEnv="+web+"&rettype=fasta&retmode=text";
-    req=requests.get(url)
+
+    # Get information
+    try:
+        req=requests.get(url)
+    except requests.exceptions.RequestException as e:
+        print e
+        sys.exit(1)
+
     return req
     
 ##################################################

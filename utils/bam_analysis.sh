@@ -126,9 +126,7 @@ get_missing_contig_names()
     local baseref=$1
     local bam=$2
     local outd=$3
-    
-    conda activate samtools || exit 1
-        
+            
     # Obtain reference contigs
     samtools faidx ${baseref}
     $AWK '{printf "%s\n",$1}' ${baseref}.fai > ${outd}/refcontigs
@@ -140,9 +138,7 @@ get_missing_contig_names()
         if ! contig_in_list $bamcontigname ${outd}/refcontigs; then
             echo $bamcontigname
         fi
-    done < ${outd}/bamcontigs
-    
-    conda deactivate
+    done < ${outd}/bamcontigs    
 }
 
 ########
@@ -186,7 +182,11 @@ enrich_gen_ref()
     # Copy base genome reference
     logmsg "* Copying base genome reference..."
     cp $baseref $outfile || exit 1
-    
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate samtools || exit 1
+
     # Obtain list of missing contigs
     logmsg "* Obtaining list of missing contigs..."
     get_missing_contig_names ${baseref} ${bam} ${step_outd} > ${step_outd}/missing_contigs.txt || exit 1
@@ -197,6 +197,10 @@ enrich_gen_ref()
 
     # Index enriched reference
     samtools faidx ${outfile}
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate
 
     display_end_step_message
 }

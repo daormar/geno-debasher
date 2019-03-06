@@ -89,6 +89,15 @@ def post_efetch_info(key,web):
     num_retries=5
     req=get_info(url,num_retries)
 
+    # If request content is in xml format, then retrieval has gone wrong
+    try:
+        root = ET.fromstring(req.content)
+        print >> sys.stderr, "Error while extracting efetch information, aborting (see request result below)"
+        print >> sys.stderr,req.content
+        sys.exit(1)
+    except ET.ParseError as e:
+        pass
+        
     return req
     
 ##################################################

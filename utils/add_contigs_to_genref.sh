@@ -231,7 +231,7 @@ process_pars()
     cp $baseref $outfile || exit 1
 
     # Activate conda environment
-    echo "* Activating conda environment..." >&2
+    echo "* Activating conda environment (samtools)..." >&2
     conda activate samtools || exit 1
 
     # Obtain list of missing contigs

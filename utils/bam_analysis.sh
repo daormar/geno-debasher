@@ -100,7 +100,7 @@ enrich_gen_ref_define_opts()
     define_opt "-bam" $bam optlist || exit 1
 
     # -c2a option
-    define_cmdline_nonmandatory_opt "$cmdline" "-c2a" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-c2a" ${NOFILE} optlist || exit 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -276,7 +276,7 @@ manta_germline_define_opts()
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -cr option
-    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus
@@ -469,7 +469,7 @@ manta_somatic_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -cr option
-    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus
@@ -558,7 +558,7 @@ strelka_germline_define_opts()
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # -cr option
-    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus
@@ -662,7 +662,7 @@ strelka_somatic_define_opts()
     fi
     
     # -cr option
-    define_cmdline_nonmandatory_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
     # -cpus option
     local cpus

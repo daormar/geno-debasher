@@ -96,7 +96,7 @@ check_pars()
         echo "Error! -o parameter not given!" >&2
         exit 1
     else
-        if [ ! -o ${outd} ]; then
+        if [ ! -d ${outd} ]; then
             echo "Error! directory ${outd} does not exist" >&2
             exit 1
         fi

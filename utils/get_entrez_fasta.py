@@ -44,6 +44,7 @@ def get_info(url,num_retries):
         print >> sys.stderr, "Getting data from",url,"( Attempt:",i+1,")"
         try:
             req=requests.get(url)
+            req.raise_for_status()
             success=True
             break
         except requests.exceptions.RequestException as e:
@@ -64,6 +65,15 @@ def extract_esearch_info(accession):
 
     # Process information
     root = ET.fromstring(req.content)
+
+    # Check for errors
+    for child in root:
+        if child.tag=="ErrorList":
+            print >> sys.stderr, "Error while extracting esearch information, aborting (see request result below)"
+            print >> sys.stderr,req.content
+            sys.exit(1)
+            
+    # Extract QueryKey and WebEnv fields
     for child in root:
         if child.tag=="QueryKey":
             key=child.text

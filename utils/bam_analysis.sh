@@ -131,8 +131,9 @@ enrich_gen_ref()
         ${biopanpipe_bindir}/add_contigs_to_genref -r ${baseref} -b ${bam} -c2a ${contig_to_acc} -o ${step_outd} || exit 1
     fi
 
-    # Move resulting file
+    # Move resulting files
     mv ${step_outd}/enriched_genref.fa ${outfile}
+    mv ${step_outd}/enriched_genref.fa.fai ${outfile}.fai
 
     display_end_step_message
 }

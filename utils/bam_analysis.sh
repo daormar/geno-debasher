@@ -113,104 +113,6 @@ enrich_gen_ref_define_opts()
 }
 
 ########
-contig_in_list()
-{
-    local contig=$1
-    local clist=$2
-
-    while read c; do
-        if [ "$contig" = "$c" ]; then
-            return 0
-        fi
-    done < ${clist}
-
-    return 1
-}
-
-########
-get_missing_contig_names()
-{
-    local baseref=$1
-    local bam=$2
-    local outd=$3
-            
-    # Obtain reference contigs
-    samtools faidx ${baseref}
-    $AWK '{printf "%s\n",$1}' ${baseref}.fai > ${outd}/refcontigs
-
-    # Obtain bam contigs
-    samtools view -H $bam | $AWK '{if($1=="@SQ") print substr($2,4)}' > ${outd}/bamcontigs || exit 1
-
-    while read bamcontigname; do
-        if ! contig_in_list $bamcontigname ${outd}/refcontigs; then
-            echo $bamcontigname
-        fi
-    done < ${outd}/bamcontigs    
-}
-
-########
-contig_is_accession()
-{
-    local contig=$1
-
-    if [[ $contig == *"."* ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-########
-map_contig_to_acc_using_file()
-{
-    local contig_to_acc=$1
-    local contig=$2
-
-    while read entry; do
-        local fields=($entry)
-        local num_fields=${#fields[@]}
-        if [ ${num_fields} -eq 2 ]; then
-            if [ ${fields[0]} = $contig ]; then
-                echo ${fields[1]}
-                break
-            fi
-        fi
-    done < ${contig_to_acc}
-}
-
-########
-map_contig_to_accession()
-{
-    local contig_to_acc=$1
-    local contig=$2
-
-    if contig_is_accession ${contig}; then
-        echo ${contig}
-    else
-        if [ ${contig_to_acc} != "${NOFILE}" ]; then
-            map_contig_to_acc_using_file ${contig_to_acc} ${contig} || return 1
-        fi
-    fi
-}
-
-########
-get_contigs()
-{
-    local contig_to_acc=$1
-    local contiglist=$2
-
-    while read contig; do
-        local accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
-        if [ "$accession" = "" ]; then
-            errmsg "Warning: contig $contig is not a valid accession nor there were mappings for it, skipping"
-        else
-            logmsg "Getting data for contig ${contig} (mapped to accession $accession)..."
-            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} | ${SED} "s/${accession}/${contig}/"; pipe_fail || return 1
-        fi
-    done < ${contiglist}
-}
-
-########
 enrich_gen_ref()
 {
     display_begin_step_message
@@ -222,29 +124,15 @@ enrich_gen_ref()
     local contig_to_acc=`read_opt_value_from_line "$*" "-c2a"`
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
-    # Copy base genome reference
-    logmsg "* Copying base genome reference..."
-    cp $baseref $outfile || exit 1
+    # Enrich genome reference
+    if [ ${contig_to_acc} = ${NOFILE} ]; then
+        ${biopanpipe_bindir}/add_contigs_to_genref -r ${baseref} -b ${bam} -o ${step_outd} || exit 1
+    else
+        ${biopanpipe_bindir}/add_contigs_to_genref -r ${baseref} -b ${bam} -c2a ${contig_to_acc} -o ${step_outd} || exit 1
+    fi
 
-    # Activate conda environment
-    logmsg "* Activating conda environment..."
-    conda activate samtools || exit 1
-
-    # Obtain list of missing contigs
-    logmsg "* Obtaining list of missing contigs..."
-    get_missing_contig_names ${baseref} ${bam} ${step_outd} > ${step_outd}/missing_contigs.txt || exit 1
-
-    # Enrich base reference
-    logmsg "* Enriching base reference..."
-    get_contigs ${contig_to_acc} ${step_outd}/missing_contigs.txt >> $outfile || { errmsg "Error during FASTA data downloading"; exit 1; }
-
-    # Index enriched reference
-    logmsg "* Indexing enriched reference..."
-    samtools faidx ${outfile} || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate
+    # Move resulting file
+    mv ${step_outd}/enriched_genref.fa ${outfile}
 
     display_end_step_message
 }

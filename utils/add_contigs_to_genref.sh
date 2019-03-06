@@ -1,5 +1,8 @@
 # *- bash -*
 
+# INCLUDE BASH LIBRARY
+. ${PANPIPE_HOME_DIR}/bin/panpipe_lib || exit 1
+
 ########
 print_desc()
 {
@@ -213,9 +216,9 @@ get_contigs()
     while read contig; do
         local accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
         if [ "$accession" = "" ]; then
-            errmsg "Warning: contig $contig is not a valid accession nor there were mappings for it, skipping"
+            echo "Warning: contig $contig is not a valid accession nor there were mappings for it, skipping" >&2
         else
-            logmsg "Getting data for contig ${contig} (mapped to accession $accession)..."
+            echo "Getting data for contig ${contig} (mapped to accession $accession)..." >&2
             ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} | ${SED} "s/${accession}/${contig}/"; pipe_fail || return 1
         fi
     done < ${contiglist}
@@ -240,7 +243,7 @@ process_pars()
 
     # Enrich base reference
     echo "* Enriching base reference..." >&2
-    get_contigs ${contig_to_acc} ${outd}/missing_contigs.txt >> $outfile || { errmsg "Error during FASTA data downloading"; exit 1; }
+    get_contigs ${contig_to_acc} ${outd}/missing_contigs.txt >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
 
     # Index enriched reference
     echo "* Indexing enriched reference..." >&2

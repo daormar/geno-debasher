@@ -30,7 +30,7 @@ bam_analysis_fifos()
 ######################
 
 ########
-enrich_gen_ref_explain_cmdline_opts()
+create_genref_for_bam_explain_cmdline_opts()
 {
     # -br option
     description="Base reference genome file"
@@ -80,7 +80,7 @@ get_bam_filename()
 }
 
 ########
-enrich_gen_ref_define_opts()
+create_genref_for_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -113,7 +113,7 @@ enrich_gen_ref_define_opts()
 }
 
 ########
-enrich_gen_ref()
+create_genref_for_bam()
 {
     display_begin_step_message
 
@@ -126,9 +126,9 @@ enrich_gen_ref()
 
     # Enrich genome reference
     if [ ${contig_to_acc} = ${NOFILE} ]; then
-        ${biopanpipe_bindir}/add_contigs_to_genref -r ${baseref} -b ${bam} -o ${step_outd} || exit 1
+        ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} -o ${step_outd} || exit 1
     else
-        ${biopanpipe_bindir}/add_contigs_to_genref -r ${baseref} -b ${bam} -c2a ${contig_to_acc} -o ${step_outd} || exit 1
+        ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} -c2a ${contig_to_acc} -o ${step_outd} || exit 1
     fi
 
     # Move resulting files
@@ -139,7 +139,7 @@ enrich_gen_ref()
 }
 
 ########
-enrich_gen_ref_conda_envs()
+create_genref_for_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }

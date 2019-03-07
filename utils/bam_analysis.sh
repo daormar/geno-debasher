@@ -1220,7 +1220,7 @@ get_gcc_filename()
             echo $gccfile
             return 0            
         else
-            errmsg "-gcc or or dependency with gen_sequenza_gcc_dep step should be given"
+            errmsg "-gcc or dependency with gen_sequenza_gcc_dep step should be given"
             return 1
         fi            
     fi

@@ -267,15 +267,15 @@ process_pars()
     
     # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
-    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/ref_contigs_to_keep.txt || exit 1
+    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/refcontigs_to_keep.txt || exit 1
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/ref_contigs_to_keep.txt > $outfile
+    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/refcontigs_to_keep.txt > $outfile
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
-    get_missing_contig_names ${outd}/ref_contigs_to_keep.txt ${outd}/bamcontigs > ${outd}/missing_contigs.txt || exit 1
+    get_missing_contig_names ${outd}/refcontigs_to_keep.txt ${outd}/bamcontigs > ${outd}/missing_contigs.txt || exit 1
 
     # Enrich reference
     echo "* Enriching reference..." >&2

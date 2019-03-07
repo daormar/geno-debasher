@@ -1205,7 +1205,7 @@ get_gcc_filename()
     local cmdline=$1
     local stepspec=$2
     local given=0
-    local ref
+
     gccfile=`read_opt_value_from_line "$cmdline" "-gcc"` && given=1
     if [ $given -eq 1 ]; then
         # -gcc option was given

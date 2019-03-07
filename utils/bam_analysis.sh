@@ -1478,10 +1478,6 @@ parallel_bam2seqz_conda_envs()
 ########
 seqzmerge_plus_sequenza_explain_cmdline_opts()
 {
-    # -gcc option
-    description="GC content wiggle file for sequenza"
-    explain_cmdline_opt "-gcc" "<string>" "$description"
-
     # -lc option
     description="File with list of contig names to process"
     explain_cmdline_req_opt "-lc" "<string>" "$description"   
@@ -1498,11 +1494,6 @@ seqzmerge_plus_sequenza_define_opts()
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
-
-    # -gcc option
-    local gccfile
-    gccfile=`get_gcc_filename "$cmdline" "$stepspec"` || exit 1
-    define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get seqz directory
     seqzdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_bam2seqz` || { errmsg "Error: dependency parallel_bam2seqz not defined for seqzmerge_plus_sequenza"; exit 1; }
@@ -1543,7 +1534,6 @@ seqzmerge_plus_sequenza()
 
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local gccont=`read_opt_value_from_line "$*" "-gcc"`
     local seqzdir=`read_opt_value_from_line "$*" "-seqzdir"`
     local clist=`read_opt_value_from_line "$*" "-lc"`
 

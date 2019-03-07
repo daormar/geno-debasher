@@ -143,7 +143,7 @@ contig_in_list()
 }
 
 ########
-get_ref_contigs()
+get_ref_contig_names()
 {
     local ref=$1
 
@@ -152,7 +152,7 @@ get_ref_contigs()
 }
 
 ########
-get_bam_contigs()
+get_bam_contig_names()
 {
     local bam=$1
 
@@ -173,7 +173,7 @@ get_missing_contig_names()
 }
 
 ########
-get_ref_contigs_to_keep()
+get_ref_contig_names_to_keep()
 {
     local refcontigs=$1
     local bamcontigs=$2
@@ -258,16 +258,16 @@ process_pars()
     conda activate samtools || exit 1
 
     # Get reference contigs
-    echo "* Obtaining list of current reference contigs..." >&2
-    get_ref_contigs $baseref > ${outd}/refcontigs
+    echo "* Obtaining list of current reference contig names..." >&2
+    get_ref_contig_names $baseref > ${outd}/refcontigs
 
     # Get bam contigs
-    echo "* Obtaining list of bam contigs..." >&2
-    get_bam_contigs $bam > ${outd}/bamcontigs
+    echo "* Obtaining list of bam contig names..." >&2
+    get_bam_contig_names $bam > ${outd}/bamcontigs
     
     # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
-    get_ref_contigs_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/ref_contigs_to_keep.txt || exit 1
+    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/ref_contigs_to_keep.txt || exit 1
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
@@ -277,11 +277,11 @@ process_pars()
     echo "* Obtaining list of missing contigs..." >&2
     get_missing_contig_names ${outd}/refcontigs_to_keep ${outd}/bamcontigs > ${outd}/missing_contigs.txt || exit 1
 
-    # Enrich base reference
-    echo "* Enriching base reference..." >&2
+    # Enrich reference
+    echo "* Enriching reference..." >&2
     get_contigs ${contig_to_acc} ${outd}/missing_contigs.txt >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
 
-    # Index enriched reference
+    # Index created reference
     echo "* Indexing created reference..." >&2
     samtools faidx ${outfile} || exit 1
     

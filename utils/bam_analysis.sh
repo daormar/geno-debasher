@@ -1139,6 +1139,12 @@ gen_sequenza_gcc_define_opts()
     genref=`get_ref_filename "$cmdline"` || exit 1
     define_opt "-r" $genref optlist || exit 1
 
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+
+    # -outfile option
+    define_opt "-outfile" ${abs_datadir}/sequenza_gccfile.txt.gz optlist || exit 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -1151,7 +1157,7 @@ gen_sequenza_gcc()
     # Initialize variables
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1159,12 +1165,15 @@ gen_sequenza_gcc()
 
     # Generate GC content file
     logmsg "* Generating GC content file..."    
-    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/gccfile.txt.gz
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/sequenza_gccfile.txt.gz
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
+    # Move result file to final location
+    mv ${step_outd}/sequenza_gccfile.txt.gz $outfile
+    
     display_end_step_message
 }
 
@@ -1179,7 +1188,7 @@ mpileup_plus_sequenza_explain_cmdline_opts()
 {
     # -gcc option
     description="GC content wiggle file for sequenza"
-    explain_cmdline_req_opt "-gcc" "<string>" "$description"
+    explain_cmdline_opt "-gcc" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -1188,6 +1197,33 @@ mpileup_plus_sequenza_explain_cmdline_opts()
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"    
+}
+
+########
+get_gcc_filename()
+{
+    local cmdline=$1
+    local stepspec=$2
+    local given=0
+    local ref
+    gccfile=`read_opt_value_from_line "$cmdline" "-gcc"` && given=1
+    if [ $given -eq 1 ]; then
+        # -gcc option was given
+        file_exists $gccfile || { errmsg "file $gccfile does not exist" ; return 1; }
+        echo $gccfile
+    else
+        # Check if gen_sequenza_gcc step dependency was defined
+        local gen_sequenza_gcc_dep=`find_dependency_for_step "${stepspec}" gen_sequenza_gcc`
+        if [ ${gen_sequenza_gcc_dep} != ${DEP_NOT_FOUND} ]; then
+            local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+            gccfile=${abs_datadir}/sequenza_gccfile.txt.gz
+            echo $gccfile
+            return 0            
+        else
+            errmsg "-gcc or or dependency with gen_sequenza_gcc_dep step should be given"
+            return 1
+        fi            
+    fi
 }
 
 ########
@@ -1203,7 +1239,9 @@ mpileup_plus_sequenza_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -gcc option
-    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
+    local gccfile
+    gccfile=`get_gcc_filename "$cmdline" "$stepspec"` || exit 1
+    define_opt "-gcc" $gccfile optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1277,7 +1315,7 @@ sequenza_explain_cmdline_opts()
 {
     # -gcc option
     description="GC content wiggle file for sequenza"
-    explain_cmdline_req_opt "-gcc" "<string>" "$description"
+    explain_cmdline_opt "-gcc" "<string>" "$description"
 }
 
 ########
@@ -1293,7 +1331,9 @@ sequenza_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -gcc option
-    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
+    local gccfile
+    gccfile=`get_gcc_filename "$cmdline" "$stepspec"` || exit 1
+    define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get normal pileup file
     npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
@@ -1353,7 +1393,7 @@ parallel_bam2seqz_explain_cmdline_opts()
 {
     # -gcc option
     description="GC content wiggle file for bam2seqz"
-    explain_cmdline_req_opt "-gcc" "<string>" "$description"
+    explain_cmdline_opt "-gcc" "<string>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
@@ -1373,7 +1413,9 @@ parallel_bam2seqz_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -gcc option
-    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
+    local gccfile
+    gccfile=`get_gcc_filename "$cmdline" "$stepspec"` || exit 1
+    define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get normal pileup directory
     npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for parallel_bam2seqz"; exit 1; }
@@ -1436,6 +1478,10 @@ parallel_bam2seqz_conda_envs()
 ########
 seqzmerge_plus_sequenza_explain_cmdline_opts()
 {
+    # -gcc option
+    description="GC content wiggle file for sequenza"
+    explain_cmdline_opt "-gcc" "<string>" "$description"
+
     # -lc option
     description="File with list of contig names to process"
     explain_cmdline_req_opt "-lc" "<string>" "$description"   
@@ -1454,7 +1500,9 @@ seqzmerge_plus_sequenza_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -gcc option
-    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || exit 1
+    local gccfile
+    gccfile=`get_gcc_filename "$cmdline" "$stepspec"` || exit 1
+    define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get seqz directory
     seqzdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_bam2seqz` || { errmsg "Error: dependency parallel_bam2seqz not defined for seqzmerge_plus_sequenza"; exit 1; }

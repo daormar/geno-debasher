@@ -143,45 +143,46 @@ contig_in_list()
 }
 
 ########
+get_ref_contigs()
+{
+    local ref=$1
+
+    samtools faidx ${baseref} || return 1
+    $AWK '{printf "%s\n",$1}' ${baseref}.fai
+}
+
+########
+get_bam_contigs()
+{
+    local bam=$1
+
+    samtools view -H $bam | $AWK '{if($1=="@SQ") print substr($2,4)}'
+}
+
+########
 get_missing_contig_names()
 {
-    local baseref=$1
-    local bam=$2
-    local outd=$3
+    local refcontigs=$1
+    local bamcontigs=$2
             
-    # Obtain reference contigs
-    samtools faidx ${baseref}
-    $AWK '{printf "%s\n",$1}' ${baseref}.fai > ${outd}/refcontigs
-
-    # Obtain bam contigs
-    samtools view -H $bam | $AWK '{if($1=="@SQ") print substr($2,4)}' > ${outd}/bamcontigs || exit 1
-
     while read bamcontigname; do
-        if ! contig_in_list $bamcontigname ${outd}/refcontigs; then
+        if ! contig_in_list $bamcontigname $refcontigs; then
             echo $bamcontigname
         fi
-    done < ${outd}/bamcontigs    
+    done < $bamcontigs    
 }
 
 ########
 get_ref_contigs_to_keep()
 {
-    local baseref=$1
-    local bam=$2
-    local outd=$3
+    local refcontigs=$1
+    local bamcontigs=$2
             
-    # Obtain reference contigs
-    samtools faidx ${baseref}
-    $AWK '{printf "%s\n",$1}' ${baseref}.fai > ${outd}/refcontigs
-
-    # Obtain bam contigs
-    samtools view -H $bam | $AWK '{if($1=="@SQ") print substr($2,4)}' > ${outd}/bamcontigs || exit 1
-
     while read refcontigname; do
-        if contig_in_list $refcontigname ${outd}/bamcontigs; then
+        if contig_in_list $refcontigname $bamcontigs; then
             echo $refcontigname
         fi
-    done < ${outd}/refcontigs    
+    done < $refcontigs    
 }
 
 ########
@@ -256,9 +257,17 @@ process_pars()
     echo "* Activating conda environment (samtools)..." >&2
     conda activate samtools || exit 1
 
-    # Obtain list of extra contigs
+    # Get reference contigs
+    echo "* Obtaining list of current reference contigs..." >&2
+    get_ref_contigs $baseref > ${outd}/refcontigs
+
+    # Get bam contigs
+    echo "* Obtaining list of bam contigs..." >&2
+    get_bam_contigs $bam > ${outd}/bamcontigs
+    
+    # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
-    get_ref_contigs_to_keep ${baseref} ${bam} ${outd} > ${outd}/ref_contigs_to_keep.txt || exit 1
+    get_ref_contigs_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/ref_contigs_to_keep.txt || exit 1
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
@@ -266,16 +275,16 @@ process_pars()
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
-    get_missing_contig_names ${baseref} ${bam} ${outd} > ${outd}/missing_contigs.txt || exit 1
+    get_missing_contig_names ${outd}/refcontigs_to_keep ${outd}/bamcontigs > ${outd}/missing_contigs.txt || exit 1
 
     # Enrich base reference
     echo "* Enriching base reference..." >&2
     get_contigs ${contig_to_acc} ${outd}/missing_contigs.txt >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
 
     # Index enriched reference
-    echo "* Indexing enriched reference..." >&2
+    echo "* Indexing created reference..." >&2
     samtools faidx ${outfile} || exit 1
-
+    
     # Deactivate conda environment
     echo "* Deactivating conda environment..." >&2
     conda deactivate

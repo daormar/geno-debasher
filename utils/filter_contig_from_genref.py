@@ -7,12 +7,12 @@ import io, sys, getopt, operator
 def take_pars():
     flags={}
     values={}
-    flags["c_given"]=False
     flags["g_given"]=False
+    flags["c_given"]=False
     flags["l_given"]=False
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"c:g:l:",["contig=","genref=","listc="])
+        opts, args = getopt.getopt(sys.argv[1:],"g:c:l:",["genref=","contig=","listc="])
     except getopt.GetoptError:
         print_help()
         sys.exit(2)
@@ -21,12 +21,12 @@ def take_pars():
         sys.exit()
     else:
         for opt, arg in opts:
-            if opt in ("-c", "--contig"):
-                values["contig"] = arg
-                flags["c_given"]=True
-            elif opt in ("-g", "--genref"):
+            if opt in ("-g", "--genref"):
                 values["genref"] = arg
                 flags["g_given"]=True
+            elif opt in ("-c", "--contig"):
+                values["contig"] = arg
+                flags["c_given"]=True
             elif opt in ("-l", "--listc"):
                 values["listc"] = arg
                 flags["l_given"]=True
@@ -46,11 +46,11 @@ def check_pars(flags,values):
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "filter_contig_from_genref -c <string> {-l <string> | -g <string>}"
+    print >> sys.stderr, "filter_contig_from_genref -g <string> {-c <string> | -l <string>}"
     print >> sys.stderr, ""
+    print >> sys.stderr, "-g <string>    File with genome reference"
     print >> sys.stderr, "-c <string>    Name of contig to remove"
     print >> sys.stderr, "-l <string>    List of contigs to keep (one contig name per line)"
-    print >> sys.stderr, "-g <string>    File with genome reference"
 
 ##################################################
 def getContigsToKeep(listc):

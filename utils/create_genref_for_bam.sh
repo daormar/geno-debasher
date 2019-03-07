@@ -6,14 +6,14 @@
 ########
 print_desc()
 {
-    echo "add_contigs_to_genref add missing contigs listed in bam file to genome reference"
-    echo "type \"add_contigs_to_genref --help\" to get usage information"
+    echo "create_genref_for_bam create genome reference specific for bam file"
+    echo "type \"create_genref_for_bam --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "add_contigs_to_genref  -r <string> -b <string> [-c2a <string>]"
+    echo "create_genref_for_bam  -r <string> -b <string> [-c2a <string>]"
     echo "                       -o <string> [--help]"
     echo ""
     echo "-r <string>            File with reference genome"
@@ -164,6 +164,27 @@ get_missing_contig_names()
 }
 
 ########
+get_ref_contigs_to_keep()
+{
+    local baseref=$1
+    local bam=$2
+    local outd=$3
+            
+    # Obtain reference contigs
+    samtools faidx ${baseref}
+    $AWK '{printf "%s\n",$1}' ${baseref}.fai > ${outd}/refcontigs
+
+    # Obtain bam contigs
+    samtools view -H $bam | $AWK '{if($1=="@SQ") print substr($2,4)}' > ${outd}/bamcontigs || exit 1
+
+    while read refcontigname; do
+        if contig_in_list $refcontigname ${outd}/bamcontigs; then
+            echo $refcontigname
+        fi
+    done < ${outd}/refcontigs    
+}
+
+########
 contig_is_accession()
 {
     local contig=$1
@@ -217,7 +238,8 @@ get_contigs()
     while read contig; do
         local accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
         if [ "$accession" = "" ]; then
-            echo "Warning: contig $contig is not a valid accession nor there were mappings for it, skipping" >&2
+            echo "Error: contig $contig is not a valid accession nor there were mappings for it" >&2
+            return 1
         else
             echo "Getting data for contig ${contig} (mapped to accession $accession)..." >&2
             ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} | ${SED} "s/${accession}/${contig}/"; pipe_fail || return 1
@@ -230,13 +252,17 @@ process_pars()
 {
     outfile=$outd/enriched_genref.fa
     
-    # Copy base genome reference
-    echo "* Copying base genome reference..." >&2
-    cp $baseref $outfile || exit 1
-
     # Activate conda environment
     echo "* Activating conda environment (samtools)..." >&2
     conda activate samtools || exit 1
+
+    # Obtain list of extra contigs
+    echo "* Obtaining list of reference contigs to keep..." >&2
+    get_ref_contigs_to_keep ${baseref} ${bam} ${outd} > ${outd}/ref_contigs_to_keep.txt || exit 1
+
+    # Copy base genome reference without extra contigs
+    echo "* Copying base genome reference without extra contigs..." >&2
+    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/ref_contigs_to_keep.txt > $outfile
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2

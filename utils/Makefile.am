@@ -2,7 +2,7 @@ SCRIPTS_TO_BE_BUILT= bam_analysis bam_facets bam_ascat_r bam_ascatngs	\
 analyze_dataset gen_bed_for_genome check_ref_and_bam_contigs		\
 get_bam_contigs get_entrez_fasta gen_wisecondorx_ref			\
 convert_snppos_to_snpgcc create_snv_pos_ascat query_ega_metadata	\
-query_icgc_metadata add_contigs_to_genref filter_contig_from_genref	\
+query_icgc_metadata create_genref_for_bam filter_contig_from_genref	\
 get_filtered_sam_header get_filtered_sam_align map_vcf_contnames	\
 run_facets run_sequenza convert_allele_counts run_ascat
 
@@ -15,7 +15,7 @@ bam_ascatngs.sh analyze_dataset.sh gen_bed_for_genome.sh		\
 check_ref_and_bam_contigs.sh get_bam_contigs.sh get_entrez_fasta.py	\
 gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
 create_snv_pos_ascat.py query_ega_metadata.py query_icgc_metadata.py	\
-add_contigs_to_genref.sh filter_contig_from_genref.py			\
+create_genref_for_bam.sh filter_contig_from_genref.py			\
 get_filtered_sam_header.py get_filtered_sam_align.py			\
 map_vcf_contnames.py run_facets.R run_sequenza.R			\
 convert_allele_counts.R run_ascat.R

@@ -1115,6 +1115,66 @@ snp_pileup_plus_facets_conda_envs()
 }
 
 ########
+gen_sequenza_gcc_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+}
+
+########
+gen_sequenza_gcc_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+    
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+gen_sequenza_gcc()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate sequenza 2>&1 || exit 1
+
+    # Generate GC content file
+    logmsg "* Generating GC content file..."    
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/gccfile.txt.gz
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    display_end_step_message
+}
+
+########
+mpileup_plus_sequenza_conda_envs()
+{
+    define_conda_env sequenza sequenza.yml
+}
+
+########
 mpileup_plus_sequenza_explain_cmdline_opts()
 {
     # -gcc option

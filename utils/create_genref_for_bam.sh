@@ -251,7 +251,7 @@ get_contigs()
 ########
 process_pars()
 {
-    outfile=$outd/enriched_genref.fa
+    outfile=$outd/genref_for_bam.fa
     
     # Activate conda environment
     echo "* Activating conda environment (samtools)..." >&2

@@ -132,8 +132,8 @@ create_genref_for_bam()
     fi
 
     # Move resulting files
-    mv ${step_outd}/enriched_genref.fa ${outfile}
-    mv ${step_outd}/enriched_genref.fa.fai ${outfile}.fai
+    mv ${step_outd}/genref_for_bam.fa ${outfile}
+    mv ${step_outd}/genref_for_bam.fa.fai ${outfile}.fai
 
     display_end_step_message
 }

@@ -30,6 +30,7 @@ read_pars()
     r_given=0
     b_given=0
     c2a_given=0
+    contig_to_acc=${NOFILE}
     o_given=0
     while [ $# -ne 0 ]; do
         case $1 in

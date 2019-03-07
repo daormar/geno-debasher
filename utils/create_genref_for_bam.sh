@@ -16,7 +16,7 @@ usage()
     echo "create_genref_for_bam  -r <string> -b <string> [-c2a <string>]"
     echo "                       -o <string> [--help]"
     echo ""
-    echo "-r <string>            File with reference genome"
+    echo "-r <string>            File with base reference genome"
     echo "-b <string>            bam file"
     echo "-c2a <string>          File containing a mapping between contig names and"
     echo "                       accession numbers"

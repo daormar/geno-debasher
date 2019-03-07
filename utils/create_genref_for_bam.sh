@@ -275,7 +275,7 @@ process_pars()
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
-    get_missing_contig_names ${outd}/refcontigs_to_keep ${outd}/bamcontigs > ${outd}/missing_contigs.txt || exit 1
+    get_missing_contig_names ${outd}/ref_contigs_to_keep.txt ${outd}/bamcontigs > ${outd}/missing_contigs.txt || exit 1
 
     # Enrich reference
     echo "* Enriching reference..." >&2

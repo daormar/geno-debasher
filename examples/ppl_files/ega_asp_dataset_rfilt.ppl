@@ -2,14 +2,11 @@
 #
 download_ega_asp_norm_bam cpus=1  mem=2048  time=10:00:00 stepdeps=none
 download_ega_asp_tum_bam  cpus=1  mem=2048  time=10:00:00 stepdeps=none
-index_norm_bam__first     cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:download_ega_asp_norm_bam
-index_tum_bam__first      cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:download_ega_asp_tum_bam
-filter_norm_bam_contigs   cpus=1  mem=1024  time=12:00:00 stepdeps=afterok:index_norm_bam__first
-filter_tum_bam_contigs    cpus=1  mem=1024  time=12:00:00 stepdeps=afterok:index_tum_bam__first
-index_norm_bam__second    cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:filter_norm_bam_contigs
-index_tum_bam__second     cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:filter_tum_bam_contigs
-parallel_split_norm_bam   cpus=1  mem=2G    time=10:00:00 throttle=2 stepdeps=afterok:index_norm_bam__second
-parallel_split_tum_bam    cpus=1  mem=2G    time=10:00:00 throttle=2 stepdeps=afterok:index_tum_bam__second
+index_norm_bam            cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:download_ega_asp_norm_bam
+index_tum_bam             cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:download_ega_asp_tum_bam
+enrich_gen_ref            cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:index_norm_bam
+parallel_split_norm_bam   cpus=1  mem=2G    time=10:00:00 throttle=2 stepdeps=afterok:index_norm_bam
+parallel_split_tum_bam    cpus=1  mem=2G    time=10:00:00 throttle=2 stepdeps=afterok:index_tum_bam
 parallel_sambamba_mpileup_norm_bam cpus=4  mem=8G  time=20:00:00 throttle=4 stepdeps=afterok:parallel_split_norm_bam
 parallel_sambamba_mpileup_tum_bam  cpus=4  mem=8G  time=20:00:00 throttle=4 stepdeps=afterok:parallel_split_tum_bam
 parallel_bam2seqz         cpus=1  mem=2G    time=20:00:00 throttle=8 stepdeps=afterok:parallel_sambamba_mpileup_norm_bam,afterok:parallel_sambamba_mpileup_tum_bam
@@ -17,11 +14,11 @@ seqzmerge_plus_sequenza   cpus=1  mem=4G    time=20:00:00 stepdeps=afterok:paral
 parallel_delly            cpus=1  mem=8G    time=14:00:00 throttle=2 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
 parallel_lumpy            cpus=2  mem=8G    time=10:00:00 throttle=2 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
 parallel_svtyper          cpus=1  mem=8G    time=4:00:00  stepdeps=afterok:parallel_lumpy
-strelka_germline          cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
-manta_somatic             cpus=8  mem=3072  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
-strelka_somatic           cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second,afterok:manta_somatic
-msisensor                 cpus=8  mem=6144  time=5:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
-snp_pileup_plus_facets    cpus=1  mem=25000 time=12:00:00 stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
-cnvkit                    cpus=8  mem=25000 time=10:00:00 stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
-platypus_germline         cpus=1  mem=4096  time=5:00:00  stepdeps=afterok:index_norm_bam__second
+strelka_germline          cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
+manta_somatic             cpus=8  mem=3072  time=6:00:00  stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
+strelka_somatic           cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
+msisensor                 cpus=8  mem=6144  time=5:00:00  stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
+snp_pileup_plus_facets    cpus=1  mem=25000 time=12:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
+cnvkit                    cpus=8  mem=25000 time=10:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
+platypus_germline         cpus=1  mem=4096  time=5:00:00  stepdeps=afterok:index_norm_bam
 delete_bam_files          cpus=1  mem=1024  time=0:10:00  stepdeps=afterok:parallel_delly,afterok:parallel_lumpy,afterok:parallel_svtyper,afterok:manta_somatic,afterok:strelka_germline,afterok:strelka_somatic,afterok:msisensor,afterok:cnvkit,afterok:snp_pileup_plus_facets,afterok:platypus_germline,afterok:seqzmerge_plus_sequenza

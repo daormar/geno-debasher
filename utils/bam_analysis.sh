@@ -69,7 +69,7 @@ get_bam_filename()
         # Check -extt option
         if check_opt_given "$cmdline" "-extt"; then
             local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-            tumor=${abs_datadir}/tumor.bam
+            tumorbam=${abs_datadir}/tumor.bam
             echo $tumorbam
             return 0
         fi
@@ -177,8 +177,15 @@ get_ref_filename()
         file_exists $ref || { errmsg "file $ref does not exist" ; return 1; }
         echo $ref
     else
-        errmsg "-r option should be given"
-        echo $ref
+        # Check -br option
+        if check_opt_given "$cmdline" "-br"; then
+            local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+            ref=${abs_datadir}/genref.fa
+            echo $ref
+            return 0
+        fi
+
+        errmsg "-r or -br options should be given"
         return 1
     fi
 }
@@ -244,7 +251,7 @@ manta_germline_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -268,7 +275,9 @@ manta_germline_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
     
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -345,7 +354,7 @@ cnvkit_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -369,7 +378,9 @@ cnvkit_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -428,7 +439,7 @@ manta_somatic_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -456,7 +467,9 @@ manta_somatic_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -526,7 +539,7 @@ strelka_germline_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -550,7 +563,9 @@ strelka_germline_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -614,7 +629,7 @@ strelka_somatic_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -642,7 +657,9 @@ strelka_somatic_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -741,7 +758,7 @@ platypus_germline_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -761,7 +778,9 @@ platypus_germline_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -840,7 +859,7 @@ msisensor_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -864,7 +883,9 @@ msisensor_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -1919,7 +1940,9 @@ delly_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -2022,7 +2045,9 @@ parallel_split_plus_delly_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -2173,7 +2198,9 @@ parallel_delly_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -3365,7 +3392,7 @@ filter_norm_bam_contigs_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 }
 
 ########
@@ -3381,7 +3408,9 @@ filter_norm_bam_contigs_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -3481,7 +3510,7 @@ filter_tum_bam_contigs_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 }
 
 ########
@@ -3497,7 +3526,9 @@ filter_tum_bam_contigs_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -3564,7 +3595,7 @@ sambamba_mpileup_norm_bam_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
@@ -3588,7 +3619,9 @@ sambamba_mpileup_norm_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -3664,7 +3697,7 @@ sambamba_mpileup_tum_bam_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_cmdline_opt "-r" "<string>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
@@ -3688,7 +3721,9 @@ sambamba_mpileup_tum_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -tumorbam option
     local tumorbam
@@ -3750,6 +3785,10 @@ sambamba_mpileup_tum_bam_conda_envs()
 ########
 parallel_sambamba_mpileup_norm_bam_explain_cmdline_opts()
 {
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
     # -mpb option
     description="BED file for mpileup"
     explain_cmdline_opt "-mpb" "<string>" "$description"
@@ -3772,7 +3811,9 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -datadir option    
     abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -3845,6 +3886,10 @@ parallel_sambamba_mpileup_norm_bam_conda_envs()
 ########
 parallel_sambamba_mpileup_tum_bam_explain_cmdline_opts()
 {
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
     # -mpb option
     description="BED file for mpileup"
     explain_cmdline_opt "-mpb" "<string>" "$description"
@@ -3867,7 +3912,9 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
     # -r option
-    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
 
     # -datadir option    
     abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`

@@ -1,3 +1,0 @@
-#import bam_analysis
-#
-enrich_gen_ref cpus=1 mem=2048 time=02:00:00 stepdeps=none

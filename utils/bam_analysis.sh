@@ -3960,9 +3960,17 @@ parallel_sambamba_mpileup_norm_bam()
     # Obtain sambamba mpileup -L opt
     local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
 
+    # Reset tmp directory
+    tmpdir=${step_outd}/tmp_${contig}
+    if [ -d $tmpdir ]; then
+        rm -rf $tmpdir/*
+    else
+        mkdir $tmpdir
+    fi
+
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${step_outd} -o ${step_outd}/normal_${contig}.pileup $normalbam --samtools "-f ${ref}" || exit 1
+    sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${tmpdir} -o ${step_outd}/normal_${contig}.pileup $normalbam --samtools "-f ${ref}" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -4061,9 +4069,17 @@ parallel_sambamba_mpileup_tum_bam()
     # Obtain sambamba mpileup -L opt
     local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
 
+    # Reset tmp directory
+    tmpdir=${step_outd}/tmp_${contig}
+    if [ -d $tmpdir ]; then
+        rm -rf $tmpdir/*
+    else
+        mkdir $tmpdir
+    fi
+
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${step_outd} -o ${step_outd}/tumor_${contig}.pileup $tumorbam --samtools "-f ${ref}" || exit 1
+    sambamba mpileup -t ${cpus} ${smp_l_opt} --tmpdir ${tmpdir} -o ${step_outd}/tumor_${contig}.pileup $tumorbam --samtools "-f ${ref}" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

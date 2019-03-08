@@ -13,7 +13,7 @@ gen_sequenza_gcc          cpus=1  mem=1G    time=01:00:00 stepdeps=afterok:creat
 parallel_bam2seqz         cpus=1  mem=2G    time=20:00:00 throttle=8 stepdeps=afterok:gen_sequenza_gcc,afterok:parallel_sambamba_mpileup_norm_bam,afterok:parallel_sambamba_mpileup_tum_bam
 seqzmerge_plus_sequenza   cpus=1  mem=4G    time=20:00:00 stepdeps=afterok:parallel_bam2seqz
 parallel_delly            cpus=1  mem=8G    time=14:00:00 throttle=4 stepdeps=afterok:create_genref_for_bam,afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
-parallel_lumpy            cpus=3  mem=8G    time=10:00:00 throttle=4 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
+parallel_lumpy            cpus=4  mem=8G    time=10:00:00 throttle=4 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
 parallel_svtyper          cpus=1  mem=8G    time=4:00:00  stepdeps=afterok:parallel_lumpy
 strelka_germline          cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 manta_somatic             cpus=8  mem=3072  time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam

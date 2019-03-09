@@ -305,7 +305,7 @@ process_pars()
     # Check created reference
     echo "* Checking created reference..." >&2
     get_uniq_contigs ${outd}/bamcontigs ${outd}/created_ref_contigs > ${outd}/uniq_contigs
-    num_uniq_contigs=`$WC -l ${outd}/uniq_contigs`
+    num_uniq_contigs=`$WC -l ${outd}/uniq_contigs | $AWK '{print $1}'`
     if [ ${num_uniq_contigs} -gt 0 ]; then
         echo "Bam file and created genome reference do not have the exact same contigs (see ${outd}/uniq_contigs file)" >&2
         exit 1

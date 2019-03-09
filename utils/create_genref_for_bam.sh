@@ -143,12 +143,19 @@ contig_in_list()
 }
 
 ########
+extract_contig_info_from_fai()
+{
+    local faifile=$1
+    $AWK '{printf "%s %s\n",$1,$2}' ${faifile}
+}
+
+########
 get_ref_contig_names()
 {
     local ref=$1
 
     samtools faidx ${baseref} || return 1
-    $AWK '{printf "%s %s\n",$1,$2}' ${baseref}.fai
+    extract_contig_info_from_fai ${baseref}.fai
 }
 
 ########
@@ -249,6 +256,15 @@ get_contigs()
 }
 
 ########
+get_uniq_contigs()
+{
+    local cfile1=$1
+    local cfile2=$2
+
+    ${SORT} $cfile1 $cfile2 | ${UNIQ} -u
+}
+
+########
 process_pars()
 {
     outfile=$outd/genref_for_bam.fa
@@ -267,23 +283,32 @@ process_pars()
     
     # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
-    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/refcontigs_to_keep.txt || exit 1
+    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/refcontigs_to_keep || exit 1
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/refcontigs_to_keep.txt > $outfile
+    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/refcontigs_to_keep > $outfile
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
-    get_missing_contig_names ${outd}/refcontigs_to_keep.txt ${outd}/bamcontigs > ${outd}/missing_contigs.txt || exit 1
+    get_missing_contig_names ${outd}/refcontigs_to_keep ${outd}/bamcontigs > ${outd}/missing_contigs || exit 1
 
     # Enrich reference
     echo "* Enriching reference..." >&2
-    get_contigs ${contig_to_acc} ${outd}/missing_contigs.txt >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
+    get_contigs ${contig_to_acc} ${outd}/missing_contigs >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
 
     # Index created reference
     echo "* Indexing created reference..." >&2
     samtools faidx ${outfile} || exit 1
+    extract_contig_info_from_fai ${outfile}.fai > ${outd}/created_ref_contigs
+
+    # Check created reference
+    echo "* Checking created reference..." >&2
+    get_uniq_contigs ${outd}/bamcontigs ${outd}/created_ref_contigs > ${outd}/uniq_contigs
+    num_uniq_contigs=`$WC -l ${outd}/uniq_contigs`
+    if [ ${num_uniq_contigs} -gt 0 ]; then
+        echo "Bam file and created genome reference do not have the exact same contigs (see ${outd}/uniq_contigs file)" >&2 || exit 1
+    fi
     
     # Deactivate conda environment
     echo "* Deactivating conda environment..." >&2

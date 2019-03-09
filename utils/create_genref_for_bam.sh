@@ -174,7 +174,7 @@ get_missing_contig_names()
             
     while read bamcontigname contiglen; do
         if ! contig_in_list $bamcontigname $refcontigs; then
-            echo $bamcontigname
+            echo $bamcontigname $contiglen
         fi
     done < $bamcontigs    
 }
@@ -187,7 +187,7 @@ get_ref_contig_names_to_keep()
             
     while read refcontigname contiglen; do
         if contig_in_list $refcontigname $bamcontigs; then
-            echo $refcontigname
+            echo $refcontigname $contiglen
         fi
     done < $refcontigs    
 }
@@ -243,7 +243,7 @@ get_contigs()
     local contig_to_acc=$1
     local contiglist=$2
 
-    while read contig; do
+    while read contig contiglen; do
         local accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
         if [ "$accession" = "" ]; then
             echo "Error: contig $contig is not a valid accession nor there were mappings for it" >&2

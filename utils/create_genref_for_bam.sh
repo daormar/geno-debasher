@@ -133,8 +133,8 @@ contig_in_list()
     local contig=$1
     local clist=$2
 
-    while read c; do
-        if [ "$contig" = "$c" ]; then
+    while read cname clen; do
+        if [ "$contig" = "$cname" ]; then
             return 0
         fi
     done < ${clist}
@@ -148,7 +148,7 @@ get_ref_contig_names()
     local ref=$1
 
     samtools faidx ${baseref} || return 1
-    $AWK '{printf "%s\n",$1}' ${baseref}.fai
+    $AWK '{printf "%s %s\n",$1,$2}' ${baseref}.fai
 }
 
 ########
@@ -156,7 +156,7 @@ get_bam_contig_names()
 {
     local bam=$1
 
-    samtools view -H $bam | $AWK '{if($1=="@SQ") print substr($2,4)}'
+    samtools view -H $bam | $AWK '{if($1=="@SQ") printf "%s %s\n",substr($2,4),substr($3,4)}'
 }
 
 ########
@@ -165,7 +165,7 @@ get_missing_contig_names()
     local refcontigs=$1
     local bamcontigs=$2
             
-    while read bamcontigname; do
+    while read bamcontigname contiglen; do
         if ! contig_in_list $bamcontigname $refcontigs; then
             echo $bamcontigname
         fi
@@ -178,7 +178,7 @@ get_ref_contig_names_to_keep()
     local refcontigs=$1
     local bamcontigs=$2
             
-    while read refcontigname; do
+    while read refcontigname contiglen; do
         if contig_in_list $refcontigname $bamcontigs; then
             echo $refcontigname
         fi
@@ -262,7 +262,7 @@ process_pars()
     get_ref_contig_names $baseref > ${outd}/refcontigs
 
     # Get bam contigs
-    echo "* Obtaining list of bam contig names..." >&2
+    echo "* Obtaining list of bam contig names and their lengths..." >&2
     get_bam_contig_names $bam > ${outd}/bamcontigs
     
     # Obtain list of contigs to keep in the reference file

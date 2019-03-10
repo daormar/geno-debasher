@@ -283,7 +283,7 @@ process_pars()
     conda activate samtools || exit 1
 
     # Get reference contigs
-    echo "* Obtaining list of current reference contig names..." >&2
+    echo "* Obtaining list of current reference contig names and their lengths..." >&2
     get_ref_contig_names $baseref > ${outd}/refcontigs
 
     # Get bam contigs

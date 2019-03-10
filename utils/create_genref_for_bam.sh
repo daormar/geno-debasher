@@ -13,13 +13,15 @@ print_desc()
 ########
 usage()
 {
-    echo "create_genref_for_bam  -r <string> -b <string> [-c2a <string>]"
+    echo "create_genref_for_bam  -r <string> -b <string> [-cm <string>]"
     echo "                       -o <string> [--help]"
     echo ""
     echo "-r <string>            File with base reference genome"
     echo "-b <string>            bam file"
-    echo "-c2a <string>          File containing a mapping between contig names and"
-    echo "                       accession numbers"
+    echo "-cm <string>           File containing a mapping between contig names and"
+    echo "                       accession numbers or file names (when the mapping"
+    echo "                       starts with a '/' character, it is considered a"
+    echo "                       file, hence, absolute paths should be given)"
     echo "-o <string>            Output directory"
     echo "--help                 Display this help and exit"
 }
@@ -29,8 +31,8 @@ read_pars()
 {
     r_given=0
     b_given=0
-    c2a_given=0
-    contig_to_acc=${NOFILE}
+    cm_given=0
+    contig_mapping=${NOFILE}
     o_given=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -49,10 +51,10 @@ read_pars()
                       b_given=1
                   fi
                   ;;
-            "-c2a") shift
+            "-cm") shift
                   if [ $# -ne 0 ]; then
-                      contig_to_acc=$1
-                      c2a_given=1
+                      contig_mapping=$1
+                      cm_given=1
                   fi
                   ;;
             "-o") shift
@@ -89,9 +91,9 @@ check_pars()
         fi
     fi
 
-    if [ ${c2a_given} -eq 1 ]; then   
-        if [ ! -f ${contig_to_acc} ]; then
-            echo "Error! file ${contig_to_acc} does not exist" >&2
+    if [ ${cm_given} -eq 1 ]; then   
+        if [ ! -f ${contig_mapping} ]; then
+            echo "Error! file ${contig_mapping} does not exist" >&2
             exit 1
         fi
     fi
@@ -118,8 +120,8 @@ print_pars()
         echo "-b is ${bam}" >&2
     fi
 
-    if [ ${c2a_given} -eq 1 ]; then
-        echo "-c2a is ${contig_to_acc}" >&2
+    if [ ${cm_given} -eq 1 ]; then
+        echo "-cm is ${contig_mapping}" >&2
     fi
 
     if [ ${o_given} -eq 1 ]; then
@@ -205,9 +207,9 @@ contig_is_accession()
 }
 
 ########
-map_contig_to_acc_using_file()
+map_contig_using_file()
 {
-    local contig_to_acc=$1
+    local contig_mapping=$1
     local contig=$2
 
     while read entry; do
@@ -219,20 +221,20 @@ map_contig_to_acc_using_file()
                 break
             fi
         fi
-    done < ${contig_to_acc}
+    done < ${contig_mapping}
 }
 
 ########
-map_contig_to_accession()
+map_contig()
 {
-    local contig_to_acc=$1
+    local contig_mapping=$1
     local contig=$2
 
     if contig_is_accession ${contig}; then
         echo ${contig}
     else
-        if [ ${contig_to_acc} != "${NOFILE}" ]; then
-            map_contig_to_acc_using_file ${contig_to_acc} ${contig} || return 1
+        if [ ${contig_mapping} != "${NOFILE}" ]; then
+            map_contig_using_file ${contig_mapping} ${contig} || return 1
         fi
     fi
 }
@@ -240,17 +242,23 @@ map_contig_to_accession()
 ########
 get_contigs()
 {
-    local contig_to_acc=$1
+    local contig_mapping=$1
     local contiglist=$2
 
     while read contig contiglen; do
-        local accession=`map_contig_to_accession ${contig_to_acc} ${contig}` || return 1
-        if [ "$accession" = "" ]; then
+        local mapping=`map_contig ${contig_mapping} ${contig}` || return 1
+        if [ "$mapping" = "" ]; then
             echo "Error: contig $contig is not a valid accession nor there were mappings for it" >&2
             return 1
         else
-            echo "Getting data for contig ${contig} (mapped to accession $accession)..." >&2
-            ${biopanpipe_bindir}/get_entrez_fasta -a ${accession} | ${SED} "s/${accession}/${contig}/"; pipe_fail || return 1
+            echo "Getting data for contig ${contig} (mapped to $mapping)..." >&2
+            # Determine whether the mapping is an accession number of a
+            # file name (absolute file paths should be given)
+            if is_absolute_path ${mapping}; then
+                cat ${mapping} || return 1
+            else
+                ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | ${SED} "s/${mapping}/${contig}/"; pipe_fail || return 1
+            fi
         fi
     done < ${contiglist}
 }
@@ -295,7 +303,7 @@ process_pars()
 
     # Enrich reference
     echo "* Enriching reference..." >&2
-    get_contigs ${contig_to_acc} ${outd}/missing_contigs >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
+    get_contigs ${contig_mapping} ${outd}/missing_contigs >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
 
     # Index created reference
     echo "* Indexing created reference..." >&2

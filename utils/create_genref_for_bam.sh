@@ -251,12 +251,13 @@ get_contigs()
             echo "Error: contig $contig is not a valid accession nor there were mappings for it" >&2
             return 1
         else
-            echo "Getting data for contig ${contig} (mapped to $mapping)..." >&2
             # Determine whether the mapping is an accession number of a
             # file name (absolute file paths should be given)
             if is_absolute_path ${mapping}; then
+                echo "Getting data for contig ${contig} (mapped to file $mapping)..." >&2
                 cat ${mapping} || return 1
             else
+                echo "Getting data for contig ${contig} (mapped to accession $mapping)..." >&2
                 ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | ${SED} "s/${mapping}/${contig}/"; pipe_fail || return 1
             fi
         fi

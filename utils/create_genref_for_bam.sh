@@ -304,7 +304,7 @@ process_pars()
 
     # Enrich reference
     echo "* Enriching reference..." >&2
-    get_contigs ${contig_mapping} ${outd}/missing_contigs >> $outfile || { echo "Error during FASTA data downloading" >&2; exit 1; }
+    get_contigs ${contig_mapping} ${outd}/missing_contigs >> $outfile || { echo "Error during reference enrichment" >&2; exit 1; }
 
     # Index created reference
     echo "* Indexing created reference..." >&2

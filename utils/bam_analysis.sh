@@ -3155,12 +3155,12 @@ sambamba_mpileup_norm_bam_define_opts()
 ########
 get_sambamba_mpileup_l_opt()
 {
-    local mbpfile=$1
+    local mpbfile=$1
 
-    if [ "${mbpfile}" = ${OPT_NOT_FOUND} ]; then
+    if [ "${mpbfile}" = ${OPT_NOT_FOUND} ]; then
         echo ""
     else
-        echo "-L ${mbpfile}"
+        echo "-L ${mpbfile}"
     fi
 }
 
@@ -3173,7 +3173,7 @@ sambamba_mpileup_norm_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
@@ -3181,7 +3181,7 @@ sambamba_mpileup_norm_bam()
     conda activate sambamba 2>&1 || exit 1
 
     # Obtain sambamba mpileup -L opt
-    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mpbfile}`
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
@@ -3263,7 +3263,7 @@ sambamba_mpileup_tum_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
@@ -3271,7 +3271,7 @@ sambamba_mpileup_tum_bam()
     conda activate sambamba 2>&1 || exit 1
 
     # Obtain sambamba mpileup -L opt
-    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mpbfile}`
     
     # Generate pileup file
     logmsg "* Generating pileup file..."
@@ -3363,7 +3363,7 @@ parallel_sambamba_mpileup_norm_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
@@ -3372,7 +3372,7 @@ parallel_sambamba_mpileup_norm_bam()
     conda activate sambamba 2>&1 || exit 1
 
     # Obtain sambamba mpileup -L opt
-    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mpbfile}`
 
     # Reset tmp directory
     tmpdir=${step_outd}/tmp_${contig}
@@ -3472,7 +3472,7 @@ parallel_sambamba_mpileup_tum_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
@@ -3481,7 +3481,7 @@ parallel_sambamba_mpileup_tum_bam()
     conda activate sambamba 2>&1 || exit 1
 
     # Obtain sambamba mpileup -L opt
-    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_sambamba_mpileup_l_opt ${mpbfile}`
 
     # Reset tmp directory
     tmpdir=${step_outd}/tmp_${contig}
@@ -3560,12 +3560,12 @@ samtools_mpileup_norm_bam_define_opts()
 ########
 get_samtools_mpileup_l_opt()
 {
-    local mbpfile=$1
+    local mpbfile=$1
 
-    if [ "${mbpfile}" = ${OPT_NOT_FOUND} ]; then
+    if [ "${mpbfile}" = ${OPT_NOT_FOUND} ]; then
         echo ""
     else
-        echo "-l ${mbpfile}"
+        echo "-l ${mpbfile}"
     fi
 }
 
@@ -3578,14 +3578,14 @@ samtools_mpileup_norm_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
     conda activate samtools 2>&1 || exit 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
@@ -3662,14 +3662,14 @@ samtools_mpileup_tum_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
     conda activate samtools 2>&1 || exit 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
     
     # Generate pileup file
     logmsg "* Generating pileup file..."
@@ -3756,7 +3756,7 @@ parallel_samtools_mpileup_norm_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Activate conda environment
@@ -3764,7 +3764,7 @@ parallel_samtools_mpileup_norm_bam()
     conda activate samtools 2>&1 || exit 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
@@ -3851,7 +3851,7 @@ parallel_samtools_mpileup_tum_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Activate conda environment
@@ -3859,7 +3859,7 @@ parallel_samtools_mpileup_tum_bam()
     conda activate samtools 2>&1 || exit 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."

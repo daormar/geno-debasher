@@ -4099,6 +4099,208 @@ parallel_sambamba_mpileup_tum_bam_conda_envs()
 }
 
 ########
+parallel_samtools_mpileup_norm_bam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -mpb option
+    description="BED file for mpileup"
+    explain_cmdline_opt "-mpb" "<string>" "$description"
+
+    # -lc option
+    description="File with list of contig names to process"
+    explain_cmdline_req_opt "-lc" "<string>" "$description"
+}
+
+########
+parallel_samtools_mpileup_norm_bam_define_opts()
+{ 
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -datadir option    
+    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+
+    # -mpb option
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
+    # Get name of contig list file
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
+    for contig in ${contigs}; do
+        local specific_optlist=${optlist}
+        normalbam=${abs_datadir}/normal_${contig}.bam
+        define_opt "-normalbam" ${normalbam} specific_optlist || exit 1
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
+    done
+}
+
+########
+get_samtools_mpileup_l_opt()
+{
+    local mbpfile=$1
+
+    if [ "${mbpfile}" = ${OPT_NOT_FOUND} ]; then
+        echo ""
+    else
+        echo "-l ${mbpfile}"
+    fi
+}
+
+########
+parallel_samtools_mpileup_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
+
+    # Obtain samtools mpileup -L opt
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+
+    # Generate pileup file
+    logmsg "* Generating pileup file (contig $contig)..."
+    samtools mpileup ${smp_l_opt} -f ${ref} -o ${step_outd}/normal_${contig}.pileup $normalbam || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Compress pileup file
+    logmsg "* Compressing pileup file..."
+    ${GZIP} ${step_outd}/normal_${contig}.pileup
+
+    display_end_step_message
+}
+
+########
+parallel_samtools_mpileup_norm_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
+parallel_samtools_mpileup_tum_bam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -mpb option
+    description="BED file for mpileup"
+    explain_cmdline_opt "-mpb" "<string>" "$description"
+
+    # -lc option
+    description="File with list of contig names to process"
+    explain_cmdline_req_opt "-lc" "<string>" "$description"
+}
+
+########
+parallel_samtools_mpileup_tum_bam_define_opts()
+{ 
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -datadir option    
+    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+
+    # -mpb option
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
+    # Get name of contig list file
+    local clist
+    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+
+    # Generate option lists for each contig
+    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contig
+    for contig in ${contigs}; do
+        local specific_optlist=${optlist}
+        tumorbam=${abs_datadir}/tumor_${contig}.bam
+        define_opt "-tumorbam" ${tumorbam} specific_optlist || exit 1
+        define_opt "-contig" $contig specific_optlist || exit 1
+        save_opt_list specific_optlist
+    done
+}
+
+########
+parallel_samtools_mpileup_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
+
+    # Obtain samtools mpileup -L opt
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+
+    # Generate pileup file
+    logmsg "* Generating pileup file (contig $contig)..."
+    samtools mpileup ${smp_l_opt} -f ${ref} -o ${step_outd}/tumor_${contig}.pileup $tumorbam || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Compress pileup file
+    logmsg "* Compressing pileup file..."
+    ${GZIP} ${step_outd}/tumor_${contig}.pileup
+
+    display_end_step_message
+}
+
+########
+parallel_samtools_mpileup_tum_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
 parallel_split_norm_bam_explain_cmdline_opts()
 {
     # -n option

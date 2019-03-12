@@ -1826,7 +1826,30 @@ check_contig_does_not_exist_given_log_file()
 }
 
 ########
-filter_bam_contig()
+filter_bam_contig_samtools()
+{
+    local inbam=$1
+    local contig=$2
+    local outbam=$3    
+    local error=0
+    
+    samtools view -h -O BAM $inbam $contig > ${outbam} 2> ${outbam}.log || error=1
+
+    if [ $error -eq 1 ]; then
+        if check_contig_does_not_exist_given_log_file ${outbam}.log; then
+            errmsg "Warning: contig ${contig} does not exist in ${inbam} file (see ${outbam}.log)"
+            return 0
+        else
+            errmsg "Error while filtering ${contig} in ${inbam} file (see ${outbam}.log)"
+            return 1
+        fi
+    else
+        return 0
+    fi
+}
+
+########
+filter_bam_contig_sambamba()
 {
     local inbam=$1
     local contig=$2
@@ -1866,9 +1889,9 @@ parallel_split_plus_lumpy()
     # Extract contigs
     logmsg "* Extracting contigs (contig $contig)..."
     normalcont=${step_outd}/normal_${contig}.bam
-    filter_bam_contig $normalbam $contig $normalcont || exit 1
+    filter_bam_contig_sambamba $normalbam $contig $normalcont || exit 1
     tumorcont=${step_outd}/tumor_${contig}.bam
-    filter_bam_contig $tumorbam $contig $tumorcont || exit 1
+    filter_bam_contig_sambamba $tumorbam $contig $tumorcont || exit 1
 
     # Index contigs
     logmsg "* Indexing contigs..."
@@ -2194,9 +2217,9 @@ parallel_split_plus_delly()
     # Extract contigs
     logmsg "* Extracting contigs..."
     normalcont=${step_outd}/normal_${contig}.bam
-    filter_bam_contig $normalbam $contig $normalcont || exit 1
+    filter_bam_contig_sambamba $normalbam $contig $normalcont || exit 1
     tumorcont=${step_outd}/tumor_${contig}.bam
-    filter_bam_contig $tumorbam $contig $tumorcont || exit 1
+    filter_bam_contig_sambamba $tumorbam $contig $tumorcont || exit 1
 
     # Index contigs
     logmsg "* Indexing contigs..."
@@ -4365,7 +4388,7 @@ parallel_split_norm_bam()
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
     normalcont=${step_outd}/normal_${contig}.bam
-    filter_bam_contig $normalbam $contig $normalcont || exit 1
+    filter_bam_contig_sambamba $normalbam $contig $normalcont || exit 1
 
     # Index contig
     logmsg "* Indexing contig..."
@@ -4452,7 +4475,7 @@ parallel_split_tum_bam()
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
     tumorcont=${step_outd}/tumor_${contig}.bam
-    filter_bam_contig $tumorbam $contig $tumorcont || exit 1
+    filter_bam_contig_sambamba $tumorbam $contig $tumorcont || exit 1
 
     # Index contig
     logmsg "* Indexing contig..."

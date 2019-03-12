@@ -3513,6 +3513,186 @@ parallel_sambamba_mpileup_tum_bam_conda_envs()
 }
 
 ########
+samtools_mpileup_norm_bam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -mpb option
+    description="BED file for mpileup"
+    explain_cmdline_opt "-mpb" "<string>" "$description"
+}
+
+########
+samtools_mpileup_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -mpb option
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+get_samtools_mpileup_l_opt()
+{
+    local mbpfile=$1
+
+    if [ "${mbpfile}" = ${OPT_NOT_FOUND} ]; then
+        echo ""
+    else
+        echo "-l ${mbpfile}"
+    fi
+}
+
+########
+samtools_mpileup_norm_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
+
+    # Obtain samtools mpileup -L opt
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+
+    # Generate pileup file
+    logmsg "* Generating pileup file..."
+    samtools mpileup ${smp_l_opt} -f ${ref} -o ${step_outd}/normal.pileup $normalbam || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Compress pileup file
+    logmsg "* Compressing pileup file..."
+    ${GZIP} ${step_outd}/normal.pileup
+
+    display_end_step_message
+}
+
+########
+samtools_mpileup_norm_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
+samtools_mpileup_tum_bam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -mpb option
+    description="BED file for mpileup"
+    explain_cmdline_opt "-mpb" "<string>" "$description"
+}
+
+########
+samtools_mpileup_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -mpb option
+    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+samtools_mpileup_tum_bam()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local mbpfile=`read_opt_value_from_line "$*" "-mpb"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
+
+    # Obtain samtools mpileup -L opt
+    local smp_l_opt=`get_samtools_mpileup_l_opt ${mbpfile}`
+    
+    # Generate pileup file
+    logmsg "* Generating pileup file..."
+    samtools mpileup ${smp_l_opt} -f ${ref} -o ${step_outd}/tumor.pileup $tumorbam || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Compress pileup file
+    logmsg "* Compressing pileup file..."
+    ${GZIP} ${step_outd}/tumor.pileup
+
+    display_end_step_message
+}
+
+########
+samtools_mpileup_tum_bam_conda_envs()
+{
+    define_conda_env samtools samtools.yml
+}
+
+########
 parallel_samtools_mpileup_norm_bam_explain_cmdline_opts()
 {
     # -r option
@@ -3565,18 +3745,6 @@ parallel_samtools_mpileup_norm_bam_define_opts()
         define_opt "-contig" $contig specific_optlist || exit 1
         save_opt_list specific_optlist
     done
-}
-
-########
-get_samtools_mpileup_l_opt()
-{
-    local mbpfile=$1
-
-    if [ "${mbpfile}" = ${OPT_NOT_FOUND} ]; then
-        echo ""
-    else
-        echo "-l ${mbpfile}"
-    fi
 }
 
 ########

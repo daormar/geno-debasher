@@ -4,33 +4,41 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - bcftools=1.8=h4da6232_3
-  - boost=1.61.0=py36_0
-  - bzip2=1.0.6=h14c3975_5
-  - ca-certificates=2018.03.07=0
-  - certifi=2018.4.16=py36_0
-  - curl=7.60.0=h84994c4_0
-  - delly=0.7.7=boost1.61_1
-  - htslib=1.8=h57f8fdf_2
-  - icu=54.1=0
-  - libcurl=7.60.0=h1ad7b7a_0
-  - libdeflate=1.0=h470a237_0
-  - libedit=3.1.20170329=h6b74fdf_2
-  - libffi=3.2.1=hd88cf55_4
+  - blas=1.0=mkl
+  - boost=1.64.0=py36_4
+  - boost-cpp=1.64.0=1
+  - bzip2=1.0.6=1
+  - ca-certificates=2019.3.9=hecc5488_0
+  - certifi=2019.3.9=py36_0
+  - curl=7.62.0=hbc83047_0
+  - delly=0.8.1=h4037b6b_1
+  - htslib=1.9=h47928c2_5
+  - icu=58.2=hfc679d8_0
+  - intel-openmp=2018.0.3=0
+  - krb5=1.14.6=0
+  - libboost=1.67.0=h46d08c1_4
+  - libcurl=7.62.0=h20c2e04_0
+  - libdeflate=1.0=h14c3975_1
+  - libffi=3.2.1=hf484d3e_1005
   - libgcc=7.2.0=h69d50b8_2
-  - libgcc-ng=7.2.0=hdf63c60_3
-  - libssh2=1.8.0=h9cfc8f7_4
-  - libstdcxx-ng=7.2.0=hdf63c60_3
-  - ncurses=6.1=hf484d3e_0
-  - openssl=1.0.2o=h20670df_0
-  - pip=10.0.1=py36_0
-  - python=3.6.6=hc3d631a_0
-  - readline=7.0=ha6073c6_4
+  - libgcc-ng=7.3.0=hdf63c60_0
+  - libgfortran-ng=7.2.0=hdf63c60_3
+  - libssh2=1.8.0=h90d6eec_1004
+  - libstdcxx-ng=7.3.0=hdf63c60_0
+  - mkl=2018.0.3=1
+  - mkl_fft=1.0.2=py36_0
+  - mkl_random=1.0.1=py36_0
+  - ncurses=6.1=hf484d3e_1002
+  - numpy=1.14.2=py36hdbf6ddf_1
+  - openssl=1.1.1b=h14c3975_1
+  - pip=9.0.3=py36_0
+  - python=3.6.7=h381d211_1004
+  - readline=7.0=hf8c457e_1001
   - setuptools=39.2.0=py36_0
-  - sqlite=3.24.0=h84994c4_0
-  - tk=8.6.7=hc745277_3
+  - sqlite=3.26.0=h67949de_1001
+  - tk=8.6.9=h84994c4_1000
   - wheel=0.31.1=py36_0
-  - xz=5.2.4=h14c3975_4
-  - zlib=1.2.11=ha838bed_2
-prefix: /home/dortiz/miniconda3/envs/delly
+  - xz=5.2.4=h14c3975_1001
+  - zlib=1.2.11=h470a237_3
+prefix: /opt/anaconda3/envs/delly
 

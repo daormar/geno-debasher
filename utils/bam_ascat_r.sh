@@ -1,5 +1,21 @@
 # *- bash -*
 
+#################
+# CFG FUNCTIONS #
+#################
+
+########
+bam_ascat_r_shared_dirs()
+{
+    define_shared_dir ${DATADIR_BASENAME}
+}
+
+########
+bam_ascat_r_fifos()
+{
+    :
+}
+
 ######################
 # ASCAT_R STEPS      #
 ######################

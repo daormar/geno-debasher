@@ -1,3 +1,25 @@
+# *- bash -*
+
+#################
+# CFG FUNCTIONS #
+#################
+
+########
+bam_ascatngs_shared_dirs()
+{
+    define_shared_dir ${DATADIR_BASENAME}
+}
+
+########
+bam_ascatngs_fifos()
+{
+    :
+}
+
+######################
+# BAM ASCATNGS STEPS #
+######################
+
 ########
 ascatngs_explain_cmdline_opts()
 {

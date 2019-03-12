@@ -1,5 +1,21 @@
 # *- bash -*
 
+#################
+# CFG FUNCTIONS #
+#################
+
+########
+bam_facets_shared_dirs()
+{
+    define_shared_dir ${DATADIR_BASENAME}
+}
+
+########
+bam_facets_fifos()
+{
+    :
+}
+
 #############################
 # SNP-PILEUP + FACETS STEPS #
 #############################

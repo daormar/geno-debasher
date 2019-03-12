@@ -3976,17 +3976,17 @@ parallel_split_norm_bam()
     local contig=`read_opt_value_from_line "$*" "-contig"`
     
     # Activate conda environment
-    logmsg "* Activating conda environment (sambamba)..."
-    conda activate sambamba 2>&1 || exit 1
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
 
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
     normalcont=${step_outd}/normal_${contig}.bam
-    filter_bam_contig_sambamba $normalbam $contig $normalcont || exit 1
+    filter_bam_contig_samtools $normalbam $contig $normalcont || exit 1
 
     # Index contig
     logmsg "* Indexing contig..."
-    sambamba index ${normalcont} || exit 1
+    samtools index ${normalcont} || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -4001,7 +4001,7 @@ parallel_split_norm_bam()
 ########
 parallel_split_norm_bam_conda_envs()
 {
-    define_conda_env sambamba sambamba.yml
+    define_conda_env samtools samtools.yml
 }
 
 ########
@@ -4063,17 +4063,17 @@ parallel_split_tum_bam()
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Activate conda environment
-    logmsg "* Activating conda environment (sambamba)..."
-    conda activate sambamba 2>&1 || exit 1
+    logmsg "* Activating conda environment (samtools)..."
+    conda activate samtools 2>&1 || exit 1
 
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
     tumorcont=${step_outd}/tumor_${contig}.bam
-    filter_bam_contig_sambamba $tumorbam $contig $tumorcont || exit 1
+    filter_bam_contig_samtools $tumorbam $contig $tumorcont || exit 1
 
     # Index contig
     logmsg "* Indexing contig..."
-    sambamba index ${tumorcont} || exit 1
+    samtools index ${tumorcont} || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -4088,7 +4088,7 @@ parallel_split_tum_bam()
 ########
 parallel_split_tum_bam_conda_envs()
 {
-    define_conda_env sambamba sambamba.yml
+    define_conda_env samtools samtools.yml
 }
 
 ########

@@ -10,8 +10,8 @@ index_norm_bam__second    cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:filte
 index_tum_bam__second     cpus=1  mem=1024  time=4:00:00  stepdeps=afterok:filter_tum_bam_contigs
 parallel_split_norm_bam   cpus=1  mem=2G    time=10:00:00 throttle=4 stepdeps=afterok:index_norm_bam__second
 parallel_split_tum_bam    cpus=1  mem=2G    time=10:00:00 throttle=4 stepdeps=afterok:index_tum_bam__second
-parallel_samtools_mpileup_norm_bam cpus=1  mem=8G  time=20:00:00 throttle=4 stepdeps=afterok:parallel_split_norm_bam
-parallel_samtools_mpileup_tum_bam  cpus=1  mem=8G  time=20:00:00 throttle=4 stepdeps=afterok:parallel_split_tum_bam
+parallel_samtools_mpileup_norm_bam cpus=1  mem=8G  time=16:00:00 throttle=4 stepdeps=afterok:parallel_split_norm_bam
+parallel_samtools_mpileup_tum_bam  cpus=1  mem=8G  time=16:00:00 throttle=4 stepdeps=afterok:parallel_split_tum_bam
 parallel_bam2seqz         cpus=1  mem=2G    time=20:00:00 throttle=8 stepdeps=afterok:parallel_samtools_mpileup_norm_bam,afterok:parallel_samtools_mpileup_tum_bam
 seqzmerge_plus_sequenza   cpus=1  mem=4G    time=20:00:00 stepdeps=afterok:parallel_bam2seqz
 parallel_delly            cpus=1  mem=8G    time=14:00:00 throttle=4 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam

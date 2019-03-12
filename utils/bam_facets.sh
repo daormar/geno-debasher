@@ -91,6 +91,12 @@ snp_pileup()
     display_end_step_message
 }
 
+########
+snp_pileup_conda_envs()
+{
+    define_conda_env snp-pileup snp-pileup.yml
+}
+
 #######
 facets_explain_cmdline_opts()
 {
@@ -152,4 +158,10 @@ facets()
     conda deactivate 2>&1
 
     display_end_step_message
+}
+
+########
+facets_conda_envs()
+{
+    define_conda_env facets facets.yml
 }

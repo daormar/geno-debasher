@@ -1230,12 +1230,12 @@ sequenza_define_opts()
     define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get normal pileup file
-    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_norm_bam` || { errmsg "Error: dependency sambamba_mpileup_norm_bam not defined for sequenza"; exit 1; }
+    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" samtools_mpileup_norm_bam` || { errmsg "Error: dependency samtools_mpileup_norm_bam not defined for sequenza"; exit 1; }
     npileup=${npileupdir}/normal.pileup.gz
     define_opt "-npileup" ${npileup} optlist || exit 1
 
     # Get tumor pileup file
-    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" sambamba_mpileup_tum_bam` || { errmsg "Error: dependency sambamba_mpileup_tum_bam not defined for sequenza"; exit 1; }
+    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" samtools_mpileup_tum_bam` || { errmsg "Error: dependency samtools_mpileup_tum_bam not defined for sequenza"; exit 1; }
     tpileup=${tpileupdir}/tumor.pileup.gz
     define_opt "-tpileup" ${tpileup} optlist || exit 1
 
@@ -1312,10 +1312,10 @@ parallel_bam2seqz_define_opts()
     define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get normal pileup directory
-    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_norm_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_norm_bam not defined for parallel_bam2seqz"; exit 1; }
+    npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_samtools_mpileup_norm_bam` || { errmsg "Error: dependency parallel_samtools_mpileup_norm_bam not defined for parallel_bam2seqz"; exit 1; }
 
     # Get tumor pileup directory
-    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_sambamba_mpileup_tum_bam` || { errmsg "Error: dependency parallel_sambamba_mpileup_tum_bam not defined for parallel_bam2seqz"; exit 1; }
+    tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_samtools_mpileup_tum_bam` || { errmsg "Error: dependency parallel_samtools_mpileup_tum_bam not defined for parallel_bam2seqz"; exit 1; }
 
     # Get name of contig list file
     local clist

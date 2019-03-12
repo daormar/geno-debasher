@@ -1178,25 +1178,11 @@ gen_sequenza_gcc()
 }
 
 ########
-mpileup_plus_sequenza_conda_envs()
-{
-    define_conda_env sequenza sequenza.yml
-}
-
-########
-mpileup_plus_sequenza_explain_cmdline_opts()
+sequenza_explain_cmdline_opts()
 {
     # -gcc option
     description="GC content wiggle file for sequenza"
     explain_cmdline_opt "-gcc" "<string>" "$description"
-
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
-
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"    
 }
 
 ########
@@ -1224,98 +1210,6 @@ get_gcc_filename()
             return 1
         fi            
     fi
-}
-
-########
-mpileup_plus_sequenza_define_opts()
-{
-    # Initialize variables
-    local cmdline=$1
-    local stepspec=$2
-    local optlist=""
-
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
-
-    # -gcc option
-    local gccfile
-    gccfile=`get_gcc_filename "$cmdline" "$stepspec"` || exit 1
-    define_opt "-gcc" $gccfile optlist || exit 1
-
-    # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
-
-    # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
-
-    # Save option list
-    save_opt_list optlist    
-}
-
-########
-mpileup_plus_sequenza()
-{
-    display_begin_step_message
-
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local gccont=`read_opt_value_from_line "$*" "-gcc"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-
-    # Activate conda environment
-    logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || exit 1
-
-    # Generate pileup files
-    logmsg "* Generating pileup files..."
-    samtools mpileup -f $ref $normalbam | ${GZIP} > ${step_outd}/normal.pileup.gz ; pipe_fail || exit 1
-    samtools mpileup -f $ref $tumorbam | ${GZIP} > ${step_outd}/tumor.pileup.gz ; pipe_fail || exit 1
-    
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-
-    # Activate conda environment
-    logmsg "* Activating conda environment (sequenza)..."
-    conda activate sequenza 2>&1 || exit 1
-    
-    # Generate seqz file
-    logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${step_outd}/normal.pileup.gz -t ${step_outd}/tumor.pileup.gz | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
-
-    # Execute sequenza
-    # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
-    # installation is used (otherwise, general R installation given in
-    # shebang directive would be executed)
-    logmsg "* Executing sequenza..."
-    Rscript ${biopanpipe_bindir}/run_sequenza -s ${step_outd}/seqz.gz -o ${step_outd} 2>&1 || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-
-    display_end_step_message
-}
-
-########
-mpileup_plus_sequenza_conda_envs()
-{
-    define_conda_env samtools samtools.yml
-    define_conda_env sequenza sequenza.yml
-}
-
-########
-sequenza_explain_cmdline_opts()
-{
-    # -gcc option
-    description="GC content wiggle file for sequenza"
-    explain_cmdline_opt "-gcc" "<string>" "$description"
 }
 
 ########
@@ -1762,58 +1656,6 @@ parallel_exclude_plus_lumpy_conda_envs()
 }
 
 ########
-parallel_split_plus_lumpy_explain_cmdline_opts()
-{
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
-
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"    
-
-    # -lc option
-    description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"   
-}
-
-########
-parallel_split_plus_lumpy_define_opts()
-{
-    # Initialize variables
-    local cmdline=$1
-    local stepspec=$2
-    local optlist=""
-
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
-
-    # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
-
-    # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
-
-    # Get name of contig list file
-    local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
-
-    # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        define_opt "-contig" $contig specific_optlist || exit 1
-        save_opt_list specific_optlist
-    done
-}
-
-########
 check_contig_does_not_exist_given_log_file()
 {
     local logfile=$1
@@ -1869,85 +1711,6 @@ filter_bam_contig_sambamba()
     else
         return 0
     fi
-}
-
-########
-parallel_split_plus_lumpy()
-{
-    display_begin_step_message
-
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-
-    # Activate conda environment
-    logmsg "* Activating conda environment (sambamba)..."
-    conda activate sambamba 2>&1 || exit 1
-
-    # Extract contigs
-    logmsg "* Extracting contigs (contig $contig)..."
-    normalcont=${step_outd}/normal_${contig}.bam
-    filter_bam_contig_sambamba $normalbam $contig $normalcont || exit 1
-    tumorcont=${step_outd}/tumor_${contig}.bam
-    filter_bam_contig_sambamba $tumorbam $contig $tumorcont || exit 1
-
-    # Index contigs
-    logmsg "* Indexing contigs..."
-    sambamba index ${normalcont} || exit 1
-    sambamba index ${tumorcont} || exit 1
-
-    if [ -z "${LUMPY_HOME_DIR}" ]; then
-        # Deactivate conda environment
-        logmsg "* Deactivating conda environment..."
-        conda deactivate 2>&1
-    
-        # Activate conda environment
-        logmsg "* Activating conda environment (lumpy)..."
-        conda activate lumpy 2>&1 || exit 1
-        
-        logmsg "* Executing lumpyexpress (contig $contig)..."
-        lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
-        
-        # Deactivate conda environment
-        logmsg "* Deactivating conda environment..."
-        conda deactivate 2>&1
-    else
-        logmsg "* Executing lumpyexpress (contig $contig)..."
-        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorcont},${normalcont} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
-    fi
-    
-    # Delete extracted contigs and related files
-    rm ${normalcont}* ${tumorcont}*
-    
-    display_end_step_message
-}
-
-########
-parallel_split_plus_lumpy_clean()
-{
-    logmsg "Cleaning directory..."
-
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-
-    # Delete extracted contigs and related files
-    normalcont=${step_outd}/normal_${contig}.bam
-    tumorcont=${step_outd}/tumor_${contig}.bam
-    rm -f ${normalcont}* ${tumorcont}*
-
-    logmsg "Cleaning finished"
-}
-
-########
-parallel_split_plus_lumpy_conda_envs()
-{
-    define_conda_env sambamba sambamba.yml
-    define_conda_env lumpy lumpy.yml
 }
 
 ########
@@ -2130,167 +1893,6 @@ parallel_lumpy_conda_envs()
 }
 
 ########
-parallel_split_plus_delly_explain_cmdline_opts()
-{
-    # -r option
-    description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
-
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
-
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"    
-
-    # -dx option
-    description="File with regions to exclude in bed format"
-    explain_cmdline_req_opt "-dx" "<string>" "$description"    
-
-    # -lc option
-    description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"   
-}
-
-########
-parallel_split_plus_delly_define_opts()
-{
-    # Initialize variables
-    local cmdline=$1
-    local stepspec=$2
-    local optlist=""
-
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
-
-    # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || exit 1
-    define_opt "-r" $genref optlist || exit 1
-
-    # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
-
-    # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
-
-    # -dx option
-    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
-
-    # Get name of contig list file
-    local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
-
-    # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        define_opt "-contig" $contig specific_optlist || exit 1
-        save_opt_list specific_optlist
-    done
-}
-
-########
-parallel_split_plus_delly()
-{
-    display_begin_step_message
-
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-    local exclude=`read_opt_value_from_line "$*" "-dx"`
-
-    # Activate conda environment
-    logmsg "* Activating conda environment (sambamba)..."
-    conda activate sambamba 2>&1 || exit 1
-
-    # Extract contigs
-    logmsg "* Extracting contigs..."
-    normalcont=${step_outd}/normal_${contig}.bam
-    filter_bam_contig_sambamba $normalbam $contig $normalcont || exit 1
-    tumorcont=${step_outd}/tumor_${contig}.bam
-    filter_bam_contig_sambamba $tumorbam $contig $tumorcont || exit 1
-
-    # Index contigs
-    logmsg "* Indexing contigs..."
-    sambamba index ${normalcont} || exit 1
-    sambamba index ${tumorcont} || exit 1
-    
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-    
-    # Activate conda environment
-    logmsg "* Activating conda environment (delly)..."
-    conda activate delly 2>&1 || exit 1
-    
-    logmsg "* Executing delly (contig $contig)..."
-    # "command" built-in is used here to execute the "delly" program
-    # instead of the "delly" function
-    command delly call -g $ref -x ${exclude} -o ${step_outd}/out${contig}.bcf ${tumorcont} ${normalcont} || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-
-    # Activate conda environment
-    logmsg "* Activating conda environment (bcftools)..."
-    conda activate bcftools 2>&1 || exit 1
-
-    # Convert bcf output to vcf
-    logmsg "* Converting bcf output into vcf... (bcftools)"
-    bcftools view ${step_outd}/out${contig}.bcf > ${step_outd}/out${contig}.vcf
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-
-    # Delete extracted contigs and related files
-    rm ${normalcont}* ${tumorcont}*
-    
-    display_end_step_message
-}
-
-########
-parallel_split_plus_delly_clean()
-{
-    logmsg "Cleaning directory..."
-
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-    local exclude=`read_opt_value_from_line "$*" "-dx"`
-
-    # Delete extracted contigs and related files
-    normalcont=${step_outd}/normal_${contig}.bam
-    tumorcont=${step_outd}/tumor_${contig}.bam
-    rm ${normalcont}* ${tumorcont}*
-
-    logmsg "Cleaning finished"
-}
-
-########
-parallel_split_plus_delly_conda_envs()
-{
-    define_conda_env sambamba sambamba.yml
-    define_conda_env bcftools bcftools.yml
-    define_conda_env delly delly.yml
-}
-
-########
 parallel_delly_explain_cmdline_opts()
 {
     # -r option
@@ -2420,14 +2022,6 @@ get_vcfdir_for_svtyper()
     local parallel_lumpy_dep=`find_dependency_for_step "${stepspec}" parallel_lumpy`
     if [ ${parallel_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
         local vcfdir=`get_outd_for_dep "${parallel_lumpy_dep}"`
-        echo $vcfdir
-        return 0
-    fi
-
-    # Check dependency with parallel_split_plus_lumpy
-    local parallel_split_plus_lumpy_dep=`find_dependency_for_step "${stepspec}" parallel_split_plus_lumpy`
-    if [ ${parallel_split_plus_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_outd_for_dep "${parallel_split_plus_lumpy_dep}"`
         echo $vcfdir
         return 0
     fi

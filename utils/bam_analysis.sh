@@ -1322,7 +1322,8 @@ parallel_bam2seqz_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -1406,7 +1407,8 @@ seqzmerge()
     local clist=$1
     local seqzdir=$2
 
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local filenames=""
     local contig
     for contig in ${contigs}; do
@@ -1587,7 +1589,8 @@ parallel_exclude_plus_lumpy_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -1741,7 +1744,8 @@ parallel_lumpy_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -1936,7 +1940,8 @@ parallel_delly_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -2059,7 +2064,8 @@ parallel_svtyper_define_opts()
     vcfdir=`get_vcfdir_for_svtyper "${stepspec}"` || { errmsg "Error: vcf directory for svtyper could not be determined"; exit 1; }
     
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -3343,7 +3349,8 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -3452,7 +3459,8 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -3736,7 +3744,8 @@ parallel_samtools_mpileup_norm_bam_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -3831,7 +3840,8 @@ parallel_samtools_mpileup_tum_bam_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -3920,7 +3930,8 @@ parallel_split_norm_bam_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
@@ -4007,7 +4018,8 @@ parallel_split_tum_bam_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"`
 
     # Generate option lists for each contig
-    local contigs=`get_contig_list_from_file $clist` || exit 1
+    local contigs
+    contigs=`get_contig_list_from_file $clist` || exit 1
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}

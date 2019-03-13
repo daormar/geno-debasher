@@ -1230,8 +1230,9 @@ sequenza_define_opts()
     define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get normal pileup file
+    local npileupdir
     npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" samtools_mpileup_norm_bam` || { errmsg "Error: dependency samtools_mpileup_norm_bam not defined for sequenza"; exit 1; }
-    npileup=${npileupdir}/normal.pileup.gz
+    local npileup=${npileupdir}/normal.pileup.gz
     define_opt "-npileup" ${npileup} optlist || exit 1
 
     # Get tumor pileup file
@@ -1312,9 +1313,11 @@ parallel_bam2seqz_define_opts()
     define_opt "-gcc" $gccfile optlist || exit 1
 
     # Get normal pileup directory
+    local npileupdir
     npileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_samtools_mpileup_norm_bam` || { errmsg "Error: dependency parallel_samtools_mpileup_norm_bam not defined for parallel_bam2seqz"; exit 1; }
 
     # Get tumor pileup directory
+    local tpileupdir
     tpileupdir=`get_outd_for_dep_given_stepspec "${stepspec}" parallel_samtools_mpileup_tum_bam` || { errmsg "Error: dependency parallel_samtools_mpileup_tum_bam not defined for parallel_bam2seqz"; exit 1; }
 
     # Get name of contig list file

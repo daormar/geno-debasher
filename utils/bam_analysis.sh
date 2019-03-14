@@ -132,18 +132,6 @@ get_cm_opt()
 }
 
 ########
-get_fbr_opt()
-{
-    local value=$1
-
-    if [ "${value}" = ${NOFILE} ]; then
-        echo ""
-    else
-        echo "-fbr ${value}"
-    fi
-}
-
-########
 create_genref_for_bam()
 {
     display_begin_step_message
@@ -158,12 +146,27 @@ create_genref_for_bam()
 
     # Create genome reference
     local cm_opt=`get_cm_opt ${contig_mapping}`
-    local fbr_opt=`get_fbr_opt ${fallback_genref}`
-    ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} ${cm_opt} ${fbr_opt} -o ${step_outd} || exit 1
-
-    # Move resulting files
-    mv ${step_outd}/genref_for_bam.fa ${outfile}
-    mv ${step_outd}/genref_for_bam.fa.fai ${outfile}.fai
+    if ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} ${cm_opt} ${fbr_opt} -o ${step_outd}; then
+        # Move resulting files
+        mv ${step_outd}/genref_for_bam.fa ${outfile}
+        mv ${step_outd}/genref_for_bam.fa.fai ${outfile}.fai
+    else
+        # Genome reference creation failed, check if fallback file was
+        # provided
+        if [ "${fallback_genref}" = ${NOFILE} ]; then
+            exit 1
+        else
+            logmsg "Genome reference creation failed but fallback file was provided"
+            # Copy fallback file
+            logmsg "* Copying fallback file (${fallback_genref})..."
+            cp ${fallback_genref} ${outfile}
+            # Index fallback reference
+            logmsg "* Indexing fallback reference..."
+            conda activate samtools 2>&1 || exit 1
+            samtools faidx ${outfile}
+            conda deactivate
+        fi
+    fi
 
     display_end_step_message
 }

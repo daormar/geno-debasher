@@ -40,9 +40,9 @@ create_genref_for_bam_explain_cmdline_opts()
     description="bam file (required if no downloading steps have been defined)"
     explain_cmdline_req_opt "-bam" "<string>" "$description"
 
-    # -c2a option
+    # -cm option
     description="File containing a mapping between contig names and accession numbers"
-    explain_cmdline_opt "-c2a" "<string>" "$description"
+    explain_cmdline_opt "-cm" "<string>" "$description"
 }
 
 ########
@@ -99,8 +99,8 @@ create_genref_for_bam_define_opts()
     bam=`get_bam_filename "$cmdline"` || exit 1
     define_opt "-bam" $bam optlist || exit 1
 
-    # -c2a option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-c2a" ${NOFILE} optlist || exit 1
+    # -cm option
+    define_cmdline_infile_nonmand_opt "$cmdline" "-cm" ${NOFILE} optlist || exit 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -121,14 +121,14 @@ create_genref_for_bam()
     local baseref=`read_opt_value_from_line "$*" "-br"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local bam=`read_opt_value_from_line "$*" "-bam"`
-    local contig_to_acc=`read_opt_value_from_line "$*" "-c2a"`
+    local contig_to_acc=`read_opt_value_from_line "$*" "-cm"`
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Enrich genome reference
     if [ ${contig_to_acc} = ${NOFILE} ]; then
         ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} -o ${step_outd} || exit 1
     else
-        ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} -c2a ${contig_to_acc} -o ${step_outd} || exit 1
+        ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} -cm ${contig_to_acc} -o ${step_outd} || exit 1
     fi
 
     # Move resulting files

@@ -280,7 +280,7 @@ process_pars()
     
     # Activate conda environment
     echo "* Activating conda environment (samtools)..." >&2
-    conda activate samtools || exit 1
+    conda activate samtools || return 1
 
     # Get reference contigs
     echo "* Obtaining list of current reference contig names and their lengths..." >&2
@@ -292,7 +292,7 @@ process_pars()
     
     # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
-    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/refcontigs_to_keep || exit 1
+    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/refcontigs_to_keep || return 1
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
@@ -300,15 +300,15 @@ process_pars()
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
-    get_missing_contig_names ${outd}/refcontigs_to_keep ${outd}/bamcontigs > ${outd}/missing_contigs || exit 1
+    get_missing_contig_names ${outd}/refcontigs_to_keep ${outd}/bamcontigs > ${outd}/missing_contigs || return 1
 
     # Enrich reference
     echo "* Enriching reference..." >&2
-    get_contigs ${contig_mapping} ${outd}/missing_contigs >> $outfile || { echo "Error during reference enrichment" >&2; exit 1; }
+    get_contigs ${contig_mapping} ${outd}/missing_contigs >> $outfile || { echo "Error during reference enrichment" >&2; return 1; }
 
     # Index created reference
     echo "* Indexing created reference..." >&2
-    samtools faidx ${outfile} || exit 1
+    samtools faidx ${outfile} || return 1
     extract_contig_info_from_fai ${outfile}.fai > ${outd}/created_ref_contigs
 
     # Check created reference
@@ -317,7 +317,7 @@ process_pars()
     num_uniq_contigs=`$WC -l ${outd}/uniq_contigs | $AWK '{print $1}'`
     if [ ${num_uniq_contigs} -gt 0 ]; then
         echo "Bam file and created genome reference do not have the exact same contigs (see ${outd}/uniq_contigs file)" >&2
-        exit 1
+        return 1
     fi
     
     # Deactivate conda environment

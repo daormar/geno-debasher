@@ -43,6 +43,10 @@ create_genref_for_bam_explain_cmdline_opts()
     # -cm option
     description="File containing a mapping between contig names and accession numbers"
     explain_cmdline_opt "-cm" "<string>" "$description"
+
+    # -fbr option
+    description="Name of fallback genome reference file. If creation process fails, this file is copied as reference output file instead"
+    explain_cmdline_opt "-fbr" "<string>" "$description"
 }
 
 ########
@@ -102,6 +106,9 @@ create_genref_for_bam_define_opts()
     # -cm option
     define_cmdline_infile_nonmand_opt "$cmdline" "-cm" ${NOFILE} optlist || exit 1
 
+    # -fbr option
+    define_cmdline_infile_nonmand_opt "$cmdline" "-fbr" ${NOFILE} optlist || exit 1
+
     # Get data directory
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
 
@@ -113,6 +120,30 @@ create_genref_for_bam_define_opts()
 }
 
 ########
+get_cm_opt()
+{
+    local value=$1
+
+    if [ "${value}" = ${NOFILE} ]; then
+        echo ""
+    else
+        echo "-cm ${value}"
+    fi
+}
+
+########
+get_fbr_opt()
+{
+    local value=$1
+
+    if [ "${value}" = ${NOFILE} ]; then
+        echo ""
+    else
+        echo "-fbr ${value}"
+    fi
+}
+
+########
 create_genref_for_bam()
 {
     display_begin_step_message
@@ -121,15 +152,14 @@ create_genref_for_bam()
     local baseref=`read_opt_value_from_line "$*" "-br"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local bam=`read_opt_value_from_line "$*" "-bam"`
-    local contig_to_acc=`read_opt_value_from_line "$*" "-cm"`
+    local contig_mapping=`read_opt_value_from_line "$*" "-cm"`
+    local fallback_genref=`read_opt_value_from_line "$*" "-fbr"`
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
-    # Enrich genome reference
-    if [ ${contig_to_acc} = ${NOFILE} ]; then
-        ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} -o ${step_outd} || exit 1
-    else
-        ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} -cm ${contig_to_acc} -o ${step_outd} || exit 1
-    fi
+    # Create genome reference
+    local cm_opt=`get_cm_opt ${contig_mapping}`
+    local fbr_opt=`get_fbr_opt ${fallback_genref}`
+    ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} ${cm_opt} ${fbr_opt} -o ${step_outd} || exit 1
 
     # Move resulting files
     mv ${step_outd}/genref_for_bam.fa ${outfile}

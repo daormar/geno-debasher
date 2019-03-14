@@ -146,7 +146,7 @@ create_genref_for_bam()
 
     # Create genome reference
     local cm_opt=`get_cm_opt ${contig_mapping}`
-    if ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} ${cm_opt} ${fbr_opt} -o ${step_outd}; then
+    if ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} ${cm_opt} -o ${step_outd}; then
         # Move resulting files
         mv ${step_outd}/genref_for_bam.fa ${outfile}
         mv ${step_outd}/genref_for_bam.fa.fai ${outfile}.fai

@@ -48,7 +48,7 @@ def get_info(url,num_retries):
             success=True
             break
         except requests.exceptions.RequestException as e:
-            print e
+            print >> sys.stderr, e
     if success:
         return req
     else:

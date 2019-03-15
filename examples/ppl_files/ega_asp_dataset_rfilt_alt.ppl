@@ -20,7 +20,7 @@ parallel_svtyper          cpus=1  mem=8G    time=4:00:00  throttle=4 stepdeps=af
 strelka_germline          cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 manta_somatic             cpus=8  mem=3072  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 strelka_somatic           cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second,afterok:manta_somatic
-msisensor                 cpus=8  mem=6144  time=5:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
+msisensor                 cpus=8  mem=6144  time=10:00:00  stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 snp_pileup_plus_facets    cpus=1  mem=25000 time=12:00:00 stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 cnvkit                    cpus=8  mem=25000 time=10:00:00 stepdeps=afterok:index_norm_bam__second,afterok:index_tum_bam__second
 platypus_germline         cpus=1  mem=4096  time=5:00:00  stepdeps=afterok:index_norm_bam__second

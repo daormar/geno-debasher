@@ -43,7 +43,7 @@ def print_help():
     print >> sys.stderr, "map_vcf_contnames -m <string> -f <string>"
     print >> sys.stderr, ""
     print >> sys.stderr, "-m <string>    File with contig to contig mapping"
-    print >> sys.stderr, "-f <string>    VCF file)"
+    print >> sys.stderr, "-f <string>    VCF file"
 
 ##################################################
 def getContigMap(mapf):

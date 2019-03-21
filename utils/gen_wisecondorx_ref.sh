@@ -246,9 +246,9 @@ process_pars()
         local stepname=bam_download_and_npz_conv
         local job_array_list="1"
         local stepinfo=`get_step_info ${stepname} ${infofile}`
-        local jobdeps=""
+        local stepdeps=""
         local script_pars=`get_pars_${stepname}`
-        launch_step ${tmpdir} ${stepname} ${job_array_list} "${stepinfo}" "${jobdeps}" "${script_pars}" id
+        launch_step ${tmpdir} ${stepname} ${job_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
 
         # Update variables storing ids
         if [ -z "${ids}" ]; then
@@ -261,10 +261,11 @@ process_pars()
 
     # Generate reference file
     local stepname=gen_reffile_wisecondorx
+    local job_array_list="1"
     local stepinfo=`get_step_info ${stepname} ${infofile}`
-    local jobdeps=`apply_deptype_to_jobids ${ids} afterok`
+    local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
     local script_pars=`get_pars_${stepname}`
-    launch_step ${tmpdir} ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" id
+    launch_step ${tmpdir} ${stepname} ${job_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
 
     # Update variables storing ids
     ids="${ids},${id}"
@@ -272,10 +273,11 @@ process_pars()
     if [ ${debug} -eq 0 ]; then
         # Remove directory with temporary files
         local stepname=remove_dir
+        local job_array_list="1"
         local stepinfo=`get_step_info ${stepname} ${infofile}`
-        local jobdeps=`apply_deptype_to_jobids ${ids} afterok`
+        local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
         local script_pars=`get_pars_${stepname}`
-        launch_step ${tmpdir} ${stepname} "${stepinfo}" "${jobdeps}" "${script_pars}" id
+        launch_step ${tmpdir} ${stepname} ${job_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
     fi
 }
 

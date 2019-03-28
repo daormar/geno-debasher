@@ -321,7 +321,7 @@ process_pars()
             echo "Error in entry number ${entry_num}"
         fi
 
-        entry_num=`expr ${entry_num} + 1`
+        entry_num=$((entry_num}+1))
         
     done < ${metadata}
 }

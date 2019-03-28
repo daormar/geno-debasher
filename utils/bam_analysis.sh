@@ -2228,7 +2228,7 @@ ega_download_retry()
             return 0
         fi
 
-        ntry=`expr ${ntry} + 1`
+        ntry=$((ntry+1))
     done
 
     logmsg "All download attempts failed!"

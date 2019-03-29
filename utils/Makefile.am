@@ -25,6 +25,7 @@ convert_allele_counts.R run_ascat.R
 bam_analysis: bam_analysis.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
@@ -42,6 +43,7 @@ bam_analysis: bam_analysis.sh
 bam_facets: bam_facets.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
@@ -59,6 +61,7 @@ bam_facets: bam_facets.sh
 bam_ascat_r: bam_ascat_r.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
@@ -76,6 +79,7 @@ bam_ascat_r: bam_ascat_r.sh
 bam_ascat_ngs: bam_ascat_r.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
@@ -111,6 +115,7 @@ SUFFIXES= .sh .py .r .R
 	echo "BASENAME="$(BASENAME) >> $@
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "SPLIT="$(SPLIT) >> $@
+	echo "CUT="$(CUT) >> $@
 	echo "HEAD="$(HEAD) >> $@
 	echo "TAIL="$(TAIL) >> $@
 	echo "DIFF="$(DIFF) >> $@

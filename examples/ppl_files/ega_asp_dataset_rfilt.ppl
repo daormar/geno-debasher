@@ -17,8 +17,8 @@ parallel_lumpy            cpus=2  mem=8G    time=10:00:00 throttle=8 stepdeps=af
 parallel_svtyper          cpus=1  mem=8G    time=12:00:00 throttle=8 stepdeps=afterok:parallel_lumpy
 strelka_germline          cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 manta_somatic             cpus=8  mem=3072  time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
-strelka_somatic           cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
-msisensor                 cpus=8  mem=10G   time=10:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
+strelka_somatic           cpus=8  mem=6144  time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
+msisensor                 cpus=8  mem=10G   time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 snp_pileup_plus_facets    cpus=1  mem=25000 time=12:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 cnvkit                    cpus=8  mem=25000 time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 platypus_germline         cpus=1  mem=4096  time=8:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam

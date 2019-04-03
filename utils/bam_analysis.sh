@@ -120,7 +120,7 @@ create_genref_for_bam_define_opts()
 }
 
 ########
-get_cm_opt()
+get_create_genref_for_bam_cm_opt()
 {
     local value=$1
 
@@ -145,7 +145,7 @@ create_genref_for_bam()
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Create genome reference
-    local cm_opt=`get_cm_opt ${contig_mapping}`
+    local cm_opt=`get_create_genref_for_bam_cm_opt ${contig_mapping}`
     if ${biopanpipe_bindir}/create_genref_for_bam -r ${baseref} -b ${bam} ${cm_opt} -o ${step_outd}; then
         # Move resulting files
         mv ${step_outd}/genref_for_bam.fa ${outfile}
@@ -1518,7 +1518,11 @@ lumpy_explain_cmdline_opts()
 
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"    
+    explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -lx option
+    description="File with regions to exclude in bed format"
+    explain_cmdline_opt "-lx" "<string>" "$description"    
 }
 
 ########
@@ -1543,8 +1547,23 @@ lumpy_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
+    # -lx option
+    define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || exit 1
+
     # Save option list
     save_opt_list optlist    
+}
+
+########
+get_lumpyexpress_x_opt()
+{
+    local value=$1
+
+    if [ "${value}" = ${NOFILE} ]; then
+        echo ""
+    else
+        echo "-x ${value}"
+    fi
 }
 
 ########
@@ -1556,6 +1575,7 @@ lumpy()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local exclude=`read_opt_value_from_line "$*" "-lx"`
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
@@ -1563,7 +1583,8 @@ lumpy()
         conda activate lumpy 2>&1 || exit 1
 
         logmsg "* Executing lumpyexpress..."
-        lumpyexpress -B ${tumorbam},${normalbam} -o ${step_outd}/out.vcf || exit 1
+        local x_opt=`get_lumpyexpress_x_opt ${exclude}`
+        lumpyexpress -B ${tumorbam},${normalbam} ${x_opt} -o ${step_outd}/out.vcf || exit 1
         
         # Deactivate conda environment
         logmsg "* Deactivating conda environment..."

@@ -1778,7 +1778,11 @@ parallel_lumpy_explain_cmdline_opts()
 {
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"   
+    explain_cmdline_req_opt "-lc" "<string>" "$description"
+
+    # -lx option
+    description="File with regions to exclude in bed format"
+    explain_cmdline_opt "-lx" "<string>" "$description"    
 }
 
 ########
@@ -1792,6 +1796,9 @@ parallel_lumpy_define_opts()
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -lx option
+    define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || exit 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -1826,6 +1833,7 @@ parallel_lumpy()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
+    local exclude=`read_opt_value_from_line "$*" "-lx"`
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
@@ -1833,7 +1841,8 @@ parallel_lumpy()
         conda activate lumpy 2>&1 || exit 1
         
         logmsg "* Executing lumpyexpress (contig $contig)..."
-        lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+        local x_opt=`get_lumpyexpress_x_opt ${exclude}`
+        lumpyexpress -B ${tumorbam},${normalbam} ${x_opt} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
         
         # Deactivate conda environment
         logmsg "* Deactivating conda environment..."

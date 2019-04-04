@@ -1869,7 +1869,7 @@ delly_explain_cmdline_opts()
 
     # -dx option
     description="File with regions to exclude in bed format"
-    explain_cmdline_req_opt "-dx" "<string>" "$description"    
+    explain_cmdline_opt "-dx" "<string>" "$description"    
 }
 
 ########
@@ -1900,10 +1900,22 @@ delly_define_opts()
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # -dx option
-    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-dx" ${NOFILE} optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
+}
+
+########
+get_delly_x_opt()
+{
+    local value=$1
+
+    if [ "${value}" = ${NOFILE} ]; then
+        echo ""
+    else
+        echo "-x ${value}"
+    fi
 }
 
 ########
@@ -1925,7 +1937,8 @@ delly()
     logmsg "* Executing delly..."
     # "command" built-in is used here to execute the "delly" program
     # instead of the "delly" function
-    command delly call -g ${ref} -x ${exclude} -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
+    local x_opt=`get_delly_x_opt ${exclude}`
+    command delly call -g ${ref} ${x_opt} -o ${step_outd}/out.bcf ${tumorbam} ${normalbam} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1962,7 +1975,7 @@ parallel_delly_explain_cmdline_opts()
 
     # -dx option
     description="File with regions to exclude in bed format"
-    explain_cmdline_req_opt "-dx" "<string>" "$description"    
+    explain_cmdline_opt "-dx" "<string>" "$description"    
 
     # -lc option
     description="File with list of contig names to process"
@@ -1990,7 +2003,7 @@ parallel_delly_define_opts()
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
 
     # -dx option
-    define_cmdline_infile_opt "$cmdline" "-dx" optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-dx" ${NOFILE} optlist || exit 1
 
     # Get name of contig list file
     local clist
@@ -2031,7 +2044,8 @@ parallel_delly()
     logmsg "* Executing delly (contig $contig)..."
     # "command" built-in is used here to execute the "delly" program
     # instead of the "delly" function
-    command delly call -g $ref -x ${exclude} -o ${step_outd}/out${contig}.bcf ${tumorbam} ${normalbam} || exit 1
+    local x_opt=`get_delly_x_opt ${exclude}`
+    command delly call -g $ref ${x_opt} -o ${step_outd}/out${contig}.bcf ${tumorbam} ${normalbam} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

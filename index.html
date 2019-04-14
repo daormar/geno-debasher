@@ -175,9 +175,13 @@ Bio-PanPipe package was decompressed.</p>
 behavior. Here is a list of current installation options:</p>
 
 <ul>
-<li> <b><code>--with-icgcstor=&ltDIR&gt</code></b>: TBD.</li>
-<li> <b><code>--with-aspera=&ltDIR&gt</code></b>: TBD.</li>
-<li> <b><code>--with-egadecrypt=&ltDIR&gt</code></b>: TBD.</li>
+<!-- <li> <b><code>--with-icgcstor=&ltDIR&gt</code></b>: TBD.</li> -->
+<li> <b><code>--with-aspera=&ltDIR&gt</code></b>: enables use of the
+Aspera commercial file transfer protocol to download <code>bam</code>
+files.</li>
+<li> <b><code>--with-egadecrypt=&ltDIR&gt</code></b>: allows Bio-Panpie
+to access decryption functionality provided by the EGACryptor
+client.</li>
 </ul>
 
 <h4>
@@ -185,14 +189,21 @@ behavior. Here is a list of current installation options:</p>
 aria-hidden="true"><span class="octicon octicon-link"></span></a>Third
 Party Software</h4>
 
-<h5>ICGC Storage Client</h5>
-<p>TBD.</p>
+<!-- <h5>ICGC Storage Client</h5> -->
+<!-- <p>TBD.</p> -->
 
 <h5>ASPERA Connect</h5>
-<p>TBD.</p>
+<p><a href="https://asperasoft.com/">ASPERA Connect</a> is a file
+transfer protocol that may provide faster transfer speeds with respect
+to the standard FTP protocol. The ASPERA download client can be used by
+Bio-PanPipe to download <code>bam</code> files. The client can be
+downloaded <a href="https://downloads.asperasoft.com/downloads">here</a>.</p>
 
 <h5>EGA Decryptor</h5>
-<p>TBD.</p>
+<p><a href="https://ega-archive.org/submission/tools/egacryptor">EGACryptor</a>
+is a JAVA based client providing encryption and decryption
+functionality. It is used by Bio-PanPipe to decrypt information
+downloaded from EGA repositories.</p>
 
 <h2>
 <a id="current-status" class="anchor" href="#current-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current Status</h2>

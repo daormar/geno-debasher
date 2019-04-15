@@ -2505,8 +2505,8 @@ download_aws_norm_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
     # Download file
-    logmsg "* Executing icgc-storage-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
+    logmsg "* Executing score-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile aws download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
 
     # Find bam file name
     local bam_file_name=`find_bam_filename ${step_outd}`
@@ -2573,8 +2573,8 @@ download_aws_tum_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
     # Download file
-    logmsg "* Executing icgc-storage-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile aws download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
+    logmsg "* Executing score-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile aws download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
 
     # Find bam file name
     local bam_file_name=`find_bam_filename ${step_outd}`
@@ -2641,8 +2641,8 @@ download_collab_norm_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
     # Download file
-    logmsg "* Executing icgc-storage-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
+    logmsg "* Executing score-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile collab download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
 
     # Find bam file name
     local bam_file_name=`find_bam_filename ${step_outd}`
@@ -2709,8 +2709,8 @@ download_collab_tum_bam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
     # Download file
-    logmsg "* Executing icgc-storage-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/icgc-storage-client --profile collab download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
+    logmsg "* Executing score-client..."
+    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile collab download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
 
     # Find bam file name
     local bam_file_name=`find_bam_filename ${step_outd}`

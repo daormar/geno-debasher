@@ -477,21 +477,21 @@ else
 fi
 AC_SUBST(LUMPY_HOME_DIR,$with_lumpy)
 
-# Adds an extra argument to configure (enable use of icgcstor)
-AC_MSG_CHECKING(whether to enable icgcstor library)
-AC_ARG_WITH([icgcstor],
- [AS_HELP_STRING([--with-icgcstor=DIR],
-   [installs the package with the necessary code to combine it with the icgcstor library @<:@default=no@:>@])],
- [with_icgcstor=$withval],
- [with_icgcstor=""])
-if test "$with_icgcstor" = ""; then
- enable_icgcstor_lib="no"
+# Adds an extra argument to configure (enable use of icgc score client)
+AC_MSG_CHECKING(whether to enable icgc score client)
+AC_ARG_WITH([icgcscor],
+ [AS_HELP_STRING([--with-icgcscor=DIR],
+   [installs the package with the necessary code to combine it with the icgcscor library @<:@default=no@:>@])],
+ [with_icgcscor=$withval],
+ [with_icgcscor=""])
+if test "$with_icgcscor" = ""; then
+ enable_icgcscor_lib="no"
  AC_MSG_RESULT(no)
 else
- enable_icgcstor_lib="yes"
+ enable_icgcscor_lib="yes"
  AC_MSG_RESULT(yes)
 fi
-AC_SUBST(ICGCSTOR_HOME_DIR,$with_icgcstor)
+AC_SUBST(ICGCSCOR_HOME_DIR,$with_icgcscor)
 
 # Adds an extra argument to configure (enable use of aspera)
 AC_MSG_CHECKING(whether to enable aspera library)

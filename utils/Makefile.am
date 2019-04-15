@@ -35,7 +35,7 @@ bam_analysis: bam_analysis.sh
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "LUMPY_HOME_DIR="$(LUMPY_HOME_DIR) >> $@
-	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_analysis.sh >> $@
@@ -53,7 +53,7 @@ bam_facets: bam_facets.sh
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "LUMPY_HOME_DIR="$(LUMPY_HOME_DIR) >> $@
-	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_facets.sh >> $@
@@ -71,7 +71,7 @@ bam_ascat_r: bam_ascat_r.sh
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "LUMPY_HOME_DIR="$(LUMPY_HOME_DIR) >> $@
-	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_ascat_r.sh >> $@
@@ -89,7 +89,7 @@ bam_ascat_ngs: bam_ascat_r.sh
 	echo "DIRNAME="$(DIRNAME) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "LUMPY_HOME_DIR="$(LUMPY_HOME_DIR) >> $@
-	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_ascat_r.sh >> $@
@@ -133,7 +133,7 @@ SUFFIXES= .sh .py .r .R
 	echo "PANPIPE_HOME_DIR="$(PANPIPE_HOME_DIR) >> $@
 	echo "PLATYPUS_HOME_DIR="$(PLATYPUS_HOME_DIR) >> $@
 	echo "LUMPY_HOME_DIR="$(LUMPY_HOME_DIR) >> $@
-	echo "ICGCSTOR_HOME_DIR="$(ICGCSTOR_HOME_DIR) >> $@
+	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat $< >> $@

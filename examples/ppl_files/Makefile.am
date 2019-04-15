@@ -1,7 +1,6 @@
 pplfilesdir = $(datadir)/$(PACKAGE)/ppl_files
-pplfiles_DATA= basic_test.ppl ega_asp_test.ppl aws_test.ppl		\
-collab_test.ppl basic.ppl extended.ppl ega_dataset.ppl			\
-ega_dataset_rfilt.ppl ega_asp_dataset.ppl ega_asp_dataset_rfilt.ppl	\
-ega_asp_dataset_rfilt_alt.ppl gen_wisecondorx_ref_req.csv
+pplfiles_DATA= nodownload_basic.ppl ega_basic.ppl ega_asp_basic.ppl	\
+aws_basic.ppl collab_basic.ppl nodownload_extended.ppl			\
+ega_asp_extended.ppl gen_wisecondorx_ref_req.csv
 
 EXTRA_DIST= $(pplfiles_DATA)

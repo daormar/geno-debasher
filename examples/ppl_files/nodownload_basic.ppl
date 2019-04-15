@@ -1,0 +1,5 @@
+#import bam_analysis
+#
+manta_somatic         cpus=2  mem=4096 time=48:00:00 stepdeps=none
+strelka_somatic       cpus=2  mem=4096 time=48:00:00 stepdeps=none
+msisensor             cpus=2  mem=4096 time=48:00:00 stepdeps=none

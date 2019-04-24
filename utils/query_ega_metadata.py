@@ -216,7 +216,7 @@ def group_formatted_info_by_donor(formatted_info,field_list):
         else:
             group_map[elem[donor_id_idx]]=[]
             group_map[elem[donor_id_idx]].append(filter_fields(elem,field_list))
-    # Created grouped info
+    # Create grouped info
     formatted_info_grouped=[]
     for key in group_map:
         tmplist=[]

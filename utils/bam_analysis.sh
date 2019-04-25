@@ -1988,7 +1988,7 @@ delly()
     conda activate bcftools 2>&1 || exit 1
 
     # Convert bcf output to vcf
-    logmsg "* Converting bcf output into vcf... (bcftools)"
+    logmsg "* Converting bcf output into vcf..."
     bcftools view ${step_outd}/out.bcf > ${step_outd}/out.vcf
 
     # Deactivate conda environment
@@ -2095,7 +2095,7 @@ parallel_delly()
     conda activate bcftools 2>&1 || exit 1
 
     # Convert bcf output to vcf
-    logmsg "* Converting bcf output into vcf... (bcftools)"
+    logmsg "* Converting bcf output into vcf..."
     bcftools view ${step_outd}/out${contig}.bcf > ${step_outd}/out${contig}.vcf
 
     # Deactivate conda environment

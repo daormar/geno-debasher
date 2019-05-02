@@ -13,13 +13,13 @@ gen_sequenza_gcc          cpus=1  mem=1G    time=01:00:00 stepdeps=afterok:creat
 parallel_bam2seqz         cpus=1  mem=2G    time=5:00:00  throttle=8 stepdeps=afterok:gen_sequenza_gcc,afterok:parallel_samtools_mpileup_norm_bam,afterok:parallel_samtools_mpileup_tum_bam
 seqzmerge_plus_sequenza   cpus=1  mem=10G   time=10:00:00 stepdeps=afterok:parallel_bam2seqz
 parallel_delly            cpus=1  mem=16G   time=5:00:00  throttle=8 stepdeps=afterok:create_genref_for_bam,afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
-parallel_lumpy            cpus=2  mem=10G   time=10:00:00 throttle=8 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
+parallel_lumpy            cpus=2  mem=16G   time=10:00:00 throttle=8 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
 parallel_svtyper          cpus=1  mem=8G    time=12:00:00 throttle=8 stepdeps=afterok:parallel_lumpy
-strelka_germline          cpus=8  mem=6144  time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
+strelka_germline          cpus=8  mem=6G    time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 manta_somatic             cpus=8  mem=8G    time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
-strelka_somatic           cpus=8  mem=6144  time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
+strelka_somatic           cpus=8  mem=6G    time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
 msisensor                 cpus=8  mem=10G   time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
-snp_pileup_plus_facets    cpus=1  mem=25000 time=12:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
-cnvkit                    cpus=8  mem=25000 time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
+snp_pileup_plus_facets    cpus=1  mem=25G   time=12:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
+cnvkit                    cpus=8  mem=30G   time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 platypus_germline         cpus=1  mem=4096  time=8:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam
 delete_bam_files          cpus=1  mem=1024  time=0:10:00  stepdeps=afterok:parallel_delly,afterok:parallel_lumpy,afterok:parallel_svtyper,afterok:manta_somatic,afterok:strelka_germline,afterok:strelka_somatic,afterok:msisensor,afterok:cnvkit,afterok:snp_pileup_plus_facets,afterok:platypus_germline,afterok:seqzmerge_plus_sequenza

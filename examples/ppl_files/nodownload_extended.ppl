@@ -8,13 +8,13 @@ parallel_samtools_mpileup_tum_bam  cpus=1  mem=4G  time=16:00:00 throttle=8 step
 gen_sequenza_gcc          cpus=1  mem=1G    time=01:00:00 stepdeps=afterok:create_genref_for_bam
 parallel_bam2seqz         cpus=1  mem=2G    time=5:00:00 throttle=8 stepdeps=afterok:gen_sequenza_gcc,afterok:parallel_samtools_mpileup_norm_bam,afterok:parallel_samtools_mpileup_tum_bam
 seqzmerge_plus_sequenza   cpus=1  mem=10G   time=10:00:00 stepdeps=afterok:parallel_bam2seqz
-parallel_delly            cpus=1  mem=16G   time=5:00:00  throttle=8 stepdeps=afterok:create_genref_for_bam,afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
+parallel_delly            cpus=1  mem=20G   time=5:00:00  throttle=8 stepdeps=afterok:create_genref_for_bam,afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
 parallel_lumpy            cpus=2  mem=16G   time=10:00:00 throttle=8 stepdeps=afterok:parallel_split_norm_bam,afterok:parallel_split_tum_bam
 parallel_svtyper          cpus=1  mem=8G    time=14:00:00 throttle=8 stepdeps=afterok:parallel_lumpy
 strelka_germline          cpus=8  mem=6G    time=6:00:00  stepdeps=afterok:create_genref_for_bam
 manta_somatic             cpus=8  mem=8G    time=6:00:00  stepdeps=afterok:create_genref_for_bam
 strelka_somatic           cpus=8  mem=6G    time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:manta_somatic
-msisensor                 cpus=8  mem=10G   time=10:00:00 stepdeps=afterok:create_genref_for_bam
+msisensor                 cpus=8  mem=10G   time=14:00:00 stepdeps=afterok:create_genref_for_bam
 snp_pileup_plus_facets    cpus=1  mem=25G   time=16:00:00 stepdeps=afterok:create_genref_for_bam
 cnvkit                    cpus=8  mem=30G   time=10:00:00 stepdeps=afterok:create_genref_for_bam
 platypus_germline         cpus=1  mem=4096  time=8:00:00  stepdeps=afterok:create_genref_for_bam

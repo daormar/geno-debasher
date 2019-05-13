@@ -39,7 +39,7 @@
 <p>Bio-PanPipe is a software package designed to execute bioinformatics
 pipelines, with a particular focus on genome variant calling. Pipelines
 are implemented as modules that can be executed by means of
-the <a href="https://github.com/daormar/panpipe">PanPipe Workflow
+the <a href="https://daormar.github.io/panpipe/">PanPipe Workflow
 Manager</a>. Bio-PanPipe also provides some utilities useful to automate
 experiments on complete datasets.</p>
 
@@ -97,9 +97,9 @@ experience problems during compilation.</p>
 
 <p>To install Bio-PanPipe, first you need to install the autotools
 (autoconf, autoconf-archive, automake and libtool packages in
-Ubuntu). PanPipe requires Bash 4.0 or above as well as Python 2.x to
-work. If you are planning to use Bio-PanPipe on a Windows platform, you
-also need to install the <a href="https://www.cygwin.com/">Cygwin</a>
+Ubuntu). If you are planning to use Bio-PanPipe on a Windows platform,
+you also need to install
+the <a href="https://www.cygwin.com/">Cygwin</a>
 environment. Alternatively, the tool can also be installed on Mac OS X
 systems using <a href="https://www.macports.org/">MacPorts</a>.</p>
 
@@ -180,11 +180,13 @@ Bio-PanPipe package was decompressed.</p>
 behavior. Here is a list of current installation options:</p>
 
 <ul>
-<!-- <li> <b><code>--with-icgcstor=&ltDIR&gt</code></b>: TBD.</li> -->
+<li> <b><code>--with-icgcscor=&ltDIR&gt</code></b>: allows Bio-PanPipe
+to use the ICGC score client. The ICGC score client can be used to
+interact with cloud repositories.</li>
 <li> <b><code>--with-aspera=&ltDIR&gt</code></b>: enables use of the
 Aspera commercial file transfer protocol to download <code>bam</code>
 files.</li>
-<li> <b><code>--with-egadecrypt=&ltDIR&gt</code></b>: allows Bio-Panpie
+<li> <b><code>--with-egadecrypt=&ltDIR&gt</code></b>: allows Bio-PanPipe
 to access decryption functionality provided by the EGACryptor
 client.</li>
 </ul>
@@ -194,8 +196,13 @@ client.</li>
 aria-hidden="true"><span class="octicon octicon-link"></span></a>Third
 Party Software</h4>
 
-<!-- <h5>ICGC Storage Client</h5> -->
-<!-- <p>TBD.</p> -->
+<h5>ICGC Score Client</h5>
+<p>The <a href="https://docs.icgc.org/software/download/#score-client">ICGC
+score client</a> allows to download content, including <code>bam</code>
+files from cloud repositories. The client can be downloaded after
+clicking
+in <a href="https://artifacts.oicr.on.ca/artifactory/dcc-release/bio/overture/score-client/[RELEASE]/score-client-[RELEASE]-dist.tar.gz">this
+link</a>.</p>
 
 <h5>ASPERA Connect</h5>
 <p><a href="https://asperasoft.com/">ASPERA Connect</a> is a file

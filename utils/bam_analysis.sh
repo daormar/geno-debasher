@@ -3895,7 +3895,7 @@ parallel_samtools_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/normal_${contig}.pileup
+    ${GZIP} ${step_outd}/normal_${contig}.pileup || exit 1
 
     display_end_step_message
 }
@@ -3991,7 +3991,7 @@ parallel_samtools_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/tumor_${contig}.pileup
+    ${GZIP} ${step_outd}/tumor_${contig}.pileup || exit 1
 
     display_end_step_message
 }

@@ -165,11 +165,11 @@ create_genref_for_bam()
             logmsg "Genome reference creation failed but fallback file was provided"
             # Copy fallback file
             logmsg "* Copying fallback file (${fallback_genref})..."
-            cp ${fallback_genref} ${outfile}
+            cp ${fallback_genref} ${outfile} || exit 1
             # Index fallback reference
             logmsg "* Indexing fallback reference..."
             conda activate samtools 2>&1 || exit 1
-            samtools faidx ${outfile}
+            samtools faidx ${outfile} || exit 1
             conda deactivate
         fi
     fi
@@ -1228,14 +1228,14 @@ gen_sequenza_gcc()
 
     # Generate GC content file
     logmsg "* Generating GC content file..."    
-    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/sequenza_gccfile.txt.gz
+    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/sequenza_gccfile.txt.gz ; pipe_fail || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
     # Move result file to final location
-    mv ${step_outd}/sequenza_gccfile.txt.gz $outfile
+    mv ${step_outd}/sequenza_gccfile.txt.gz $outfile || exit 1
     
     display_end_step_message
 }
@@ -1486,7 +1486,7 @@ seqzmerge()
         fi
     done
 
-    ${ZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | ${GZIP}
+    ${ZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | ${GZIP} ; pipe_fail || exit 1
 }
  
 ########
@@ -1501,14 +1501,14 @@ seqzmerge_plus_sequenza()
 
     # Merge seqz files
     logmsg "* Merging seqz files..."
-    seqzmerge ${clist} ${seqzdir}  > ${step_outd}/merged_seqz.gz
+    seqzmerge ${clist} ${seqzdir}  > ${step_outd}/merged_seqz.gz || exit 1
 
     # Activate conda environment
     logmsg "* Activating conda environment (tabix)..."
     conda activate tabix 2>&1 || exit 1
 
     logmsg "* Applying tabix over merged seqz file..."
-    tabix -f -s 1 -b 2 -e 2 -S 1 ${step_outd}/merged_seqz.gz
+    tabix -f -s 1 -b 2 -e 2 -S 1 ${step_outd}/merged_seqz.gz || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1717,7 +1717,7 @@ parallel_exclude_plus_lumpy()
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Generate exclusion bed file
-    gen_exclusion_bed_given_bam ${normalbam} ${contig} > ${step_outd}/${contig}.bed
+    gen_exclusion_bed_given_bam ${normalbam} ${contig} > ${step_outd}/${contig}.bed || exit 1
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
@@ -1989,7 +1989,7 @@ delly()
 
     # Convert bcf output to vcf
     logmsg "* Converting bcf output into vcf..."
-    bcftools view ${step_outd}/out.bcf > ${step_outd}/out.vcf
+    bcftools view ${step_outd}/out.bcf > ${step_outd}/out.vcf || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2096,7 +2096,7 @@ parallel_delly()
 
     # Convert bcf output to vcf
     logmsg "* Converting bcf output into vcf..."
-    bcftools view ${step_outd}/out${contig}.bcf > ${step_outd}/out${contig}.vcf
+    bcftools view ${step_outd}/out${contig}.bcf > ${step_outd}/out${contig}.vcf || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -3309,7 +3309,7 @@ sambamba_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/normal.pileup
+    ${GZIP} ${step_outd}/normal.pileup || exit 1
 
     display_end_step_message
 }
@@ -3399,7 +3399,7 @@ sambamba_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/tumor.pileup
+    ${GZIP} ${step_outd}/tumor.pileup || exit 1
 
     display_end_step_message
 }
@@ -3496,7 +3496,7 @@ parallel_sambamba_mpileup_norm_bam()
     if [ -d $tmpdir ]; then
         rm -rf $tmpdir/*
     else
-        mkdir $tmpdir
+        mkdir $tmpdir || exit 1
     fi
 
     # Generate pileup file
@@ -3509,7 +3509,7 @@ parallel_sambamba_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/normal_${contig}.pileup
+    ${GZIP} ${step_outd}/normal_${contig}.pileup || exit 1
 
     display_end_step_message
 }
@@ -3606,7 +3606,7 @@ parallel_sambamba_mpileup_tum_bam()
     if [ -d $tmpdir ]; then
         rm -rf $tmpdir/*
     else
-        mkdir $tmpdir
+        mkdir $tmpdir || exit 1
     fi
 
     # Generate pileup file
@@ -3619,7 +3619,7 @@ parallel_sambamba_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/tumor_${contig}.pileup
+    ${GZIP} ${step_outd}/tumor_${contig}.pileup || exit 1
 
     display_end_step_message
 }
@@ -3715,7 +3715,7 @@ samtools_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/normal.pileup
+    ${GZIP} ${step_outd}/normal.pileup || exit 1
 
     display_end_step_message
 }
@@ -3799,7 +3799,7 @@ samtools_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    ${GZIP} ${step_outd}/tumor.pileup
+    ${GZIP} ${step_outd}/tumor.pileup || exit 1
 
     display_end_step_message
 }
@@ -4214,7 +4214,7 @@ delete_bam_files()
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
 
     # Delete bam files
-    rm -f ${abs_datadir}/*.bam
+    rm -f ${abs_datadir}/*.bam || exit 1
 
     display_end_step_message
 }
@@ -4255,7 +4255,7 @@ clear_datadir()
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
 
     # Delete bam files
-    rm -rf ${abs_datadir}/*
+    rm -rf ${abs_datadir}/* || exit 1
 
     display_end_step_message
 }

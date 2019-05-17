@@ -55,7 +55,7 @@ colnames(global_model_stats) <- c("loglik", "purity", "ploidy", "dipLogR")
 write.csv(global_model_stats, paste0(o, "/facets_glob_mdl_stats.csv"), row.names = F)
 
 ## Tbl with segmentation results
-write.csv(fitted_model$cncf, paste0(o, "/facets_segmetation.csv"), row.names = F)
+write.csv(fitted_model$cncf, paste0(o, "/facets_segmentation.csv"), row.names = F)
 
 ## Create facets plot
 png(paste0(o, "/facets_plot.png"), width = 900, height = 900, units = "px", pointsize = 18)

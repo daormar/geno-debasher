@@ -22,4 +22,4 @@ msisensor                 cpus=2  mem=10G   time=14:00:00 stepdeps=afterok:creat
 snp_pileup_plus_facets    cpus=1  mem=25G   time=16:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 cnvkit                    cpus=8  mem=30G   time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 platypus_germline         cpus=1  mem=4096  time=8:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam
-delete_bam_files          cpus=1  mem=1024  time=0:10:00  stepdeps=afterok:parallel_delly,afterok:parallel_lumpy,afterok:parallel_svtyper,afterok:manta_somatic,afterok:strelka_germline,afterok:strelka_somatic,afterok:msisensor,afterok:cnvkit,afterok:snp_pileup_plus_facets,afterok:platypus_germline,afterok:seqzmerge_plus_sequenza
+clear_datadir             cpus=1  mem=1024  time=0:10:00  stepdeps=afterok:parallel_delly,afterok:parallel_lumpy,afterok:parallel_svtyper,afterok:manta_somatic,afterok:strelka_germline,afterok:strelka_somatic,afterok:msisensor,afterok:cnvkit,afterok:snp_pileup_plus_facets,afterok:platypus_germline,afterok:seqzmerge_plus_sequenza

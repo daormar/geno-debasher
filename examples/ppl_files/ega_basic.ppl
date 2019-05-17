@@ -7,4 +7,4 @@ index_tum_bam         cpus=1  mem=1024 time=4:00:00  stepdeps=afterok:download_e
 manta_somatic         cpus=2  mem=8G   time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
 strelka_somatic       cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic
 msisensor             cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
-delete_bam_files      cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:manta_somatic,afterok:strelka_somatic,afterok:msisensor
+clear_datadir         cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:manta_somatic,afterok:strelka_somatic,afterok:msisensor

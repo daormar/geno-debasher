@@ -1163,9 +1163,13 @@ snp_pileup_plus_facets()
     logmsg "* Executing facets..."
     Rscript ${biopanpipe_bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv -o ${step_outd} 2>&1 || exit 1
 
-    # Deactivate conda environment if needed
+    # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
+
+    # Compress snp-pileup file
+    logmsg "* Compressing snp-pileup file..."
+    ${GZIP} ${step_outd}/snp-pileup-counts.csv || exit 1
 
     display_end_step_message
 }

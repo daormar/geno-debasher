@@ -1232,7 +1232,7 @@ gen_sequenza_gcc()
 
     # Generate GC content file
     logmsg "* Generating GC content file..."    
-    sequenza-utils gc_wiggle -w 50 -f $ref -o - | ${GZIP} > ${step_outd}/sequenza_gccfile.txt.gz ; pipe_fail || exit 1
+    sequenza-utils gc_wiggle -w 50 -f $ref -o ${step_outd}/sequenza_gccfile.txt.gz || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1328,7 +1328,7 @@ sequenza()
     
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/seqz.gz ; pipe_fail || exit 1
+    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} -o ${step_outd}/seqz.gz || exit 1
 
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
@@ -1425,7 +1425,7 @@ parallel_bam2seqz()
     
     # Generate seqz file
     logmsg "* Generating seqz file (contig $contig)..."
-    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} | ${GZIP} > ${step_outd}/${contig}_seqz.gz ; pipe_fail || exit 1
+    sequenza-utils bam2seqz --pileup -gc ${gccont} -n ${npileup} -t ${tpileup} -o ${step_outd}/${contig}_seqz.gz || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

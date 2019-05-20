@@ -1470,7 +1470,6 @@ seqzmerge_plus_sequenza_define_opts()
     save_opt_list optlist
 }
 
-
 ########
 seqzmerge()
 {
@@ -1490,7 +1489,9 @@ seqzmerge()
         fi
     done
 
-    ${ZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | ${GZIP} ; pipe_fail || exit 1
+    # NOTE: the use of the bgzip command requires to have the tabix
+    # environment activated
+    ${ZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | bgzip ; pipe_fail || exit 1
 }
  
 ########
@@ -1503,13 +1504,13 @@ seqzmerge_plus_sequenza()
     local seqzdir=`read_opt_value_from_line "$*" "-seqzdir"`
     local clist=`read_opt_value_from_line "$*" "-lc"`
 
-    # Merge seqz files
-    logmsg "* Merging seqz files..."
-    seqzmerge ${clist} ${seqzdir}  > ${step_outd}/merged_seqz.gz || exit 1
-
     # Activate conda environment
     logmsg "* Activating conda environment (tabix)..."
     conda activate tabix 2>&1 || exit 1
+
+    # Merge seqz files
+    logmsg "* Merging seqz files..."
+    seqzmerge ${clist} ${seqzdir}  > ${step_outd}/merged_seqz.gz || exit 1
 
     logmsg "* Applying tabix over merged seqz file..."
     tabix -f -s 1 -b 2 -e 2 -S 1 ${step_outd}/merged_seqz.gz || exit 1

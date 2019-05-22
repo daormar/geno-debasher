@@ -4262,5 +4262,8 @@ clear_datadir()
     # Delete bam files
     rm -rf ${abs_datadir}/* || exit 1
 
+    # Print README.txt file
+    echo "NOTE: This directory was cleared by means of the 'clear_datadir' step" > ${abs_datadir}/README.txt || exit 1
+    
     display_end_step_message
 }

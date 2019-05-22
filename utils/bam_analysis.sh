@@ -1626,7 +1626,8 @@ lumpy()
         conda deactivate 2>&1
     else
         logmsg "* Executing lumpyexpress..."
-        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} -o ${step_outd}/out.vcf || exit 1
+        local x_opt=`get_lumpyexpress_x_opt ${exclude}`
+        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} ${x_opt} -o ${step_outd}/out.vcf || exit 1
     fi
     
     display_end_step_message
@@ -1884,7 +1885,8 @@ parallel_lumpy()
         conda deactivate 2>&1
     else
         logmsg "* Executing lumpyexpress (contig $contig)..."
-        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
+        local x_opt=`get_lumpyexpress_x_opt ${exclude}`
+        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} ${x_opt} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
     fi
     
     display_end_step_message

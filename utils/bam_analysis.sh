@@ -1489,8 +1489,8 @@ seqzmerge()
         fi
     done
 
-    # NOTE: the use of the bgzip command requires to have the tabix
-    # environment activated
+    # NOTE: the use of the bgzip command requires to have the sequenza
+    # environment activated (since it has tabix installed)
     ${ZCAT} ${filenames} | $AWK '{if (NR!=1 && $1 != "chromosome") {print $0}}' | bgzip ; pipe_fail || exit 1
 }
  
@@ -1505,8 +1505,8 @@ seqzmerge_plus_sequenza()
     local clist=`read_opt_value_from_line "$*" "-lc"`
 
     # Activate conda environment
-    logmsg "* Activating conda environment (tabix)..."
-    conda activate tabix 2>&1 || exit 1
+    logmsg "* Activating conda environment (sequenza)..."
+    conda activate sequenza 2>&1 || exit 1
 
     # Merge seqz files
     logmsg "* Merging seqz files..."
@@ -1514,15 +1514,7 @@ seqzmerge_plus_sequenza()
 
     logmsg "* Applying tabix over merged seqz file..."
     tabix -f -s 1 -b 2 -e 2 -S 1 ${step_outd}/merged_seqz.gz || exit 1
-    
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-        
-    # Activate conda environment
-    logmsg "* Activating conda environment (sequenza)..."
-    conda activate sequenza 2>&1 || exit 1
-    
+                
     # Execute sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
@@ -1541,7 +1533,6 @@ seqzmerge_plus_sequenza()
 seqzmerge_plus_sequenza_conda_envs()
 {
     define_conda_env sequenza sequenza.yml
-    define_conda_env sequenza tabix.yml
 }
 
 ########

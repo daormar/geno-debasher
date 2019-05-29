@@ -870,7 +870,7 @@ platypus_germline_conda()
 
     # Run Platypus
     logmsg "* Executing Platypus.py..."
-    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 || exit 1
+    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --logFileName=${step_outd}/platypus.log --verbosity=1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

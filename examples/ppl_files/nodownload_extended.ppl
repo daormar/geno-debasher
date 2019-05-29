@@ -1,8 +1,8 @@
 #import bam_analysis
 #
 create_genref_for_bam     cpus=1  mem=1024  time=4:00:00  stepdeps=none
-parallel_split_norm_bam   cpus=1  mem=2G    time=10:00:00 throttle=24 stepdeps=none
-parallel_split_tum_bam    cpus=1  mem=2G    time=10:00:00 throttle=24 stepdeps=none
+parallel_split_norm_bam   cpus=1  mem=2G    time=10:00:00 throttle=16 stepdeps=none
+parallel_split_tum_bam    cpus=1  mem=2G    time=10:00:00 throttle=16 stepdeps=none
 parallel_samtools_mpileup_norm_bam cpus=1  mem=4G  time=16:00:00 throttle=24 stepdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_norm_bam
 parallel_samtools_mpileup_tum_bam  cpus=1  mem=4G  time=16:00:00 throttle=24 stepdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_tum_bam
 gen_sequenza_gcc          cpus=1  mem=1G    time=1:00:00  stepdeps=afterok:create_genref_for_bam

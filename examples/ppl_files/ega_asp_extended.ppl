@@ -14,7 +14,7 @@ parallel_bam2seqz         cpus=1  mem=2G    time=5:00:00  throttle=16 stepdeps=a
 seqzmerge_plus_sequenza   cpus=1  mem=10G   time=10:00:00 stepdeps=afterok:parallel_bam2seqz
 parallel_delly            cpus=1  mem=20G   time=5:00:00  throttle=16 stepdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_norm_bam,aftercorr:parallel_split_tum_bam
 parallel_lumpy            cpus=2  mem=30G   time=10:00:00 throttle=16 stepdeps=aftercorr:parallel_split_norm_bam,aftercorr:parallel_split_tum_bam
-parallel_svtyper          cpus=1  mem=8G    time=14:00:00 throttle=16 stepdeps=aftercorr:parallel_lumpy
+parallel_svtyper          cpus=1  mem=12G   time=14:00:00 throttle=16 stepdeps=aftercorr:parallel_lumpy
 strelka_germline          cpus=8  mem=6G    time=6:00:00  stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 manta_somatic             cpus=8  mem=8G    time=16:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam
 strelka_somatic           cpus=8  mem=6G    time=10:00:00 stepdeps=afterok:create_genref_for_bam,afterok:index_norm_bam,afterok:index_tum_bam,afterok:manta_somatic

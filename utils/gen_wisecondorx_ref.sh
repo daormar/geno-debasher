@@ -249,7 +249,7 @@ process_pars()
         local stepinfo=`get_step_info ${stepname} ${infofile}`
         local stepdeps=""
         local script_pars=`get_pars_${stepname}`
-        launch_step ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+        create_script_and_launch ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
 
         # Update variables storing ids
         if [ -z "${ids}" ]; then
@@ -267,7 +267,7 @@ process_pars()
     local stepinfo=`get_step_info ${stepname} ${infofile}`
     local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
     local script_pars=`get_pars_${stepname}`
-    launch_step ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+    create_script_and_launch ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
 
     # Update variables storing ids
     ids="${ids},${id}"
@@ -280,7 +280,7 @@ process_pars()
         local stepinfo=`get_step_info ${stepname} ${infofile}`
         local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
         local script_pars=`get_pars_${stepname}`
-        launch_step ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+        create_script_and_launch ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
     fi
 }
 

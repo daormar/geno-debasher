@@ -360,8 +360,8 @@ manta_germline()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local callregf=`read_opt_value_from_line "$*" "-cr"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
@@ -465,8 +465,8 @@ manta_somatic()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local callregf=`read_opt_value_from_line "$*" "-cr"`
@@ -564,8 +564,8 @@ cnvkit()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
@@ -653,8 +653,8 @@ strelka_germline()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local callregf=`read_opt_value_from_line "$*" "-cr"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
@@ -777,8 +777,8 @@ strelka_somatic()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local manta_outd=`read_opt_value_from_line "$*" "-manta-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -900,8 +900,8 @@ platypus_germline_local()
 platypus_germline()
 {
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
@@ -975,8 +975,8 @@ msisensor()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
@@ -1222,8 +1222,8 @@ gen_sequenza_gcc()
     display_begin_step_message
 
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Activate conda environment
@@ -1887,6 +1887,113 @@ parallel_lumpy()
 parallel_lumpy_conda_envs()
 {
     define_conda_env lumpy lumpy.yml
+}
+
+########
+smoove_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -lx option
+    description="File with regions to exclude in bed format"
+    explain_cmdline_opt "-lx" "<string>" "$description"    
+}
+
+########
+smoove_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -lx option
+    define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+get_smoove_exclude_opt()
+{
+    local value=$1
+
+    if [ "${value}" = ${NOFILE} ]; then
+        echo ""
+    else
+        echo "--exclude ${value}"
+    fi
+}
+
+########
+smoove()
+{
+    display_begin_step_message
+
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local exclude=`read_opt_value_from_line "$*" "-lx"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate smoove 2>&1 || exit 1
+
+    logmsg "* Executing smoove..."
+    export TMPDIR=${step_outd}
+    local exclude_opt=`get_smoove_exclude_opt ${exclude}`
+    local project_name="smoove"
+    smoove call --outdir ${step_outd} ${exclude_opt} --name ${project_name} --fasta ${ref} -p ${cpus} --genotype ${normalbam} ${tumorbam}
+        
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+    
+    display_end_step_message
+}
+
+########
+smoove_conda_envs()
+{
+    define_conda_env smoove smoove.yml
 }
 
 ########

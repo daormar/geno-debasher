@@ -1,5 +1,5 @@
 SCRIPTS_TO_BE_BUILT= bam_analysis bam_filter bam_facets bam_ascat_r	\
-bam_ascatngs analyze_dataset gen_bed_for_genome				\
+bam_ascatngs analyze_dataset file_shuffle gen_bed_for_genome		\
 check_ref_and_bam_contigs get_bam_contigs get_entrez_fasta		\
 gen_wisecondorx_ref convert_snppos_to_snpgcc create_snv_pos_ascat	\
 query_ega_metadata query_icgc_metadata create_genref_for_bam		\
@@ -12,9 +12,9 @@ bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
 EXTRA_DIST = bam_analysis.sh bam_filter.sh bam_facets.sh bam_ascat_r.sh	\
-bam_ascatngs.sh analyze_dataset.sh gen_bed_for_genome.sh		\
-check_ref_and_bam_contigs.sh get_bam_contigs.sh get_entrez_fasta.py	\
-gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
+bam_ascatngs.sh analyze_dataset.sh file_shuffle.sh			\
+gen_bed_for_genome.sh check_ref_and_bam_contigs.sh get_bam_contigs.sh	\
+get_entrez_fasta.py gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh	\
 create_snv_pos_ascat.py query_ega_metadata.py query_icgc_metadata.py	\
 create_genref_for_bam.sh filter_contig_from_genref.py			\
 get_filtered_sam_header.py get_filtered_sam_align.py			\

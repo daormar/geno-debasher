@@ -68,8 +68,6 @@ snp_pileup_define_opts()
 ########
 snp_pileup()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -87,8 +85,6 @@ snp_pileup()
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -133,8 +129,6 @@ facets_define_opts()
 ########
 facets()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local pileup_counts=`read_opt_value_from_line "$*" "-pileup-counts"`
@@ -156,8 +150,6 @@ facets()
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########

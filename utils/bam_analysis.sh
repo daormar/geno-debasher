@@ -140,8 +140,6 @@ get_create_genref_for_bam_cm_opt()
 ########
 create_genref_for_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local baseref=`read_opt_value_from_line "$*" "-br"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -173,8 +171,6 @@ create_genref_for_bam()
             conda deactivate
         fi
     fi
-
-    display_end_step_message
 }
 
 ########
@@ -357,8 +353,6 @@ get_callreg_opt()
 ########
 manta_germline()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -384,8 +378,6 @@ manta_germline()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -462,8 +454,6 @@ manta_somatic_define_opts()
 ########
 manta_somatic()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -490,8 +480,6 @@ manta_somatic()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -561,8 +549,6 @@ cnvkit_define_opts()
 ########
 cnvkit()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -581,8 +567,6 @@ cnvkit()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -650,8 +634,6 @@ strelka_germline_define_opts()
 ########
 strelka_germline()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -677,8 +659,6 @@ strelka_germline()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -774,8 +754,6 @@ get_indel_cand_opt()
 ########
 strelka_somatic()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -806,8 +784,6 @@ strelka_somatic()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -857,8 +833,6 @@ platypus_germline_define_opts()
 ########
 platypus_germline_conda()
 {
-    display_begin_step_message
-    
     # Initialize variables
     local ref=$1
     local normalbam=$2
@@ -875,15 +849,11 @@ platypus_germline_conda()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
 platypus_germline_local()
 {
-    display_begin_step_message
-
     # Initialize variables
     local ref=$1
     local normalbam=$2
@@ -892,8 +862,6 @@ platypus_germline_local()
     # Run Platypus
     logmsg "* Executing Platypus.py..."
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 2>&1 || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -972,8 +940,6 @@ msisensor_define_opts()
 ########
 msisensor()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -996,8 +962,6 @@ msisensor()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-    
-    display_end_step_message
 }
 
 ########
@@ -1050,8 +1014,6 @@ wisecondorx_define_opts()
 ########
 wisecondorx()
 {
-    display_begin_step_message
-
     # Initialize variables
     local wcref=`read_opt_value_from_line "$*" "-wcr"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -1074,8 +1036,6 @@ wisecondorx()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -1132,8 +1092,6 @@ snp_pileup_plus_facets_define_opts()
 ########
 snp_pileup_plus_facets()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -1170,8 +1128,6 @@ snp_pileup_plus_facets()
     # Compress snp-pileup file
     logmsg "* Compressing snp-pileup file..."
     ${GZIP} ${step_outd}/snp-pileup-counts.csv || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -1219,8 +1175,6 @@ gen_sequenza_gcc_define_opts()
 ########
 gen_sequenza_gcc()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -1240,8 +1194,6 @@ gen_sequenza_gcc()
 
     # Move result file to final location
     mv ${step_outd}/sequenza_gccfile.txt.gz $outfile || exit 1
-    
-    display_end_step_message
 }
 
 ########
@@ -1314,8 +1266,6 @@ sequenza_define_opts()
 ########
 sequenza()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local gccont=`read_opt_value_from_line "$*" "-gcc"`
@@ -1340,8 +1290,6 @@ sequenza()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -1410,8 +1358,6 @@ parallel_bam2seqz_define_opts()
 ########
 parallel_bam2seqz()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local gccont=`read_opt_value_from_line "$*" "-gcc"`
@@ -1430,8 +1376,6 @@ parallel_bam2seqz()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -1497,8 +1441,6 @@ seqzmerge()
 ########
 seqzmerge_plus_sequenza()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local seqzdir=`read_opt_value_from_line "$*" "-seqzdir"`
@@ -1525,8 +1467,6 @@ seqzmerge_plus_sequenza()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -1595,8 +1535,6 @@ get_lumpyexpress_x_opt()
 ########
 lumpy()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -1620,8 +1558,6 @@ lumpy()
         local x_opt=`get_lumpyexpress_x_opt ${exclude}`
         ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} ${x_opt} -o ${step_outd}/out.vcf || exit 1
     fi
-    
-    display_end_step_message
 }
 
 ########
@@ -1705,8 +1641,6 @@ gen_exclusion_bed_given_bam()
 ########
 parallel_exclude_plus_lumpy()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -1731,8 +1665,6 @@ parallel_exclude_plus_lumpy()
         logmsg "* Executing lumpyexpress (contig $contig)..."
         ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} -T ${step_outd}/tmp_${contig} -x ${step_outd}/${contig}.bed -o ${step_outd}/out${contig}.vcf || exit 1
     fi
-    
-    display_end_step_message
 }
 
 ########
@@ -1853,8 +1785,6 @@ parallel_lumpy_define_opts()
 ########
 parallel_lumpy()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -1879,8 +1809,6 @@ parallel_lumpy()
         local x_opt=`get_lumpyexpress_x_opt ${exclude}`
         ${LUMPY_HOME_DIR}/bin/lumpyexpress -B ${tumorbam},${normalbam} ${x_opt} -T ${step_outd}/tmp_${contig} -o ${step_outd}/out${contig}.vcf || exit 1
     fi
-    
-    display_end_step_message
 }
 
 ########
@@ -1963,8 +1891,6 @@ get_smoove_exclude_opt()
 ########
 smoove()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -1986,8 +1912,6 @@ smoove()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-    
-    display_end_step_message
 }
 
 ########
@@ -2065,8 +1989,6 @@ get_delly_x_opt()
 ########
 delly()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -2099,8 +2021,6 @@ delly()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -2171,8 +2091,6 @@ parallel_delly_define_opts()
 ########
 parallel_delly()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -2206,8 +2124,6 @@ parallel_delly()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-    
-    display_end_step_message
 }
 
 ########
@@ -2294,8 +2210,6 @@ parallel_svtyper_define_opts()
 ########
 parallel_svtyper()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -2314,8 +2228,6 @@ parallel_svtyper()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-    
-    display_end_step_message
 }
 
 ########
@@ -2418,8 +2330,6 @@ ega_download_retry()
 ########
 download_ega_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local egaid_normalbam=`read_opt_value_from_line "$*" "-extn"`
@@ -2444,8 +2354,6 @@ download_ega_norm_bam()
 
     # Create file indicating that execution was finished
     touch ${step_outd}/finished
-
-    display_end_step_message
 }
 
 ########
@@ -2511,8 +2419,6 @@ download_ega_tum_bam_define_opts()
 ########
 download_ega_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local egaid_normalbam=`read_opt_value_from_line "$*" "-extn"`
@@ -2534,8 +2440,6 @@ download_ega_tum_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -2601,8 +2505,6 @@ find_bam_filename()
 ########
 download_aws_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local icgcid_normalbam=`read_opt_value_from_line "$*" "-extn"`
@@ -2623,8 +2525,6 @@ download_aws_norm_bam()
 
     # Move file
     mv ${bam_file_name} ${normalbam} || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -2669,8 +2569,6 @@ download_aws_tum_bam_define_opts()
 ########
 download_aws_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local icgcid_tumorbam=`read_opt_value_from_line "$*" "-extt"`
@@ -2691,8 +2589,6 @@ download_aws_tum_bam()
 
     # Move file
     mv ${bam_file_name} ${tumorbam} || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -2737,8 +2633,6 @@ download_collab_norm_bam_define_opts()
 ########
 download_collab_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local icgcid_normalbam=`read_opt_value_from_line "$*" "-extn"`
@@ -2759,8 +2653,6 @@ download_collab_norm_bam()
 
     # Move file
     mv ${bam_file_name} ${normalbam} || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -2805,8 +2697,6 @@ download_collab_tum_bam_define_opts()
 ########
 download_collab_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local icgcid_tumorbam=`read_opt_value_from_line "$*" "-extt"`
@@ -2827,8 +2717,6 @@ download_collab_tum_bam()
 
     # Move file
     mv ${bam_file_name} ${tumorbam} || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -2901,8 +2789,6 @@ download_ega_asp_norm_bam_define_opts()
 ########
 download_ega_asp_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local normalbam_file=`read_opt_value_from_line "$*" "-extn"`
@@ -2935,8 +2821,6 @@ download_ega_asp_norm_bam()
 
     # Remove encrypted file
     rm ${step_outd}/normal.bam.crypt || exit 1
-    
-    display_end_step_message
 }
 
 ########
@@ -3009,8 +2893,6 @@ download_ega_asp_tum_bam_define_opts()
 ########
 download_ega_asp_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local tumorbam_file=`read_opt_value_from_line "$*" "-extt"`
@@ -3043,8 +2925,6 @@ download_ega_asp_tum_bam()
 
     # Remove encrypted file
     rm ${step_outd}/tumor.bam.crypt || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -3077,8 +2957,6 @@ index_norm_bam_define_opts()
 ########
 index_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -3099,8 +2977,6 @@ index_norm_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -3139,8 +3015,6 @@ index_tum_bam_define_opts()
 ########
 index_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -3161,8 +3035,6 @@ index_tum_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -3206,8 +3078,6 @@ sort_norm_bam_define_opts()
 ########
 sort_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -3237,8 +3107,6 @@ sort_norm_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -3282,8 +3150,6 @@ sort_tum_bam_define_opts()
 ########
 sort_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -3313,8 +3179,6 @@ sort_tum_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -3388,8 +3252,6 @@ get_sambamba_mpileup_l_opt()
 ########
 sambamba_mpileup_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -3415,8 +3277,6 @@ sambamba_mpileup_norm_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/normal.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -3478,8 +3338,6 @@ sambamba_mpileup_tum_bam_define_opts()
 ########
 sambamba_mpileup_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -3505,8 +3363,6 @@ sambamba_mpileup_tum_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/tumor.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -3579,8 +3435,6 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
 ########
 parallel_sambamba_mpileup_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -3615,8 +3469,6 @@ parallel_sambamba_mpileup_norm_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/normal_${contig}.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -3689,8 +3541,6 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
 ########
 parallel_sambamba_mpileup_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -3725,8 +3575,6 @@ parallel_sambamba_mpileup_tum_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/tumor_${contig}.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -3795,8 +3643,6 @@ get_samtools_mpileup_l_opt()
 ########
 samtools_mpileup_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -3821,8 +3667,6 @@ samtools_mpileup_norm_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/normal.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -3879,8 +3723,6 @@ samtools_mpileup_tum_bam_define_opts()
 ########
 samtools_mpileup_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -3905,8 +3747,6 @@ samtools_mpileup_tum_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/tumor.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -3974,8 +3814,6 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 ########
 parallel_samtools_mpileup_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -4001,8 +3839,6 @@ parallel_samtools_mpileup_norm_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/normal_${contig}.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -4070,8 +3906,6 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 ########
 parallel_samtools_mpileup_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
@@ -4097,8 +3931,6 @@ parallel_samtools_mpileup_tum_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/tumor_${contig}.pileup || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -4158,8 +3990,6 @@ parallel_split_norm_bam_define_opts()
 ########
 parallel_split_norm_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
@@ -4185,8 +4015,6 @@ parallel_split_norm_bam()
 
     # Move bam and index file to datadir
     mv ${normalcont}* ${abs_datadir} || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -4246,8 +4074,6 @@ parallel_split_tum_bam_define_opts()
 ########
 parallel_split_tum_bam()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
@@ -4273,8 +4099,6 @@ parallel_split_tum_bam()
         
     # Move bam and index file to datadir
     mv ${tumorcont}* ${abs_datadir} || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -4312,16 +4136,12 @@ delete_bam_files_define_opts()
 ########
 delete_bam_files()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
 
     # Delete bam files
     rm -f ${abs_datadir}/*.bam || exit 1
-
-    display_end_step_message
 }
 
 ########
@@ -4353,8 +4173,6 @@ clear_datadir_define_opts()
 ########
 clear_datadir()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
@@ -4364,6 +4182,4 @@ clear_datadir()
 
     # Print README.txt file
     echo "NOTE: This directory was cleared by means of the 'clear_datadir' step" > ${abs_datadir}/README.txt || exit 1
-    
-    display_end_step_message
 }

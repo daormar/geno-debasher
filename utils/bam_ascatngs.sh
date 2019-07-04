@@ -94,8 +94,6 @@ ascatngs_define_opts()
 ########
 ascatngs()
 {
-    display_begin_step_message
-
     # Initialize variables
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -117,6 +115,4 @@ ascatngs()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }

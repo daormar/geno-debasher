@@ -90,8 +90,6 @@ get_contigs_from_header()
 ########
 filter_norm_bam_contigs()
 {
-    display_begin_step_message
-
     # Initialize variables
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -128,8 +126,6 @@ filter_norm_bam_contigs()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########
@@ -175,8 +171,6 @@ filter_tum_bam_contigs_define_opts()
 ########
 filter_tum_bam_contigs()
 {
-    display_begin_step_message
-
     # Initialize variables
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -213,8 +207,6 @@ filter_tum_bam_contigs()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }
 
 ########

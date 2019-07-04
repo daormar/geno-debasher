@@ -66,8 +66,6 @@ allele_counter_norm_define_opts()
 ########
 allele_counter_norm()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local locis=`read_opt_value_from_line "$*" "-l"`
@@ -86,8 +84,6 @@ allele_counter_norm()
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
-    
-    display_end_step_message
 }
 
 ########
@@ -136,8 +132,6 @@ allele_counter_tumor_define_opts()
 ########
 allele_counter_tumor()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local locis=`read_opt_value_from_line "$*" "-l"`
@@ -157,8 +151,6 @@ allele_counter_tumor()
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
-    
-    display_end_step_message
 }
 
 ########
@@ -226,8 +218,6 @@ ascatr_define_opts()
 ########
 ascatr()
 {
-    display_begin_step_message
-
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local allelecounternormal=`read_opt_value_from_line "$*" "-alleleCounter-normal"`
@@ -257,6 +247,4 @@ ascatr()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    display_end_step_message
 }

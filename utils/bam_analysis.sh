@@ -3472,6 +3472,18 @@ parallel_sambamba_mpileup_norm_bam()
 }
 
 ########
+parallel_sambamba_mpileup_norm_bam_reset_outdir()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Remove files
+    logmsg "* Resetting output directory..."
+    rm -f ${step_outd}/normal_${contig}.*
+}
+
+########
 parallel_sambamba_mpileup_norm_bam_conda_envs()
 {
     define_conda_env sambamba sambamba.yml
@@ -3575,6 +3587,18 @@ parallel_sambamba_mpileup_tum_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/tumor_${contig}.pileup || exit 1
+}
+
+########
+parallel_sambamba_mpileup_tum_bam_reset_outdir()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Remove files
+    logmsg "* Resetting output directory..."
+    rm -f ${step_outd}/tumor_${contig}.*
 }
 
 ########
@@ -3842,6 +3866,18 @@ parallel_samtools_mpileup_norm_bam()
 }
 
 ########
+parallel_samtools_mpileup_norm_bam_reset_outdir()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Remove files
+    logmsg "* Resetting output directory..."
+    rm -f ${step_outd}/normal_${contig}.*
+}
+
+########
 parallel_samtools_mpileup_norm_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
@@ -3931,6 +3967,18 @@ parallel_samtools_mpileup_tum_bam()
     # Compress pileup file
     logmsg "* Compressing pileup file..."
     ${GZIP} ${step_outd}/tumor_${contig}.pileup || exit 1
+}
+
+########
+parallel_samtools_mpileup_tum_bam_reset_outdir()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local contig=`read_opt_value_from_line "$*" "-contig"`
+
+    # Remove files
+    logmsg "* Resetting output directory..."
+    rm -f ${step_outd}/tumor_${contig}.*
 }
 
 ########

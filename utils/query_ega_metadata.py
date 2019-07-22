@@ -6,7 +6,6 @@ import io, sys, getopt, operator
 ##################################################
 class sample_data:
     def __init__(self):
-        self.sample_alias=None
         self.filename=None
         self.fileaccession=None
         # NOTE: information indexed by sample_accession
@@ -112,7 +111,6 @@ def extract_sample_info(filename):
         fields=line.split()
         sample_accession=fields[1]
         sd=sample_data()
-        sd.sample_alias=fields[0]
         sd.filename=fields[2]
         sd.fileaccession=fields[3]
         sample_info_map[sample_accession]=sd

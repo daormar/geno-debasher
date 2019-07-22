@@ -22,7 +22,6 @@ class analysis_data:
 class study_data:
     def __init__(self):
         self.ega_sample_id=None
-        self.filename=None
         # NOTE: information indexed by sample_accession
         
 ##################################################
@@ -153,7 +152,6 @@ def extract_study_info(filename):
         fields=line.split()
         sample_accession=fields[len(fields)-3]
         sd=study_data()
-        sd.filename=fields[len(fields)-4]
         sd.ega_sample_id=fields[len(fields)-1]
         study_info_map[sample_accession]=sd
     return study_info_map
@@ -184,7 +182,7 @@ def get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map,as
     # Populate formatted_info structure
     for sample_accession in study_info_map:
         ega_sample_id=study_info_map[sample_accession].ega_sample_id
-        filename=study_info_map[sample_accession].filename
+        filename=sample_info_map[sample_accession].filename
         fileaccession=sample_info_map[sample_accession].fileaccession
         donor_id=analysis_info_map[ega_sample_id].donor_id
         phenotype=analysis_info_map[ega_sample_id].phenotype

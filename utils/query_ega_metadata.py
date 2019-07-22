@@ -21,7 +21,6 @@ class analysis_data:
 ##################################################
 class study_data:
     def __init__(self):
-        self.study_ega_id=None
         self.ega_sample_id=None
         self.filename=None
         # NOTE: information indexed by sample_accession
@@ -154,7 +153,6 @@ def extract_study_info(filename):
         fields=line.split()
         sample_accession=fields[len(fields)-3]
         sd=study_data()
-        sd.study_ega_id=fields[0]
         sd.filename=fields[len(fields)-4]
         sd.ega_sample_id=fields[len(fields)-1]
         study_info_map[sample_accession]=sd

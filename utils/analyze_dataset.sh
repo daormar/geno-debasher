@@ -187,8 +187,8 @@ print_pars()
 extract_normal_sample_info()
 {
     local entry=$1
-    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal'`
-    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | $GREP 'Normal\|normal'`
+    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | $GREP 'Normal\|normal\|Non-tumor\|non-tumor'`
+    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | $GREP 'Normal\|normal\|Non-tumor\|non-tumor'`
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}

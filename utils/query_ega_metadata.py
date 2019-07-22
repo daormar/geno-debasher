@@ -9,6 +9,7 @@ class sample_data:
         self.sample_alias=None
         self.filename=None
         self.fileaccession=None
+        # NOTE: information indexed by sample_accession
 
 ##################################################
 class analysis_data:
@@ -16,6 +17,7 @@ class analysis_data:
         self.donor_id=None
         self.phenotype=None
         self.gender=None
+        # NOTE: information indexed by ega_sample_id
 
 ##################################################
 class study_data:
@@ -23,7 +25,8 @@ class study_data:
         self.study_ega_id=None
         self.ega_sample_id=None
         self.filename=None
-
+        # NOTE: information indexed by sample_accession
+        
 ##################################################
 def take_pars():
     flags={}

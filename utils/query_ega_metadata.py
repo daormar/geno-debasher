@@ -165,6 +165,8 @@ def load_aspera_box_info(filename):
         line=line.strip("\n")
         fields=line.split()
         aspera_box_info.append(fields[0])
+    # Output is a list aspera box filenames. Each one contains as
+    # substring one of the filenames stored in sample data
     return aspera_box_info
 
 ##################################################

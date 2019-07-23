@@ -44,7 +44,7 @@ create_genref_for_bam_explain_cmdline_opts()
 
     # -bam option
     description="bam file (required if no downloading steps have been defined)"
-    explain_cmdline_req_opt "-bam" "<string>" "$description"
+    explain_cmdline_opt "-bam" "<string>" "$description"
 
     # -cm option
     description="File containing a mapping between contig names and accession numbers"

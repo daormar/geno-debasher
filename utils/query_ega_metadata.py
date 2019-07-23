@@ -1,7 +1,7 @@
 # *- python -*
 
 # import modules
-import io, sys, getopt, operator
+import io, sys, os, getopt, operator
 
 # Global variables
 ATTR_NOT_FOUND="ATTR_NOT_FOUND"
@@ -104,6 +104,19 @@ def print_help():
     print >> sys.stderr, "-v             Verbose mode"
 
 ##################################################
+def standardize_filename(filename):
+    # Remove extension
+    if os.path.splitext(filename)[1]==".cip":
+        result=os.path.splitext(filename)[0]
+    else:
+        result=filename
+        
+    # Retain base file name
+    result=os.path.basename(result)
+    
+    return result
+
+##################################################
 def extract_sample_info(filename):
     sample_info_map={}
     file = open(filename, 'r')
@@ -113,7 +126,7 @@ def extract_sample_info(filename):
         fields=line.split()
         sample_accession=fields[1]
         sd=sample_data()
-        sd.filename=fields[2]
+        sd.filename=standardize_filename(fields[2])
         sd.fileaccession=fields[3]
         sample_info_map[sample_accession]=sd
     return sample_info_map
@@ -275,7 +288,7 @@ def print_info(formatted_info):
             else:
                 row=row+" "+elem[i]
         print row
-
+1
 ##################################################
 def process_pars(flags,values):
     # Extract info from files

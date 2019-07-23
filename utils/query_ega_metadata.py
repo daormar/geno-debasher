@@ -3,6 +3,10 @@
 # import modules
 import io, sys, getopt, operator
 
+# Global variables
+ATTR_NOT_FOUND="ATTR_NOT_FOUND"
+NO_ASPERA_FILENAME_AVAILABLE="NO_ASPERA_FILENAME_AVAILABLE"
+
 ##################################################
 class sample_data:
     def __init__(self):
@@ -121,10 +125,26 @@ def extract_attribute_info(line):
     attribute_str=""
     for i in range(1,len(fields)):
         attribute_str=attribute_str+"_"+fields[i]
+
+    # Initialize output values
+    donor_id=ATTR_NOT_FOUND
+    phenotype=ATTR_NOT_FOUND
+    gender=ATTR_NOT_FOUND
+    
+    # Iterate over attributes
     attr_fields=attribute_str.split(";")
-    donor_id=attr_fields[1]
-    phenotype=attr_fields[2]
-    gender=attr_fields[4]
+    for attr_field in attr_fields:
+        # Extract key-value information
+        keyvalue=attr_field.split("=")
+        if len(keyvalue)==2:
+            key=keyvalue[0]
+            value=keyvalue[1]
+            if(key=="donor_id"):
+                donor_id=attr_field
+            elif(key=="phenotype"):
+                phenotype=attr_field
+            elif(key=="gender"):
+                gender=attr_field
 
     return (donor_id,phenotype,gender)
         
@@ -175,7 +195,7 @@ def match_aspera_filename(egafilename,aspera_box_info):
     if(matching):
         return matching[0]
     else:
-        return "NO_ASPERA_FILENAME_AVAILABLE"
+        return NO_ASPERA_FILENAME_AVAILABLE
 
 ##################################################
 def get_info_in_basic_format(sample_info_map,analysis_info_map,study_info_map,aspera_box_info):

@@ -184,7 +184,7 @@ print_pars()
 }
 
 ########
-check_sample_is_normal()
+filter_normal_sample()
 {
     $GREP 'Normal\|normal\|Non-tumor\|non-tumor'
 }
@@ -193,8 +193,8 @@ check_sample_is_normal()
 extract_normal_sample_info()
 {
     local entry=$1
-    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | check_sample_is_normal`
-    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | check_sample_is_normal`
+    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | filter_normal_sample`
+    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | filter_normal_sample`
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}
@@ -208,7 +208,7 @@ extract_normal_sample_info()
 }
 
 ########
-check_sample_is_tumor()
+filter_tumor_sample()
 {
     $GREP 'Tumour\|tumour\|Tumor\|tumor' | $GREP -v 'Non-tumor\|non-tumor'
 }
@@ -217,8 +217,8 @@ check_sample_is_tumor()
 extract_tumor_sample_info()
 {
     local entry=$1
-    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | check_sample_is_tumor`
-    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | check_sample_is_tumor`
+    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | filter_tumor_sample`
+    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | filter_tumor_sample`
 
     if [ ! -z "${sample1}" ]; then
         echo ${sample1}

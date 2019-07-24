@@ -59,9 +59,9 @@ create_genref_for_bam_explain_cmdline_opts()
 get_bam_filename()
 {
     local cmdline=$1
+    local given=0
 
     # Check -bam option
-    local given=0
     local bam
     bam=`read_opt_value_from_line "$cmdline" "-bam"` && given=1
     if [ $given -eq 1 ]; then

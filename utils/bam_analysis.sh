@@ -1928,7 +1928,7 @@ smoove()
     export TMPDIR=${step_outd}
     local exclude_opt=`get_smoove_exclude_opt ${exclude}`
     local project_name="smoove"
-    command smoove call --outdir ${step_outd} ${exclude_opt} --name ${project_name} --fasta ${ref} -p ${cpus} --genotype ${normalbam} ${tumorbam}
+    command smoove call --outdir ${step_outd} ${exclude_opt} --name ${project_name} --fasta ${ref} -p ${cpus} --genotype ${normalbam} ${tumorbam} || exit 1
         
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

@@ -1357,7 +1357,7 @@ parallel_bam2seqz_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -1626,7 +1626,7 @@ parallel_exclude_plus_lumpy_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -1784,7 +1784,7 @@ parallel_lumpy_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -2091,7 +2091,7 @@ parallel_delly_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -2209,7 +2209,7 @@ parallel_svtyper_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Determine vcf directory
     vcfdir=`get_vcfdir_for_svtyper "${stepspec}"` || { errmsg "Error: vcf directory for svtyper could not be determined"; exit 1; }
@@ -3437,7 +3437,7 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -3555,7 +3555,7 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -3840,7 +3840,7 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -3944,7 +3944,7 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -4042,7 +4042,7 @@ parallel_split_norm_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs
@@ -4126,7 +4126,7 @@ parallel_split_tum_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"`
+    clist=`read_opt_value_from_line "$cmdline" "-lc"` || exit 1
 
     # Generate option lists for each contig
     local contigs

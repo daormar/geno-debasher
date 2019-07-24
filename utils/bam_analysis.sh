@@ -43,7 +43,7 @@ create_genref_for_bam_explain_cmdline_opts()
     explain_cmdline_req_opt "-br" "<string>" "$description"
 
     # -bam option
-    description="bam file (required if no downloading steps have been defined)"
+    description="bam file (required if no downloading steps or paths of normal or tumor bam files have been defined)"
     explain_cmdline_opt "-bam" "<string>" "$description"
 
     # -cm option
@@ -59,6 +59,8 @@ create_genref_for_bam_explain_cmdline_opts()
 get_bam_filename()
 {
     local cmdline=$1
+
+    # Check -bam option
     local given=0
     local bam
     bam=`read_opt_value_from_line "$cmdline" "-bam"` && given=1
@@ -67,26 +69,44 @@ get_bam_filename()
         file_exists $bam || { errmsg "file $bam does not exist" ; return 1; }
         echo $bam
         return 0
-    else
-        # Check -extn option
-        if check_opt_given "$cmdline" "-extn"; then
-            local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-            normalbam=${abs_datadir}/normal.bam
-            echo $normalbam
-            return 0
-        fi
-
-        # Check -extt option
-        if check_opt_given "$cmdline" "-extt"; then
-            local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-            tumorbam=${abs_datadir}/tumor.bam
-            echo $tumorbam
-            return 0
-        fi
-
-        errmsg "-bam, -extn or -extt options should be given"
-        return 1
     fi
+    
+    # Check -n option
+    local normalbam
+    normalbam=`read_opt_value_from_line "$cmdline" "-n"` && given=1
+    if [ $given -eq 1 ]; then
+        file_exists $normalbam || { errmsg "file $normalbam does not exist" ; return 1; }
+        echo $normalbam
+        return 0
+    fi
+    
+    # Check -extn option
+    if check_opt_given "$cmdline" "-extn"; then
+        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+        normalbam=${abs_datadir}/normal.bam
+        echo $normalbam
+        return 0
+    fi
+
+    # Check -t option
+    local tumorbam
+    tumorbam=`read_opt_value_from_line "$cmdline" "-t"` && given=1
+    if [ $given -eq 1 ]; then
+        file_exists $tumorbam || { errmsg "file $tumorbam does not exist" ; return 1; }
+        echo $tumorbam
+        return 0
+    fi
+
+    # Check -extt option
+    if check_opt_given "$cmdline" "-extt"; then
+        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+        tumorbam=${abs_datadir}/tumor.bam
+        echo $tumorbam
+        return 0
+    fi
+
+    errmsg "-bam, -n, -extn, -t or -extt options should be given"
+    return 1
 }
 
 ########

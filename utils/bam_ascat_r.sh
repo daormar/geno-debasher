@@ -5,20 +5,20 @@
 #################
 
 ########
-bam_ascat_r_shared_dirs()
+bam_ascat_shared_dirs()
 {
     define_shared_dir ${DATADIR_BASENAME}
 }
 
 ########
-bam_ascat_r_fifos()
+bam_ascat_fifos()
 {
     :
 }
 
-######################
-# ASCAT_R STEPS      #
-######################
+###############
+# ASCAT STEPS #
+###############
 
 ########
 allele_counter_norm_explain_cmdline_opts()
@@ -74,16 +74,21 @@ allele_counter_norm()
 
     # Activate conda environment if needed    
     logmsg "* Activating conda environment..."
-    conda activate ascatngs 2>&1 || exit 1
+    conda activate allelecount 2>&1 || exit 1
 
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
     alleleCounter -l ${locis} -r ${ref} -b ${normalbam} -o ${step_outd}/allele-counter-norm.csv 2>&1 || exit 1
 
-
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
+}
+
+########
+allele_counter_norm_conda_envs()
+{
+    define_conda_env allelecount allelecount.yml
 }
 
 ########
@@ -138,10 +143,9 @@ allele_counter_tumor()
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
 
-
     # Activate conda environment if needed
     logmsg "* Activating conda environment..."
-    conda activate ascatngs 2>&1 || exit 1
+    conda activate allelecount 2>&1 || exit 1
     
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
@@ -154,7 +158,13 @@ allele_counter_tumor()
 }
 
 ########
-ascatr_explain_cmdline_opts()
+allele_counter_tumor_conda_envs()
+{
+    define_conda_env allelecount allelecount.yml
+}
+
+########
+ascat_explain_cmdline_opts()
 {
     # -acn option
     description="AlleleCounter normal file"
@@ -174,7 +184,7 @@ ascatr_explain_cmdline_opts()
 }
 
 ########
-ascatr_define_opts()
+ascat_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -187,22 +197,22 @@ ascatr_define_opts()
 
     # Define alleleCounter-normal option or retrieve dependency
     local allelecountnorm_dep=`find_dependency_for_step "${jobspec}" allele_counter_norm`
-    if [ ${allelecountnorm_dep} != ${DEP_NOT_FOUND} ]; then
+    if [ ${allelecountnorm_dep} = ${DEP_NOT_FOUND} ]; then
+        define_cmdline_infile_opt "${cmdline}" "-acn"  optlist || exit 1
+    else
         local acnorm_outd=`get_default_outd_for_dep ${outd} "${allelecountnorm_dep}"`
         local allelecount_norm_file=${acnorm_outd}/allele-counter-norm.csv
-        define_opt "-alleleCounter-normal" ${allelecount_norm_file} optlist || exit 1
-    else
-        define_cmdline_infile_opt "${cmdline}" "-acn"  optlist || exit 1
+        define_opt "-acn" ${allelecount_norm_file} optlist || exit 1
     fi
     
     # Define alleleCounter-tumor option or retrieve dependency
     local allelecounttumor_dep=`find_dependency_for_step "${jobspec}" allele_counter_tumor`
-    if [ ${allelecounttumor_dep} != ${DEP_NOT_FOUND} ]; then
+    if [ ${allelecounttumor_dep} = ${DEP_NOT_FOUND} ]; then
+        define_cmdline_infile_opt "${cmdline}" "-act"  optlist || exit 1
+    else
         local actumor_outd=`get_default_outd_for_dep ${outd} "${allelecounttumor_dep}"`
         local allelecount_tumor_file=${acnorm_outd}/allele-counter-tumor.csv
-        define_opt "-alleleCounter-tumor" ${allelecount_norm_file} optlist || exit 1
-    else
-        define_cmdline_infile_opt "${cmdline}" "-act"  optlist || exit 1
+        define_opt "-act" ${allelecount_norm_file} optlist || exit 1
     fi
     
     # -g option
@@ -216,35 +226,34 @@ ascatr_define_opts()
 }
 
 ########
-ascatr()
+ascat()
 {
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local allelecounternormal=`read_opt_value_from_line "$*" "-alleleCounter-normal"`
-    local allelecountertumor=`read_opt_value_from_line "$*" "-alleleCounter-tumor"`
+    local allelecounternormal=`read_opt_value_from_line "$*" "-acn"`
+    local allelecountertumor=`read_opt_value_from_line "$*" "-act"`
     local gender=`read_opt_value_from_line "$*" "-g"`
     local snpgccorr=`read_opt_value_from_line "$*" "-sg"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate /home/jespinosa/conda_local_env/ascat_r 2>&1 || exit 1
+    conda activate ascat 2>&1 || exit 1
     
     # Run convert allele count
     logmsg "* Executing convert_allele_counts..."
-    echo "****************************${allelecountertumor}"
-    echo "****************************${allelecounternormal}"
-    echo "step out directory****************************${step_outd}"
-
-    Rscript ${biopanpipe_bindir}/convert_allele_counts "tumor" ${allelecountertumor} "normal" ${allelecounternormal} ${gender} ${step_outd}
+    Rscript ${biopanpipe_bindir}/convert_allele_counts "tumor" ${allelecountertumor} "normal" ${allelecounternormal} ${gender} ${step_outd} || exit 1
     
-    echo "convert_allele_counts finished****************************"
-    echo "gc_correction file********************************$snpgccorr" 
-
     # Run ascatr 
     logmsg "* Executing run_ascat..."
-    Rscript ${biopanpipe_bindir}/run_ascat --tumor_baf="${step_outd}/tumor.BAF" --tumor_logr="${step_outd}/tumor.LogR" --normal_baf="${step_outd}/normal.BAF" --normal_logr="${step_outd}/tumor.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" 2>&1 || exit 1
+    Rscript ${biopanpipe_bindir}/run_ascat --tumor_baf="${step_outd}/tumor.BAF" --tumor_logr="${step_outd}/tumor.LogR" --normal_baf="${step_outd}/normal.BAF" --normal_logr="${step_outd}/tumor.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
+}
+
+########
+ascat_conda_envs()
+{
+    define_conda_env ascat ascat.yml
 }

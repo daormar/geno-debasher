@@ -1,4 +1,4 @@
-SCRIPTS_TO_BE_BUILT= bam_analysis bam_filter bam_facets bam_ascat_r	\
+SCRIPTS_TO_BE_BUILT= bam_analysis bam_filter bam_facets bam_ascat	\
 bam_ascatngs analyze_dataset file_shuffle gen_bed_for_genome		\
 check_ref_and_bam_contigs get_bam_contigs get_entrez_fasta		\
 gen_wisecondorx_ref convert_snppos_to_snpgcc create_snv_pos_ascat	\
@@ -11,7 +11,7 @@ bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = bam_analysis.sh bam_filter.sh bam_facets.sh bam_ascat_r.sh	\
+EXTRA_DIST = bam_analysis.sh bam_filter.sh bam_facets.sh bam_ascat.sh	\
 bam_ascatngs.sh analyze_dataset.sh file_shuffle.sh			\
 gen_bed_for_genome.sh check_ref_and_bam_contigs.sh get_bam_contigs.sh	\
 get_entrez_fasta.py gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh	\

@@ -200,7 +200,7 @@ ascat_define_opts()
     if [ ${allelecountnorm_dep} = ${DEP_NOT_FOUND} ]; then
         define_cmdline_infile_opt "${cmdline}" "-acn"  optlist || exit 1
     else
-        local acnorm_outd=`get_default_outd_for_dep ${outd} "${allelecountnorm_dep}"`
+        local acnorm_outd=`get_outd_for_dep "${allelecountnorm_dep}"`
         local allelecount_norm_file=${acnorm_outd}/allele-counter-norm.csv
         define_opt "-acn" ${allelecount_norm_file} optlist || exit 1
     fi
@@ -210,7 +210,7 @@ ascat_define_opts()
     if [ ${allelecounttumor_dep} = ${DEP_NOT_FOUND} ]; then
         define_cmdline_infile_opt "${cmdline}" "-act"  optlist || exit 1
     else
-        local actumor_outd=`get_default_outd_for_dep ${outd} "${allelecounttumor_dep}"`
+        local actumor_outd=`get_outd_for_dep "${allelecounttumor_dep}"`
         local allelecount_tumor_file=${acnorm_outd}/allele-counter-tumor.csv
         define_opt "-act" ${allelecount_norm_file} optlist || exit 1
     fi

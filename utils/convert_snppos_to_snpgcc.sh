@@ -14,12 +14,16 @@ else
 
     # Split file
     $SPLIT --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
+
+    # Check variables
+    if [ "${ASCAT_GCC_UTIL}" = "" ]; then
+        echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable should also be exported)" >&2
+    fi
     
     # Process fragments
-    conda activate ascatngs || exit 1
-    export PERL5LIB=/opt/anaconda3/envs/ascatngs/lib/perl5:/home/dortiz/bio/software/ascatngs/build/lib/perl5
+#    export PERL5LIB=/opt/anaconda3/envs/ascatngs/lib/perl5:/home/dortiz/bio/software/ascatngs/build/lib/perl5
     for file in `ls ${TMPDIR}/splitPos/`; do
-        ascatSnpPanelGcCorrections.pl ${ref} ${TMPDIR}/splitPos/${file} > ${TMPDIR}/splitGc/${file} 2> ${TMPDIR}/splitGcLogs/${file}.log &
+        ${ASCAT_GCC_UTIL} ${ref} ${TMPDIR}/splitPos/${file} > ${TMPDIR}/splitGc/${file} 2> ${TMPDIR}/splitGcLogs/${file}.log &
     done
 
     # Wait until all processes finish

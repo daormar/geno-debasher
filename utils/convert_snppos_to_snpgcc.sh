@@ -1,13 +1,86 @@
 # *- bash -*
 
-if [ $# -ne 3 ]; then
-    echo "convert_snppos_to_snpgcc <ref.fa> <snpposfile.tsv> <outfile>" >&2
-else
+########
+print_desc()
+{
+    echo "convert_snppos_to_snpgcc convert snp positions file to gc correction file"
+    echo "type \"convert_snppos_to_snpgcc --help\" to get usage information"
+}
+
+########
+usage()
+{
+    echo "convert_snppos_to_snpgcc   -r <string> -s <string> -o <string>"
+    echo "                           [--help]"
+    echo ""
+    echo "-r <string>                File with reference genome"
+    echo "-s <string>                SNP positions file"
+    echo "-o <string>                Output file"
+    echo "--help                     Display this help and exit"
+}
+
+########
+read_pars()
+{
+    r_given=0
+    o_given=0
+    while [ $# -ne 0 ]; do
+        case $1 in
+            "--help") usage
+                      exit 1
+                      ;;
+            "-r") shift
+                  if [ $# -ne 0 ]; then
+                      ref=$1
+                      r_given=1
+                  fi
+                  ;;
+            "-s") shift
+                  if [ $# -ne 0 ]; then
+                      snpposfile=$1
+                      s_given=1
+                  fi
+                  ;;
+            "-o") shift
+                  if [ $# -ne 0 ]; then
+                      outfile=$1
+                      o_given=1
+                  fi
+                  ;;
+        esac
+        shift
+    done   
+}
+
+########
+check_pars()
+{
+    if [ ${r_given} -eq 0 ]; then   
+        echo "Error! -r parameter not given!" >&2
+        exit 1
+    else
+        if [ ! -f ${ref} ]; then
+            echo "Error! file ${ref} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${s_given} -eq 0 ]; then
+        echo "Error! -s parameter not given!" >&2
+        exit 1
+    fi
+
+    if [ ${o_given} -eq 0 ]; then
+        echo "Error! -o parameter not given!" >&2
+        exit 1
+    fi
+}
+
+########
+process_pars()
+{
     # Initialize variables
-    ref=$1
-    snpposfile=$2
-    outfile=$3
-    TMPDIR=/tmp
+    TMPDIR=`${MKTEMP} -d /tmp/convsnp.XXXXX`
 
     # Create directories
     mkdir ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
@@ -17,11 +90,10 @@ else
 
     # Check variables
     if [ "${ASCAT_GCC_UTIL}" = "" ]; then
-        echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable should also be exported)" >&2
+        echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable may also need to be exported)" >&2
     fi
     
     # Process fragments
-#    export PERL5LIB=/opt/anaconda3/envs/ascatngs/lib/perl5:/home/dortiz/bio/software/ascatngs/build/lib/perl5
     for file in `ls ${TMPDIR}/splitPos/`; do
         ${ASCAT_GCC_UTIL} ${ref} ${TMPDIR}/splitPos/${file} > ${TMPDIR}/splitGc/${file} 2> ${TMPDIR}/splitGcLogs/${file}.log &
     done
@@ -33,6 +105,19 @@ else
     $HEAD -n 1 ${TMPDIR}/splitGc/snpPos.00 > ${outfile}
     cat ${TMPDIR}/splitGc/snpPos.* | $GREP -vP 'Chr\tPosition' >> ${outfile}
     
-    # Remove temporary directories
-    rm -rf ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
+    # Remove temporary directory
+    rm -rf ${TMPDIR}
+}
+
+########
+
+if [ $# -eq 0 ]; then
+    print_desc
+    exit 1
 fi
+
+read_pars $@ || exit 1
+
+check_pars || exit 1
+
+process_pars || exit 1

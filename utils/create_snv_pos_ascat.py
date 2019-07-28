@@ -1,48 +1,122 @@
 # *- python -*
 
+# import modules
 import gzip
 import sys
 
-# Read options
-arguments= len(sys.argv) -1
-if(arguments != 3):
-  print "create_snv_pos_ascat <maf_value> <gap_value> <file.vcf>"
-  sys.exit(1)
-  
-maf=float(sys.argv[1])
-gap=int(sys.argv[2])
-vcf=sys.argv[3]
+##################################################
+def take_pars():
+    flags={}
+    values={}
+    flags["m_given"]=False
+    flags["g_given"]=False
+    flags["v_given"]=False
+    flags["l_given"]=False
 
-# Initialize variables
-chroms = ["1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","X","Y"]
-prev_event_chrom=""
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],"m:g:v:l:",["maf=","gap=","vcf=","listc="])
+    except getopt.GetoptError:
+        print_help()
+        sys.exit(2)
+    if(len(opts)==0):
+        print_help()
+        sys.exit()
+    else:
+        for opt, arg in opts:
+            if opt in ("-m", "--maf"):
+                values["maf"] = float(arg)
+                flags["m_given"]=True
+            elif opt in ("-g", "--gap"):
+                values["gap"] = int(arg)
+                flags["g_given"]=True
+            elif opt in ("-v", "--vcf"):
+                values["vcf"] = arg
+                flags["v_given"]=True
+            elif opt in ("-l", "--listc"):
+                values["listc"] = arg
+                flags["l_given"]=True
+    return (flags,values)
 
-# Process parameters
-with gzip.open(vcf, "r") as fi :
-  # Process vcf line
-  for lin in fi :
-    cols = lin.split("\t")
-    if len(cols) == 8 and cols[0] in chroms :
-      # Initialize entry variables
-      entry_chrom=cols[0]
-      entry_pos=int(cols[1])
-      entry_id=cols[2]
-      entry_maf=-1
-      entry_is_snv=False
+##################################################
+def check_pars(flags,values):
+    if(flags["m_given"]==False):
+        print >> sys.stderr, "Error! -m parameter not given"
+        sys.exit(2)
+    if(flags["g_given"]==False):
+        print >> sys.stderr, "Error! -g parameter not given"
+        sys.exit(2)
+    if(flags["v_given"]==False):
+        print >> sys.stderr, "Error! -v parameter not given"
+        sys.exit(2)
+    if(flags["l_given"]==False):
+        print >> sys.stderr, "Error! -l parameter not given"
+        sys.exit(2)
 
-      # Extract info
-      info = cols[7].split(";")
-      for i in info:
-        # Check SNV status
-        if(i=="TSA=SNV"):
-          entry_is_snv=True
-        # Check MAF
-        aux = i.split("=")
-        if(aux[0] == "MAF"):
-          entry_maf=float(aux[1])
+##################################################
+def print_help():
+    print >> sys.stderr, "create_snv_pos_ascat -m <float> -g <int> -v <string> -l <string>"
+    print >> sys.stderr, ""
+    print >> sys.stderr, "-m <float>     MAF value"
+    print >> sys.stderr, "-g <int>       GAP value"
+    print >> sys.stderr, "-v <string>       VCF file name"
+    print >> sys.stderr, "-l <string>    List of contigs (one contig name per line)"
 
-      # Print data when appropriate
-      if(entry_is_snv and entry_maf >= maf and (prev_event_chrom!=entry_chrom or (prev_event_chrom==entry_chrom and entry_pos-gap > prev_event_pos))):
-        print "{}\t{}\t{}".format(entry_id, entry_chrom, entry_pos)
-        prev_event_chrom=entry_chrom
-        prev_event_pos=entry_pos
+##################################################
+def get_contigs(listc):
+    file = open(listc, 'r')
+    contigs={}
+    for line in file:
+        line=line.strip("\n")
+        fields=line.split()
+        contigsToKeep[fields[0]]=1
+    return contigs
+
+##################################################
+def process_vcf(maf,gap,vcf,contigs)
+    with gzip.open(vcf, "r") as fi :
+    # Process vcf lines
+    for lin in fi :
+        cols = lin.split("\t")
+        if len(cols) == 8 and cols[0] in chroms :
+            # Initialize entry variables
+            entry_chrom=cols[0]
+            entry_pos=int(cols[1])
+            entry_id=cols[2]
+            entry_maf=-1
+            entry_is_snv=False
+
+            # Extract info
+            info = cols[7].split(";")
+            for i in info:
+                # Check SNV status
+                if(i=="TSA=SNV"):
+                    entry_is_snv=True
+                # Check MAF
+                aux = i.split("=")
+                if(aux[0] == "MAF"):
+                    entry_maf=float(aux[1])
+
+            # Print data when appropriate
+            if(entry_is_snv and entry_maf >= maf and (prev_event_chrom!=entry_chrom or (prev_event_chrom==entry_chrom and entry_pos-gap > prev_event_pos))):
+                print "{}\t{}\t{}".format(entry_id, entry_chrom, entry_pos)
+                prev_event_chrom=entry_chrom
+                prev_event_pos=entry_pos
+
+##################################################
+def process_pars(flags,values):
+    contigs=get_contigs(values["listc"])
+    process_vcf(values["maf"],values["gap"],values["vcf"],contigs)
+
+##################################################
+def main(argv):
+    # take parameters
+    (flags,values)=take_pars()
+
+    # check parameters
+    check_pars(flags,values)
+
+    # process parameters
+    process_pars(flags,values)
+    
+if __name__ == "__main__":
+    main(sys.argv)

@@ -64,7 +64,7 @@ shuffle_alt()
 
 ########
 if [ $# -ne 2 -a $# -ne 3 ]; then
-    echo "Usage: thot_shuffle <seed> <tmpdir> [<file>]"
+    echo "Usage: file_shuffle <seed> <tmpdir> [<file>]"
 else
 
     # Take parameters

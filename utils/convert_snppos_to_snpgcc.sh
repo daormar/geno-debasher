@@ -79,19 +79,27 @@ check_pars()
 ########
 process_pars()
 {
-    # Check variables
-    if [ "${ASCAT_GCC_UTIL}" = "" ]; then
-        echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable may also need to be exported)" >&2
-    else
-        echo "* Testing that ${ASCAT_GCC_UTIL} given in ASCAT_GCC_UTIL variable can be executed correctly..." >&2
-        ${ASCAT_GCC_UTIL} || { echo "Error while testing ${ASCAT_GCC_UTIL}" >&2 ; return 1; }
-    fi
-
     # Initialize variables
     TMPDIR=`${MKTEMP} -d /tmp/convsnp.XXXXX`
 
     # Create directories
     mkdir ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
+
+    # Check variables
+    if [ "${ASCAT_GCC_UTIL}" = "" ]; then
+        echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable may also need to be exported)" >&2
+        return 1
+    else
+        echo "* Testing that ${ASCAT_GCC_UTIL} given in ASCAT_GCC_UTIL variable can be executed correctly..." >&2
+        ${ASCAT_GCC_UTIL} > ${TMPDIR}/ascat_gcc_util_test.txt 2>&1
+        if $GREP "USAGE" ${TMPDIR}/ascat_gcc_util_test.txt; then
+            echo "Test of ${ASCAT_GCC_UTIL} successful"
+        else
+            cat ${TMPDIR}/ascat_gcc_util_test.txt
+            echo "Error while testing ${ASCAT_GCC_UTIL}" >&2
+            return 1
+        fi
+    fi
 
     # Split file
     echo "* Splitting input file..." >&2

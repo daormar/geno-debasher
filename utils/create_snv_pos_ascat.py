@@ -57,7 +57,7 @@ def print_help():
     print >> sys.stderr, ""
     print >> sys.stderr, "-m <float>     MAF value"
     print >> sys.stderr, "-g <int>       GAP value"
-    print >> sys.stderr, "-v <string>       VCF file name"
+    print >> sys.stderr, "-v <string>    VCF file name"
     print >> sys.stderr, "-l <string>    List of contigs (one contig name per line)"
 
 ##################################################

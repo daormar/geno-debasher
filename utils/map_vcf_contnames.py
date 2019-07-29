@@ -48,13 +48,13 @@ def print_help():
 ##################################################
 def get_contig_map(mapf):
     file = open(mapf, 'r')
-    contigMap={}
+    contig_map={}
     for line in file:
         line=line.strip("\n")
         fields=line.split()
         if(len(fields)==2):
-            contigMap[fields[0]]=fields[1]
-    return contigMap
+            contig_map[fields[0]]=fields[1]
+    return contig_map
 
 ##################################################
 def remove_prefix(prefix,text):
@@ -64,7 +64,7 @@ def remove_prefix(prefix,text):
 
 ##################################################
 def process_pars(flags,values):
-    contigMap=get_contig_map(values["mapf"])
+    contig_map=get_contig_map(values["mapf"])
 
     # Filter genome
     file = open(values["vcf"], 'r')
@@ -76,9 +76,9 @@ def process_pars(flags,values):
         else:
             fields=line.split()
             contig=fields[0]
-            if(contig in contigMap):
+            if(contig in contig_map):
                 line_wo_contig=remove_prefix(contig,line)
-                print contigMap[contig]+line_wo_contig
+                print contig_map[contig]+line_wo_contig
             else:
                 print line
                                    

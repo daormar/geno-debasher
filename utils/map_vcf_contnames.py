@@ -63,11 +63,8 @@ def remove_prefix(prefix,text):
     return text
 
 ##################################################
-def process_pars(flags,values):
-    contig_map=get_contig_map(values["mapf"])
-
-    # Filter genome
-    file = open(values["vcf"], 'r')
+def map_contigs(filename,contig_map):
+    file = open(filename, 'r')
     # read file line by line
     for line in file:
         line=line.strip("\n")
@@ -81,6 +78,11 @@ def process_pars(flags,values):
                 print contig_map[contig]+line_wo_contig
             else:
                 print line
+
+##################################################
+def process_pars(flags,values):
+    contig_map=get_contig_map(values["mapf"])
+    map_contigs(values["vcf"],contig_map)
                                    
 ##################################################
 def main(argv):

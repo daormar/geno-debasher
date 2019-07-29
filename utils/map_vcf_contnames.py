@@ -46,7 +46,7 @@ def print_help():
     print >> sys.stderr, "-f <string>    VCF file"
 
 ##################################################
-def getContigMap(mapf):
+def get_contig_map(mapf):
     file = open(mapf, 'r')
     contigMap={}
     for line in file:
@@ -64,7 +64,7 @@ def remove_prefix(prefix,text):
 
 ##################################################
 def process_pars(flags,values):
-    contigMap=getContigMap(values["mapf"])
+    contigMap=get_contig_map(values["mapf"])
 
     # Filter genome
     file = open(values["vcf"], 'r')

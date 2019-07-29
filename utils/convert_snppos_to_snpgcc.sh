@@ -95,7 +95,7 @@ process_pars()
     else
         echo "* Testing that ${ASCAT_GCC_UTIL} given in ASCAT_GCC_UTIL variable can be executed correctly..." >&2
         ${ASCAT_GCC_UTIL} > ${TMPDIR}/ascat_gcc_util_test.txt 2>&1
-        if $GREP "USAGE" ${TMPDIR}/ascat_gcc_util_test.txt; then
+        if $GREP "USAGE" ${TMPDIR}/ascat_gcc_util_test.txt > /dev/null; then
             echo "Test of ${ASCAT_GCC_UTIL} successful"
         else
             cat ${TMPDIR}/ascat_gcc_util_test.txt

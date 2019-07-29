@@ -1,8 +1,7 @@
 # *- python -*
 
 # import modules
-import gzip
-import sys
+import sys, gzip, getopt
 
 ##################################################
 def take_pars():
@@ -68,39 +67,40 @@ def get_contigs(listc):
     for line in file:
         line=line.strip("\n")
         fields=line.split()
-        contigsToKeep[fields[0]]=1
+        contigs[fields[0]]=1
     return contigs
 
 ##################################################
-def process_vcf(maf,gap,vcf,contigs)
-    with gzip.open(vcf, "r") as fi :
-    # Process vcf lines
-    for lin in fi :
-        cols = lin.split("\t")
-        if len(cols) == 8 and cols[0] in chroms :
-            # Initialize entry variables
-            entry_chrom=cols[0]
-            entry_pos=int(cols[1])
-            entry_id=cols[2]
-            entry_maf=-1
-            entry_is_snv=False
+def process_vcf(maf,gap,vcf,contigs):
+    with gzip.open(vcf, "r") as fi:
+        prev_event_contig=""
+        # Process vcf lines
+        for lin in fi :
+            cols = lin.split("\t")
+            if len(cols) == 8 and cols[0] in contigs:
+                # Initialize entry variables
+                entry_contig=cols[0]
+                entry_pos=int(cols[1])
+                entry_id=cols[2]
+                entry_maf=-1
+                entry_is_snv=False
 
-            # Extract info
-            info = cols[7].split(";")
-            for i in info:
-                # Check SNV status
-                if(i=="TSA=SNV"):
-                    entry_is_snv=True
-                # Check MAF
-                aux = i.split("=")
-                if(aux[0] == "MAF"):
-                    entry_maf=float(aux[1])
+                # Extract info
+                info = cols[7].split(";")
+                for i in info:
+                    # Check SNV status
+                    if(i=="TSA=SNV"):
+                        entry_is_snv=True
+                    # Check MAF
+                    aux = i.split("=")
+                    if(aux[0] == "MAF"):
+                        entry_maf=float(aux[1])
 
-            # Print data when appropriate
-            if(entry_is_snv and entry_maf >= maf and (prev_event_chrom!=entry_chrom or (prev_event_chrom==entry_chrom and entry_pos-gap > prev_event_pos))):
-                print "{}\t{}\t{}".format(entry_id, entry_chrom, entry_pos)
-                prev_event_chrom=entry_chrom
-                prev_event_pos=entry_pos
+                # Print data when appropriate
+                if(entry_is_snv and entry_maf >= maf and (prev_event_contig!=entry_contig or (prev_event_contig==entry_contig and entry_pos-gap > prev_event_pos))):
+                    print "{}\t{}\t{}".format(entry_id, entry_contig, entry_pos)
+                    prev_event_contig=entry_contig
+                    prev_event_pos=entry_pos
 
 ##################################################
 def process_pars(flags,values):

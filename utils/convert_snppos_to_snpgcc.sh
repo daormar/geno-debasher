@@ -82,9 +82,12 @@ process_pars()
     # Initialize variables
     TMPDIR=`${MKTEMP} -d /tmp/convsnp.XXXXX`
 
-    # Create directories
+    # Create temporary directories
     mkdir ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
 
+    # Remove temporary directories on exit
+    trap "rm -rf ${TMPDIR} 2>/dev/null" EXIT
+    
     # Check variables
     if [ "${ASCAT_GCC_UTIL}" = "" ]; then
         echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable may also need to be exported)" >&2
@@ -117,10 +120,7 @@ process_pars()
     # Merge solutions
     echo "* Merging solutions..." >&2
     $HEAD -n 1 ${TMPDIR}/splitGc/snpPos.00 > ${outfile}
-    cat ${TMPDIR}/splitGc/snpPos.* | $GREP -vP 'Chr\tPosition' >> ${outfile}
-    
-    # Remove temporary directory
-    rm -rf ${TMPDIR}
+    cat ${TMPDIR}/splitGc/snpPos.* | $GREP -vP 'Chr\tPosition' >> ${outfile}    
 }
 
 ########

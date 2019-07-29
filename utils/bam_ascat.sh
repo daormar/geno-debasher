@@ -239,11 +239,11 @@ ascat()
     logmsg "* Activating conda environment..."
     conda activate ascat 2>&1 || exit 1
     
-    # Run convert allele count
+    # Convert allele counts
     logmsg "* Executing convert_allele_counts..."
     Rscript ${biopanpipe_bindir}/convert_allele_counts "tumor" ${allelecountertumor} "normal" ${allelecounternormal} ${gender} ${step_outd} || exit 1
     
-    # Run ascatr 
+    # Run ascat
     logmsg "* Executing run_ascat..."
     Rscript ${biopanpipe_bindir}/run_ascat --tumor_baf="${step_outd}/tumor.BAF" --tumor_logr="${step_outd}/tumor.LogR" --normal_baf="${step_outd}/normal.BAF" --normal_logr="${step_outd}/tumor.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" || exit 1
 

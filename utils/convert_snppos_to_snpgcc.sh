@@ -79,24 +79,26 @@ check_pars()
 ########
 process_pars()
 {
+    # Check variables
+    if [ "${ASCAT_GCC_UTIL}" = "" ]; then
+        echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable may also need to be exported)" >&2
+    else
+        echo "* Testing that ${ASCAT_GCC_UTIL} given in ASCAT_GCC_UTIL variable can be executed correctly..." >&2
+        ${ASCAT_GCC_UTIL} || { echo "Error while testing ${ASCAT_GCC_UTIL}" >&2 ; return 1; }
+    fi
+
     # Initialize variables
     TMPDIR=`${MKTEMP} -d /tmp/convsnp.XXXXX`
 
     # Create directories
     mkdir ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
 
-    # Check variables
-    if [ "${ASCAT_GCC_UTIL}" = "" ]; then
-        echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable may also need to be exported)" >&2
-    else
-        echo "Testing that ${ASCAT_GCC_UTIL} given in ASCAT_GCC_UTIL variable can be executed correctly..." >&2
-        ${ASCAT_GCC_UTIL} || { echo "Error while testing ${ASCAT_GCC_UTIL}" >&2 ; return 1; }
-    fi
-
     # Split file
+    echo "* Splitting input file..." >&2
     $SPLIT --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
     
     # Process fragments
+    echo "* Processing fragments..." >&2
     for file in `ls ${TMPDIR}/splitPos/`; do
         ${ASCAT_GCC_UTIL} ${ref} ${TMPDIR}/splitPos/${file} > ${TMPDIR}/splitGc/${file} 2> ${TMPDIR}/splitGcLogs/${file}.log &
     done
@@ -105,6 +107,7 @@ process_pars()
     wait
     
     # Merge solutions
+    echo "* Merging solutions..." >&2
     $HEAD -n 1 ${TMPDIR}/splitGc/snpPos.00 > ${outfile}
     cat ${TMPDIR}/splitGc/snpPos.* | $GREP -vP 'Chr\tPosition' >> ${outfile}
     

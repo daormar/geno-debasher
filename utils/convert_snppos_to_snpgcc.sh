@@ -85,13 +85,16 @@ process_pars()
     # Create directories
     mkdir ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
 
-    # Split file
-    $SPLIT --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
-
     # Check variables
     if [ "${ASCAT_GCC_UTIL}" = "" ]; then
         echo "ERROR: ASCAT_GCC_UTIL shell variable with path to 'ascatSnpPanelGcCorrections.pl' tool is not defined. This tool is provided by the AscatNGS package (PERL5LIB variable may also need to be exported)" >&2
+    else
+        echo "Testing that ${ASCAT_GCC_UTIL} given in ASCAT_GCC_UTIL variable can be executed correctly..." >&2
+        ${ASCAT_GCC_UTIL} || { echo "Error while testing ${ASCAT_GCC_UTIL}" >&2 ; return 1; }
     fi
+
+    # Split file
+    $SPLIT --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
     
     # Process fragments
     for file in `ls ${TMPDIR}/splitPos/`; do

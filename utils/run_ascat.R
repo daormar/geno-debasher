@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript
+# *- r -*
 
 #################################################################################
 ### Jose Espinosa-Carrasco AGENDAS-IRB Group. Nov 2018                        ###

@@ -24,7 +24,7 @@ args = commandArgs(trailingOnly=TRUE)
 ## args is now a list of character vectors
 ## First check to see if arguments are passed.
 if(length(args)<5){
-    stop("No input files supplied\n\nUsage:\nRscript convertAlleleCounts.r tumorid tumorac normalid normalac gender\nWhere:\ntumorid - id of tumor sample\ntumorac - output from AlleleCount for the tumor\nnormalid - id of normal sample\nnormalac - output from AlleleCount for the normal\ngender - XX or XY\n\n")
+    stop("No input files supplied\n\nUsage:\nRscript convert_allele_counts tumorid tumorac normalid normalac gender\nWhere:\ntumorid - id of tumor sample\ntumorac - output from AlleleCount for the tumor\nnormalid - id of normal sample\nnormalac - output from AlleleCount for the normal\ngender - XX or XY\n\n")
 } else{
     tumor_id = args[1]
     tumor_ac = args[2]

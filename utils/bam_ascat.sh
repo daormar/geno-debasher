@@ -24,7 +24,7 @@ bam_ascat_fifos()
 allele_counter_norm_explain_cmdline_opts()
 {
     # -l option
-    description="Loci (SNP position) file"
+    description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix"
     explain_cmdline_req_opt "-l" "<string>" "$description"
 
      # -r option
@@ -95,7 +95,7 @@ allele_counter_norm_conda_envs()
 allele_counter_tumor_explain_cmdline_opts()
 {
     # -l option
-    description="Loci (SNP position) file"
+    description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix"
     explain_cmdline_req_opt "-l" "<string>" "$description"
 
      # -r option
@@ -179,7 +179,7 @@ ascat_explain_cmdline_opts()
     explain_cmdline_req_opt "-g" "<string>" "$description"
 
     # -sg option
-    description="SNP GC correction file"
+    description="SNP GC correction file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix"
     explain_cmdline_req_opt "-sg" "<string>" "$description"
 }
 

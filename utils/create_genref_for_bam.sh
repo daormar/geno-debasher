@@ -6,7 +6,7 @@
 ########
 print_desc()
 {
-    echo "create_genref_for_bam create genome reference specific for bam file"
+    echo "create_genref_for_bam creates genome reference specific for bam file"
     echo "type \"create_genref_for_bam --help\" to get usage information"
 }
 

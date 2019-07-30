@@ -3,7 +3,7 @@
 ########
 print_desc()
 {
-    echo "get_bam_contigs get list of contigs contained in bam file"
+    echo "get_bam_contigs gets list of contigs contained in bam file"
     echo "type \"get_bam_contigs --help\" to get usage information"
 }
 

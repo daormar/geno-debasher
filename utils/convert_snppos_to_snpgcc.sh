@@ -3,7 +3,7 @@
 ########
 print_desc()
 {
-    echo "convert_snppos_to_snpgcc convert snp positions file to gc correction file"
+    echo "convert_snppos_to_snpgcc converts snp positions file to gc correction file"
     echo "type \"convert_snppos_to_snpgcc --help\" to get usage information"
 }
 

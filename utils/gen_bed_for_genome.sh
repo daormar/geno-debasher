@@ -3,7 +3,7 @@
 ########
 print_desc()
 {
-    echo "gen_bed_for_genome generate bed file for whole genome"
+    echo "gen_bed_for_genome generates bed file for whole genome"
     echo "type \"gen_bed_for_genome --help\" to get usage information"
 }
 

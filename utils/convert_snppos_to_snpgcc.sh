@@ -23,6 +23,7 @@ usage()
 read_pars()
 {
     r_given=0
+    s_given=0
     o_given=0
     while [ $# -ne 0 ]; do
         case $1 in

@@ -78,7 +78,7 @@ allele_counter_norm()
 
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
-    alleleCounter -l ${locis} -r ${ref} -b ${normalbam} -o ${step_outd}/allele-counter-norm.csv 2>&1 || exit 1
+    alleleCounter -l ${locis} -r ${ref} -b ${normalbam} -o ${step_outd}/allele_counter_norm.csv 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
@@ -149,7 +149,7 @@ allele_counter_tumor()
     
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
-    alleleCounter -l ${locis} -r ${ref} -b ${tumorbam} -o ${step_outd}/allele-counter-tumor.csv 2>&1 || exit 1
+    alleleCounter -l ${locis} -r ${ref} -b ${tumorbam} -o ${step_outd}/allele_counter_tumor.csv 2>&1 || exit 1
 
 
     # Deactivate conda environment if needed
@@ -201,7 +201,7 @@ ascat_define_opts()
         define_cmdline_infile_opt "${cmdline}" "-acn"  optlist || exit 1
     else
         local acnorm_outd=`get_outd_for_dep "${allelecountnorm_dep}"`
-        local allelecount_norm_file=${acnorm_outd}/allele-counter-norm.csv
+        local allelecount_norm_file=${acnorm_outd}/allele_counter_norm.csv
         define_opt "-acn" ${allelecount_norm_file} optlist || exit 1
     fi
     
@@ -211,7 +211,7 @@ ascat_define_opts()
         define_cmdline_infile_opt "${cmdline}" "-act"  optlist || exit 1
     else
         local actumor_outd=`get_outd_for_dep "${allelecounttumor_dep}"`
-        local allelecount_tumor_file=${acnorm_outd}/allele-counter-tumor.csv
+        local allelecount_tumor_file=${acnorm_outd}/allele_counter_tumor.csv
         define_opt "-act" ${allelecount_norm_file} optlist || exit 1
     fi
     

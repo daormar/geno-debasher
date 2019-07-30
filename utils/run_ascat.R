@@ -44,7 +44,7 @@ if("--help" %in% args) {
       --help                       - print this text
 
       Example:
-      ./run_ascat.R --tumor_baf=\"path_tumor_baf\" --tumor_logr=\"path_tumor_logr\" --normal_baf=\"path_ctrl_baf\" --normal_logr=\"path_ctrl_logr\" --tumor_name=\"tumor_name\" --gc_correction=\"path_gc_correction\" --out_dir=\"path_out_dir\" \n")
+      ./run_ascat --tumor_baf=\"path_tumor_baf\" --tumor_logr=\"path_tumor_logr\" --normal_baf=\"path_ctrl_baf\" --normal_logr=\"path_ctrl_logr\" --tumor_name=\"tumor_name\" --gc_correction=\"path_gc_correction\" --out_dir=\"path_out_dir\" \n")
 
   q (save="no")
 }

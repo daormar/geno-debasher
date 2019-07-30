@@ -59,6 +59,5 @@ write.csv(fitted_model$cncf, paste0(o, "/facets_segmentation.csv"), row.names = 
 
 ## Create facets plot
 png(paste0(o, "/facets_plot.png"), width = 900, height = 900, units = "px", pointsize = 18)
-# png("facets_plot.png", width = 900, height = 900, units = "px", pointsize = 18)
 plotSample(x = oo, emfit = fitted_model)
 dev.off()

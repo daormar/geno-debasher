@@ -38,9 +38,11 @@ if("--help" %in% args) {
       Arguments:
       --tumor_baf=path_tumor_baf   - character
       --tumor_logr=path_tumor_logr - character
-      --ctrl_baf=path_ctrl_baf     - character
-      --ctrl_logr=ctrl_logr_baf    - character
+      --normal_baf=path_norm_baf   - character
+      --normal_logr=path_norm_logr - character
       --tumor_name=tumor_name      - character
+      --gc_correction=path_gc_corr - character
+      --out_dir=path_out_dir       - character
       --help                       - print this text
 
       Example:

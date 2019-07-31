@@ -90,12 +90,14 @@ def map_contigs(filename,contig_map,inv_contig_map,col,invert):
         if col<len(fields):
             contig=fields[col]
             if(contig in selected_contig_map):
-                modified_line=fields[0]
-                for i in range(1,len(fields)):
+                modified_line=""
+                for i in range(0,len(fields)):
+                    if i!=0:
+                        modified_line=modified_line+dialect.delimiter
                     if i==col:
-                        modified_line=modified_line+dialect.delimiter+selected_contig_map[contig]
+                        modified_line=modified_line+selected_contig_map[contig]
                     else:
-                        modified_line=modified_line+dialect.delimiter+fields[i]
+                        modified_line=modified_line+fields[i]
                 print modified_line
             else:
                 print line

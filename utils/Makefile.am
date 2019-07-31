@@ -58,7 +58,7 @@ bam_facets: bam_facets.sh
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
 	cat bam_facets.sh >> $@
 
-bam_ascat_r: bam_ascat_r.sh
+bam_ascat: bam_ascat.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
 	echo "CUT="$(CUT) >> $@
@@ -74,9 +74,9 @@ bam_ascat_r: bam_ascat_r.sh
 	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
-	cat bam_ascat_r.sh >> $@
+	cat bam_ascat.sh >> $@
 
-bam_ascat_ngs: bam_ascat_r.sh
+bam_ascatngs: bam_ascatngs.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
 	echo "CUT="$(CUT) >> $@
@@ -92,7 +92,7 @@ bam_ascat_ngs: bam_ascat_r.sh
 	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
-	cat bam_ascat_r.sh >> $@
+	cat bam_ascatngs.sh >> $@
 
 # Build using suffix rules (portable)
 SUFFIXES= .sh .py .r .R

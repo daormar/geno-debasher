@@ -61,6 +61,7 @@ bam_facets: bam_facets.sh
 bam_ascat: bam_ascat.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "PASTE="$(PASTE) >> $@
 	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
@@ -118,6 +119,7 @@ SUFFIXES= .sh .py .r .R
 	echo "CUT="$(CUT) >> $@
 	echo "HEAD="$(HEAD) >> $@
 	echo "TAIL="$(TAIL) >> $@
+	echo "PASTE="$(PASTE) >> $@
 	echo "DIFF="$(DIFF) >> $@
 	echo "FIND="$(FIND) >> $@
 	echo "WC="$(WC) >> $@

@@ -37,7 +37,7 @@ def take_pars():
     flags["t_given"]=False
     flags["f_given"]=False
     flags["p_given"]=False
-    values["verbose"]=False
+    flags["verbose"]=False
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],"s:a:t:f:p:v",["sampleinfofile=","analysisinfofile=","studyinfofile=","format=","asperacontent="])

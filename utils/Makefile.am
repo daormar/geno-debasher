@@ -25,6 +25,9 @@ convert_allele_counts.R postproc_snpgcc.sh run_ascat.R
 bam_analysis: bam_analysis.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "HEAD="$(HEAD) >> $@
+	echo "TAIL="$(TAIL) >> $@
+	echo "PASTE="$(PASTE) >> $@
 	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
@@ -43,6 +46,9 @@ bam_analysis: bam_analysis.sh
 bam_facets: bam_facets.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "HEAD="$(HEAD) >> $@
+	echo "TAIL="$(TAIL) >> $@
+	echo "PASTE="$(PASTE) >> $@
 	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
@@ -61,6 +67,8 @@ bam_facets: bam_facets.sh
 bam_ascat: bam_ascat.sh
 	rm -f $@
 	echo "biopanpipe_bindir="$(prefix)/bin/ >> $@
+	echo "HEAD="$(HEAD) >> $@
+	echo "TAIL="$(TAIL) >> $@
 	echo "PASTE="$(PASTE) >> $@
 	echo "CUT="$(CUT) >> $@
 	echo "AWK="$(AWK) >> $@

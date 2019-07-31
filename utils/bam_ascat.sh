@@ -32,16 +32,12 @@ remove_snp_ids_from_locis()
 {
     local locis=$1
     ${AWK} '{
-             if(NR==1) print $0
-             else
-             {
               for(i=2;i<=NF;++i)
               {
                printf"%s",$i 
                if(i!=NF) printf"\t"
               } 
               printf"\n"
-             }
             }' $locis
 }
 

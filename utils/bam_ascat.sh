@@ -363,7 +363,7 @@ ascat()
     
     # Run ascat
     logmsg "* Executing run_ascat..."
-    Rscript ${biopanpipe_bindir}/run_ascat --tumor_baf="${step_outd}/tumor_snpids.BAF" --tumor_logr="${step_outd}/tumor_snpids.LogR" --normal_baf="${step_outd}/normal_snpids.BAF" --normal_logr="${step_outd}/tumor_snpids.LogR" --tumor_name="tumor" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" || exit 1
+    Rscript ${biopanpipe_bindir}/run_ascat --tumor_baf="${step_outd}/tumor_snpids.BAF" --tumor_logr="${step_outd}/tumor_snpids.LogR" --normal_baf="${step_outd}/normal_snpids.BAF" --normal_logr="${step_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

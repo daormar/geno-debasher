@@ -9,6 +9,7 @@ def take_pars():
     values={}
     flags["m_given"]=False
     flags["f_given"]=False
+    values["file"] = ""
     flags["c_given"]=False
     flags["invert"]=False
 
@@ -30,7 +31,7 @@ def take_pars():
                 flags["f_given"]=True
             elif opt in ("-c", "--col"):
                 values["col"] = int(arg)
-                flags["f_given"]=True
+                flags["c_given"]=True
             elif opt in ("-i", "--invert"):
                 flags["invert"]=True
     return (flags,values)
@@ -39,10 +40,6 @@ def take_pars():
 def check_pars(flags,values):
     if(flags["m_given"]==False):
         print >> sys.stderr, "Error! -m parameter not given"
-        sys.exit(2)
-
-    if(flags["f_given"]==False):
-        print >> sys.stderr, "Error! -f parameter not given"
         sys.exit(2)
 
     if(flags["c_given"]==False):
@@ -54,7 +51,8 @@ def print_help():
     print >> sys.stderr, "map_contnames -m <string> -f <string> -c <int> [--invert]"
     print >> sys.stderr, ""
     print >> sys.stderr, "-m <string>    File with contig to contig mapping"
-    print >> sys.stderr, "-f <string>    File where mapping needs to be done"
+    print >> sys.stderr, "-f <string>    File where mapping needs to be done (if not given,"
+    print >> sys.stderr, "               input is read from stdin)"
     print >> sys.stderr, "-c <int>       Column to be mapped (numbered from 0)"
     print >> sys.stderr, "--invert       Invert mapping"   
 
@@ -79,9 +77,12 @@ def map_contigs(filename,contig_map,inv_contig_map,col,invert):
     else:
         selected_contig_map=contig_map
 
-    # read file line by line
-    file = open(filename, 'r')
-    for line in file:
+    # read input line by line
+    if filename=="":
+        stream = sys.stdin
+    else:
+        stream = open(filename, 'r')
+    for line in stream:
         line=line.strip("\n")
         sniffer = csv.Sniffer()
         dialect = sniffer.sniff(line)

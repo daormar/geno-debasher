@@ -22,7 +22,7 @@
 
 #####################
 ### VARIABLES
-#Reading arguments
+# Reading arguments
 args <- commandArgs (TRUE) #if not it doesn't start to count correctly
 
 ## Default setting when no arguments passed
@@ -155,7 +155,7 @@ ascat.bc <- ascat.loadData(Tumor_LogR_file = tumor_logr,
     else {        	
 	write(paste0("[INFO]: GC file used for the correction.", gc_correction), stderr())
         ascat.bc <- ascat.GCcorrect(ascat.bc, gc_correction)
-	write("[INFO]: GC correction has being performed.", stderr())
+	write("[INFO]: GC correction has been performed.", stderr())
     }
 }
 
@@ -179,7 +179,7 @@ ascat.plotSegmentedData(ascat.bc, img.dir=out_dir)
 ## Run ASCAT to fit every tumor to a model, inferring ploidy, normal cell contamination, and discrete copy numbers
 ascat.output <- ascat.runAscat(ascat.bc)
 
-#Write out segmented regions (including regions with one copy of each allele)
+# Write out segmented regions (including regions with one copy of each allele)
 write.table(ascat.output$segments, file=paste0(out_dir, tumor_name, ".segments.txt"), sep="\t", quote=F, row.names=F)
 
 ## Write out CNVs in bed format

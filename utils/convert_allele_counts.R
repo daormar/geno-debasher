@@ -39,7 +39,7 @@ normal_counts <- read.table(normal_ac, header=F, skip=1, sep="\t")
 
 SNP_pos <- matrix(nrow = dim(normal_counts)[1], ncol = 2)
 
-rownames(SNP_pos) <- paste("snp", 1:dim(SNP_pos)[1], sep="")
+## rownames(SNP_pos) <- paste("snp", 1:dim(SNP_pos)[1], sep="")
 
 #Change rownames to "chr_pos" instead, such as 1_44552
 #This does not exactly work:
@@ -52,7 +52,7 @@ SNP_pos[,2] <- normal_counts[,2]
 
 #Calculate BAF
 tumor_BAF <- matrix(nrow = dim(normal_counts)[1], ncol = 1)
-rownames(tumor_BAF) <- rownames(SNP_pos)
+## rownames(tumor_BAF) <- rownames(SNP_pos)
 colnames(tumor_BAF) <- c(tumor_id)
 acgt <- tumor_counts[ ,c(3:6)]
 acgts <- t(apply(acgt, 1, sort))
@@ -61,7 +61,7 @@ tumor_BAF[,1] <- ifelse(runif(length(tumor_BAF[,1])) < 0.5, tumor_BAF[,1], 1 - t
 tumor_BAF[is.nan(tumor_BAF)] <- NA
 
 germline_BAF <- matrix(nrow = dim(normal_counts)[1], ncol = 1)
-rownames(germline_BAF) <- rownames(SNP_pos)
+## rownames(germline_BAF) <- rownames(SNP_pos)
 colnames(germline_BAF) <- c(normal_id)
 acgt <- normal_counts[,c(3:6)]
 acgts <- t(apply(acgt, 1, sort))
@@ -71,9 +71,9 @@ germline_BAF[is.nan(germline_BAF)] <- NA
 
 tumor_LogR <- matrix(nrow = dim(normal_counts)[1], ncol = 1)
 germline_LogR <- matrix(nrow = dim(normal_counts)[1], ncol = 1)
-rownames(tumor_LogR) <- rownames(SNP_pos)
+## rownames(tumor_LogR) <- rownames(SNP_pos)
 colnames(tumor_LogR) <- c(tumor_id)
-rownames(germline_LogR) <- rownames(SNP_pos)
+## rownames(germline_LogR) <- rownames(SNP_pos)
 colnames(germline_LogR) <- c(normal_id)
 tumor_LogR[,1] <- log(tumor_counts[,7] / normal_counts[,7], 2)
 germline_LogR[,1] <- 0
@@ -93,11 +93,15 @@ tumor_BAF <- round(tumor_BAF,4)
 germline_LogR <- round(germline_LogR,4)
 germline_BAF <- round(germline_BAF,4)
 
-## Making sure that the chromosomes do not include the label "chr" in their id
-SNP_pos <- gsub("chr", "", SNP_pos)
+## ## Making sure that the chromosomes do not include the label "chr" in their id
+## SNP_pos <- gsub("chr", "", SNP_pos)
 
 # write output to files
-write.table(cbind (SNP_pos, tumor_LogR), paste(out_dir,"/", tumor_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
-write.table(cbind (SNP_pos, tumor_BAF), paste(out_dir, "/", tumor_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
-write.table(cbind (SNP_pos, germline_LogR), paste(out_dir,"/", normal_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
-write.table(cbind (SNP_pos, germline_BAF), paste(out_dir, "/", normal_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+## write.table(cbind (SNP_pos, tumor_LogR), paste(out_dir,"/", tumor_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+## write.table(cbind (SNP_pos, tumor_BAF), paste(out_dir, "/", tumor_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+## write.table(cbind (SNP_pos, germline_LogR), paste(out_dir,"/", normal_id, ".LogR", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+## write.table(cbind (SNP_pos, germline_BAF), paste(out_dir, "/", normal_id, ".BAF", sep=""), sep="\t", row.names=T, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, tumor_LogR), paste(out_dir,"/", tumor_id, ".LogR", sep=""), sep="\t", row.names=F, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, tumor_BAF), paste(out_dir, "/", tumor_id, ".BAF", sep=""), sep="\t", row.names=F, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, germline_LogR), paste(out_dir,"/", normal_id, ".LogR", sep=""), sep="\t", row.names=F, col.names=NA, quote=F)
+write.table(cbind (SNP_pos, germline_BAF), paste(out_dir, "/", normal_id, ".BAF", sep=""), sep="\t", row.names=F, col.names=NA, quote=F)

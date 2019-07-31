@@ -45,7 +45,7 @@ def check_pars(flags,values):
         print >> sys.stderr, "Error! -f parameter not given"
         sys.exit(2)
 
-    if(flags["f_given"]==False):
+    if(flags["c_given"]==False):
         print >> sys.stderr, "Error! -c parameter not given"
         sys.exit(2)
 

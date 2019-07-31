@@ -302,7 +302,7 @@ ascat_define_opts()
     else
         local actumor_outd=`get_outd_for_dep "${allelecounttumor_dep}"`
         local allelecount_tumor_file=${acnorm_outd}/allele_counter_tumor_postproc.csv
-        define_opt "-act" ${allelecount_norm_file} optlist || exit 1
+        define_opt "-act" ${allelecount_tumor_file} optlist || exit 1
     fi
 
     # Define -snpids option or retrieve dependency

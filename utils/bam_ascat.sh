@@ -331,7 +331,7 @@ add_snpids_to_convert_allele_counts_outfile()
     local snpids=$1
     local allc_outfile=$2
 
-    ${HEAD} -1 ${allc_outfile} | ${AWK} '{printf"\t%s",$0}'
+    ${HEAD} -1 ${allc_outfile} | ${AWK} '{printf"\t%s\n",$0}'
     ${PASTE} ${snpids} <(${TAIL} -n +2 ${allc_outfile})
 }
 

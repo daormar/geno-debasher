@@ -160,7 +160,7 @@ ascat.bc <- ascat.loadData(Tumor_LogR_file = tumor_logr,
 ascat.plotRawData(ascat.bc, img.dir=out_dir)
 
 ## Segment the data
-ascat.bc <- ascat.aspcf(ascat.bc)
+ascat.bc <- ascat.aspcf(ascat.bc, out.dir=out_dir)
 
 ## Plot the segmented data
 ascat.plotSegmentedData(ascat.bc, img.dir=out_dir)
@@ -168,7 +168,7 @@ ascat.plotSegmentedData(ascat.bc, img.dir=out_dir)
 #####################################################
 ### This part is performed with the GC corrected data
 ## Run ASCAT to fit every tumor to a model, inferring ploidy, normal cell contamination, and discrete copy numbers
-ascat.output <- ascat.runAscat(ascat.bc)
+ascat.output <- ascat.runAscat(ascat.bc, img.dir=out_dir)
 
 # Write out segmented regions (including regions with one copy of each allele)
 write.table(ascat.output$segments, file=paste0(out_dir, tumor_name, ".segments.txt"), sep="\t", quote=F, row.names=F)

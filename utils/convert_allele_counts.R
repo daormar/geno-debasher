@@ -39,18 +39,12 @@ normal_counts <- read.table(normal_ac, header=F, skip=1, sep="\t")
 
 SNP_pos <- matrix(nrow = dim(normal_counts)[1], ncol = 2)
 
-#Change rownames to "chr_pos" instead, such as 1_44552
-#This does not exactly work:
-#rownames(SNP_pos) <- apply(cbind(tumor_counts[,1], tumor_counts[,2]), 1, paste, collapse="_")
-#This is for compatibility with gc correction file
-
 colnames(SNP_pos) <- c("Chr", "Position")
 SNP_pos[,1] <- as.vector(normal_counts[,1])
 SNP_pos[,2] <- normal_counts[,2]
 
 #Calculate BAF
 tumor_BAF <- matrix(nrow = dim(normal_counts)[1], ncol = 1)
-## rownames(tumor_BAF) <- rownames(SNP_pos)
 colnames(tumor_BAF) <- c(tumor_id)
 acgt <- tumor_counts[ ,c(3:6)]
 acgts <- t(apply(acgt, 1, sort))

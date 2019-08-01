@@ -39,7 +39,8 @@ def check_pars(flags,values):
 def print_help():
     print >> sys.stderr, "filter_vcf -f <string> -c <int>"
     print >> sys.stderr, ""
-    print >> sys.stderr, "-f <string>  File with genome reference"
+    print >> sys.stderr, "-f <string>  name of VCF. To avoid possible problems, it is better that the"
+    print >> sys.stderr, "             file is bgzipped and tabix indexed"
     print >> sys.stderr, "-c <float>   Alternate allele frequencies threshold"
 
 ##################################################

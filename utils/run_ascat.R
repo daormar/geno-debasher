@@ -46,7 +46,7 @@ if("--help" %in% args) {
       --help                       - print this text
 
       Example:
-      ./run_ascat --tumor_baf=\"path_tumor_baf\" --tumor_logr=\"path_tumor_logr\" --normal_baf=\"path_ctrl_baf\" --normal_logr=\"path_ctrl_logr\" --tumor_name=\"tumor_name\" --gc_correction=\"path_gc_correction\" --out_dir=\"path_out_dir\" \n")
+      ./run_ascat --tumor_baf=\"path_tumor_baf\" --tumor_logr=\"path_tumor_logr\" --normal_baf=\"path_normal_baf\" --normal_logr=\"path_normal_logr\" --tumor_name=\"tumor_name\" --gc_correction=\"path_gc_correction\" --out_dir=\"path_out_dir\" \n")
 
   q (save="no")
 }
@@ -142,15 +142,10 @@ ascat.bc <- ascat.loadData(Tumor_LogR_file = tumor_logr,
                            Germline_LogR_file = normal_logr,
                            Germline_BAF_file = normal_baf)
 
-## command line to launch run_ascat
-# ~/git/benchmark_cnv_WGS/R/run_ascat.R --tumor_baf="tumor_dani_file.BAF" --tumor_logr="tumor_dani_file.LogR" \
-#               --normal_baf="ctrl_dani_file.BAF" --normal_logr="ctrl_dani_file.LogR" --tumor_name="tumor_name" --gc_correction="SnpGcCorrections_GRCh37_1000g.numbered_snps.tsv"
-
 {
     if (gc_correction==FALSE) {
         # ascat.bc <- ascat.runAscat(ascat.bc) ## do not apply anything if file for GC corrections is not provided by the user
         write("[INFO]: File for GC correction not provided, skipped.", stderr())
-
     }
     else {        	
 	write(paste0("[INFO]: GC file used for the correction.", gc_correction), stderr())
@@ -158,10 +153,6 @@ ascat.bc <- ascat.loadData(Tumor_LogR_file = tumor_logr,
 	write("[INFO]: GC correction has been performed.", stderr())
     }
 }
-
-## bash command
-# ./run_ascat.R --tumor_baf="${path2files}tumor_dani_file.BAF" --tumor_logr="${path2files}tumor_dani_file.LogR" --normal_baf="${path2files}ctrl_dani_file.BAF" \
-#               --normal_logr="${path2files}ctrl_dani_file.LogR" --tumor_name="dani_file" --gc_correction="${path2files}SnpGcCorrections_GRCh37_1000g.numbered_snps.tsv"
 
 #######################################################
 ### This part is performed with the GC uncorrected data

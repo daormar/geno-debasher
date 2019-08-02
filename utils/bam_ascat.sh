@@ -83,7 +83,7 @@ allele_counter_norm_explain_cmdline_opts()
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -ma option
-    description="File containing a mapping between standard contig names expected by ASCAT (without the 'chr' prefix) and bam contig names"
+    description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
     explain_cmdline_opt "-ma" "<string>" "$description"
 }
 
@@ -174,7 +174,7 @@ allele_counter_tumor_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -ma option
-    description="File containing a mapping between standard contig names expected by ASCAT (without the 'chr' prefix) and bam contig names"
+    description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
     explain_cmdline_opt "-ma" "<string>" "$description"
 }
 

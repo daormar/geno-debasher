@@ -2,6 +2,7 @@
 
 #################################################################################
 ### Jose Espinosa-Carrasco AGENDAS-IRB Group. Nov 2018                        ###
+### Daniel Ortiz Mart\'inez AGENDAS-IRB Group. Aug 2019                       ###
 #################################################################################
 ### Adapted from:                                                             ###
 ### https://github.com/SciLifeLab/Sarek/blob/master/bin/convertAlleleCounts.r ###

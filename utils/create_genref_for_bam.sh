@@ -19,9 +19,10 @@ usage()
     echo "-r <string>            File with base reference genome"
     echo "-b <string>            bam file"
     echo "-cm <string>           File containing a mapping from contig names to"
-    echo "                       GenBank accession numbers or file names (when the"
-    echo "                       mapping starts with a '/' character, it is considered a"
-    echo "                       file, hence, absolute paths should be given)"
+    echo "                       GenBank/NCBI RefSeq accession numbers or file names"
+    echo "                       (when the mapping starts with a '/' character, it is"
+    echo "                       considered a file, hence, absolute paths should be"
+    echo "                       given)"
     echo "-o <string>            Output directory"
     echo "--help                 Display this help and exit"
 }

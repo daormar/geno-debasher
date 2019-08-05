@@ -241,6 +241,24 @@ map_contig()
 }
 
 ########
+replace_contig_name()
+{
+    local mapping=$1
+    local contig=$2
+
+    ${AWK} -v mapping=${mapping} -v contig=${contig} '{
+             if(FNR==1)
+             {
+              printf ">%s",contig
+              for(i=2;i<=NF;++i)
+               printf" %s",$i
+              printf"\n"
+             }
+             else print $0
+            }'
+}
+
+########
 get_contigs()
 {
     local contig_mapping=$1
@@ -259,7 +277,7 @@ get_contigs()
                 cat ${mapping} || return 1
             else
                 echo "Getting data for contig ${contig} (mapped to accession $mapping)..." >&2
-                ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | ${SED} "s/${mapping}/${contig}/"; pipe_fail || return 1
+                ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | replace_contig_name ${mapping} ${contig}; pipe_fail || return 1
             fi
         fi
     done < ${contiglist}

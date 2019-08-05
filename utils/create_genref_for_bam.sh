@@ -19,7 +19,7 @@ usage()
     echo "-r <string>            File with base reference genome"
     echo "-b <string>            bam file"
     echo "-cm <string>           File containing a mapping between contig names and"
-    echo "                       accession numbers or file names (when the mapping"
+    echo "                       NCBI accession numbers or file names (when the mapping"
     echo "                       starts with a '/' character, it is considered a"
     echo "                       file, hence, absolute paths should be given)"
     echo "-o <string>            Output directory"

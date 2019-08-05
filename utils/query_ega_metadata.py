@@ -137,7 +137,9 @@ def extract_attribute_info(line):
     # Remove blanks from attributes
     attribute_str=""
     for i in range(1,len(fields)):
-        attribute_str=attribute_str+"_"+fields[i]
+        if i>1:
+            attribute_str=attribute_str+"_"
+        attribute_str=attribute_str+fields[i]
 
     # Initialize output values
     donor_id=ATTR_NOT_FOUND

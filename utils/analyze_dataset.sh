@@ -16,7 +16,7 @@ usage()
     echo "analyze_dataset       --pfile <string> -outdir <string>"
     echo "                      --sched <string> --metadata <string>"
     echo "                      [--dflt-nodes <string>] --ppl-opts <string>"
-    echo "                      [--help]"
+    echo "                      [--local-bams] [--help]"
     echo ""
     echo "--pfile <string>      File with pipeline steps to be performed"
     echo "--outdir <string>     Output directory"
@@ -25,6 +25,8 @@ usage()
     echo "                      Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
     echo "--dflt-nodes <string> Default set of nodes used to execute the pipeline"
     echo "--ppl-opts <string>   File containing a string with pipeline options"
+    echo "--local-bams          ID's for bam files contained in metadata are considered"
+    echo "                      as local file names"
     echo "--help                Display this help and exit"
 }
 
@@ -37,6 +39,7 @@ read_pars()
     metadata_given=0
     dflt_nodes_given=0
     ppl_opts_given=0
+    local_bams_given=0
     while [ $# -ne 0 ]; do
         case $1 in
             "--help") usage
@@ -76,6 +79,11 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       ppl_opts=$1
                       ppl_opts_given=1
+                  fi
+                  ;;
+            "--local-bams")
+                  if [ $# -ne 0 ]; then
+                      local_bams_given=1
                   fi
                   ;;
         esac
@@ -311,7 +319,7 @@ process_pars()
             
             tumor_sample_info=`extract_tumor_sample_info "$entry"`
             tumor_id=`extract_id_from_sample_info "${tumor_sample_info}"`
-
+            
             gender=`extract_gender_from_sample_info "${normal_sample_info}"`
 
             # Obtain value for -g option
@@ -326,9 +334,19 @@ process_pars()
 
             # Obtain --dflt-nodes option
             dflt_nodes_opt=`get_dflt_nodes_opt`
-            
+
+            # Determine whether the normal and tumor ids correspond to
+            # locally stored file names or not
+            if [ ${local_bams_given} -eq 1 ]; then
+                nopt="-n"
+                topt="-t"
+            else
+                nopt="-extn"
+                topt="-extt"                
+            fi
+
             # Print command to execute pipeline
-            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} -extn ${normal_id} -extt ${tumor_id} -g ${gender_opt} ${ppl_opts_str}
+            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} ${nopt} ${normal_id} ${topt} ${tumor_id} -g ${gender_opt} ${ppl_opts_str}
         else
             echo "Error in entry number ${entry_num}"
         fi

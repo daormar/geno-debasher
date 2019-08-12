@@ -77,11 +77,13 @@ def map_contigs(filename,contig_map,inv_contig_map,col,invert):
     else:
         selected_contig_map=contig_map
 
-    # read input line by line
+    # Determine stream to be processed
     if filename=="":
         stream = sys.stdin
     else:
         stream = open(filename, 'r')
+
+    # Read input line by line
     for line in stream:
         line=line.strip("\n")
         sniffer = csv.Sniffer()

@@ -526,8 +526,6 @@ else
 fi
 AC_SUBST(EGADECRYPT_HOME_DIR,$with_egadecrypt)
 
-# Process options given in shell variables
-
 # Change path of distribution include directory
 includedir=${prefix}/include/bam-utils
 

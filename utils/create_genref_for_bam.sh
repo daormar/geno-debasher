@@ -198,6 +198,8 @@ get_ref_contig_names_to_keep()
 ########
 contig_is_accession()
 {
+    # Contig is classified as an accession if it is a string containing
+    # a dot in the middle
     local contig=$1
 
     if [[ $contig == *"."* ]]; then
@@ -208,7 +210,27 @@ contig_is_accession()
 }
 
 ########
-map_contig_using_file()
+map_contig_with_len_using_file()
+{
+    local contig_mapping=$1
+    local contig=$2
+    local contiglen=$3
+    local contig_plus_len="${contig}_${contiglen}"
+    
+    while read entry; do
+        local fields=($entry)
+        local num_fields=${#fields[@]}
+        if [ ${num_fields} -eq 2 ]; then
+            if [ ${fields[0]} = ${contig_plus_len} ]; then
+                echo ${fields[1]}
+                break
+            fi
+        fi
+    done < ${contig_mapping}
+}
+
+########
+map_contig_without_len_using_file()
 {
     local contig_mapping=$1
     local contig=$2
@@ -226,16 +248,37 @@ map_contig_using_file()
 }
 
 ########
+map_contig_using_file()
+{
+    local contig_mapping=$1
+    local contig=$2
+    local contiglen=$3
+
+    # Try to map contig taking into account contig length
+    mapping=`map_contig_with_len_using_file ${contig_mapping} ${contig} ${contiglen}`
+    if [ "${mapping}" != "" ]; then
+        echo ${mapping}
+    else
+        # Try to map contig without taking into account contig length
+        mapping=`map_contig_without_len_using_file ${contig_mapping} ${contig}`
+        if [ "${mapping}" != "" ]; then
+            echo ${mapping}
+        fi
+    fi    
+}
+
+########
 map_contig()
 {
     local contig_mapping=$1
     local contig=$2
+    local contiglen=$3
 
     if contig_is_accession ${contig}; then
         echo ${contig}
     else
         if [ ${contig_mapping} != "${NOFILE}" ]; then
-            map_contig_using_file ${contig_mapping} ${contig} || return 1
+            map_contig_using_file ${contig_mapping} ${contig} ${contiglen} || return 1
         fi
     fi
 }
@@ -265,12 +308,12 @@ get_contigs()
     local contiglist=$2
 
     while read contig contiglen; do
-        local mapping=`map_contig ${contig_mapping} ${contig}` || return 1
+        local mapping=`map_contig ${contig_mapping} ${contig} ${contiglen}` || return 1
         if [ "$mapping" = "" ]; then
             echo "Error: contig $contig is not a valid accession nor there were mappings for it" >&2
             return 1
         else
-            # Determine whether the mapping is an accession number of a
+            # Determine whether the mapping is an accession number or a
             # file name (absolute file paths should be given)
             if is_absolute_path ${mapping}; then
                 echo "Getting data for contig ${contig} (mapped to file $mapping)..." >&2

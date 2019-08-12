@@ -316,10 +316,10 @@ get_contigs()
             # Determine whether the mapping is an accession number or a
             # file name (absolute file paths should be given)
             if is_absolute_path ${mapping}; then
-                echo "Getting data for contig ${contig} (mapped to file $mapping)..." >&2
+                echo "Getting data for contig ${contig} with length ${contiglen} (mapped to file $mapping)..." >&2
                 cat ${mapping} || return 1
             else
-                echo "Getting data for contig ${contig} (mapped to accession $mapping)..." >&2
+                echo "Getting data for contig ${contig} with length ${contiglen} (mapped to accession $mapping)..." >&2
                 ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | replace_contig_name ${mapping} ${contig}; pipe_fail || return 1
             fi
         fi

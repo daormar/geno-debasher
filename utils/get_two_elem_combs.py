@@ -1,7 +1,40 @@
 # *- python -*
 
 # import modules
-import io, sys, operator
+import io, sys, operator, getopt
+
+##################################################
+def take_pars():
+    flags={}
+    values={}
+    flags["f_given"]=False
+    values["file"] = ""
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],"f:",["file="])
+    except getopt.GetoptError:
+        print_help()
+        sys.exit(2)
+    if(len(opts)>1):
+        print_help()
+        sys.exit()
+    else:
+        for opt, arg in opts:
+            if opt in ("-f", "--file"):
+                values["file"] = arg
+                flags["f_given"]=True
+    return (flags,values)
+
+##################################################
+def check_pars(flags,values):
+    None
+    
+##################################################
+def print_help():
+    print >> sys.stderr, "get_two_elem_combs -f <string>"
+    print >> sys.stderr, ""
+    print >> sys.stderr, "-f <string>        File containing output of query metadata tools (if not"
+    print >> sys.stderr, "                   given, input is read from stdin)"
 
 ##################################################
 def reverse(string): 
@@ -41,11 +74,17 @@ def process_entry_with_more_than_two_samples(fields):
             print_combination(positions,fields)
 
 ##################################################
-def main(argv):
+def process_pars(flags,values):
+    # Determine stream to be processed
+    if values["file"]=="":
+        stream = sys.stdin
+    else:
+        stream = open(values["file"], 'r')
+
     # Process output of tools to query metadata. For those entries with
     # more than two samples, generate all possible combinations of two
     # elements without repetitions
-    for line in sys.stdin:
+    for line in stream:
         line=line.strip("\n")
         fields=line.split(";")
         if len(fields)==1:
@@ -54,6 +93,17 @@ def main(argv):
             print(line)
         else:
             process_entry_with_more_than_two_samples(fields)
+
+##################################################
+def main(argv):
+    # take parameters
+    (flags,values)=take_pars()
+
+    # check parameters
+    check_pars(flags,values)
+
+    # process parameters
+    process_pars(flags,values)
 
 if __name__ == "__main__":
     main(sys.argv)

@@ -1274,7 +1274,7 @@ bedtools_genomecov_norm_bam()
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
-    bedtools genomecov -bg -ibam ${normalbam} > ${step_outd}/coverage.txt || exit 1
+    bedtools genomecov -bg -ibam ${normalbam} > ${step_outd}/genomecov.tsv || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1329,7 +1329,7 @@ bedtools_genomecov_tum_bam()
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
-    bedtools genomecov -bg -ibam ${tumorbam} > ${step_outd}/coverage.txt || exit 1
+    bedtools genomecov -bg -ibam ${tumorbam} > ${step_outd}/genomecov.tsv || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

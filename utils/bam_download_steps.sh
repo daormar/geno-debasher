@@ -849,9 +849,9 @@ download_gdc_norm_bam_conda_envs()
 ########
 download_gdc_tum_bam_explain_cmdline_opts()
 {
-    # -extn option
-    description="External database id of normal bam file to download"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    # -extt option
+    description="External database id of tumor bam file to download"
+    explain_cmdline_opt "-extt" "<string>" "$description"
 
     # -gdprocs option
     description="Number of processes used by the gdc download client (${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} by default)"
@@ -878,8 +878,8 @@ download_gdc_tum_bam_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
-    # -extn option
-    define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
+    # -extt option
+    define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
 
     # -gdprocs option
     define_cmdline_nonmandatory_opt "$cmdline" "-gdprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || exit 1
@@ -890,10 +890,10 @@ download_gdc_tum_bam_define_opts()
     # -nt option
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
-    # -normalbam option
+    # -tumorbam option
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local tumorbam=${abs_datadir}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -903,8 +903,8 @@ download_gdc_tum_bam_define_opts()
 download_gdc_tum_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local gdcid_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local gdcid_tumorbam=`read_opt_value_from_line "$*" "-extn"`
     local gdprocs=`read_opt_value_from_line "$*" "-gdprocs"`
     local gdctok=`read_opt_value_from_line "$*" "-gdctok"`
     local download_tries=`read_opt_value_from_line "$*" "-nt"`
@@ -915,11 +915,11 @@ download_gdc_tum_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc_download_retry ${gdprocs} ${gdctok} ${gdcid_normalbam} ${step_outd} ${download_tries} || exit 1
+    gdc_download_retry ${gdprocs} ${gdctok} ${gdcid_tumorbam} ${step_outd} ${download_tries} || exit 1
 
     # Move file
-    gdc_bamfname=`get_gdc_bamfname ${gdcid_normalbam} ${step_outd}`
-    mv ${gdc_bamfname} ${normalbam} || exit 1
+    gdc_bamfname=`get_gdc_bamfname ${gdcid_tumorbam} ${step_outd}`
+    mv ${gdc_bamfname} ${tumorbam} || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

@@ -50,7 +50,7 @@ download_ega_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
 
     # -egastr option
-    define_cmdline_opt "$cmdline" "-egastr" optlist || exit 1
+    define_cmdline_nonmandatory_opt "$cmdline" "-egastr" ${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} optlist || exit 1
 
     # -egacred option
     define_cmdline_opt "$cmdline" "-egacred" optlist || exit 1
@@ -176,7 +176,7 @@ download_ega_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
 
     # -egastr option
-    define_cmdline_opt "$cmdline" "-egastr" optlist || exit 1
+    define_cmdline_nonmandatory_opt "$cmdline" "-egastr" ${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} optlist || exit 1
 
     # -egacred option
     define_cmdline_opt "$cmdline" "-egacred" optlist || exit 1
@@ -740,7 +740,7 @@ download_gdc_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
 
     # -gdprocs option
-    define_cmdline_opt "$cmdline" "-gdprocs" optlist || exit 1
+    define_cmdline_nonmandatory_opt "$cmdline" "-gdprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || exit 1
 
     # -gdctok option
     define_cmdline_opt "$cmdline" "-gdctok" optlist || exit 1
@@ -882,7 +882,7 @@ download_gdc_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
 
     # -gdprocs option
-    define_cmdline_opt "$cmdline" "-gdprocs" optlist || exit 1
+    define_cmdline_nonmandatory_opt "$cmdline" "-gdprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || exit 1
 
     # -gdctok option
     define_cmdline_opt "$cmdline" "-gdctok" optlist || exit 1

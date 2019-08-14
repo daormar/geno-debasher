@@ -128,9 +128,6 @@ download_ega_norm_bam()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-
-    # Create file indicating that execution was finished
-    touch ${step_outd}/finished
 }
 
 ########

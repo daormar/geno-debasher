@@ -859,7 +859,7 @@ download_gdc_tum_bam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local gdcid_tumorbam=`read_opt_value_from_line "$*" "-extn"`
+    local gdcid_tumorbam=`read_opt_value_from_line "$*" "-extt"`
     local gdprocs=`read_opt_value_from_line "$*" "-gdprocs"`
     local gdctok=`read_opt_value_from_line "$*" "-gdctok"`
     local download_tries=`read_opt_value_from_line "$*" "-nt"`

@@ -760,10 +760,8 @@ get_gdc_bamfname()
     local gdcid=$1
     local outd=$2
     local outf
-    
-    for file in ${outd}/${gdcid}/*.bam; do
-        outf=$file
-    done
+
+    outf=`find ${outd} -name "*.bam"` || return 1
 
     echo ${outf}
 }
@@ -791,7 +789,8 @@ download_gdc_norm_bam()
     conda deactivate 2>&1
 
     # Move file
-    gdc_bamfname=`get_gdc_bamfname ${gdcid_normalbam} ${step_outd}`
+    local gdc_bamfname
+    gdc_bamfname=`get_gdc_bamfname ${gdcid_normalbam} ${step_outd}` || exit 1
     mv ${gdc_bamfname} ${normalbam} || exit 1
 }
 
@@ -877,7 +876,8 @@ download_gdc_tum_bam()
     conda deactivate 2>&1
 
     # Move file
-    gdc_bamfname=`get_gdc_bamfname ${gdcid_tumorbam} ${step_outd}`
+    local gdc_bamfname
+    gdc_bamfname=`get_gdc_bamfname ${gdcid_tumorbam} ${step_outd}` || exit 1
     mv ${gdc_bamfname} ${tumorbam} || exit 1
 }
 

@@ -784,7 +784,7 @@ download_gdc_norm_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_normalbam} 2>&1 || exit 1
+    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_normalbam} 2>/dev/null || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -870,7 +870,7 @@ download_gdc_tum_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_tumorbam} 2>&1 || exit 1
+    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_tumorbam} 2>/dev/null || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

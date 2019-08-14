@@ -19,7 +19,7 @@ bam_analysis_fifos()
     :
 }
 
-# INCLUDE FILES DEFINING STEPS
+# INCLUDE BASH FILES IMPLEMENTING STEPS
 . ${biopanpipe_bindir}/genref_steps || exit 1
 . ${biopanpipe_bindir}/bam_download_steps || exit 1
 . ${biopanpipe_bindir}/bam_manip_steps || exit 1

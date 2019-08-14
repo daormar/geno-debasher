@@ -25,7 +25,7 @@ get_filtered_sam_header.py get_filtered_sam_align.py map_contnames.py	\
 map_vcf_contnames.py run_facets.R run_sequenza.R			\
 convert_allele_counts.R run_ascat.R get_two_elem_combs.py
 
-# Build rules for libraries and files defining steps
+# Build rules for libraries and bash files implementing steps
 bam_common_lib: bam_common_lib.sh
 	rm -f $@
 	cat bam_common_lib.sh >> $@

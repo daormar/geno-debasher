@@ -1233,19 +1233,15 @@ parallel_split_tum_bam_conda_envs()
 }
 
 ########
-bedtools_cov_norm_bam_explain_cmdline_opts()
+bedtools_genomecov_norm_bam_explain_cmdline_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
-
-    # -bcb option
-    description="BED file for bedtools"
-    explain_cmdline_req_opt "-bcb" "<string>" "$description"
 }
 
 ########
-bedtools_cov_norm_bam_define_opts()
+bedtools_genomecov_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1261,19 +1257,15 @@ bedtools_cov_norm_bam_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
-    # -bcb option
-    define_cmdline_infile_opt "$cmdline" "-bcb" optlist || exit 1
-
     # Save option list
     save_opt_list optlist
 }
 
 ########
-bedtools_cov_norm_bam()
+bedtools_genomecov_norm_bam()
 {
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local bedfile=`read_opt_value_from_line "$*" "-bcb"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
         
     # Activate conda environment
@@ -1282,7 +1274,7 @@ bedtools_cov_norm_bam()
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
-    bedtools coverage -a ${bedfile} -b ${normalbam} > ${step_outd}/coverage.txt || exit 1
+    bedtools genomecov -bg -ibam ${normalbam} > ${step_outd}/coverage.txt || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1290,25 +1282,21 @@ bedtools_cov_norm_bam()
 }
 
 ########
-bedtools_cov_norm_bam_conda_envs()
+bedtools_genomecov_norm_bam_conda_envs()
 {
     define_conda_env bedtools bedtools.yml
 }
 
 ########
-bedtools_cov_tum_bam_explain_cmdline_opts()
+bedtools_genomecov_tum_bam_explain_cmdline_opts()
 {
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
-
-    # -bcb option
-    description="BED file for bedtools"
-    explain_cmdline_req_opt "-bcb" "<string>" "$description"
 }
 
 ########
-bedtools_cov_tum_bam_define_opts()
+bedtools_genomecov_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1324,19 +1312,15 @@ bedtools_cov_tum_bam_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
-    # -bcb option
-    define_cmdline_infile_opt "$cmdline" "-bcb" optlist || exit 1
-
     # Save option list
     save_opt_list optlist
 }
 
 ########
-bedtools_cov_tum_bam()
+bedtools_genomecov_tum_bam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local bedfile=`read_opt_value_from_line "$*" "-bcb"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
         
     # Activate conda environment
@@ -1345,7 +1329,7 @@ bedtools_cov_tum_bam()
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
-    bedtools coverage -a ${bedfile} -b ${tumorbam} > ${step_outd}/coverage.txt || exit 1
+    bedtools genomecov -bg -ibam ${tumorbam} > ${step_outd}/coverage.txt || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1353,7 +1337,7 @@ bedtools_cov_tum_bam()
 }
 
 ########
-bedtools_cov_tum_bam_conda_envs()
+bedtools_genomecov_tum_bam_conda_envs()
 {
     define_conda_env bedtools bedtools.yml
 }

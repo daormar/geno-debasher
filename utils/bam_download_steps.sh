@@ -844,3 +844,92 @@ download_gdc_norm_bam_conda_envs()
 {
     define_conda_env gdc-client gdc-client.yml
 }
+
+########
+download_gdc_tum_bam_explain_cmdline_opts()
+{
+    # -extn option
+    description="External database id of normal bam file to download"
+    explain_cmdline_opt "-extn" "<string>" "$description"
+
+    # -gdprocs option
+    description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
+    explain_cmdline_opt "-gdprocs" "<int>" "$description"
+
+    # -gdctok option
+    description="File with EGA download client credentials"
+    explain_cmdline_req_opt "-gdctok" "<string>" "$description"
+
+    # -nt option
+    description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
+    explain_cmdline_opt "-nt" "<int>" "$description"
+}
+
+########
+download_gdc_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -extn option
+    define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
+
+    # -gdprocs option
+    define_cmdline_opt "$cmdline" "-gdprocs" optlist || exit 1
+
+    # -gdctok option
+    define_cmdline_opt "$cmdline" "-gdctok" optlist || exit 1
+
+    # -nt option
+    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
+
+    # -normalbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+download_gdc_tum_bam()
+{
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local gdcid_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local gdprocs=`read_opt_value_from_line "$*" "-gdprocs"`
+    local gdctok=`read_opt_value_from_line "$*" "-gdctok"`
+    local download_tries=`read_opt_value_from_line "$*" "-nt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate gdc-client 2>&1 || exit 1
+
+    # Download file (with multiple tries)
+    gdc_download_retry ${gdprocs} ${gdctok} ${gdcid_normalbam} ${step_outd} ${download_tries} || exit 1
+
+    # Move file
+    gdc_bamfname=`get_gdc_bamfname ${gdcid_normalbam} ${step_outd}`
+    mv ${gdc_bamfname} ${normalbam} || exit 1
+    
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Create file indicating that execution was finished
+    touch ${step_outd}/finished
+}
+
+########
+download_gdc_tum_bam_conda_envs()
+{
+    define_conda_env gdc-client gdc-client.yml
+}

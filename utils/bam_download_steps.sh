@@ -6,6 +6,7 @@
 
 DEFAULT_NUMBER_OF_DOWNLOAD_TRIES=5
 DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS=50
+DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS=50
 DEFAULT_ASP_MAX_TRANS_RATE=100m
 
 ######################
@@ -711,11 +712,11 @@ download_gdc_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-extn" "<string>" "$description"
 
     # -gdprocs option
-    description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
+    description="Number of processes used by the gdc download client (${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} by default)"
     explain_cmdline_opt "-gdprocs" "<int>" "$description"
 
     # -gdctok option
-    description="File with EGA download client credentials"
+    description="GDC API auth token file"
     explain_cmdline_req_opt "-gdctok" "<string>" "$description"
 
     # -nt option
@@ -853,11 +854,11 @@ download_gdc_tum_bam_explain_cmdline_opts()
     explain_cmdline_opt "-extn" "<string>" "$description"
 
     # -gdprocs option
-    description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
+    description="Number of processes used by the gdc download client (${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} by default)"
     explain_cmdline_opt "-gdprocs" "<int>" "$description"
 
     # -gdctok option
-    description="File with EGA download client credentials"
+    description="GDC API auth token file"
     explain_cmdline_req_opt "-gdctok" "<string>" "$description"
 
     # -nt option

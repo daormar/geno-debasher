@@ -2,7 +2,7 @@
 #
 download_gdc_norm_bam       cpus=1  mem=2048    time=24:00:00          stepdeps=none
 download_gdc_tum_bam        cpus=1  mem=2048    time=24:00:00          stepdeps=none
-create_genref_for_bam       cpus=1  mem=1024    time=4:00:00           stepdeps=none
+create_genref_for_bam       cpus=1  mem=1024    time=4:00:00           stepdeps=afterok:download_gdc_norm_bam
 bedtools_genomecov_norm_bam cpus=1  mem=1024    time=4:00:00           stepdeps=afterok:download_gdc_norm_bam
 bedtools_genomecov_tum_bam  cpus=1  mem=1024    time=4:00:00           stepdeps=afterok:download_gdc_tum_bam
 strelka_germline            cpus=8  mem=6G      time=6:00:00,12:00:00  stepdeps=afterok:create_genref_for_bam,afterok:download_gdc_norm_bam

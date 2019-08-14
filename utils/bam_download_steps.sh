@@ -772,45 +772,6 @@ get_gdc_bamfname()
 }
 
 ########
-gdc_download_retry()
-{
-    # Initialize variables
-    local gdprocs=$1
-    local gdctok=$2
-    local gdcid=$3
-    local outd=$4
-    local download_tries=$5
-    local step_outd=`${DIRNAME} ${outf}`
-    
-    # Start download with multiple tries
-    local ntry=1
-    while [ ${ntry} -le ${download_tries} ]; do
-        logmsg "Starting download try number ${ntry}..."
-
-        # Remove previously downloaded file (if any)
-        if [ -f ${outf} ]; then
-            rm ${outf}
-        fi
-
-        # Download file
-        gdc-client download -n ${gdprocs} -t ${gdctok} -d ${outd} ${gdcid} 2>&1
-        local exit_code=$?
-        
-        # Check if download was successful
-        gdc_bamfname=`get_gdc_bamfname ${gdcid} ${outd}`
-        if [ ${exit_code} -eq 0 -a "${gdc_bamfname}" != "" ]; then
-            return 0
-        fi
-
-        ntry=$((ntry+1))
-    done
-
-    logmsg "All download attempts failed!"
-
-    return 1
-}
-
-########
 download_gdc_norm_bam()
 {
     # Initialize variables
@@ -826,18 +787,15 @@ download_gdc_norm_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc_download_retry ${gdprocs} ${gdctok} ${gdcid_normalbam} ${step_outd} ${download_tries} || exit 1
-
-    # Move file
-    gdc_bamfname=`get_gdc_bamfname ${gdcid_normalbam} ${step_outd}`
-    mv ${gdc_bamfname} ${normalbam} || exit 1
+    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_normalbam} 2>&1 || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Create file indicating that execution was finished
-    touch ${step_outd}/finished
+    # Move file
+    gdc_bamfname=`get_gdc_bamfname ${gdcid_normalbam} ${step_outd}`
+    mv ${gdc_bamfname} ${normalbam} || exit 1
 }
 
 ########
@@ -915,18 +873,15 @@ download_gdc_tum_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc_download_retry ${gdprocs} ${gdctok} ${gdcid_tumorbam} ${step_outd} ${download_tries} || exit 1
-
-    # Move file
-    gdc_bamfname=`get_gdc_bamfname ${gdcid_tumorbam} ${step_outd}`
-    mv ${gdc_bamfname} ${tumorbam} || exit 1
+    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_tumorbam} 2>&1 || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
-    # Create file indicating that execution was finished
-    touch ${step_outd}/finished
+    # Move file
+    gdc_bamfname=`get_gdc_bamfname ${gdcid_tumorbam} ${step_outd}`
+    mv ${gdc_bamfname} ${tumorbam} || exit 1
 }
 
 ########

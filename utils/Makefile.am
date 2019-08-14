@@ -61,6 +61,7 @@ bam_analysis: bam_analysis.sh
 	echo "AWK="$(AWK) >> $@
 	echo "GREP="$(GREP) >> $@
 	echo "SED="$(SED) >> $@
+	echo "FIND="$(FIND) >> $@
 	echo "ZCAT="$(ZCAT) >> $@
 	echo "GZIP="$(GZIP) >> $@
 	echo "BASENAME="$(BASENAME) >> $@

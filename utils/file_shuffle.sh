@@ -13,7 +13,7 @@ shuffle()
 
     # Shuffle file
     $AWK -v seed=${seed} 'BEGIN{srand(seed)}{printf"%f %d %s\n",rand(),NR,$0}' ${file} \
-        | LC_ALL=C $SORT -k1n -k2n -T ${tdir} | $AWK '{for(i=3;i<NF;++i) printf"%s ",$i; printf"%s\n",$NF}'
+        | LC_ALL=C $SORT -k1n -k2n -T ${tdir} | ${CUT} -d' ' -f3-
 }
 
 ########

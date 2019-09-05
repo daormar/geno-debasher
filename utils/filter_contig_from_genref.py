@@ -99,8 +99,7 @@ def process_pars(flags,values):
     for line in file:
         line=line.strip("\n")
         fields=line.split()
-        if(">" in fields[0]):
-            print line
+        if(len(fields) > 0 and ">" in fields[0]):
             contigname=fields[0][1:]
             if(contigname==contigToFilter or (not contigname in contigsToKeep)):
                 skip=True

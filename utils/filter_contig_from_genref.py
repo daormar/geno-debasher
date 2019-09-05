@@ -70,27 +70,27 @@ def print_help():
 ##################################################
 def getContigsToKeep(listc):
     file = open(listc, 'r')
-    contigsToKeep={}
+    contigs_to_keep={}
     for line in file:
         line=line.strip("\n")
         fields=line.split()
-        contigsToKeep[fields[0]]=1
-    return contigsToKeep
+        contigs_to_keep[fields[0]]=1
+    return contigs_to_keep
     
 ##################################################
 def process_pars(flags,values):
     # Initialize variables
     if(flags["r_given"]):
-        contigToFilter=values["contigrem"]
+        contig_to_filter=values["contigrem"]
     else:
-        contigToFilter=""
+        contig_to_filter=""
         
     if(flags["l_given"]):
-        contigsToKeep=getContigsToKeep(values["listc"])
+        contigs_to_keep=getContigsToKeep(values["listc"])
     elif(flags["k_given"]):
-        contigsToKeep=values["contigkeep"]
+        contigs_to_keep=values["contigkeep"]
     else:
-        contigsToKeep={}
+        contigs_to_keep={}
 
     # Filter genome
     file = open(values["genref"], 'r')
@@ -101,7 +101,7 @@ def process_pars(flags,values):
         fields=line.split()
         if(len(fields) > 0 and ">" in fields[0]):
             contigname=fields[0][1:]
-            if(contigname==contigToFilter or (not contigname in contigsToKeep)):
+            if(contigname==contig_to_filter or (not contigname in contigs_to_keep)):
                 skip=True
             else:
                 skip=False

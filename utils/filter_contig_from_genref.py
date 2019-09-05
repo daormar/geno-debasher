@@ -90,7 +90,7 @@ def process_pars(flags,values):
     elif(flags["k_given"]):
         contigs_to_keep=values["contigkeep"]
     else:
-        contigs_to_keep={}
+        contigs_to_keep=None
 
     # Filter genome
     file = open(values["genref"], 'r')
@@ -101,7 +101,7 @@ def process_pars(flags,values):
         fields=line.split()
         if(len(fields) > 0 and ">" in fields[0]):
             contigname=fields[0][1:]
-            if(contigname==contig_to_filter or (not contigname in contigs_to_keep)):
+            if(contigname==contig_to_filter or (contigs_to_keep is not None and not contigname in contigs_to_keep)):
                 skip=True
             else:
                 skip=False

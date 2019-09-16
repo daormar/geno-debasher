@@ -1,7 +1,7 @@
 # *- python -*
 
 # import modules
-import io, sys, getopt, operator, requests
+import io, sys, getopt, operator, requests, time
 import xml.etree.ElementTree as ET
 
 ##################################################
@@ -38,7 +38,7 @@ def print_help():
     print >> sys.stderr, "-a <string>    Accession number of the FASTA data to download"
 
 ##################################################
-def get_info(url,num_retries):
+def get_info(url,num_retries,time_between_retries=1):
     success=False
     for i in range(num_retries):
         print >> sys.stderr, "Getting data from",url,"( Attempt:",i+1,")"
@@ -49,6 +49,7 @@ def get_info(url,num_retries):
             break
         except requests.exceptions.RequestException as e:
             print >> sys.stderr, e
+            time.sleep(time_between_retries)
     if success:
         return req
     else:
@@ -57,11 +58,11 @@ def get_info(url,num_retries):
         
 ##################################################
 def extract_esearch_info(accession):
-    url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"esearch.fcgi?db=nuccore&term="+accession+"&usehistory=y"
-
     # Get information
+    url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"esearch.fcgi?db=nuccore&term="+accession+"&usehistory=y"
     num_retries=5
-    req=get_info(url,num_retries)
+    time_between_retries=1
+    req=get_info(url,num_retries,time_between_retries)
 
     # Process information
     root = ET.fromstring(req.content)

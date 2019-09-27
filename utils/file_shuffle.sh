@@ -25,7 +25,7 @@ shuffle_alt()
     local seed=$1
     local file=$2
     
-    # Thot_Shuffle file
+    # Shuffle file
     $AWK -v seed=$seed \
         'function random(b) {return rand()*b}
   BEGIN{

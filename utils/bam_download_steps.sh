@@ -194,8 +194,8 @@ download_ega_tum_bam_define_opts()
 download_ega_tum_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local egaid_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local egaid_tumorbam=`read_opt_value_from_line "$*" "-extt"`
     local egastr=`read_opt_value_from_line "$*" "-egastr"`
     local egacred=`read_opt_value_from_line "$*" "-egacred"`
     local download_tries=`read_opt_value_from_line "$*" "-nt"`

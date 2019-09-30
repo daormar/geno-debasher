@@ -14,6 +14,97 @@ DEFAULT_ASP_MAX_TRANS_RATE=100m
 ######################
 
 ########
+copy_norm_bam_explain_cmdline_opts()
+{
+    # -extn option
+    description="Path to local normal bam file to be copied"
+    explain_cmdline_opt "-extn" "<string>" "$description"
+}
+
+
+########
+copy_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -extn option
+    define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
+
+    # -normalbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+copy_norm_bam()
+{
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local local_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Copy file
+    logmsg "* Copying file..."
+    cp ${local_normalbam} ${normalbam} || exit 1
+}
+
+########
+copy_tum_bam_explain_cmdline_opts()
+{
+    # -extt option
+    description="Path to local normal bam file to be copied"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
+}
+
+########
+copy_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -extt option
+    define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
+
+    # -tumorbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+copy_tum_bam()
+{
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local local_tumorbam=`read_opt_value_from_line "$*" "-extt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Copy file
+    logmsg "* Copying file..."
+    cp ${local_tumorbam} ${tumorbam} || exit 1
+}
+
+########
 download_ega_norm_bam_explain_cmdline_opts()
 {
     # -extn option
@@ -180,7 +271,7 @@ download_ega_tum_bam_define_opts()
     # -nt option
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
-    # -normalbam option
+    # -tumorbam option
     local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
     local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1

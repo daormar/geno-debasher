@@ -159,7 +159,6 @@ download_ega_tum_bam_explain_cmdline_opts()
 ########
 download_ega_tum_bam_define_opts()
 {
-    echo "$tumorbam ${extid_tumorbam} $egastr $egacred ${download_tries} ${step_outd}"
     # Initialize variables
     local cmdline=$1
     local stepspec=$2

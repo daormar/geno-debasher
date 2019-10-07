@@ -75,11 +75,19 @@ def extract_esearch_info(accession):
             sys.exit(1)
             
     # Extract QueryKey and WebEnv fields
+    key = None
+    web = None
     for child in root:
         if child.tag=="QueryKey":
             key=child.text
         elif child.tag=="WebEnv":
             web=child.text
+
+    # Check for possible errors
+    if key is None or web is None:
+        print >> sys.stderr, "Something went wrong while extracting esearch information, aborting"
+        sys.exit(1)
+
     return key,web
     
 ##################################################
@@ -104,6 +112,7 @@ def post_efetch_info(key,web):
 ##################################################
 def process_pars(flags,values):
     key,web=extract_esearch_info(values["accession"])
+        
     req=post_efetch_info(key,web)
     print req.content
     

@@ -13,9 +13,10 @@ print_desc()
 ########
 usage()
 {
-    echo "analyze_dataset       --pfile <string> -outdir <string>"
+    echo "analyze_dataset       --pfile <string> --outdir <string>"
     echo "                      --sched <string> --metadata <string>"
     echo "                      [--dflt-nodes <string>] --ppl-opts <string>"
+    echo "                      [--lcxx <string> --lcxy <string>]"
     echo "                      [--local-bams] [--help]"
     echo ""
     echo "--pfile <string>      File with pipeline steps to be performed"
@@ -25,6 +26,8 @@ usage()
     echo "                      Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
     echo "--dflt-nodes <string> Default set of nodes used to execute the pipeline"
     echo "--ppl-opts <string>   File containing a string with pipeline options"
+    echo "--lcxx <string>       File containing list of contigs of interest for XX samples"
+    echo "--lcxy <string>       File containing list of contigs of interest for XY samples"
     echo "--local-bams          ID's for bam files contained in metadata are considered"
     echo "                      as local file names"
     echo "--help                Display this help and exit"
@@ -39,6 +42,8 @@ read_pars()
     metadata_given=0
     dflt_nodes_given=0
     ppl_opts_given=0
+    lcxx_given=0
+    lcxy_given=0
     local_bams_given=0
     while [ $# -ne 0 ]; do
         case $1 in
@@ -79,6 +84,18 @@ read_pars()
                   if [ $# -ne 0 ]; then
                       ppl_opts=$1
                       ppl_opts_given=1
+                  fi
+                  ;;
+            "--lcxx") shift
+                  if [ $# -ne 0 ]; then
+                      lcxx=$1
+                      lcxx_given=1
+                  fi
+                  ;;
+            "--lcxy") shift
+                  if [ $# -ne 0 ]; then
+                      lcxy=$1
+                      lcxy_given=1
                   fi
                   ;;
             "--local-bams")
@@ -138,6 +155,30 @@ check_pars()
     if [ ${ppl_opts_given} -eq 1 ]; then
         if [ ! -f ${ppl_opts} ]; then
             echo "Error! file ${ppl_opts} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${lcxx_given} -eq 1 -a  ${lcxy_given} -eq 0 ]; then
+        echo "Error, --lcxx and --lcxy should be given simultaneously" >&2
+        exit 1
+    fi
+
+    if [ ${lcxx_given} -eq 0 -a  ${lcxy_given} -eq 1 ]; then
+        echo "Error, --lcxx and --lcxy should be given simultaneously" >&2
+        exit 1
+    fi
+
+    if [ ${lcxx_given} -eq 1 ]; then
+        if [ ! -f ${lcxx} ]; then
+            echo "Error! file ${lcxx} does not exist" >&2
+            exit 1
+        fi
+    fi
+
+    if [ ${lcxy_given} -eq 1 ]; then
+        if [ ! -f ${lcxy} ]; then
+            echo "Error! file ${lcxy} does not exist" >&2
             exit 1
         fi
     fi
@@ -302,6 +343,24 @@ get_dflt_nodes_opt()
 }
 
 ########
+get_lc_opt()
+{
+    gender_opt=$1
+    lcxx=$2
+    lcxy=$3
+
+    if [ "${lcxx}" = "" -o "${lcxy}" = "" ]; then
+        echo ""
+    else
+        if [ ${gender_opt} = "XX" ]; then
+            echo "-lc ${lcxx}"
+        else
+            echo "-lc ${lcxy}"
+        fi
+    fi
+}
+
+########
 process_pars()
 {
     # Set options
@@ -328,6 +387,9 @@ process_pars()
             else                
                 gender_opt="XX"
             fi
+
+            # Obtain value for -lc option
+            lc_opt=`get_lc_opt ${gender_opt} ${lcxx} ${lcxy}`
             
             # Set name of output directory for analysis
             analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
@@ -346,7 +408,7 @@ process_pars()
             fi
 
             # Print command to execute pipeline
-            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} ${nopt} ${normal_id} ${topt} ${tumor_id} -g ${gender_opt} ${ppl_opts_str}
+            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} ${nopt} ${normal_id} ${topt} ${tumor_id} -g ${gender_opt} ${lc_opt} ${ppl_opts_str}
         else
             echo "Error in entry number ${entry_num}"
         fi

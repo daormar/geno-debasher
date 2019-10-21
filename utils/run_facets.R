@@ -41,14 +41,14 @@ xx <- preProcSample(rcmat)
 my_cval=300
 oo <- procSample(xx, cval = my_cval)
 
-# Assign model results  containing the global statistics and 
-# a file containing the model segmentation 
+# Assign model results containing the global statistics and a file
+# containing the model segmentation
 fitted_model <- emcncf(oo)
 
-# Report Results (previously check if purity was equal to NA)
+# Report results (previously check if purity was equal to NA)
 if(is.null(fitted_model$loglik) | is.na(fitted_model$purity))
 {
-    ## Tbl containing global statistics
+    ## Create table containing global statistics
     global_model_stats <- data.frame("NULL",
                                      fitted_model$purity,
                                      fitted_model$ploidy,
@@ -61,7 +61,7 @@ if(is.null(fitted_model$loglik) | is.na(fitted_model$purity))
 }
 else
 {
-    ## Tbl containing global statistics
+    ## Create table containing global statistics
     global_model_stats <- data.frame(fitted_model$loglik,
                                      fitted_model$purity,
                                      fitted_model$ploidy,
@@ -70,7 +70,7 @@ else
     colnames(global_model_stats) <- c("loglik", "purity", "ploidy", "dipLogR")
     write.csv(global_model_stats, paste0(o, "/facets_glob_mdl_stats.csv"), row.names = F)
 
-    ## Tbl with segmentation results
+    ## Create table with segmentation results
     write.csv(fitted_model$cncf, paste0(o, "/facets_segmentation.csv"), row.names = F)
 
     ## Create facets plot

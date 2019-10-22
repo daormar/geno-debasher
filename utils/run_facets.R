@@ -24,7 +24,8 @@ Arguments:
 -c     <string>        File containing snp-pileup counts
 -d     <int>           Minimum sequencing depth to keep when
                        preprocessing sample (35 by default)
---help                 print this text\n")
+-o     <string>        Output directory
+--help                 Print this text\n")
   
     q(save="no",status=0)
 }

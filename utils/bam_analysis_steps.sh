@@ -1,5 +1,11 @@
 # *- bash -*
 
+#############
+# CONSTANTS #
+#############
+
+DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC=35
+
 ######################
 # BAM ANALYSIS STEPS #
 ######################
@@ -781,6 +787,10 @@ snp_pileup_plus_facets_explain_cmdline_opts()
     # -sv option
     description="SNP vcf file"
     explain_cmdline_req_opt "-sv" "<string>" "$description"        
+
+    # -md option
+    description="Minimum sequencing depth to keep when preprocessing sample (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
+    explain_cmdline_opt "-md" "<int>" "$description"        
 }
 
 ########
@@ -797,6 +807,9 @@ snp_pileup_plus_facets_define_opts()
 
     # -sv option
     define_cmdline_infile_opt "$cmdline" "-sv" optlist || exit 1
+
+    # -md option
+    define_cmdline_nonmandatory_opt "$cmdline" "-md" ${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} optlist || exit 1
 
     # -normalbam option
     local normalbam
@@ -820,6 +833,7 @@ snp_pileup_plus_facets()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local snpvcf=`read_opt_value_from_line "$*" "-sv"`
+    local mindepth=`read_opt_value_from_line "$*" "-md"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (snp-pileup)..."
@@ -842,7 +856,7 @@ snp_pileup_plus_facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript ${biopanpipe_bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv -o ${step_outd} 2>&1 || exit 1
+    Rscript ${biopanpipe_bindir}/run_facets -c ${step_outd}/snp-pileup-counts.csv -d ${mindepth} -o ${step_outd} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

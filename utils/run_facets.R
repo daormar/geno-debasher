@@ -4,7 +4,10 @@
 # Basic libraries
 library(R.utils)
 
-## Collect arguments
+# Set default values for arguments
+d <- 35
+
+# Collect arguments
 args <- commandArgs(asValue=TRUE, excludeReserved=TRUE)[-1]
  
 # Turn arguments into R variables
@@ -19,6 +22,8 @@ if("help" %in% keys || length(keys)==0)
  
 Arguments:
 -c     <string>        File containing snp-pileup counts
+-d     <int>           Minimum sequencing depth to keep when
+                       preprocessing sample (35 by default)
 --help                 print this text\n")
   
     q(save="no",status=0)
@@ -37,7 +42,7 @@ library(facets)
 
 # Run facets
 rcmat <- readSnpMatrix(c)
-xx <- preProcSample(rcmat)
+xx <- preProcSample(rcmat, ndepth = d)
 my_cval=300
 oo <- procSample(xx, cval = my_cval)
 

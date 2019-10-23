@@ -1,0 +1,11 @@
+name: java-jre
+channels:
+  - cyclus
+  - r
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - java-jre=8.45.14=0
+prefix: /home/dortiz/miniconda3/envs/java-jre
+

@@ -526,6 +526,22 @@ else
 fi
 AC_SUBST(EGADECRYPT_HOME_DIR,$with_egadecrypt)
 
+# Adds an extra argument to configure (enable use of ega decryptor)
+AC_MSG_CHECKING(whether to enable decsingle library)
+AC_ARG_WITH([decsingle],
+ [AS_HELP_STRING([--with-decsingle=DIR],
+   [installs the package with the necessary code to combine it with the decsingle library @<:@default=no@:>@])],
+ [with_decsingle=$withval],
+ [with_decsingle=""])
+if test "$with_decsingle" = ""; then
+ enable_decsingle_lib="no"
+ AC_MSG_RESULT(no)
+else
+ enable_decsingle_lib="yes"
+ AC_MSG_RESULT(yes)
+fi
+AC_SUBST(DECSINGLE_HOME_DIR,$with_decsingle)
+
 # Change path of distribution include directory
 includedir=${prefix}/include/bam-utils
 

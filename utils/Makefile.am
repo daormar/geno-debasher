@@ -71,6 +71,7 @@ bam_analysis: bam_analysis.sh
 	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
+	echo "DECSINGLE_HOME_DIR="$(DECSINGLE_HOME_DIR) >> $@
 	cat bam_analysis.sh >> $@
 
 bam_facets: bam_facets.sh
@@ -92,6 +93,7 @@ bam_facets: bam_facets.sh
 	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
+	echo "DECSINGLE_HOME_DIR="$(DECSINGLE_HOME_DIR) >> $@
 	cat bam_facets.sh >> $@
 
 bam_ascat: bam_ascat.sh
@@ -113,6 +115,7 @@ bam_ascat: bam_ascat.sh
 	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
+	echo "DECSINGLE_HOME_DIR="$(DECSINGLE_HOME_DIR) >> $@
 	cat bam_ascat.sh >> $@
 
 bam_ascatngs: bam_ascatngs.sh
@@ -131,6 +134,7 @@ bam_ascatngs: bam_ascatngs.sh
 	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
+	echo "DECSINGLE_HOME_DIR="$(DECSINGLE_HOME_DIR) >> $@
 	cat bam_ascatngs.sh >> $@
 
 # Build using suffix rules (portable)
@@ -176,6 +180,7 @@ SUFFIXES= .sh .py .r .R
 	echo "ICGCSCOR_HOME_DIR="$(ICGCSCOR_HOME_DIR) >> $@
 	echo "ASPERA_HOME_DIR="$(ASPERA_HOME_DIR) >> $@
 	echo "EGADECRYPT_HOME_DIR="$(EGADECRYPT_HOME_DIR) >> $@
+	echo "DECSINGLE_HOME_DIR="$(DECSINGLE_HOME_DIR) >> $@
 	cat $< >> $@
 	chmod ugo+x $@
 

@@ -536,6 +536,134 @@ download_ega_asp_tum_bam()
 }
 
 ########
+decrypt_ega_norm_bam_explain_cmdline_opts()
+{
+    # -extn option
+    description="External database id of normal bam file to download"
+    explain_cmdline_req_opt "-extn" "<string>" "$description"
+
+    # -egadecrpwd option
+    description="File with EGA decryptor password"
+    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+}
+
+########
+decrypt_ega_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    
+    # -extn option
+    define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
+
+    # -egadecrpwd option
+    define_cmdline_opt "$cmdline" "-egadecrpwd" optlist || exit 1
+
+    # -normalbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+decrypt_ega_norm_bam()
+{
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local normalbam_file=`read_opt_value_from_line "$*" "-extn"`
+    local egadecrypt_pwd=`read_opt_value_from_line "$*" "-egadecrpwd"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    
+    # Decrypt file
+    logmsg "* Executing decryptor.jar..."
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} --output-folder ${step_outd} ${normalbam_file} 2>&1 || exit 1
+    
+    # Obtain file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after decryption process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${normalbam} || exit 1
+}
+
+########
+decrypt_ega_tum_bam_explain_cmdline_opts()
+{
+    # -extt option
+    description="External database id of normal bam file to download"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
+
+    # -egadecrpwd option
+    description="File with EGA decryptor password"
+    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+}
+
+########
+decrypt_ega_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    
+    # -extt option
+    define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
+
+    # -egadecrpwd option
+    define_cmdline_infile_opt "$cmdline" "-egadecrpwd" optlist || exit 1
+
+    # -tumorbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+decrypt_ega_tum_bam()
+{
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local tumorbam_file=`read_opt_value_from_line "$*" "-extt"`
+    local egadecrypt_pwd=`read_opt_value_from_line "$*" "-egadecrpwd"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    
+    # Decrypt file
+    logmsg "* Executing decryptor.jar..."
+    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} --output-folder ${step_outd} ${tumorbam_file} 2>&1 || exit 1
+
+    # Obtain file name
+    local bam_file_name=`find_bam_filename ${step_outd}`
+    
+    if [ -z "${bam_file_name}" ]; then
+        logmsg "Error: bam file not found after decryption process was completed"
+        exit 1
+    fi
+
+    # Move file
+    mv ${bam_file_name} ${tumorbam} || exit 1
+}
+
+########
 download_aws_norm_bam_explain_cmdline_opts()
 {
     # -extn option

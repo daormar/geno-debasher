@@ -116,8 +116,7 @@ check_pars()
         exit 1
     else
         if [ ! -f ${pfile} ]; then
-            echo "Error! file ${pfile} does not exist" >&2
-            exit 1
+            echo "Warning! file ${pfile} does not exist" >&2
         fi
     fi
 

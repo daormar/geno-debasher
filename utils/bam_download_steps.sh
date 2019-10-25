@@ -63,7 +63,7 @@ copy_norm_bam()
 copy_tum_bam_explain_cmdline_opts()
 {
     # -extt option
-    description="Path to local normal bam file to be copied"
+    description="Path to local tumor bam file to be copied"
     explain_cmdline_req_opt "-extt" "<string>" "$description"
 }
 
@@ -435,7 +435,7 @@ download_ega_asp_norm_bam()
 download_ega_asp_tum_bam_explain_cmdline_opts()
 {
     # -extt option
-    description="External database id of normal bam file to download"
+    description="External database id of tumor bam file to download"
     explain_cmdline_req_opt "-extt" "<string>" "$description"
 
     # -asperausr option
@@ -539,7 +539,7 @@ download_ega_asp_tum_bam()
 decrypt_ega_norm_bam_explain_cmdline_opts()
 {
     # -extn option
-    description="External database id of normal bam file to download"
+    description="File name of encrypted normal bam file to process"
     explain_cmdline_req_opt "-extn" "<string>" "$description"
 
     # -egadecrpwd option
@@ -603,7 +603,7 @@ decrypt_ega_norm_bam()
 decrypt_ega_tum_bam_explain_cmdline_opts()
 {
     # -extt option
-    description="External database id of normal bam file to download"
+    description="File name of encrypted tumor bam file to process"
     explain_cmdline_req_opt "-extt" "<string>" "$description"
 
     # -egadecrpwd option
@@ -661,6 +661,140 @@ decrypt_ega_tum_bam()
 
     # Move file
     mv ${bam_file_name} ${tumorbam} || exit 1
+}
+
+########
+decsingle_ega_norm_bam_explain_cmdline_opts()
+{
+    # -extn option
+    description="File name of encrypted normal bam file to process"
+    explain_cmdline_req_opt "-extn" "<string>" "$description"
+
+    # -decsinglepwd option
+    description="Password for bam file to be processed with decSINGLE tool"
+    explain_cmdline_req_opt "-decsinglepwd" "<string>" "$description"
+}
+
+########
+decsingle_ega_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    
+    # -extn option
+    define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
+
+    # -egadecrpwd option
+    define_cmdline_opt "$cmdline" "-decsinglepwd" optlist || exit 1
+
+    # -normalbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+decsingle_ega_norm_bam()
+{
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local normalbam_file=`read_opt_value_from_line "$*" "-extn"`
+    local decsingle_pwd=`read_opt_value_from_line "$*" "-decsinglepwd"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate java-jre 2>&1 || exit 1
+
+    # Decrypt file
+    logmsg "* Executing decryptor.jar..."
+    cat ${normalbam_file} | $JAVA -cp ${DECSINGLE_HOME_DIR} decSINGLE ${egadecrypt_pwd} --output-folder ${step_outd} ${normalbam_file} <(echo ${decsingle_pwd}) > ${normalbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+decsingle_ega_norm_bam_conda_envs()
+{
+    define_conda_env java-jre java-jre.yml
+}
+
+########
+decsingle_ega_tum_bam_explain_cmdline_opts()
+{
+    # -extn option
+    description="File name of encrypted tumor bam file to process"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
+
+    # -decsinglepwd option
+    description="Password for bam file to be processed with decSINGLE tool"
+    explain_cmdline_req_opt "-decsinglepwd" "<string>" "$description"
+}
+
+########
+decsingle_ega_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    
+    # -extt option
+    define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
+
+    # -egadecrpwd option
+    define_cmdline_opt "$cmdline" "-decsinglepwd" optlist || exit 1
+
+    # -tumorbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+decsingle_ega_tum_bam()
+{
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local tumorbam_file=`read_opt_value_from_line "$*" "-extt"`
+    local decsingle_pwd=`read_opt_value_from_line "$*" "-decsinglepwd"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate java-jre 2>&1 || exit 1
+
+    # Decrypt file
+    logmsg "* Executing decryptor.jar..."
+    cat ${tumorbam_file} | $JAVA -cp ${DECSINGLE_HOME_DIR} decSINGLE ${egadecrypt_pwd} --output-folder ${step_outd} ${tumorbam_file} <(echo ${decsingle_pwd}) > ${tumorbam} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+decsingle_ega_tum_bam_conda_envs()
+{
+    define_conda_env java-jre java-jre.yml
 }
 
 ########

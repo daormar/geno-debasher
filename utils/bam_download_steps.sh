@@ -711,23 +711,9 @@ decsingle_ega_norm_bam()
     local decsingle_pwd=`read_opt_value_from_line "$*" "-ndecsinglepwd"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
-    # Activate conda environment
-    logmsg "* Activating conda environment..."
-    conda activate java-jre 2>&1 || exit 1
-
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat ${normalbam_file} | java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${normalbam} || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-}
-
-########
-decsingle_ega_norm_bam_conda_envs()
-{
-    define_conda_env java-jre java-jre.yml
+    cat ${normalbam_file} | ${DECSINGLE_JAVA_HOME_DIR}/bin/java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${normalbam} ; pipe_fail || exit 1
 }
 
 ########
@@ -778,23 +764,9 @@ decsingle_ega_tum_bam()
     local decsingle_pwd=`read_opt_value_from_line "$*" "-tdecsinglepwd"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
-    # Activate conda environment
-    logmsg "* Activating conda environment..."
-    conda activate java-jre 2>&1 || exit 1
-
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat ${tumorbam_file} | java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${tumorbam} || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-}
-
-########
-decsingle_ega_tum_bam_conda_envs()
-{
-    define_conda_env java-jre java-jre.yml
+    cat ${tumorbam_file} | ${DECSINGLE_JAVA_HOME_DIR}/bin/java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${tumorbam} ; pipe_fail || exit 1
 }
 
 ########

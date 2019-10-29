@@ -2,8 +2,8 @@
 #
 decsingle_ega_norm_bam      cpus=1  mem=2048    time=24:00:00 stepdeps=none
 decsingle_ega_tum_bam       cpus=1  mem=2048    time=24:00:00 stepdeps=none
-index_norm_bam              cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:copy_norm_bam
-index_tum_bam               cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:copy_tum_bam
+index_norm_bam              cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:decsingle_ega_norm_bam
+index_tum_bam               cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:decsingle_ega_tum_bam
 bedtools_genomecov_norm_bam cpus=1  mem=2G      time=5:00:00  stepdeps=afterok:index_norm_bam
 bedtools_genomecov_tum_bam  cpus=1  mem=2G      time=5:00:00  stepdeps=afterok:index_tum_bam
 create_genref_for_bam       cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:index_norm_bam

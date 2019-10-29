@@ -717,7 +717,7 @@ decsingle_ega_norm_bam()
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat ${normalbam_file} | $JAVA -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${normalbam} || exit 1
+    cat ${normalbam_file} | java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${normalbam} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -784,7 +784,7 @@ decsingle_ega_tum_bam()
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat ${tumorbam_file} | $JAVA -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${tumorbam} || exit 1
+    cat ${tumorbam_file} | java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${tumorbam} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

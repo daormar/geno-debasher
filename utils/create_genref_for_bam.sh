@@ -138,7 +138,7 @@ contig_in_list()
     local clist=$3
 
     while read cname clen; do
-        if [ "$contig" = "$cname" -a "$contiglen" = "clen" ]; then
+        if [ "$contig" = "$cname" -a "$contiglen" = "$clen" ]; then
             return 0
         fi
     done < ${clist}

@@ -134,10 +134,11 @@ print_pars()
 contig_in_list()
 {
     local contig=$1
-    local clist=$2
+    local contiglen=$2
+    local clist=$3
 
     while read cname clen; do
-        if [ "$contig" = "$cname" ]; then
+        if [ "$contig" = "$cname" -a "$contiglen" = "clen" ]; then
             return 0
         fi
     done < ${clist}
@@ -176,7 +177,7 @@ get_missing_contig_names()
     local bamcontigs=$2
             
     while read bamcontigname contiglen; do
-        if ! contig_in_list $bamcontigname $refcontigs; then
+        if ! contig_in_list $bamcontigname $contiglen $refcontigs; then
             echo $bamcontigname $contiglen
         fi
     done < $bamcontigs    
@@ -189,7 +190,7 @@ get_ref_contig_names_to_keep()
     local bamcontigs=$2
             
     while read refcontigname contiglen; do
-        if contig_in_list $refcontigname $bamcontigs; then
+        if contig_in_list $refcontigname $contiglen $bamcontigs; then
             echo $refcontigname $contiglen
         fi
     done < $refcontigs    

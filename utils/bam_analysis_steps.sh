@@ -291,6 +291,10 @@ cnvkit()
 
     # Run cnvkit
     logmsg "* Executing cnvkit.py..."
+    cd ${step_outd} # This is done since current implementation of
+                    # cnvkit generates a file in current directory
+                    # (genref.bed). Changing directory avoids possible
+                    # racing conditions
     cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${step_outd} -p ${cpus} 2>&1 || exit 1
 
     # Deactivate conda environment

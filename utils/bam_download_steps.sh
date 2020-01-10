@@ -105,6 +105,97 @@ copy_tum_bam()
 }
 
 ########
+scp_norm_bam_explain_cmdline_opts()
+{
+    # -extn option
+    description="Path to local normal bam file to be copied"
+    explain_cmdline_opt "-extn" "<string>" "$description"
+}
+
+
+########
+scp_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -extn option
+    define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
+
+    # -normalbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+scp_norm_bam()
+{
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local remote_normalbam=`read_opt_value_from_line "$*" "-extn"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Copy file
+    logmsg "* Copying file..."
+    scp ${remote_normalbam} ${normalbam} || exit 1
+}
+
+########
+scp_tum_bam_explain_cmdline_opts()
+{
+    # -extt option
+    description="Path to local tumor bam file to be copied"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
+}
+
+########
+scp_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -extt option
+    define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
+
+    # -tumorbam option
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+scp_tum_bam()
+{
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local remote_tumorbam=`read_opt_value_from_line "$*" "-extt"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Copy file
+    logmsg "* Copying file..."
+    scp ${remote_tumorbam} ${tumorbam} || exit 1
+}
+
+########
 download_ega_norm_bam_explain_cmdline_opts()
 {
     # -extn option

@@ -21,7 +21,6 @@ copy_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-extn" "<string>" "$description"
 }
 
-
 ########
 copy_norm_bam_define_opts()
 {
@@ -111,7 +110,6 @@ scp_norm_bam_explain_cmdline_opts()
     description="Path to local normal bam file to be copied"
     explain_cmdline_opt "-extn" "<string>" "$description"
 }
-
 
 ########
 scp_norm_bam_define_opts()
@@ -214,7 +212,6 @@ download_ega_norm_bam_explain_cmdline_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
 }
-
 
 ########
 download_ega_norm_bam_define_opts()

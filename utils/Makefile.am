@@ -7,7 +7,7 @@ convert_snppos_to_snpgcc create_snv_pos_ascat query_ega_metadata	\
 query_icgc_metadata create_genref_for_bam filter_contig_from_genref	\
 get_filtered_sam_header get_filtered_sam_align map_contnames		\
 map_vcf_contnames run_facets run_sequenza convert_allele_counts		\
-run_ascat get_two_elem_combs
+run_ascat get_two_elem_combs filter_nondiscordant_pheno_entries
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
@@ -23,7 +23,8 @@ create_snv_pos_ascat.py query_ega_metadata.py query_icgc_metadata.py	\
 create_genref_for_bam.sh filter_contig_from_genref.py			\
 get_filtered_sam_header.py get_filtered_sam_align.py map_contnames.py	\
 map_vcf_contnames.py run_facets.R run_sequenza.R			\
-convert_allele_counts.R run_ascat.R get_two_elem_combs.py
+convert_allele_counts.R run_ascat.R get_two_elem_combs.py		\
+filter_nondiscordant_pheno_entries.py
 
 # Build rules for libraries and bash files implementing steps
 bam_common_lib: bam_common_lib.sh

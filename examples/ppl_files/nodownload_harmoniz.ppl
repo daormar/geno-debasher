@@ -1,0 +1,9 @@
+#import bam_analysis
+#
+norm_bam_to_ubam      cpus=1  mem=4096 time=48:00:00 stepdeps=none
+align_norm_ubam       cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:norm_bam_to_ubam
+tum_bam_to_ubam       cpus=1  mem=4096 time=48:00:00 stepdeps=none
+align_tum_ubam        cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:tum_bam_to_ubam
+manta_somatic         cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:align_norm_ubam,afterok:align_tum_ubam
+strelka_somatic       cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:align_norm_ubam,afterok:align_tum_ubam
+msisensor             cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:align_norm_ubam,afterok:align_tum_ubam

@@ -1,0 +1,15 @@
+name: bwa
+channels:
+  - r
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=0_gnu
+  - bwa=0.7.17=hed695b0_7
+  - libgcc-ng=9.2.0=h24d8f2e_2
+  - libgomp=9.2.0=h24d8f2e_2
+  - perl=5.26.2=h516909a_1006
+  - zlib=1.2.11=h516909a_1006
+prefix: /home/dortiz/miniconda3/envs/bwa

@@ -1539,7 +1539,7 @@ align_norm_ubam()
     gatk4 --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
 
     # Replace initial unmapped bam file by the mapped one
-    mv ${step_outd}/reverted.bam ${normalbam} 2>&1 || exit 1
+    mv ${step_outd}/merged.bam ${normalbam} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1632,7 +1632,7 @@ align_tum_ubam()
     gatk4 --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
 
     # Replace initial unmapped bam file by the mapped one
-    mv ${step_outd}/reverted.bam ${tumorbam} 2>&1 || exit 1
+    mv ${step_outd}/merged.bam ${tumorbam} 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

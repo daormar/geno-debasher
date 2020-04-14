@@ -1341,3 +1341,154 @@ bedtools_genomecov_tum_bam_conda_envs()
 {
     define_conda_env bedtools bedtools.yml
 }
+
+########
+norm_bam_to_ubam_explain_cmdline_opts()
+{
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+}
+
+########
+norm_bam_to_ubam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+norm_bam_to_ubam()
+{
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+        
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute gatk RevertSam
+    logmsg "* Executing gatk RevertSam..."
+    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/reverted.bam --SANITIZE:true || exit 1
+
+    # Replace initial bam file by the unmapped one
+    mv ${step_outd}/reverted.bam ${normalbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+norm_bam_to_ubam_conda_envs()
+{
+    define_conda_env gatk4 gatk4.yml
+}
+
+########
+align_norm_ubam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal unmapped bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+}
+
+########
+align_norm_ubam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+align_norm_ubam()
+{
+    # Initialize variables
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+        
+    # Activate conda environment
+    logmsg "* Activating conda environment (gatk)..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute gatk SamToFastq
+    logmsg "* Executing gatk SamToFastq..."
+    gatk4 --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (bwa)..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute bwa
+    logmsg "* Executing bwa mem..."
+    bwa mem ${ref} ${step_outd}/reads_r1.fastq ${step_outd}/reads_r2.fastq -o ${step_outd}/aln.sam || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (gatk)..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute gatk
+    logmsg "* Executing gatk MergeBamAlignment..."
+    gatk4 --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
+
+    # Replace initial unmapped bam file by the mapped one
+    mv ${step_outd}/reverted.bam ${normalbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+align_norm_ubam_conda_envs()
+{
+    define_conda_env bwa bwa.yml
+    define_conda_env gatk4 gatk4.yml
+}

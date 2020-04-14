@@ -613,9 +613,74 @@ platypus_germline()
 }
 
 ########
-platypus_conda_envs()
+platypus_germline_conda_envs()
 {
     define_conda_env platypus platypus.yml
+}
+
+########
+gatk_haplotypecaller_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"    
+}
+
+########
+gatk_haplotypecaller_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+gatk_haplotypecaller()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate gatk 2>&1 || exit 1
+
+    # Run Platypus
+    logmsg "* Executing gatk HaplotypeCaller..."
+    gatk --java-options "-Xmx4g" HaplotypeCaller -R ${ref} -I ${normalbam} -O ${step_outd}/output.g.vcf.gz -ERC GVCF || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+gatk_haplotypecaller_conda_envs()
+{
+    define_conda_env gatk gatk.yml
 }
 
 ########

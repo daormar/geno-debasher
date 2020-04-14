@@ -1345,9 +1345,9 @@ bedtools_genomecov_tum_bam_conda_envs()
 ########
 norm_bam_to_ubam_explain_cmdline_opts()
 {
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
+    # -extn option
+    description="Path to normal bam file to be unmapped"
+    explain_cmdline_opt "-extn" "<string>" "$description"
 }
 
 ########
@@ -1362,9 +1362,12 @@ norm_bam_to_ubam_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
+    # -extn option
+    define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
+
     # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local normalbam=${abs_datadir}/normal.bam
     define_opt "-normalbam" $normalbam optlist || exit 1
 
     # Save option list
@@ -1376,6 +1379,7 @@ norm_bam_to_ubam()
 {
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local mapped_normalbam=`read_opt_value_from_line "$*" "-extn"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
     # Activate conda environment
@@ -1384,10 +1388,7 @@ norm_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/reverted.bam --SANITIZE:true || exit 1
-
-    # Replace initial bam file by the unmapped one
-    mv ${step_outd}/reverted.bam ${normalbam} 2>&1 || exit 1
+    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${mapped_normalbam} --OUTPUT ${normalbam} --SANITIZE:true || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1403,9 +1404,9 @@ norm_bam_to_ubam_conda_envs()
 ########
 tum_bam_to_ubam_explain_cmdline_opts()
 {
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"
+    # -extt option
+    description="Path to tumor bam file to be unmapped"
+    explain_cmdline_req_opt "-extt" "<string>" "$description"
 }
 
 ########
@@ -1420,9 +1421,12 @@ tum_bam_to_ubam_define_opts()
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
     define_opt "-step-outd" ${step_outd} optlist || exit 1
 
+    # -extt option
+    define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
+
     # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local tumorbam=${abs_datadir}/tumor.bam
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
     # Save option list
@@ -1434,6 +1438,7 @@ tum_bam_to_ubam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local mapped_tumorbam=`read_opt_value_from_line "$*" "-extt"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
 
     # Activate conda environment
@@ -1442,10 +1447,7 @@ tum_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/reverted.bam --SANITIZE:true || exit 1
-
-    # Replace initial bam file by the unmapped one
-    mv ${step_outd}/reverted.bam ${tumorbam} 2>&1 || exit 1
+    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${mapped_tumorbam} --OUTPUT ${tumorbam} --SANITIZE:true || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

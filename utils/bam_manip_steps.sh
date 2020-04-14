@@ -1377,7 +1377,7 @@ norm_bam_to_ubam()
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-        
+
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate gatk4 2>&1 || exit 1
@@ -1396,6 +1396,64 @@ norm_bam_to_ubam()
 
 ########
 norm_bam_to_ubam_conda_envs()
+{
+    define_conda_env gatk4 gatk4.yml
+}
+
+########
+tum_bam_to_ubam_explain_cmdline_opts()
+{
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+}
+
+########
+tum_bam_to_ubam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+tum_bam_to_ubam()
+{
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute gatk RevertSam
+    logmsg "* Executing gatk RevertSam..."
+    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/reverted.bam --SANITIZE:true || exit 1
+
+    # Replace initial bam file by the unmapped one
+    mv ${step_outd}/reverted.bam ${tumorbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+tum_bam_to_ubam_conda_envs()
 {
     define_conda_env gatk4 gatk4.yml
 }
@@ -1445,7 +1503,7 @@ align_norm_ubam()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-        
+
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
     conda activate gatk4 2>&1 || exit 1
@@ -1488,6 +1546,99 @@ align_norm_ubam()
 
 ########
 align_norm_ubam_conda_envs()
+{
+    define_conda_env bwa bwa.yml
+    define_conda_env gatk4 gatk4.yml
+}
+
+########
+align_tum_ubam_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+}
+
+########
+align_tum_ubam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+align_tum_ubam()
+{
+    # Initialize variables
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (gatk)..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute gatk SamToFastq
+    logmsg "* Executing gatk SamToFastq..."
+    gatk4 --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (bwa)..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute bwa
+    logmsg "* Executing bwa mem..."
+    bwa mem ${ref} ${step_outd}/reads_r1.fastq ${step_outd}/reads_r2.fastq -o ${step_outd}/aln.sam || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+
+    # Activate conda environment
+    logmsg "* Activating conda environment (gatk)..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Execute gatk
+    logmsg "* Executing gatk MergeBamAlignment..."
+    gatk4 --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
+
+    # Replace initial unmapped bam file by the mapped one
+    mv ${step_outd}/reverted.bam ${tumorbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+align_tum_ubam_conda_envs()
 {
     define_conda_env bwa bwa.yml
     define_conda_env gatk4 gatk4.yml

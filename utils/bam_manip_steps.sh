@@ -1384,7 +1384,7 @@ norm_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE:true || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE:true || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${normalbam} 2>&1 || exit 1
@@ -1442,7 +1442,7 @@ tum_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk4 --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE:true || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE:true || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${tumorbam} 2>&1 || exit 1
@@ -1510,7 +1510,7 @@ align_norm_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk4 --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1534,7 +1534,7 @@ align_norm_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk4 --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${normalbam} 2>&1 || exit 1
@@ -1603,7 +1603,7 @@ align_tum_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk4 --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1627,7 +1627,7 @@ align_tum_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk4 --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${tumorbam} 2>&1 || exit 1

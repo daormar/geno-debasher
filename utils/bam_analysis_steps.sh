@@ -666,7 +666,7 @@ gatk_haplotypecaller()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gatk 2>&1 || exit 1
+    conda activate gatk4 2>&1 || exit 1
 
     # Run Platypus
     logmsg "* Executing gatk HaplotypeCaller..."
@@ -680,7 +680,7 @@ gatk_haplotypecaller()
 ########
 gatk_haplotypecaller_conda_envs()
 {
-    define_conda_env gatk gatk.yml
+    define_conda_env gatk4 gatk4.yml
 }
 
 ########

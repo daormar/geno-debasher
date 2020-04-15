@@ -1522,7 +1522,7 @@ align_norm_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) -o ${step_outd}/aln.sam || exit 1
+    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1534,7 +1534,7 @@ align_norm_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM <(${GZIP} -d -c ${step_outd}/aln.sam.gz) --OUTPUT ${step_outd}/merged.bam || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${normalbam} 2>&1 || exit 1
@@ -1615,7 +1615,7 @@ align_tum_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) -o ${step_outd}/aln.sam || exit 1
+    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1627,7 +1627,7 @@ align_tum_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam --OUTPUT ${step_outd}/merged.bam || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM <(${GZIP} -d -c ${step_outd}/aln.sam) --OUTPUT ${step_outd}/merged.bam || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${tumorbam} 2>&1 || exit 1

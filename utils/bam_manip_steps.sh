@@ -1524,6 +1524,9 @@ align_norm_ubam()
     logmsg "* Executing bwa mem..."
     bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz || exit 1
 
+    # Remove fastq files
+    rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
@@ -1616,6 +1619,9 @@ align_tum_ubam()
     # Execute bwa
     logmsg "* Executing bwa mem..."
     bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz || exit 1
+
+    # Remove fastq files
+    rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

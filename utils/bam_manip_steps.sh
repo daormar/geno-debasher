@@ -1510,7 +1510,7 @@ align_norm_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --SORT_ORDER queryname || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1603,7 +1603,7 @@ align_tum_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq --SORT_ORDER queryname || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --SORT_ORDER queryname || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

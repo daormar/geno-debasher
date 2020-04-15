@@ -1627,7 +1627,7 @@ align_tum_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM <(${GZIP} -d -c ${step_outd}/aln.sam) --OUTPUT ${step_outd}/merged.bam || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM <(${GZIP} -d -c ${step_outd}/aln.sam.gz) --OUTPUT ${step_outd}/merged.bam || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${tumorbam} 2>&1 || exit 1

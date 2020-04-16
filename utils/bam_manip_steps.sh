@@ -1384,7 +1384,7 @@ norm_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${normalbam} 2>&1 || exit 1
@@ -1442,7 +1442,7 @@ tum_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${tumorbam} 2>&1 || exit 1
@@ -1510,7 +1510,7 @@ align_norm_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --SORT_ORDER queryname --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1606,7 +1606,7 @@ align_tum_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --SORT_ORDER queryname --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

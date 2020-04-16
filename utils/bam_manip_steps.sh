@@ -1384,7 +1384,7 @@ norm_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx8G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true || exit 1
+    gatk --java-options "-Xmx8G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --TMP_DIR ${step_outd} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${normalbam} 2>&1 || exit 1
@@ -1442,7 +1442,7 @@ tum_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx8G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true || exit 1
+    gatk --java-options "-Xmx8G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --TMP_DIR ${step_outd} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${tumorbam} 2>&1 || exit 1

@@ -1356,7 +1356,7 @@ norm_bam_to_ubam_explain_cmdline_opts()
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -mrec option
-    description="Maximum number of records stored in RAM required by GATK, the higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
+    description="Maximum number of records stored in RAM required by GATK, the higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
     explain_cmdline_opt "-mrec" "<int>" "$description"
 }
 
@@ -1422,7 +1422,7 @@ tum_bam_to_ubam_explain_cmdline_opts()
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -mrec option
-    description="Maximum number of records stored in RAM required by GATK, the higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
+    description="Maximum number of records stored in RAM required by GATK, the higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
     explain_cmdline_opt "-mrec" "<int>" "$description"
 }
 

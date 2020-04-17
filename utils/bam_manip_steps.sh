@@ -1,5 +1,11 @@
 # *- bash -*
 
+#############
+# CONSTANTS #
+#############
+
+DEFAULT_MAX_RECORDS_IN_RAM_GATK=1000000
+
 ##########################
 # BAM MANIPULATION STEPS #
 ##########################
@@ -1348,6 +1354,10 @@ norm_bam_to_ubam_explain_cmdline_opts()
     # -n option
     description="Normal unmapped bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -mrec option
+    description="Maximum number of records stored in RAM required by GATK, the higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
+    explain_cmdline_opt "-mrec" "<int>" "$description"
 }
 
 ########
@@ -1367,6 +1377,9 @@ norm_bam_to_ubam_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
+    # -mrec option
+    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || exit 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -1377,6 +1390,7 @@ norm_bam_to_ubam()
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1384,7 +1398,7 @@ norm_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${normalbam} 2>&1 || exit 1
@@ -1406,6 +1420,10 @@ tum_bam_to_ubam_explain_cmdline_opts()
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -mrec option
+    description="Maximum number of records stored in RAM required by GATK, the higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
+    explain_cmdline_opt "-mrec" "<int>" "$description"
 }
 
 ########
@@ -1425,6 +1443,9 @@ tum_bam_to_ubam_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
+    # -mrec option
+    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || exit 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -1435,6 +1456,7 @@ tum_bam_to_ubam()
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1442,7 +1464,7 @@ tum_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${tumorbam} 2>&1 || exit 1

@@ -310,6 +310,18 @@ strelka_germline_conda_envs()
 }
 
 ########
+platypus_germline_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"    
+}
+
+########
 platypus_germline_define_opts()
 {
     # Initialize variables
@@ -578,103 +590,6 @@ strelka_somatic()
 strelka_somatic_conda_envs()
 {
     define_conda_env strelka strelka.yml
-}
-
-########
-platypus_germline_explain_cmdline_opts()
-{
-    # -r option
-    description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
-
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"    
-}
-
-########
-msisensor_explain_cmdline_opts()
-{
-    # -r option
-    description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
-
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
-
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"        
-}
-
-########
-msisensor_define_opts()
-{
-    # Initialize variables
-    local cmdline=$1
-    local stepspec=$2
-    local optlist=""
-
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
-
-    # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || exit 1
-    define_opt "-r" $genref optlist || exit 1
-
-    # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
-
-    # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
-
-    # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
-    define_opt "-cpus" $cpus optlist
-
-    # Save option list
-    save_opt_list optlist    
-}
-
-########
-msisensor()
-{
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
-
-    # Activate conda environment
-    logmsg "* Activating conda environment..."
-    conda activate msisensor 2>&1 || exit 1
-
-    # Create homopolymer and microsatellites file
-    logmsg "* Executing msisensor scan..."
-    command msisensor scan -d ${ref} -o ${step_outd}/msisensor.list 2>&1 || exit 1
-
-    # Run MSIsensor analysis
-    logmsg "* Executing msisensor msi..."
-    command msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} 2>&1 || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-}
-
-########
-msisensor_conda_envs()
-{
-    define_conda_env msisensor msisensor.yml
 }
 
 ########
@@ -2040,4 +1955,89 @@ parallel_svtyper()
 parallel_svtyper_conda_envs()
 {
     define_conda_env svtyper svtyper.yml
+}
+
+########
+msisensor_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"        
+}
+
+########
+msisensor_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+msisensor()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate msisensor 2>&1 || exit 1
+
+    # Create homopolymer and microsatellites file
+    logmsg "* Executing msisensor scan..."
+    command msisensor scan -d ${ref} -o ${step_outd}/msisensor.list 2>&1 || exit 1
+
+    # Run MSIsensor analysis
+    logmsg "* Executing msisensor msi..."
+    command msisensor msi -d ${step_outd}/msisensor.list -n ${normalbam} -t ${tumorbam} -o ${step_outd}/output -l 1 -q 1 -b ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+msisensor_conda_envs()
+{
+    define_conda_env msisensor msisensor.yml
 }

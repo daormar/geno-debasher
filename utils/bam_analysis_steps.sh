@@ -454,7 +454,7 @@ gatk_haplotypecaller()
 
     # Run Platypus
     logmsg "* Executing gatk HaplotypeCaller..."
-    gatk --java-options "-Xmx4g" HaplotypeCaller -R ${ref} -I ${normalbam} -O ${step_outd}/output.g.vcf.gz -ERC GVCF || exit 1
+    gatk --java-options "-Xmx4g" HaplotypeCaller -R ${ref} -I ${normalbam} -O ${step_outd}/output.g.vcf.gz -ERC GVCF --tmp-dir ${step_outd} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

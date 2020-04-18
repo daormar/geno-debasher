@@ -1490,6 +1490,10 @@ align_norm_ubam_explain_cmdline_opts()
     # -n option
     description="Normal unmapped bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -mrec option
+    description="Maximum number of records stored in RAM required by GATK. The higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
+    explain_cmdline_opt "-mrec" "<int>" "$description"
 }
 
 ########
@@ -1514,6 +1518,9 @@ align_norm_ubam_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
+    # -mrec option
+    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || exit 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -1525,6 +1532,7 @@ align_norm_ubam()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
@@ -1532,7 +1540,7 @@ align_norm_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1586,6 +1594,10 @@ align_tum_ubam_explain_cmdline_opts()
     # -t option
     description="Tumor bam file (required if no downloading steps have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -mrec option
+    description="Maximum number of records stored in RAM required by GATK. The higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
+    explain_cmdline_opt "-mrec" "<int>" "$description"
 }
 
 ########
@@ -1610,6 +1622,9 @@ align_tum_ubam_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
+    # -mrec option
+    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || exit 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -1621,6 +1636,7 @@ align_tum_ubam()
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
@@ -1628,7 +1644,7 @@ align_tum_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

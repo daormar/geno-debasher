@@ -1552,10 +1552,10 @@ align_norm_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz || exit 1
+    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz ; pipe_fail || exit 1
 
     # Remove fastq files
-    rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz
+    rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1656,10 +1656,10 @@ align_tum_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz || exit 1
+    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz ; pipe_fail || exit 1
 
     # Remove fastq files
-    rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz
+    rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

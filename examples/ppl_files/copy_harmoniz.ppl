@@ -10,10 +10,10 @@ index_tum_bam__1      cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:tum_bam_to
 align_tum_ubam        cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:index_tum_bam__1
 index_norm_bam__2     cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:align_norm_ubam
 index_tum_bam__2      cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:align_tum_ubam
-strelka_germline      cpus=8  mem=6G   time=48:00:00 stepdeps=afterok:index_norm_bam__2
+strelka_germline      cpus=4  mem=6G   time=48:00:00 stepdeps=afterok:index_norm_bam__2
 platypus_germline     cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2
 gatk_haplotypecaller  cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2
 manta_somatic         cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2
-strelka_somatic       cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2
+strelka_somatic       cpus=4  mem=6G   time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2
 mutect2               cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2
 msisensor             cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2

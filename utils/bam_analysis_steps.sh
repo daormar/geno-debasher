@@ -218,97 +218,6 @@ manta_somatic_conda_envs()
 }
 
 ########
-cnvkit_document()
-{
-    step_description "Analyzes a pair of normal and tumor \`bam\` files using CNVkit."
-}
-
-########
-cnvkit_explain_cmdline_opts()
-{
-    # -r option
-    description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
-
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
-
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"
-}
-
-########
-cnvkit_define_opts()
-{
-    # Initialize variables
-    local cmdline=$1
-    local stepspec=$2
-    local optlist=""
-
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
-
-    # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || exit 1
-    define_opt "-r" $genref optlist || exit 1
-
-    # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
-
-    # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
-
-    # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
-    define_opt "-cpus" $cpus optlist
-
-    # Save option list
-    save_opt_list optlist
-}
-
-########
-cnvkit()
-{
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
-    
-    # Activate conda environment
-    logmsg "* Activating conda environment..."
-    conda activate cnvkit 2>&1 || exit 1
-
-    # Run cnvkit
-    logmsg "* Executing cnvkit.py..."
-    cd ${step_outd} # This is done since current implementation of
-                    # cnvkit generates a file in current directory
-                    # (genref.bed). Changing directory avoids possible
-                    # racing conditions
-    cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${step_outd} -p ${cpus} 2>&1 || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-}
-
-########
-cnvkit_conda_envs()
-{
-    define_conda_env cnvkit cnvkit.yml
-}
-
-########
 strelka_germline_document()
 {
     step_description "Analyzes a normal \`bam\` files using Strelka."
@@ -398,143 +307,6 @@ strelka_germline()
 strelka_germline_conda_envs()
 {
     define_conda_env strelka strelka.yml
-}
-
-########
-strelka_somatic_explain_cmdline_opts()
-{
-    # -r option
-    description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
-
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
-
-    # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"
-
-    # -cr option
-    description="bgzipped and tabixed bed file to specify regions to call"
-    explain_cmdline_opt "-cr" "<string>" "$description"
-}
-
-########
-strelka_somatic_define_opts()
-{
-    # Initialize variables
-    local cmdline=$1
-    local stepspec=$2
-    local optlist=""
-
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
-
-    # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || exit 1
-    define_opt "-r" $genref optlist || exit 1
-
-    # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
-
-    # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
-
-    # -manta-outd option
-    local manta_dep=`find_dependency_for_step "${stepspec}" manta_somatic`
-    if [ ${manta_dep} != ${DEP_NOT_FOUND} ]; then
-        local manta_outd=`get_outd_for_dep "${manta_dep}"`
-        define_opt "-manta-outd" ${manta_outd} optlist || exit 1
-    fi
-    
-    # -cr option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
-
-    # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
-    define_opt "-cpus" $cpus optlist
-
-    # Save option list
-    save_opt_list optlist    
-}
-
-########
-get_indel_cand_opt()
-{
-    local manta_outd=$1
-
-    if [ -z "${manta_outd}" ]; then
-        echo ""
-    else
-        manta_indel_file="${manta_outd}/results/variants/candidateSmallIndels.vcf.gz"
-        if [ -f ${manta_indel_file} ]; then
-            echo "--indelCandidates ${manta_indel_file}"
-        else
-            echo "WARNING: Manta indel file for Strelka not found! (${manta_indel_file})" >&2
-            echo ""
-        fi
-    fi
-}
-
-########
-strelka_somatic()
-{
-    # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local manta_outd=`read_opt_value_from_line "$*" "-manta-outd"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local callregf=`read_opt_value_from_line "$*" "-cr"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
-
-    # Define --indelCandidates option if output from Manta is available
-    indel_cand_opt=`get_indel_cand_opt "${manta_outd}"`
-
-    # Define --callRegions option
-    call_reg_opt=`get_callreg_opt "${callregf}"`
-
-    # Activate conda environment
-    logmsg "* Activating conda environment..."
-    conda activate strelka 2>&1 || exit 1
-
-    # Configure Strelka
-    logmsg "* Executing configureStrelkaSomaticWorkflow.py..."
-    configureStrelkaSomaticWorkflow.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${step_outd} 2>&1 || exit 1
-
-    # Execute Strelka
-    logmsg "* Executing runWorkflow.py..."
-    ${step_outd}/runWorkflow.py -m local -j ${cpus} 2>&1 || exit 1
-
-    # Deactivate conda environment
-    logmsg "* Deactivating conda environment..."
-    conda deactivate 2>&1
-}
-
-########
-strelka_somatic_conda_envs()
-{
-    define_conda_env strelka strelka.yml
-}
-
-########
-platypus_germline_explain_cmdline_opts()
-{
-    # -r option
-    description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
-
-    # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"    
 }
 
 ########
@@ -684,6 +456,143 @@ gatk_haplotypecaller_conda_envs()
 }
 
 ########
+strelka_somatic_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -cr option
+    description="bgzipped and tabixed bed file to specify regions to call"
+    explain_cmdline_opt "-cr" "<string>" "$description"
+}
+
+########
+strelka_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -manta-outd option
+    local manta_dep=`find_dependency_for_step "${stepspec}" manta_somatic`
+    if [ ${manta_dep} != ${DEP_NOT_FOUND} ]; then
+        local manta_outd=`get_outd_for_dep "${manta_dep}"`
+        define_opt "-manta-outd" ${manta_outd} optlist || exit 1
+    fi
+    
+    # -cr option
+    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+get_indel_cand_opt()
+{
+    local manta_outd=$1
+
+    if [ -z "${manta_outd}" ]; then
+        echo ""
+    else
+        manta_indel_file="${manta_outd}/results/variants/candidateSmallIndels.vcf.gz"
+        if [ -f ${manta_indel_file} ]; then
+            echo "--indelCandidates ${manta_indel_file}"
+        else
+            echo "WARNING: Manta indel file for Strelka not found! (${manta_indel_file})" >&2
+            echo ""
+        fi
+    fi
+}
+
+########
+strelka_somatic()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local manta_outd=`read_opt_value_from_line "$*" "-manta-outd"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local callregf=`read_opt_value_from_line "$*" "-cr"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Define --indelCandidates option if output from Manta is available
+    indel_cand_opt=`get_indel_cand_opt "${manta_outd}"`
+
+    # Define --callRegions option
+    call_reg_opt=`get_callreg_opt "${callregf}"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate strelka 2>&1 || exit 1
+
+    # Configure Strelka
+    logmsg "* Executing configureStrelkaSomaticWorkflow.py..."
+    configureStrelkaSomaticWorkflow.py --normalBam ${normalbam} --tumorBam ${tumorbam} --referenceFasta ${ref} ${indel_cand_opt} ${call_reg_opt} --runDir ${step_outd} 2>&1 || exit 1
+
+    # Execute Strelka
+    logmsg "* Executing runWorkflow.py..."
+    ${step_outd}/runWorkflow.py -m local -j ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+strelka_somatic_conda_envs()
+{
+    define_conda_env strelka strelka.yml
+}
+
+########
+platypus_germline_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"    
+}
+
+########
 msisensor_explain_cmdline_opts()
 {
     # -r option
@@ -766,6 +675,97 @@ msisensor()
 msisensor_conda_envs()
 {
     define_conda_env msisensor msisensor.yml
+}
+
+########
+cnvkit_document()
+{
+    step_description "Analyzes a pair of normal and tumor \`bam\` files using CNVkit."
+}
+
+########
+cnvkit_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+}
+
+########
+cnvkit_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+cnvkit()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate cnvkit 2>&1 || exit 1
+
+    # Run cnvkit
+    logmsg "* Executing cnvkit.py..."
+    cd ${step_outd} # This is done since current implementation of
+                    # cnvkit generates a file in current directory
+                    # (genref.bed). Changing directory avoids possible
+                    # racing conditions
+    cnvkit.py batch ${tumorbam} -n ${normalbam} -m wgs -f ${ref}  -d ${step_outd} -p ${cpus} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+cnvkit_conda_envs()
+{
+    define_conda_env cnvkit cnvkit.yml
 }
 
 ########

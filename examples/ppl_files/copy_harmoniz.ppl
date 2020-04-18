@@ -15,4 +15,5 @@ platypus_germline     cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:index_norm
 gatk_haplotypecaller  cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2
 manta_somatic         cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2
 strelka_somatic       cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2
+mutect2               cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2
 msisensor             cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam__2,afterok:index_tum_bam__2

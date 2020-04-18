@@ -593,6 +593,81 @@ strelka_somatic_conda_envs()
 }
 
 ########
+mutect2_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"    
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+}
+
+########
+mutect2_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # Save option list
+    save_opt_list optlist    
+}
+
+########
+mutect2()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate gatk4 2>&1 || exit 1
+
+    # Run Platypus
+    logmsg "* Executing gatk Mutect2..."
+    gatk --java-options "-Xmx4g" Mutect2 -R ${ref} -I ${normalbam} -I ${tumorbam} -O ${step_outd}/somatic.vcf.gz --tmp-dir ${step_outd} || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+mutect2_conda_envs()
+{
+    define_conda_env gatk4 gatk4.yml
+}
+
+########
 cnvkit_document()
 {
     step_description "Analyzes a pair of normal and tumor \`bam\` files using CNVkit."

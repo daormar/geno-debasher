@@ -1521,6 +1521,11 @@ align_norm_ubam_define_opts()
     # -mrec option
     define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || exit 1
 
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
     # Save option list
     save_opt_list optlist
 }
@@ -1533,6 +1538,7 @@ align_norm_ubam()
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
@@ -1552,7 +1558,7 @@ align_norm_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz ; pipe_fail || exit 1
+    bwa mem -t ${cpus} ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz ; pipe_fail || exit 1
 
     # Remove fastq files
     rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz || exit 1
@@ -1625,6 +1631,11 @@ align_tum_ubam_define_opts()
     # -mrec option
     define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || exit 1
 
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
     # Save option list
     save_opt_list optlist
 }
@@ -1637,6 +1648,7 @@ align_tum_ubam()
     local ref=`read_opt_value_from_line "$*" "-r"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
@@ -1656,7 +1668,7 @@ align_tum_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz ; pipe_fail || exit 1
+    bwa mem -t ${cpus} ${ref} <(${GZIP} -d -c ${step_outd}/reads_r1.fastq.gz) <(${GZIP} -d -c ${step_outd}/reads_r2.fastq.gz) | ${GZIP} > ${step_outd}/aln.sam.gz ; pipe_fail || exit 1
 
     # Remove fastq files
     rm ${step_outd}/reads_r1.fastq.gz ${step_outd}/reads_r2.fastq.gz || exit 1

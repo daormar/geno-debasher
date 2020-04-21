@@ -3,9 +3,9 @@
 copy_norm_bam         cpus=1  mem=2048 time=48:00:00 stepdeps=none
 copy_tum_bam          cpus=1  mem=2048 time=48:00:00 stepdeps=none
 norm_bam_to_ubam      cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:copy_norm_bam
-align_norm_ubam       cpus=1  mem=8192 time=48:00:00 stepdeps=afterok:norm_bam_to_ubam
+align_norm_ubam       cpus=6  mem=8192 time=48:00:00 stepdeps=afterok:norm_bam_to_ubam
 tum_bam_to_ubam       cpus=1  mem=4096 time=48:00:00 stepdeps=afterok:copy_tum_bam
-align_tum_ubam        cpus=1  mem=8192 time=48:00:00 stepdeps=afterok:tum_bam_to_ubam
+align_tum_ubam        cpus=6  mem=8192 time=48:00:00 stepdeps=afterok:tum_bam_to_ubam
 index_norm_bam        cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:align_norm_ubam
 index_tum_bam         cpus=1  mem=1024 time=48:00:00 stepdeps=afterok:align_tum_ubam
 strelka_germline      cpus=4  mem=6G   time=48:00:00 stepdeps=afterok:index_norm_bam

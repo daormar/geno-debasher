@@ -1579,7 +1579,7 @@ align_norm_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk CreateSequenceDictionary..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz) --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${normalbam} 2>&1 || exit 1

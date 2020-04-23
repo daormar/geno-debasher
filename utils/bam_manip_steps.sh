@@ -1571,9 +1571,15 @@ align_norm_ubam()
     logmsg "* Activating conda environment (gatk)..."
     conda activate gatk4 2>&1 || exit 1
 
+    # Create dictionary
+    if [ ! -f ${ref}.dict ]; then
+        logmsg "* Creating dictionary for reference..."
+        gatk --java-options "-Xmx4G" CreateSequenceDictionary -I ${ref}
+    fi
+
     # Execute gatk
-    logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM <(${GZIP} -d -c ${step_outd}/aln.sam.gz) --OUTPUT ${step_outd}/merged.bam --TMP_DIR ${step_outd} || exit 1
+    logmsg "* Executing gatk CreateSequenceDictionary..."
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz) --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${normalbam} 2>&1 || exit 1
@@ -1681,9 +1687,15 @@ align_tum_ubam()
     logmsg "* Activating conda environment (gatk)..."
     conda activate gatk4 2>&1 || exit 1
 
+    # Create dictionary
+    if [ ! -f ${ref}.dict ]; then
+        logmsg "* Executing gatk CreateSequenceDictionary..."
+        gatk --java-options "-Xmx4G" CreateSequenceDictionary -I ${ref}
+    fi
+
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM <(${GZIP} -d -c ${step_outd}/aln.sam.gz) --OUTPUT ${step_outd}/merged.bam --TMP_DIR ${step_outd} || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${tumorbam} 2>&1 || exit 1

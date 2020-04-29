@@ -290,7 +290,7 @@ def print_info(formatted_info):
             else:
                 row=row+" "+elem[i]
         print row
-1
+
 ##################################################
 def process_pars(flags,values):
     # Extract info from files

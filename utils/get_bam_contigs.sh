@@ -67,10 +67,10 @@ filter_bam_stats()
 ########
 process_pars()
 {
-    conda activate samtools || exit 1
+    conda activate samtools || return 1
 
     # Obtain bam contigs
-    samtools idxstats $bam > ${outpref}.bamstats || exit 1
+    samtools idxstats $bam > ${outpref}.bamstats || return 1
     cat ${outpref}.bamstats | filter_bam_stats | ${SORT}
     
     conda deactivate

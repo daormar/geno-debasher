@@ -57,12 +57,21 @@ def print_help():
 ##################################################
 def get_pheno_info(field):
     if "Normal" in field:
-        return "non-tumor"
+        return "phenotype=non-tumor"
     elif "Tumor" in field:
-        return "tumor"
+        return "phenotype=tumor"
     else:
         return None
-                                   
+
+##################################################
+def get_gender_info(field):
+    if "male" in field:
+        return "gender=male"
+    elif "female" in field:
+        return "gender=female"
+    else:
+        return None
+
 ##################################################
 def extract_metadata_info(filename):
     file = open(filename, 'r')
@@ -75,7 +84,7 @@ def get_info_in_basic_format(metadata_info):
 
     # Populate formatted_info structure
     for record in metadata_info:
-        formatted_info.append((record["cases.0.case_id"],record["cases.0.samples.0.sample_id"],record["file_name"],record["file_id"],record["cases.0.diagnoses.0.tissue_or_organ_of_origin"],get_pheno_info(record["cases.0.samples.0.tissue_type"]),record["cases.0.demographic.gender"]))
+        formatted_info.append((record["cases.0.case_id"],record["cases.0.samples.0.sample_id"],record["file_name"],record["file_id"],record["cases.0.diagnoses.0.tissue_or_organ_of_origin"],get_pheno_info(record["cases.0.samples.0.tissue_type"]),get_gender_info(record["cases.0.demographic.gender"])))
 
     return formatted_info
 

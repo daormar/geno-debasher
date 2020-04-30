@@ -73,6 +73,10 @@ def get_gender_info(field):
         return None
 
 ##################################################
+def get_tissue_info(field):
+    return field.replace(" ","_")
+
+##################################################
 def extract_metadata_info(filename):
     file = open(filename, 'r')
     metadata_info = csv.DictReader(file, dialect='excel-tab')
@@ -84,7 +88,7 @@ def get_info_in_basic_format(metadata_info):
 
     # Populate formatted_info structure
     for record in metadata_info:
-        formatted_info.append((record["cases.0.case_id"],record["cases.0.samples.0.sample_id"],record["file_name"],record["file_id"],record["cases.0.diagnoses.0.tissue_or_organ_of_origin"],get_pheno_info(record["cases.0.samples.0.tissue_type"]),get_gender_info(record["cases.0.demographic.gender"])))
+        formatted_info.append((record["cases.0.case_id"],record["cases.0.samples.0.sample_id"],record["file_name"],record["file_id"],get_tissue_info(record["cases.0.diagnoses.0.tissue_or_organ_of_origin"]),get_pheno_info(record["cases.0.samples.0.tissue_type"]),get_gender_info(record["cases.0.demographic.gender"])))
 
     return formatted_info
 

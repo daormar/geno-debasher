@@ -1,8 +1,5 @@
 # *- bash -*
 
-# INCLUDE BASH LIBRARY
-. ${PANPIPE_HOME_DIR}/bin/panpipe_lib || exit 1
-
 ########
 print_desc()
 {
@@ -60,29 +57,63 @@ extract_file_id()
     echo $entry | ${AWK} '{print $1}'
 }
 
-get_gdc_data_for_file()
+########
+obtain_file_ids()
 {
-    local file_id=$1
-    local fields="file_id,file_name,cases.submitter_id,cases.case_id,data_category,data_type,cases.samples.tumor_descriptor,cases.samples.tissue_type,cases.samples.sample_type,cases.samples.submitter_id,cases.samples.sample_id,cases.samples.portions.analytes.aliquots.aliquot_id,cases.samples.portions.analytes.aliquots.submitter_id,cases.project.disease_type,cases.project.name,cases.project.primary_site,cases.project.project_id,analysis.workflow_type,cases.demographic.gender,cases.diagnoses.tissue_or_organ_of_origin"
+    local manifest=$1
+    local lineno=1
+    local file_ids=""
+    while read entry; do
+        if [ ${lineno} -gt 1 ]; then
+            local file_id=`extract_file_id $entry` || return 1
+            file_id="\"${file_id}\""
+            if [ -z "${file_ids}" ]; then
+                file_ids=${file_id}
+            else
+                file_ids="${file_ids},${file_id}"
+            fi
+        fi
+        lineno=$((lineno + 1))
+    done < ${manifest}
 
-    ${WGET} -O - "https://api.gdc.cancer.gov/files/${file_id}?format=tsv&fields=${fields}"
+    echo ${file_ids}
+}
+
+########
+obtain_filters()
+{
+    local manifest=$1
+    local file_ids=`obtain_file_ids $manifest`
+    
+    echo "\"op\":\"in\", \"content\": {\"field\":\"files.file_id\", \"value\": [${file_ids} ] }"
+}
+
+########
+obtain_num_ids()
+{
+    local manifest=$1
+    wc -l ${manifest} | awk '{printf"%d",$1-1}'
+}
+
+########
+obtain_payload()
+{
+    local manifest=$1
+    local filters=`obtain_filters ${manifest}`
+    local format="TSV"
+    local fields="file_id,file_name,cases.submitter_id,cases.case_id,data_category,data_type,cases.samples.tumor_descriptor,cases.samples.tissue_type,cases.samples.sample_type,cases.samples.submitter_id,cases.samples.sample_id,cases.samples.portions.analytes.aliquots.aliquot_id,cases.samples.portions.analytes.aliquots.submitter_id,cases.project.disease_type,cases.project.name,cases.project.primary_site,cases.project.project_id,analysis.workflow_type,cases.demographic.gender,cases.diagnoses.tissue_or_organ_of_origin"
+    local size=`obtain_num_ids ${manifest}`
+    
+    echo "{\"filters\": { ${filters} }, \"format\":\"${format}\" , \"fields\":\"${fields}\" , \"size\":\"${size}\"}"
 }
 
 ########
 process_pars()
 {
-    lineno=1
-    while read entry; do
-        if [ ${lineno} -gt 1 ]; then
-            file_id=`extract_file_id $entry` || return 1
-            if [ ${lineno} -eq 2 ]; then
-                get_gdc_data_for_file $file_id || return 1
-            else
-                get_gdc_data_for_file $file_id | tail -1 ; pipe_fail || return 1
-            fi
-        fi
-        lineno=$((lineno + 1))
-    done < ${manifest}
+    tmpfile=`${MKTEMP}`
+    trap "rm -f ${tmpfile} 2>/dev/null" EXIT
+    obtain_payload ${manifest} > ${tmpfile}
+    ${WGET} -O - --header='Content-Type:application/json' --post-file=${tmpfile} 'https://api.gdc.cancer.gov/files' || return 1
 }
 
 ########

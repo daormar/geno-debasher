@@ -96,12 +96,18 @@ obtain_num_ids()
 }
 
 ########
+obtain_fields()
+{
+    echo "file_id,file_name,cases.submitter_id,cases.case_id,data_category,data_type,cases.samples.tumor_descriptor,cases.samples.tissue_type,cases.samples.sample_type,cases.samples.submitter_id,cases.samples.sample_id,cases.samples.portions.analytes.aliquots.aliquot_id,cases.samples.portions.analytes.aliquots.submitter_id,cases.project.disease_type,cases.project.name,cases.project.primary_site,cases.project.project_id,analysis.workflow_type,cases.demographic.gender,cases.diagnoses.tissue_or_organ_of_origin"
+}
+
+########
 obtain_payload()
 {
     local manifest=$1
     local filters=`obtain_filters ${manifest}`
     local format="TSV"
-    local fields="file_id,file_name,cases.submitter_id,cases.case_id,data_category,data_type,cases.samples.tumor_descriptor,cases.samples.tissue_type,cases.samples.sample_type,cases.samples.submitter_id,cases.samples.sample_id,cases.samples.portions.analytes.aliquots.aliquot_id,cases.samples.portions.analytes.aliquots.submitter_id,cases.project.disease_type,cases.project.name,cases.project.primary_site,cases.project.project_id,analysis.workflow_type,cases.demographic.gender,cases.diagnoses.tissue_or_organ_of_origin"
+    local fields=`obtain_fields`
     local size=`obtain_num_ids ${manifest}`
     
     echo "{\"filters\": { ${filters} }, \"format\":\"${format}\" , \"fields\":\"${fields}\" , \"size\":\"${size}\"}"

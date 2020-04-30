@@ -56,12 +56,10 @@ def process_pars(flags,values):
     else:
         stream = open(values["file"], 'r')
 
-    # Process output of tools to query metadata. For those entries with
-    # more than two samples, generate all possible combinations of two
-    # elements without repetitions
+    # Filter entries
     for line in stream:
         line=line.strip("\n")
-        if(line.find("="+values["tumor_label"])!=-1 and line.find("="+values["healthy_label"])!=-1):
+        if line.find("="+values["tumor_label"])!=-1 and line.find("="+values["healthy_label"])!=-1:
             print(line)
 
 ##################################################

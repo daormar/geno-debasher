@@ -48,7 +48,7 @@ def print_help():
     print >> sys.stderr, ""
     print >> sys.stderr, "-m <string>    File with metadata information"
     print >> sys.stderr, "-f <int>       Output format:"
-    print >> sys.stderr, "                1: uid,filename,case_id,tissue,phenotype,gender"
+    print >> sys.stderr, "                1: case_id,sample_id,uid,filename,tissue,phenotype,gender"
     print >> sys.stderr, "                2: Same as 1 but sorted by case_id"
     print >> sys.stderr, "                3: Same as 2 but entries for same case_id appear in same line"
     print >> sys.stderr, "                4: Same as 3 but only uid, phenotype and gender is listed"
@@ -125,7 +125,7 @@ def format_info(format,metadata_info):
         return group_formatted_info_by_donor(formatted_info,[])
     elif(format==4):
         formatted_info=get_info_in_basic_format(metadata_info)
-        return group_formatted_info_by_donor(formatted_info,[0,5,6])
+        return group_formatted_info_by_donor(formatted_info,[3,5,6])
 
 ##################################################
 def print_info(formatted_info):

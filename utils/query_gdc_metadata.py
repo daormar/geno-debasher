@@ -74,7 +74,7 @@ def get_gender_info(field):
 
 ##################################################
 def get_tissue_info(field):
-    return field.replace(" ","_")
+    return "tissue="+field.replace(" ","_")
 
 ##################################################
 def extract_metadata_info(filename):

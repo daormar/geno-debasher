@@ -593,7 +593,7 @@ strelka_somatic_conda_envs()
 }
 
 ########
-mutect2_explain_cmdline_opts()
+mutect2_somatic_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
@@ -609,7 +609,7 @@ mutect2_explain_cmdline_opts()
 }
 
 ########
-mutect2_define_opts()
+mutect2_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -640,7 +640,7 @@ mutect2_define_opts()
 }
 
 ########
-mutect2()
+mutect2_somatic()
 {
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -662,7 +662,7 @@ mutect2()
 }
 
 ########
-mutect2_conda_envs()
+mutect2_somatic_conda_envs()
 {
     define_conda_env gatk4 gatk4.yml
 }

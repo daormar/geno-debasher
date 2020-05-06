@@ -1392,13 +1392,17 @@ norm_bam_to_ubam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
+    # Create tmpdir for gatk
+    tmpdir=${step_outd}/tmp
+    mkdir ${tmpdir} || exit 1
+
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate gatk4 2>&1 || exit 1
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${normalbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${tmpdir} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${normalbam} 2>&1 || exit 1
@@ -1458,13 +1462,17 @@ tum_bam_to_ubam()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
+    # Create tmpdir for gatk
+    tmpdir=${step_outd}/tmp
+    mkdir ${tmpdir} || exit 1
+
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate gatk4 2>&1 || exit 1
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT ${tumorbam} --OUTPUT ${step_outd}/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR ${tmpdir} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial bam file by the mapped one
     mv ${step_outd}/unmapped.bam ${tumorbam} 2>&1 || exit 1
@@ -1540,13 +1548,17 @@ align_norm_ubam()
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
+    # Create tmpdir for gatk
+    tmpdir=${step_outd}/tmp
+    mkdir ${tmpdir} || exit 1
+
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
     conda activate gatk4 2>&1 || exit 1
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${normalbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${tmpdir} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1579,7 +1591,7 @@ align_norm_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk CreateSequenceDictionary..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${normalbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${tmpdir} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${normalbam} 2>&1 || exit 1
@@ -1656,13 +1668,17 @@ align_tum_ubam()
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
+    # Create tmpdir for gatk
+    tmpdir=${step_outd}/tmp
+    mkdir ${tmpdir} || exit 1
+    
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
     conda activate gatk4 2>&1 || exit 1
 
     # Execute gatk SamToFastq
-    logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
+    logmsg "* Executing gatk SamToFastq..."    
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT ${tumorbam} --FASTQ ${step_outd}/reads_r1.fastq.gz --SECOND_END_FASTQ ${step_outd}/reads_r2.fastq.gz --TMP_DIR ${tmpdir} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1695,7 +1711,7 @@ align_tum_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${step_outd} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE ${ref} --UNMAPPED_BAM ${tumorbam} --ALIGNED_BAM ${step_outd}/aln.sam.gz --OUTPUT ${step_outd}/merged.bam --SORT_ORDER coordinate --TMP_DIR ${tmpdir} --MAX_RECORDS_IN_RAM ${max_records} || exit 1
 
     # Replace initial unmapped bam file by the mapped one
     mv ${step_outd}/merged.bam ${tumorbam} 2>&1 || exit 1

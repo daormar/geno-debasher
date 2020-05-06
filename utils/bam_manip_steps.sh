@@ -1539,6 +1539,19 @@ align_norm_ubam_define_opts()
 }
 
 ########
+gatk_dict_exists()
+{
+    local ref=$1
+    local ref_wo_ext="${ref%.*}"
+
+    if [ -f ${ref} -a -f ${ref_wo_ext}.dict ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+########
 align_norm_ubam()
 {
     # Initialize variables
@@ -1584,7 +1597,7 @@ align_norm_ubam()
     conda activate gatk4 2>&1 || exit 1
 
     # Create dictionary
-    if [ ! -f ${ref}.dict ]; then
+    if ! gatk_dict_exists ${ref}; then
         logmsg "* Creating dictionary for reference..."
         gatk --java-options "-Xmx4G" CreateSequenceDictionary -I ${ref}
     fi
@@ -1704,7 +1717,7 @@ align_tum_ubam()
     conda activate gatk4 2>&1 || exit 1
 
     # Create dictionary
-    if [ ! -f ${ref}.dict ]; then
+    if ! gatk_dict_exists ${ref}; then
         logmsg "* Executing gatk CreateSequenceDictionary..."
         gatk --java-options "-Xmx4G" CreateSequenceDictionary -I ${ref}
     fi

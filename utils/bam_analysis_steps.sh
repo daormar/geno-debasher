@@ -436,6 +436,11 @@ gatk_haplotypecaller_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
     # Save option list
     save_opt_list optlist    
 }
@@ -447,6 +452,7 @@ gatk_haplotypecaller()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -454,7 +460,7 @@ gatk_haplotypecaller()
 
     # Run gatk HaplotypeCaller
     logmsg "* Executing gatk HaplotypeCaller..."
-    gatk --java-options "-Xmx4g" HaplotypeCaller -R ${ref} -I ${normalbam} -O ${step_outd}/output.g.vcf.gz -ERC GVCF --tmp-dir ${step_outd} || exit 1
+    gatk --java-options "-Xmx4g" HaplotypeCaller -R ${ref} -I ${normalbam} -O ${step_outd}/output.g.vcf.gz -ERC GVCF --native-pair-hmm-threads ${cpus} --tmp-dir ${step_outd} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

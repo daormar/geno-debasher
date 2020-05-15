@@ -359,6 +359,11 @@ platypus_germline_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
     # Save option list
     save_opt_list optlist    
 }
@@ -370,6 +375,7 @@ platypus_germline_conda()
     local ref=$1
     local normalbam=$2
     local step_outd=$3
+    local cpus=$4
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -377,7 +383,7 @@ platypus_germline_conda()
 
     # Run Platypus
     logmsg "* Executing Platypus.py..."
-    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --logFileName=${step_outd}/platypus.log --verbosity=1 || exit 1
+    Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --nCPU=${cpus} --logFileName=${step_outd}/platypus.log --verbosity=1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -391,10 +397,11 @@ platypus_germline_local()
     local ref=$1
     local normalbam=$2
     local step_outd=$3
+    local cpus=$4
 
     # Run Platypus
     logmsg "* Executing Platypus.py..."
-    python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --output=${step_outd}/output.vcf --verbosity=1 2>&1 || exit 1
+    python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --nCPU=${cpus} --output=${step_outd}/output.vcf --verbosity=1 2>&1 || exit 1
 }
 
 ########
@@ -404,11 +411,12 @@ platypus_germline()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
-        platypus_germline_conda ${ref} ${normalbam} ${step_outd}
+        platypus_germline_conda ${ref} ${normalbam} ${step_outd} ${cpus}
     else
-        platypus_germline_local ${ref} ${normalbam} ${step_outd}
+        platypus_germline_local ${ref} ${normalbam} ${step_outd} ${cpus}
     fi
 }
 
@@ -657,6 +665,11 @@ mutect2_somatic_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" $tumorbam optlist || exit 1
 
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
     # Save option list
     save_opt_list optlist    
 }
@@ -669,6 +682,7 @@ mutect2_somatic()
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -676,7 +690,7 @@ mutect2_somatic()
 
     # Run Mutect2
     logmsg "* Executing gatk Mutect2..."
-    gatk --java-options "-Xmx4g" Mutect2 -R ${ref} -I ${normalbam} -I ${tumorbam} -O ${step_outd}/somatic.vcf.gz --tmp-dir ${step_outd} || exit 1
+    gatk --java-options "-Xmx4g" Mutect2 -R ${ref} -I ${normalbam} -I ${tumorbam} -O ${step_outd}/somatic.vcf.gz --native-pair-hmm-threads ${cpus} --tmp-dir ${step_outd} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

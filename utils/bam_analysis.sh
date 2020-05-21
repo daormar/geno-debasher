@@ -27,6 +27,8 @@
 bam_analysis_shared_dirs()
 {
     define_shared_dir ${DATADIR_BASENAME}
+    define_shared_dir ${SUMMARYDIR_BASENAME}
+    define_shared_dir ${GERM_SNVS_SUM_DIR_BASENAME}
 }
 
 ########
@@ -40,4 +42,5 @@ bam_analysis_fifos()
 . ${biopanpipe_bindir}/bam_download_steps || exit 1
 . ${biopanpipe_bindir}/bam_manip_steps || exit 1
 . ${biopanpipe_bindir}/bam_analysis_steps || exit 1
+. ${biopanpipe_bindir}/bam_summariz_steps || exit 1
 . ${biopanpipe_bindir}/cleaning_steps || exit 1

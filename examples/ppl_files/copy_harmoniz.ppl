@@ -16,3 +16,4 @@ strelka_somatic       cpus=4  mem=6G   time=48:00:00 stepdeps=afterok:index_norm
 mutect2_somatic       cpus=4  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
 lofreq_somatic        cpus=4  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
 msisensor             cpus=2  mem=4096 time=48:00:00 stepdeps=afterok:index_norm_bam,afterok:index_tum_bam
+merge_germline_snvs   cpus=1  mem=2048 time=48:00:00 stepdeps=afterok:strelka_germline,afterok:platypus_germline

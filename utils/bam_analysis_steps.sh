@@ -280,6 +280,12 @@ strelka_germline_define_opts()
     # -cr option
     define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || exit 1
 
+    # Get germline snvs summary directory
+    local abs_sumdir=`get_absolute_shdirname ${GERM_SNVS_SUM_DIR_BASENAME}`
+
+    # -summarydir option
+    define_opt "-summarydir" ${abs_sumdir} optlist || exit 1
+
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
@@ -297,6 +303,7 @@ strelka_germline()
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local callregf=`read_opt_value_from_line "$*" "-cr"`
+    local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Define --callRegions option
@@ -317,6 +324,11 @@ strelka_germline()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
+
+    # Create file in summary directory
+    local label=strelka_germline
+    vcf=${step_outd}/results/variants/variants.vcf.gz
+    create_summary_file ${summarydir} ${label} ${vcf}
 }
 
 ########
@@ -359,6 +371,12 @@ platypus_germline_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" $normalbam optlist || exit 1
 
+    # Get germline snvs summary directory
+    local abs_sumdir=`get_absolute_shdirname ${GERM_SNVS_SUM_DIR_BASENAME}`
+
+    # -summarydir option
+    define_opt "-summarydir" ${abs_sumdir} optlist || exit 1
+
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
@@ -375,7 +393,8 @@ platypus_germline_conda()
     local ref=$1
     local normalbam=$2
     local step_outd=$3
-    local cpus=$4
+    local summarydir=$4
+    local cpus=$5
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -388,6 +407,11 @@ platypus_germline_conda()
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
+
+    # Create file in summary directory
+    local label=platypus_germline
+    vcf=${step_outd}/output.vcf
+    create_summary_file ${summarydir} ${label} ${vcf}
 }
 
 ########
@@ -397,11 +421,17 @@ platypus_germline_local()
     local ref=$1
     local normalbam=$2
     local step_outd=$3
-    local cpus=$4
+    local summarydir=$4
+    local cpus=$5
 
     # Run Platypus
     logmsg "* Executing Platypus.py..."
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles=${normalbam} --refFile=${ref} --nCPU=${cpus} --output=${step_outd}/output.vcf --verbosity=1 2>&1 || exit 1
+
+    # Create file in summary directory
+    local label=platypus_germline
+    vcf=${step_outd}/output.vcf
+    create_summary_file ${summarydir} ${label} ${vcf}
 }
 
 ########
@@ -411,12 +441,13 @@ platypus_germline()
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
-        platypus_germline_conda ${ref} ${normalbam} ${step_outd} ${cpus}
+        platypus_germline_conda ${ref} ${normalbam} ${step_outd} ${summarydir} ${cpus}
     else
-        platypus_germline_local ${ref} ${normalbam} ${step_outd} ${cpus}
+        platypus_germline_local ${ref} ${normalbam} ${step_outd} ${summarydir} ${cpus}
     fi
 }
 

@@ -21,6 +21,9 @@
 #############
 
 DATADIR_BASENAME="data"
+SUMMARYDIR_BASENAME="summary"
+GERM_SNVS_SUM_DIR_BASENAME="summary/germline_snvs"
+SUMMARY_FILE_EXT="sum"
 
 #############
 # FUNCTIONS #
@@ -64,4 +67,16 @@ get_tumor_bam_filename()
         tumorbam=${abs_datadir}/tumor.bam
         echo $tumorbam
     fi
+}
+
+########
+create_summary_file()
+{
+    # Initialize variables
+    summarydir=$1
+    label=$2
+    vcf=$3
+
+    # Create file
+    echo "$vcf" > ${summarydir}/${label}.${SUMMARY_FILE_EXT}
 }

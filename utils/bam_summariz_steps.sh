@@ -71,6 +71,12 @@ merge_germline_snvs_define_opts()
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
+    # -mem option
+    local mem
+    mem=`extract_mem_from_stepspec "$stepspec"` || exit 1
+    mem=`slurm_to_java_mem_spec ${mem}` | exit 1
+    define_opt "-mem" $mem optlist
+
     # Save option list
     save_opt_list optlist    
 }
@@ -81,6 +87,7 @@ merge_germline_snvs()
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
+    local mem=`read_opt_value_from_line "$*" "-mem"`
 
     # Generate list file
     generate_vcf_list ${summarydir} > ${summarydir}/variant_files.list
@@ -90,7 +97,7 @@ merge_germline_snvs()
     conda activate gatk4 2>&1 || exit 1
 
     logmsg "* Executing gatk MergeVcfs..."
-    gatk --java-options "-Xmx2g" MergeVcfs -I ${summarydir}/variant_files.list -O ${summarydir}/summarized_variants.vcf.gz 
+    gatk --java-options "-Xmx${mem}" MergeVcfs -I ${summarydir}/variant_files.list -O ${summarydir}/summarized_variants.vcf.gz 
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

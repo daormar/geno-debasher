@@ -80,3 +80,10 @@ create_summary_file()
     # Create file
     echo "$vcf" > ${summarydir}/${label}.${SUMMARY_FILE_EXT}
 }
+
+########
+slurm_to_java_mem_spec()
+{
+    local mem=$1
+    echo ${mem} | ${AWK} '{if(substr($1,length($1),1) ~ /^[0-9]/) printf"%sM",$1; else printf"%s",$1}'
+}

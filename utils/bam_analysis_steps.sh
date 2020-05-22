@@ -496,6 +496,12 @@ gatk_haplotypecaller_define_opts()
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
+    # -mem option
+    local mem
+    mem=`extract_mem_from_stepspec "$stepspec"` || exit 1
+    mem=`slurm_to_java_mem_spec ${mem}` | exit 1
+    define_opt "-mem" $mem optlist
+
     # Save option list
     save_opt_list optlist    
 }
@@ -508,6 +514,7 @@ gatk_haplotypecaller()
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local mem=`read_opt_value_from_line "$*" "-mem"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -515,7 +522,7 @@ gatk_haplotypecaller()
 
     # Run gatk HaplotypeCaller
     logmsg "* Executing gatk HaplotypeCaller..."
-    gatk --java-options "-Xmx4g" HaplotypeCaller -R ${ref} -I ${normalbam} -O ${step_outd}/output.g.vcf.gz -ERC GVCF --native-pair-hmm-threads ${cpus} --tmp-dir ${step_outd} || exit 1
+    gatk --java-options "-Xmx${mem}" HaplotypeCaller -R ${ref} -I ${normalbam} -O ${step_outd}/output.g.vcf.gz -ERC GVCF --native-pair-hmm-threads ${cpus} --tmp-dir ${step_outd} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -701,8 +708,14 @@ mutect2_somatic_define_opts()
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
+    # -mem option
+    local mem
+    mem=`extract_mem_from_stepspec "$stepspec"` || exit 1
+    mem=`slurm_to_java_mem_spec ${mem}` | exit 1
+    define_opt "-mem" $mem optlist
+
     # Save option list
-    save_opt_list optlist    
+    save_opt_list optlist
 }
 
 ########
@@ -714,6 +727,7 @@ mutect2_somatic()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local mem=`read_opt_value_from_line "$*" "-mem"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -721,7 +735,7 @@ mutect2_somatic()
 
     # Run Mutect2
     logmsg "* Executing gatk Mutect2..."
-    gatk --java-options "-Xmx4g" Mutect2 -R ${ref} -I ${normalbam} -I ${tumorbam} -O ${step_outd}/somatic.vcf.gz --native-pair-hmm-threads ${cpus} --tmp-dir ${step_outd} || exit 1
+    gatk --java-options "-Xmx${mem}" Mutect2 -R ${ref} -I ${normalbam} -I ${tumorbam} -O ${step_outd}/somatic.vcf.gz --native-pair-hmm-threads ${cpus} --tmp-dir ${step_outd} || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

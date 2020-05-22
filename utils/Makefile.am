@@ -1,5 +1,5 @@
 SCRIPTS_TO_BE_BUILT= bam_common_lib genref_steps bam_download_steps	\
-bam_manip_steps cleaning_steps bam_analysis_steps bam_summariz_steps.sh	\
+bam_manip_steps cleaning_steps bam_analysis_steps bam_summariz_steps	\
 bam_analysis bam_filter bam_facets bam_ascat bam_ascatngs		\
 analyze_dataset file_shuffle filter_vcf gen_bed_for_genome		\
 check_ref_and_bam_contigs get_bam_contigs get_entrez_fasta		\

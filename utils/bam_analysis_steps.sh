@@ -499,7 +499,7 @@ gatk_haplotypecaller_define_opts()
     # -mem option
     local mem
     mem=`extract_mem_from_stepspec "$stepspec"` || exit 1
-    mem=`slurm_to_java_mem_spec ${mem}` | exit 1
+    mem=`slurm_to_java_mem_spec ${mem}` || exit 1
     define_opt "-mem" $mem optlist
 
     # Save option list
@@ -711,7 +711,7 @@ mutect2_somatic_define_opts()
     # -mem option
     local mem
     mem=`extract_mem_from_stepspec "$stepspec"` || exit 1
-    mem=`slurm_to_java_mem_spec ${mem}` | exit 1
+    mem=`slurm_to_java_mem_spec ${mem}` || exit 1
     define_opt "-mem" $mem optlist
 
     # Save option list

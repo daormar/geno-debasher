@@ -97,7 +97,7 @@ merge_germline_snvs()
     conda activate gatk4 2>&1 || exit 1
 
     logmsg "* Executing gatk MergeVcfs..."
-    gatk --java-options "-Xmx${mem}" MergeVcfs -I ${summarydir}/variant_files.list -O ${summarydir}/summarized_variants.vcf.gz || exit 1
+    gatk --java-options "-Xmx${mem}" MergeVcfs -I ${summarydir}/variant_files.list -O ${summarydir}/merged_variants.vcf.gz || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

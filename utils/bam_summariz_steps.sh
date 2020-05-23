@@ -28,10 +28,10 @@
 generate_vcf_list()
 {
     # Initialize variables
-    summarydir=$1
+    local summarydir=$1
 
     # Generate vcf list
-    for file in ${symmarydir}/*.${SUMMARY_FILE_EXT}; do
+    for file in ${summarydir}/*.${SUMMARY_FILE_EXT}; do
         cat ${file}
     done
 }
@@ -90,7 +90,7 @@ merge_germline_snvs()
     local mem=`read_opt_value_from_line "$*" "-mem"`
 
     # Generate list file
-    generate_vcf_list ${summarydir} > ${summarydir}/variant_files.list
+    generate_vcf_list ${summarydir} > ${summarydir}/variant_files.list || exit 1
     
     # Activate conda environment
     logmsg "* Activating conda environment..."

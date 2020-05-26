@@ -20,6 +20,9 @@
 # CONSTANTS #
 #############
 
+GERMLINE_NORMAL_SAMPLE_NAME="germline_normal"
+REHEADERED_VCF_EXT="rehead"
+
 ###########################
 # BAM SUMMARIZATION STEPS #
 ###########################
@@ -29,27 +32,47 @@ generate_vcf_list()
 {
     # Initialize variables
     local summarydir=$1
+    local extension=$2
 
     # Generate vcf list
-    for file in ${summarydir}/*.${SUMMARY_FILE_EXT}; do
-        cat ${file}
+    for file in ${summarydir}/*.${extension}; do
+        echo ${file}
     done
 }
 
 ########
-merge_germline_snvs_document()
+reheader_vcf_list()
 {
-    step_description "Merge generated germline vcfs."
+    # Initialize variables
+    local summarydir=$1
+    local extension=$2
+    local samplename=$3
+
+    # Generate file necessary for reheadering
+    echo ${samplename} > ${summary}/snames.txt
+
+    # Generate vcf list
+    for file in ${summarydir}/*.${extension}; do
+        local vcf=`cat ${file}`
+        local vcf_basen=`basename ${vcf}`
+        bcftools -s ${summary}/snames.txt ${vcf} > ${summaydir}/${vcf_basen}.${REHEADERED_VCF_EXT}
+    done
 }
 
 ########
-merge_germline_snvs_explain_cmdline_opts()
+concat_germline_snvs_document()
+{
+    step_description "Concatenate generated germline vcfs."
+}
+
+########
+concat_germline_snvs_explain_cmdline_opts()
 {
     :
 }
 
 ########
-merge_germline_snvs_define_opts()
+concat_germline_snvs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -82,30 +105,37 @@ merge_germline_snvs_define_opts()
 }
 
 ########
-merge_germline_snvs()
+concat_germline_snvs()
 {
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
     local mem=`read_opt_value_from_line "$*" "-mem"`
-
-    # Generate list file
-    generate_vcf_list ${summarydir} > ${summarydir}/variant_files.list || exit 1
     
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gatk4 2>&1 || exit 1
+    conda activate bcftools 2>&1 || exit 1
 
-    logmsg "* Executing gatk MergeVcfs..."
-    gatk --java-options "-Xmx${mem}" MergeVcfs -I ${summarydir}/variant_files.list -O ${summarydir}/merged_variants.vcf.gz || exit 1
+    # Reheader vcfs
+    logmsg "* Reheadering list of vcfs..."
+    reheader_vcf_list ${summarydir} ${SUMMARY_FILE_EXT} ${GERMLINE_NORMAL_SAMPLE_NAME} || exit 1
+
+    # Generate list file
+    generate_vcf_list ${summarydir} ${REHEADERED_VCF_EXT} > ${summarydir}/variant_files.list || exit 1
+
+    logmsg "* Executing bcftools concat..."
+    bcftools concat -f ${summarydir}/variant_files.list > ${summarydir}/merged_variants.vcf.gz || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
+
+    # Clean reheadered vcf files
+    rm ${summarydir}/variant_files.list ${summarydir}/*.${REHEADERED_VCF_EXT}
 }
 
 ########
-merge_germline_snvs_conda_envs()
+concat_germline_snvs_conda_envs()
 {
-    define_conda_env gatk4 gatk4.yml
+    define_conda_env bcftools bcftools.yml
 }

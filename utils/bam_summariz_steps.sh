@@ -94,12 +94,6 @@ concat_germline_snvs_define_opts()
     cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
     define_opt "-cpus" $cpus optlist
 
-    # -mem option
-    local mem
-    mem=`extract_mem_from_stepspec "$stepspec"` || exit 1
-    mem=`slurm_to_java_mem_spec ${mem}` || exit 1
-    define_opt "-mem" $mem optlist
-
     # Save option list
     save_opt_list optlist    
 }
@@ -110,7 +104,6 @@ concat_germline_snvs()
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
-    local mem=`read_opt_value_from_line "$*" "-mem"`
     
     # Activate conda environment
     logmsg "* Activating conda environment..."

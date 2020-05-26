@@ -117,7 +117,7 @@ concat_germline_snvs()
     generate_vcf_list ${summarydir} ${REHEADERED_VCF_EXT} > ${summarydir}/variant_files.list || exit 1
 
     logmsg "* Executing bcftools concat..."
-    bcftools concat -f ${summarydir}/variant_files.list > ${summarydir}/merged_variants.vcf.gz || exit 1
+    bcftools concat -f ${summarydir}/variant_files.list > ${summarydir}/concat_variants.vcf.gz || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

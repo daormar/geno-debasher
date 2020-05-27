@@ -1136,9 +1136,9 @@ download_gdc_norm_bam_explain_cmdline_opts()
     description="External database id of normal bam file to download"
     explain_cmdline_opt "-extn" "<string>" "$description"
 
-    # -gdprocs option
+    # -gdcprocs option
     description="Number of processes used by the gdc download client (${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} by default)"
-    explain_cmdline_opt "-gdprocs" "<int>" "$description"
+    explain_cmdline_opt "-gdcprocs" "<int>" "$description"
 
     # -gdctok option
     description="GDC API auth token file"
@@ -1164,8 +1164,8 @@ download_gdc_norm_bam_define_opts()
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
 
-    # -gdprocs option
-    define_cmdline_nonmandatory_opt "$cmdline" "-gdprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || exit 1
+    # -gdcprocs option
+    define_cmdline_nonmandatory_opt "$cmdline" "-gdcprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || exit 1
 
     # -gdctok option
     define_cmdline_opt "$cmdline" "-gdctok" optlist || exit 1
@@ -1200,7 +1200,7 @@ download_gdc_norm_bam()
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local gdcid_normalbam=`read_opt_value_from_line "$*" "-extn"`
-    local gdprocs=`read_opt_value_from_line "$*" "-gdprocs"`
+    local gdcprocs=`read_opt_value_from_line "$*" "-gdcprocs"`
     local gdctok=`read_opt_value_from_line "$*" "-gdctok"`
     local download_tries=`read_opt_value_from_line "$*" "-nt"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -1210,7 +1210,7 @@ download_gdc_norm_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_normalbam} 2>/dev/null || exit 1
+    gdc-client download -n ${gdcprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_normalbam} 2>/dev/null || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1235,9 +1235,9 @@ download_gdc_tum_bam_explain_cmdline_opts()
     description="External database id of tumor bam file to download"
     explain_cmdline_opt "-extt" "<string>" "$description"
 
-    # -gdprocs option
+    # -gdcprocs option
     description="Number of processes used by the gdc download client (${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} by default)"
-    explain_cmdline_opt "-gdprocs" "<int>" "$description"
+    explain_cmdline_opt "-gdcprocs" "<int>" "$description"
 
     # -gdctok option
     description="GDC API auth token file"
@@ -1263,8 +1263,8 @@ download_gdc_tum_bam_define_opts()
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
 
-    # -gdprocs option
-    define_cmdline_nonmandatory_opt "$cmdline" "-gdprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || exit 1
+    # -gdcprocs option
+    define_cmdline_nonmandatory_opt "$cmdline" "-gdcprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || exit 1
 
     # -gdctok option
     define_cmdline_opt "$cmdline" "-gdctok" optlist || exit 1
@@ -1287,7 +1287,7 @@ download_gdc_tum_bam()
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local gdcid_tumorbam=`read_opt_value_from_line "$*" "-extt"`
-    local gdprocs=`read_opt_value_from_line "$*" "-gdprocs"`
+    local gdcprocs=`read_opt_value_from_line "$*" "-gdcprocs"`
     local gdctok=`read_opt_value_from_line "$*" "-gdctok"`
     local download_tries=`read_opt_value_from_line "$*" "-nt"`
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
@@ -1297,7 +1297,7 @@ download_gdc_tum_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_tumorbam} 2>/dev/null || exit 1
+    gdc-client download -n ${gdcprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_tumorbam} 2>/dev/null || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

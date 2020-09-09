@@ -234,6 +234,117 @@ manta_somatic_conda_envs()
 }
 
 ########
+gridss_somatic_document()
+{
+    step_description "Analyzes a pair of normal and tumor \`bam\` files using Gridss."
+}
+
+########
+gridss_somatic_explain_cmdline_opts()
+{
+    # -r option
+    description="Reference genome file"
+    explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -n option
+    description="Normal bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -t option
+    description="Tumor bam file (required if no downloading steps have been defined)"
+    explain_cmdline_opt "-t" "<string>" "$description"
+
+    # -bl option
+    description="BED file containing regions to ignore."
+    explain_cmdline_opt "-bl" "<string>" "$description"
+}
+
+########
+gridss_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local stepspec=$2
+    local optlist=""
+
+    # Define the -step-outd option, the output directory for the step
+    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
+    define_opt "-step-outd" ${step_outd} optlist || exit 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || exit 1
+    define_opt "-r" $genref optlist || exit 1
+
+    # -normalbam option
+    local normalbam
+    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    define_opt "-normalbam" $normalbam optlist || exit 1
+
+    # -tumorbam option
+    local tumorbam
+    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    define_opt "-tumorbam" $tumorbam optlist || exit 1
+
+    # -bl option
+    define_cmdline_infile_nonmand_opt "$cmdline" "-bl" ${NOFILE} optlist || exit 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+get_blacklist_opt()
+{
+    local blacklistf=$1
+    local baseblacklistf=`$BASENAME ${blacklistf}`
+
+    if [ "${baseblacklistf}" = ${NOFILE} -o "${blacklistf}" = "" ]; then
+        echo ""
+    else
+        echo "--blacklist ${blacklistf}"
+    fi
+}
+
+########
+gridss_somatic()
+{
+    # Initialize variables
+    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local ref=`read_opt_value_from_line "$*" "-r"`
+    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local blacklist=`read_opt_value_from_line "$*" "-bl"`
+    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+
+    # Define --blacklist option
+    blacklist_opt=`get_blacklist_opt "${blacklist}"`
+
+    # Activate conda environment
+    logmsg "* Activating conda environment..."
+    conda activate gridss 2>&1 || exit 1
+
+    # Execute Gridss
+    logmsg "* Executing Gridss..."
+    gridss.sh --reference ${ref} --output ${step_outd}/output.vcf.gz --threads ${cpus} ${blacklist_opt} ${normalbam} ${tumorbam} 2>&1 || exit 1
+
+    # Deactivate conda environment
+    logmsg "* Deactivating conda environment..."
+    conda deactivate 2>&1
+}
+
+########
+gridss_somatic_conda_envs()
+{
+    define_conda_env gridss gridss.yml
+}
+
+########
 strelka_germline_document()
 {
     step_description "Analyzes a normal \`bam\` files using Strelka."

@@ -46,32 +46,32 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["a_given"]==False):
-        print >> sys.stderr, "Error! -a parameter not given"
+        print("Error! -a parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "get_entrez_fasta -a <string>"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-a <string>    Accession number of the FASTA data to download"
+    print("get_entrez_fasta -a <string>", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-a <string>    Accession number of the FASTA data to download", file=sys.stderr)
 
 ##################################################
 def get_info(url,num_retries,time_between_retries=1):
     success=False
     for i in range(num_retries):
-        print >> sys.stderr, "Getting data from",url,"( Attempt:",i+1,")"
+        print("Getting data from",url,"( Attempt:",i+1,")", file=sys.stderr)
         try:
             req=requests.get(url)
             req.raise_for_status()
             success=True
             break
         except requests.exceptions.RequestException as e:
-            print >> sys.stderr, e
+            print(e, file=sys.stderr)
             time.sleep(time_between_retries)
     if success:
         return req
     else:
-        print >> sys.stderr, "Maximum number of attempts exceeded, aborting"
+        print("Maximum number of attempts exceeded, aborting", file=sys.stderr)
         sys.exit(1)
         
 ##################################################
@@ -88,8 +88,8 @@ def extract_esearch_info(accession):
     # Check for errors
     for child in root:
         if child.tag=="ErrorList":
-            print >> sys.stderr, "Error while extracting esearch information, aborting (see request result below)"
-            print >> sys.stderr,req.content
+            print("Error while extracting esearch information, aborting (see request result below)", file=sys.stderr)
+            print(req.content, file=sys.stderr)
             sys.exit(1)
             
     # Extract QueryKey and WebEnv fields
@@ -103,7 +103,7 @@ def extract_esearch_info(accession):
 
     # Check for possible errors
     if key is None or web is None:
-        print >> sys.stderr, "Something went wrong while extracting esearch information, aborting"
+        print("Something went wrong while extracting esearch information, aborting", file=sys.stderr)
         sys.exit(1)
 
     return key,web
@@ -119,8 +119,8 @@ def post_efetch_info(key,web):
     # If request content is in xml format, then retrieval has gone wrong
     try:
         root = ET.fromstring(req.content)
-        print >> sys.stderr, "Error while extracting efetch information, aborting (see request result below)"
-        print >> sys.stderr,req.content
+        print("Error while extracting efetch information, aborting (see request result below)", file=sys.stderr)
+        print(req.content, file=sys.stderr)
         sys.exit(1)
     except ET.ParseError as e:
         pass
@@ -132,7 +132,7 @@ def process_pars(flags,values):
     key,web=extract_esearch_info(values["accession"])
         
     req=post_efetch_info(key,web)
-    print req.content
+    print(req.content)
     
 ##################################################
 def main(argv):

@@ -49,19 +49,19 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["h_given"]==False):
-        print >> sys.stderr, "Error! -h parameter not given"
+        print("Error! -h parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["l_given"]==False):
-        print >> sys.stderr, "Error! -l parameter not given"
+        print("Error! -l parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "get_filtered_sam_header -h <string> -l <string>"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-h <string>    File with SAM header"
-    print >> sys.stderr, "-l <string>    List of contigs to keep (one contig name per line)"
+    print("get_filtered_sam_header -h <string> -l <string>", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-h <string>    File with SAM header", file=sys.stderr)
+    print("-l <string>    List of contigs to keep (one contig name per line)", file=sys.stderr)
 
 ##################################################
 def get_contigs_to_keep(listc):
@@ -84,12 +84,12 @@ def process_pars(flags,values):
         line=line.strip("\n")
         fields=line.split()
         if(fields[0] != "@SQ"):
-            print line
+            print(line)
         else:
             seqname=fields[1]
             seqname_fields=seqname.split(":")
             if(seqname_fields[1] in contigs_to_keep):
-                print line
+                print(line)
                                    
 ##################################################
 def main(argv):

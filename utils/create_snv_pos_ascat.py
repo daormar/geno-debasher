@@ -57,26 +57,26 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["m_given"]==False):
-        print >> sys.stderr, "Error! -m parameter not given"
+        print("Error! -m parameter not given", file=sys.stderr)
         sys.exit(2)
     if(flags["g_given"]==False):
-        print >> sys.stderr, "Error! -g parameter not given"
+        print("Error! -g parameter not given", file=sys.stderr)
         sys.exit(2)
     if(flags["v_given"]==False):
-        print >> sys.stderr, "Error! -v parameter not given"
+        print("Error! -v parameter not given", file=sys.stderr)
         sys.exit(2)
     if(flags["l_given"]==False):
-        print >> sys.stderr, "Error! -l parameter not given"
+        print("Error! -l parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "create_snv_pos_ascat -m <float> -g <int> -v <string> -l <string>"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-m <float>     MAF value"
-    print >> sys.stderr, "-g <int>       GAP value"
-    print >> sys.stderr, "-v <string>    VCF file name"
-    print >> sys.stderr, "-l <string>    List of contigs (one contig name per line)"
+    print("create_snv_pos_ascat -m <float> -g <int> -v <string> -l <string>", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-m <float>     MAF value", file=sys.stderr)
+    print("-g <int>       GAP value", file=sys.stderr)
+    print("-v <string>    VCF file name", file=sys.stderr)
+    print("-l <string>    List of contigs (one contig name per line)", file=sys.stderr)
 
 ##################################################
 def get_contigs(listc):
@@ -116,7 +116,7 @@ def process_vcf(maf,gap,vcf,contigs):
 
                 # Print data when appropriate
                 if(entry_is_snv and entry_maf >= maf and (prev_event_contig!=entry_contig or (prev_event_contig==entry_contig and entry_pos-gap > prev_event_pos))):
-                    print "{}\t{}\t{}".format(entry_id, entry_contig, entry_pos)
+                    print("{}\t{}\t{}".format(entry_id, entry_contig, entry_pos))
                     prev_event_contig=entry_contig
                     prev_event_pos=entry_pos
 

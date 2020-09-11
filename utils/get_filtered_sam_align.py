@@ -45,14 +45,14 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["l_given"]==False):
-        print >> sys.stderr, "Error! -l parameter not given"
+        print("Error! -l parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "get_filtered_sam_align -l <string>"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-l <string>    List of contigs to keep (one contig name per line)"
+    print("get_filtered_sam_align -l <string>", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-l <string>    List of contigs to keep (one contig name per line)", file=sys.stderr)
 
 ##################################################
 def getContigsToKeep(listc):
@@ -171,9 +171,9 @@ def process_pars(flags,values):
         line=line.strip("\n")
         filter_required,filtered_entry=obtain_filtered_entry(line,contigs_to_keep)
         if filter_required:
-            print filtered_entry
+            print(filtered_entry)
         else:
-            print line
+            print(line)
         lineno+=1
                 
 ##################################################

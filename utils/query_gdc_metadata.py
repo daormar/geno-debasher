@@ -52,25 +52,25 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["m_given"]==False):
-        print >> sys.stderr, "Error! -m parameter not given"
+        print("Error! -m parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["f_given"]==False):
-        print >> sys.stderr, "Error! -f parameter not given"
+        print("Error! -f parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "query_gdc_metadata -m <string> -f <int>"
-    print >> sys.stderr, "                   [-v]"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-m <string>    File with metadata information"
-    print >> sys.stderr, "-f <int>       Output format:"
-    print >> sys.stderr, "                1: case_id,sample_id,uid,filename,tissue,phenotype,gender"
-    print >> sys.stderr, "                2: Same as 1 but sorted by case_id"
-    print >> sys.stderr, "                3: Same as 2 but entries for same case_id appear in same line"
-    print >> sys.stderr, "                4: Same as 3 but only uid, phenotype and gender is listed"
-    print >> sys.stderr, "-v             Verbose mode"
+    print("query_gdc_metadata -m <string> -f <int>", file=sys.stderr)
+    print("                   [-v]", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-m <string>    File with metadata information", file=sys.stderr)
+    print("-f <int>       Output format:", file=sys.stderr)
+    print("                1: case_id,sample_id,uid,filename,tissue,phenotype,gender", file=sys.stderr)
+    print("                2: Same as 1 but sorted by case_id", file=sys.stderr)
+    print("                3: Same as 2 but entries for same case_id appear in same line", file=sys.stderr)
+    print("                4: Same as 3 but only uid, phenotype and gender is listed", file=sys.stderr)
+    print("-v             Verbose mode", file=sys.stderr)
 
 ##################################################
 def get_pheno_info(field):
@@ -167,7 +167,7 @@ def print_info(formatted_info):
                 row=elem[i]
             else:
                 row=row+" "+elem[i]
-        print row
+        print(row)
 
 ##################################################
 def process_pars(flags,values):

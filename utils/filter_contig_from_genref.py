@@ -57,7 +57,7 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["g_given"]==False):
-        print >> sys.stderr, "Error! -g parameter not given"
+        print("Error! -g parameter not given", file=sys.stderr)
         sys.exit(2)
 
     # Check mutually exclusive options
@@ -70,20 +70,20 @@ def check_pars(flags,values):
         num_simul = num_simul + 1
 
     if num_simul==0:
-        print >> sys.stderr, "Error! -r, -k or -l parameter not given"
+        print("Error! -r, -k or -l parameter not given", file=sys.stderr)
         sys.exit(2)
     elif num_simul>1:
-        print >> sys.stderr, "Error! -r, -k or -l cannot be given simultaneously"
+        print("Error! -r, -k or -l cannot be given simultaneously", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "filter_contig_from_genref -g <string> {-r <string> | -k <string> | -l <string>}"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-g <string>    File with genome reference"
-    print >> sys.stderr, "-r <string>    Name of contig to remove"
-    print >> sys.stderr, "-k <string>    Name of contig to keep"
-    print >> sys.stderr, "-l <string>    File with list of contigs to keep (one contig name per line)"
+    print("filter_contig_from_genref -g <string> {-r <string> | -k <string> | -l <string>}", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-g <string>    File with genome reference", file=sys.stderr)
+    print("-r <string>    Name of contig to remove", file=sys.stderr)
+    print("-k <string>    Name of contig to keep", file=sys.stderr)
+    print("-l <string>    File with list of contigs to keep (one contig name per line)", file=sys.stderr)
 
 ##################################################
 def getContigsToKeep(listc):
@@ -125,7 +125,7 @@ def process_pars(flags,values):
                 skip=False
             
         if(not skip):
-            print line
+            print(line)
                                    
 ##################################################
 def main(argv):

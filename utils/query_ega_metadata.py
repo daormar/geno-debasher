@@ -89,37 +89,37 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["s_given"]==False):
-        print >> sys.stderr, "Error! -s parameter not given"
+        print("Error! -s parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["a_given"]==False):
-        print >> sys.stderr, "Error! -a parameter not given"
+        print("Error! -a parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["t_given"]==False):
-        print >> sys.stderr, "Error! -t parameter not given"
+        print("Error! -t parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["f_given"]==False):
-        print >> sys.stderr, "Error! -f parameter not given"
+        print("Error! -f parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "query_ega_metadata -s <string> -a <string> -t <string> -f <int>"
-    print >> sys.stderr, "                   [-p <string>] [-v]"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-s <string>    File with sample information"
-    print >> sys.stderr, "-a <string>    File with analysis information"
-    print >> sys.stderr, "-t <string>    File with study information"
-    print >> sys.stderr, "-f <int>       Output format:"
-    print >> sys.stderr, "                1: SAMPLE_ACCESSION EGA_SAMPLE_ID FILE_ACCESSION FILENAME ASPERA_BOX_FILENAME DONOR_ID PHENOTYPE GENDER"
-    print >> sys.stderr, "                2: Same as 1 but sorted by donor_id"
-    print >> sys.stderr, "                3: Same as 2 but entries for same donor_id appear in same line"
-    print >> sys.stderr, "                4: Same as 3 but only EGA_SAMPLE_ID, PHENOTYPE and GENDER are listed"
-    print >> sys.stderr, "                5: Same as 3 but only ASPERA_BOX_FILENAME, PHENOTYPE and GENDER are listed (-p option is required)"
-    print >> sys.stderr, "-p <string>    File listing Aspera box content"
-    print >> sys.stderr, "-v             Verbose mode"
+    print("query_ega_metadata -s <string> -a <string> -t <string> -f <int>", file=sys.stderr)
+    print("                   [-p <string>] [-v]", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-s <string>    File with sample information", file=sys.stderr)
+    print("-a <string>    File with analysis information", file=sys.stderr)
+    print("-t <string>    File with study information", file=sys.stderr)
+    print("-f <int>       Output format:", file=sys.stderr)
+    print("                1: SAMPLE_ACCESSION EGA_SAMPLE_ID FILE_ACCESSION FILENAME ASPERA_BOX_FILENAME DONOR_ID PHENOTYPE GENDER", file=sys.stderr)
+    print("                2: Same as 1 but sorted by donor_id", file=sys.stderr)
+    print("                3: Same as 2 but entries for same donor_id appear in same line", file=sys.stderr)
+    print("                4: Same as 3 but only EGA_SAMPLE_ID, PHENOTYPE and GENDER are listed", file=sys.stderr)
+    print("                5: Same as 3 but only ASPERA_BOX_FILENAME, PHENOTYPE and GENDER are listed (-p option is required)", file=sys.stderr)
+    print("-p <string>    File listing Aspera box content", file=sys.stderr)
+    print("-v             Verbose mode", file=sys.stderr)
 
 ##################################################
 def standardize_filename(filename):
@@ -307,7 +307,7 @@ def print_info(formatted_info):
                 row=elem[i]
             else:
                 row=row+" "+elem[i]
-        print row
+        print(row)
 
 ##################################################
 def process_pars(flags,values):

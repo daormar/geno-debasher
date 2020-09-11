@@ -49,10 +49,10 @@ def check_pars(flags,values):
     
 ##################################################
 def print_help():
-    print >> sys.stderr, "get_two_elem_combs [-f <string>]"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-f <string>        File containing output of query metadata tools (if not"
-    print >> sys.stderr, "                   given, input is read from stdin)"
+    print("get_two_elem_combs [-f <string>]", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-f <string>        File containing output of query metadata tools (if not", file=sys.stderr)
+    print("                   given, input is read from stdin)", file=sys.stderr)
 
 ##################################################
 def reverse(string): 
@@ -80,7 +80,7 @@ def get_positions_of_ones(binary_num):
 def print_combination(positions,fields):
     sample1=fields[positions[0]].strip()
     sample2=fields[positions[1]].strip()
-    print(sample1+" ; "+sample2)
+    print((sample1+" ; "+sample2))
     
 ##################################################
 def process_entry_with_more_than_two_samples(fields):

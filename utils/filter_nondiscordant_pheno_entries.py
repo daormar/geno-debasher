@@ -59,12 +59,12 @@ def check_pars(flags,values):
     
 ##################################################
 def print_help():
-    print >> sys.stderr, "filter_nondiscordant_pheno_entries [-f <string>] [-h <string>] [-t <string>]"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-f <string>        File containing output of query metadata tools (if not"
-    print >> sys.stderr, "                   given, input is read from stdin)"
-    print >> sys.stderr, "-h <string>        Label to identify healthy samples (\"non-tumor\" by default)"
-    print >> sys.stderr, "-t <string>        Label to identify tumor samples (\"tumor\" by default)"
+    print("filter_nondiscordant_pheno_entries [-f <string>] [-h <string>] [-t <string>]", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-f <string>        File containing output of query metadata tools (if not", file=sys.stderr)
+    print("                   given, input is read from stdin)", file=sys.stderr)
+    print("-h <string>        Label to identify healthy samples (\"non-tumor\" by default)", file=sys.stderr)
+    print("-t <string>        Label to identify tumor samples (\"tumor\" by default)", file=sys.stderr)
 
 ##################################################
 def process_pars(flags,values):

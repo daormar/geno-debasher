@@ -77,35 +77,35 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["d_given"]==False):
-        print >> sys.stderr, "Error! -d parameter not given"
+        print("Error! -d parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["a_given"]==False):
-        print >> sys.stderr, "Error! -a parameter not given"
+        print("Error! -a parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["t_given"]==False):
-        print >> sys.stderr, "Error! -t parameter not given"
+        print("Error! -t parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["f_given"]==False):
-        print >> sys.stderr, "Error! -f parameter not given"
+        print("Error! -f parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "query_icgc_metadata -d <string> -a <string> -t <string> -f <int> [-v]"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-d <string>    File with donor information"
-    print >> sys.stderr, "-a <string>    File with aws manifest"
-    print >> sys.stderr, "-t <string>    Table file in json format"
-    print >> sys.stderr, "-f <int>       Output format:"
-    print >> sys.stderr, "                1: FILE_ID OBJECT_ID FILENAME DONOR_ID PHENOTYPE GENDER"
-    print >> sys.stderr, "                2: Same as 1 but sorted by donor_id"
-    print >> sys.stderr, "                3: Same as 2 but entries for same donor_id appear in same line"
-    print >> sys.stderr, "                4: Same as 3 but mini-bam files are excluded"
-    print >> sys.stderr, "                5: Same as 3 but only OBJECT_ID, PHENOTYPE and GENDER are listed"
-    print >> sys.stderr, "-v             Verbose mode"
+    print("query_icgc_metadata -d <string> -a <string> -t <string> -f <int> [-v]", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-d <string>    File with donor information", file=sys.stderr)
+    print("-a <string>    File with aws manifest", file=sys.stderr)
+    print("-t <string>    Table file in json format", file=sys.stderr)
+    print("-f <int>       Output format:", file=sys.stderr)
+    print("                1: FILE_ID OBJECT_ID FILENAME DONOR_ID PHENOTYPE GENDER", file=sys.stderr)
+    print("                2: Same as 1 but sorted by donor_id", file=sys.stderr)
+    print("                3: Same as 2 but entries for same donor_id appear in same line", file=sys.stderr)
+    print("                4: Same as 3 but mini-bam files are excluded", file=sys.stderr)
+    print("                5: Same as 3 but only OBJECT_ID, PHENOTYPE and GENDER are listed", file=sys.stderr)
+    print("-v             Verbose mode", file=sys.stderr)
 
 ##################################################
 def extract_donor_info(filename):
@@ -245,7 +245,7 @@ def print_info(formatted_info):
                 row=elem[i]
             else:
                 row=row+" "+elem[i]
-        print row
+        print(row)
 
 ##################################################
 def process_pars(flags,values):

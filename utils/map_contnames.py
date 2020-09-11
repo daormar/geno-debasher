@@ -57,22 +57,22 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["m_given"]==False):
-        print >> sys.stderr, "Error! -m parameter not given"
+        print("Error! -m parameter not given", file=sys.stderr)
         sys.exit(2)
 
     if(flags["c_given"]==False):
-        print >> sys.stderr, "Error! -c parameter not given"
+        print("Error! -c parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "map_contnames -m <string> -f <string> -c <int> [--invert]"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-m <string>    File with contig to contig mapping"
-    print >> sys.stderr, "-f <string>    File where mapping needs to be done (if not given,"
-    print >> sys.stderr, "               input is read from stdin)"
-    print >> sys.stderr, "-c <int>       Column to be mapped (numbered from 0)"
-    print >> sys.stderr, "--invert       Invert mapping"   
+    print("map_contnames -m <string> -f <string> -c <int> [--invert]", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-m <string>    File with contig to contig mapping", file=sys.stderr)
+    print("-f <string>    File where mapping needs to be done (if not given,", file=sys.stderr)
+    print("               input is read from stdin)", file=sys.stderr)
+    print("-c <int>       Column to be mapped (numbered from 0)", file=sys.stderr)
+    print("--invert       Invert mapping", file=sys.stderr)   
 
 ##################################################
 def get_contig_map(mapf):
@@ -118,9 +118,9 @@ def map_contigs(filename,contig_map,inv_contig_map,col,invert):
                         modified_line=modified_line+selected_contig_map[contig]
                     else:
                         modified_line=modified_line+fields[i]
-                print modified_line
+                print(modified_line)
             else:
-                print line
+                print(line)
 
 ##################################################
 def process_pars(flags,values):

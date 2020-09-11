@@ -50,16 +50,16 @@ def take_pars():
 ##################################################
 def check_pars(flags,values):
     if(flags["f_given"]==False):
-        print >> sys.stderr, "Error! -f parameter not given"
+        print("Error! -f parameter not given", file=sys.stderr)
         sys.exit(2)
 
 ##################################################
 def print_help():
-    print >> sys.stderr, "filter_vcf -f <string> -c <int>"
-    print >> sys.stderr, ""
-    print >> sys.stderr, "-f <string>  name of VCF. To avoid possible problems, it is better that the"
-    print >> sys.stderr, "             file is bgzipped and tabix indexed"
-    print >> sys.stderr, "-c <float>   Alternate allele frequencies threshold"
+    print("filter_vcf -f <string> -c <int>", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("-f <string>  name of VCF. To avoid possible problems, it is better that the", file=sys.stderr)
+    print("             file is bgzipped and tabix indexed", file=sys.stderr)
+    print("-c <float>   Alternate allele frequencies threshold", file=sys.stderr)
 
 ##################################################
 def check_altaft(line,altaft):

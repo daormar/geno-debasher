@@ -75,6 +75,11 @@ def read_seqs(filename):
     return seqs
     
 ##################################################
+def extract_seq_name(line):
+    fields=line.split()
+    return fields[0][1:]
+    
+##################################################
 def load_fasta(filename):
     fasta= open(filename)
     seq_dict= {}
@@ -84,6 +89,7 @@ def load_fasta(filename):
             break
         if line.strip().startswith('>'):
             seq_name= line.strip()[1:]
+            seq_name= extract_seq_name(line.strip("\n"))
             seq_dict[seq_name]= []
         else:
             seq_dict[seq_name].append(line.strip())

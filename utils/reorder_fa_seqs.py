@@ -88,9 +88,8 @@ def load_fasta(filename):
         if line == '':
             break
         if line.strip().startswith('>'):
-            seq_name= line.strip()[1:]
-            seq_name= extract_seq_name(line.strip("\n"))
-            seq_dict[seq_name]= []
+            seq_name=extract_seq_name(line.strip("\n"))
+            seq_dict[seq_name]=[]
         else:
             seq_dict[seq_name].append(line.strip())
     fasta.close()

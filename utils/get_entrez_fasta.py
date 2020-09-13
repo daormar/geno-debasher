@@ -132,7 +132,7 @@ def process_pars(flags,values):
     key,web=extract_esearch_info(values["accession"])
         
     req=post_efetch_info(key,web)
-    print(req.content)
+    print(req.text)
     
 ##################################################
 def main(argv):

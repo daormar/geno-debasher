@@ -9,7 +9,7 @@ query_gdc_metadata create_genref_for_bam filter_contig_from_genref	\
 get_filtered_sam_header get_filtered_sam_align map_contnames		\
 map_vcf_contnames run_facets run_sequenza convert_allele_counts		\
 run_ascat get_two_elem_combs filter_nondiscordant_pheno_entries		\
-reorder_fa_seqs
+reorder_fa_seqs reorder_fa_seqs_lowmem
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
@@ -28,7 +28,7 @@ filter_contig_from_genref.py get_filtered_sam_header.py			\
 get_filtered_sam_align.py map_contnames.py map_vcf_contnames.py		\
 run_facets.R run_sequenza.R convert_allele_counts.R run_ascat.R		\
 get_two_elem_combs.py filter_nondiscordant_pheno_entries.py		\
-reorder_fa_seqs.py
+reorder_fa_seqs.py reorder_fa_seqs_lowmem.sh
 
 # Build rules for libraries and bash files implementing steps
 bam_common_lib: bam_common_lib.sh

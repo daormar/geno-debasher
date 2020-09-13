@@ -363,11 +363,11 @@ process_pars()
 
     # Get reference contigs
     echo "* Obtaining list of current reference contig names and their lengths..." >&2
-    get_ref_contig_names $baseref > ${outd}/refcontigs
+    get_ref_contig_names $baseref > ${outd}/refcontigs || return 1
 
     # Get bam contigs
     echo "* Obtaining list of bam contig names and their lengths..." >&2
-    get_bam_contig_names $bam > ${outd}/bamcontigs
+    get_bam_contig_names $bam > ${outd}/bamcontigs || return 1
     
     # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
@@ -375,7 +375,7 @@ process_pars()
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/refcontigs_to_keep > $outfile
+    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/refcontigs_to_keep > ${outd}/unordered_ref.fa || return 1
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
@@ -392,7 +392,7 @@ process_pars()
     # Index created reference
     echo "* Indexing created reference..." >&2
     samtools faidx ${outfile} || return 1
-    extract_contig_info_from_fai ${outfile}.fai > ${outd}/created_ref_contigs
+    extract_contig_info_from_fai ${outfile}.fai > ${outd}/created_ref_contigs || return 1
 
     # Check created reference
     echo "* Checking created reference..." >&2

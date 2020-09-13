@@ -383,8 +383,12 @@ process_pars()
 
     # Enrich reference
     echo "* Enriching reference..." >&2
-    get_contigs ${contig_mapping} ${outd}/missing_contigs >> $outfile || { echo "Error during reference enrichment" >&2; return 1; }
+    get_contigs ${contig_mapping} ${outd}/missing_contigs >> ${outd}/unordered_ref.fa || { echo "Error during reference enrichment" >&2; return 1; }
 
+    # Reorder contigs
+    echo "* Reordering reference contigs..." >&2
+    ${biopanpipe_bindir}/reorder_fa_seqs -f ${outd}/unordered_ref.fa -l ${outd}/bamcontigs > $outfile || { echo "Error during contig reordering" >&2; return 1; }
+    
     # Index created reference
     echo "* Indexing created reference..." >&2
     samtools faidx ${outfile} || return 1

@@ -86,7 +86,7 @@ def print_help():
     print("-l <string>    File with list of contigs to keep (one contig name per line)", file=sys.stderr)
 
 ##################################################
-def getContigsToKeep(listc):
+def get_contigs_to_keep(listc):
     file = open(listc, 'r')
     contigs_to_keep={}
     for line in file:
@@ -104,7 +104,7 @@ def process_pars(flags,values):
         contig_to_filter=""
         
     if(flags["l_given"]):
-        contigs_to_keep=getContigsToKeep(values["listc"])
+        contigs_to_keep=get_contigs_to_keep(values["listc"])
     elif(flags["k_given"]):
         contigs_to_keep=values["contigkeep"]
     else:

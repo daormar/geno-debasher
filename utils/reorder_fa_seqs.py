@@ -69,7 +69,9 @@ def read_seqs(filename):
     seqs=[]
     for line in file:
         line=line.strip("\n")
-        seqs.append(line)
+        fields=line.split()
+        seqname=fields[0]
+        seqs.append(seqname)
     return seqs
     
 ##################################################

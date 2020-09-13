@@ -106,7 +106,7 @@ def process_pars(flags,values):
     if(flags["l_given"]):
         contigs_to_keep=get_contigs_to_keep(values["listc"])
     elif(flags["k_given"]):
-        contigs_to_keep=values["contigkeep"]
+        contigs_to_keep=[ values["contigkeep"] ]
     else:
         contigs_to_keep=None
 

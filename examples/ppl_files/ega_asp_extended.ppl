@@ -4,7 +4,7 @@ download_ega_asp_norm_bam cpus=1  mem=2048    time=24:00:00 stepdeps=none
 download_ega_asp_tum_bam  cpus=1  mem=2048    time=24:00:00 stepdeps=none
 index_norm_bam            cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:download_ega_asp_norm_bam
 index_tum_bam             cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:download_ega_asp_tum_bam
-create_genref_for_bam     cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:index_norm_bam
+create_genref_for_bam     cpus=1  mem=8G      time=4:00:00  stepdeps=afterok:index_norm_bam
 parallel_split_norm_bam   cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16 stepdeps=afterok:index_norm_bam
 parallel_split_tum_bam    cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16 stepdeps=afterok:index_tum_bam
 parallel_samtools_mpileup_norm_bam cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24 stepdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_norm_bam

@@ -1,6 +1,6 @@
 #import bam_analysis
 #
-create_genref_for_bam       cpus=1  mem=1024    time=4:00:00  stepdeps=none
+create_genref_for_bam       cpus=1  mem=8G      time=4:00:00  stepdeps=none
 bedtools_genomecov_norm_bam cpus=1  mem=1024    time=4:00:00  stepdeps=none
 bedtools_genomecov_tum_bam  cpus=1  mem=1024    time=4:00:00  stepdeps=none
 strelka_germline            cpus=8  mem=6G      time=6:00:00,12:00:00  stepdeps=afterok:create_genref_for_bam

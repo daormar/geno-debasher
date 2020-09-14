@@ -6,7 +6,7 @@ index_norm_bam              cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:d
 index_tum_bam               cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:decsingle_ega_tum_bam
 bedtools_genomecov_norm_bam cpus=1  mem=2G      time=5:00:00  stepdeps=afterok:index_norm_bam
 bedtools_genomecov_tum_bam  cpus=1  mem=2G      time=5:00:00  stepdeps=afterok:index_tum_bam
-create_genref_for_bam       cpus=1  mem=1024    time=4:00:00  stepdeps=afterok:index_norm_bam
+create_genref_for_bam       cpus=1  mem=8G      time=4:00:00  stepdeps=afterok:index_norm_bam
 parallel_split_norm_bam     cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16 stepdeps=afterok:index_norm_bam
 parallel_split_tum_bam      cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16 stepdeps=afterok:index_tum_bam
 parallel_samtools_mpileup_norm_bam cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24 stepdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_norm_bam

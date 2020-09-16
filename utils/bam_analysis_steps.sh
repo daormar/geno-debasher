@@ -329,9 +329,15 @@ gridss_somatic()
     logmsg "* Activating conda environment..."
     conda activate gridss 2>&1 || exit 1
 
+    # Create working directory
+    mkdir ${step_outd}/workingdir
+
     # Execute Gridss
     logmsg "* Executing Gridss..."
-    gridss --reference ${ref} --output ${step_outd}/output.vcf.gz --workingdir ${step_outd} --assembly ${step_outd}/assembly.bam --threads ${cpus} ${blacklist_opt} ${normalbam} ${tumorbam} 2>&1 || exit 1
+    gridss --reference ${ref} --output ${step_outd}/output.vcf.gz --workingdir ${step_outd}/workingdir --assembly ${step_outd}/assembly.bam --threads ${cpus} ${blacklist_opt} ${normalbam} ${tumorbam} 2>&1 || exit 1
+
+    # Remove working directory
+    rm -rf ${step_outd}/workingdir
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

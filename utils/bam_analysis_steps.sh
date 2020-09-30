@@ -1275,7 +1275,7 @@ gen_sequenza_gcc()
 sequenza_explain_cmdline_opts()
 {
     # -gcc option
-    description="GC content wiggle file for sequenza"
+    description="GC content wiggle file for sequenza (required if no gen_sequenza_gcc step is defined)"
     explain_cmdline_opt "-gcc" "<string>" "$description"
 }
 
@@ -1300,7 +1300,7 @@ get_gcc_filename()
             echo $gccfile
             return 0            
         else
-            errmsg "-gcc or dependency with gen_sequenza_gcc_dep step should be given"
+            errmsg "-gcc or dependency with gen_sequenza_gcc step should be given"
             return 1
         fi            
     fi

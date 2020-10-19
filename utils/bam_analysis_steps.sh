@@ -1208,7 +1208,7 @@ snp_pileup_plus_facets()
 ########
 snp_pileup_plus_facets_conda_envs()
 {
-    define_conda_env facets snp-pileup.yml
+    define_conda_env snp-pileup snp-pileup.yml
     define_conda_env facets facets.yml
 }
 

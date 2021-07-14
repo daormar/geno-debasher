@@ -89,11 +89,6 @@ concat_germline_snvs_define_opts()
     # -summarydir option
     define_opt "-summarydir" ${abs_sumdir} optlist || exit 1
 
-    # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || exit 1
-    define_opt "-cpus" $cpus optlist
-
     # Save option list
     save_opt_list optlist    
 }

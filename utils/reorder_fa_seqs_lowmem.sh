@@ -68,7 +68,7 @@ check_pars()
         echo "Error! -f parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${fasta} ]; then
+        if [ ! -f "${fasta}" ]; then
             echo "Error! file ${fasta} does not exist" >&2
             exit 1
         fi
@@ -78,7 +78,7 @@ check_pars()
         echo "Error! -l parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${listseq} ]; then
+        if [ ! -f "${listseq}" ]; then
             echo "Error! file ${listseq} does not exist" >&2
             exit 1
         fi
@@ -90,9 +90,9 @@ process_pars()
 {
     while read seqname; do
 
-        ${biopanpipe_bindir}/filter_contig_from_genref -g ${fasta} -k ${seqname}
+        "${biopanpipe_bindir}"/filter_contig_from_genref -g "${fasta}" -k ${seqname}
         
-    done < $listseq
+    done < "$listseq"
 }
 
 ########
@@ -102,7 +102,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

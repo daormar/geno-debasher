@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. ${PANPIPE_HOME_DIR}/bin/panpipe_lib || exit 1
+. "${PANPIPE_HOME_DIR}"/bin/panpipe_lib || exit 1
 
 ########
 print_desc()
@@ -92,7 +92,7 @@ check_pars()
         echo "Error! -r parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${baseref} ]; then
+        if [ ! -f "${baseref}" ]; then
             echo "Error! file ${baseref} does not exist" >&2
             exit 1
         fi
@@ -102,14 +102,14 @@ check_pars()
         echo "Error! -b parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${bam} ]; then
+        if [ ! -f "${bam}" ]; then
             echo "Error! file ${bam} does not exist" >&2
             exit 1
         fi
     fi
 
     if [ ${cm_given} -eq 1 ]; then   
-        if [ ! -f ${contig_mapping} ]; then
+        if [ ! -f "${contig_mapping}" ]; then
             echo "Error! file ${contig_mapping} does not exist" >&2
             exit 1
         fi
@@ -119,7 +119,7 @@ check_pars()
         echo "Error! -o parameter not given!" >&2
         exit 1
     else
-        if [ ! -d ${outd} ]; then
+        if [ ! -d "${outd}" ]; then
             echo "Error! directory ${outd} does not exist" >&2
             exit 1
         fi
@@ -157,7 +157,7 @@ contig_in_list()
         if [ "$contig" = "$cname" -a "$contiglen" = "$clen" ]; then
             return 0
         fi
-    done < ${clist}
+    done < "${clist}"
 
     return 1
 }
@@ -166,7 +166,7 @@ contig_in_list()
 extract_contig_info_from_fai()
 {
     local faifile=$1
-    $AWK '{printf "%s %s\n",$1,$2}' ${faifile}
+    $AWK '{printf "%s %s\n",$1,$2}' "${faifile}"
 }
 
 ########
@@ -174,8 +174,8 @@ get_ref_contig_names()
 {
     local ref=$1
 
-    samtools faidx ${baseref} || return 1
-    extract_contig_info_from_fai ${baseref}.fai
+    samtools faidx "${baseref}" || return 1
+    extract_contig_info_from_fai "${baseref}".fai
 }
 
 ########
@@ -183,7 +183,7 @@ get_bam_contig_names()
 {
     local bam=$1
 
-    samtools view -H $bam | $AWK '{if($1=="@SQ") printf "%s %s\n",substr($2,4),substr($3,4)}'
+    samtools view -H "$bam" | $AWK '{if($1=="@SQ") printf "%s %s\n",substr($2,4),substr($3,4)}'
 }
 
 ########
@@ -196,7 +196,7 @@ get_missing_contig_names()
         if ! contig_in_list $bamcontigname $contiglen $refcontigs; then
             echo $bamcontigname $contiglen
         fi
-    done < $bamcontigs    
+    done < "$bamcontigs"
 }
 
 ########
@@ -209,7 +209,7 @@ get_ref_contig_names_to_keep()
         if contig_in_list $refcontigname $contiglen $bamcontigs; then
             echo $refcontigname $contiglen
         fi
-    done < $refcontigs    
+    done < "$refcontigs"    
 }
 
 ########
@@ -243,7 +243,7 @@ map_contig_with_len_using_file()
                 break
             fi
         fi
-    done < ${contig_mapping}
+    done < "${contig_mapping}"
 }
 
 ########
@@ -261,7 +261,7 @@ map_contig_without_len_using_file()
                 break
             fi
         fi
-    done < ${contig_mapping}
+    done < "${contig_mapping}"
 }
 
 ########
@@ -272,12 +272,12 @@ map_contig_using_file()
     local contiglen=$3
 
     # Try to map contig taking into account contig length
-    mapping=`map_contig_with_len_using_file ${contig_mapping} ${contig} ${contiglen}`
+    mapping=`map_contig_with_len_using_file "${contig_mapping}" ${contig} ${contiglen}`
     if [ "${mapping}" != "" ]; then
         echo ${mapping}
     else
         # Try to map contig without taking into account contig length
-        mapping=`map_contig_without_len_using_file ${contig_mapping} ${contig}`
+        mapping=`map_contig_without_len_using_file "${contig_mapping}" ${contig}`
         if [ "${mapping}" != "" ]; then
             echo ${mapping}
         fi
@@ -294,8 +294,8 @@ map_contig()
     if contig_is_accession ${contig}; then
         echo ${contig}
     else
-        if [ ${contig_mapping} != "${NOFILE}" ]; then
-            map_contig_using_file ${contig_mapping} ${contig} ${contiglen} || return 1
+        if [ "${contig_mapping}" != "${NOFILE}" ]; then
+            map_contig_using_file "${contig_mapping}" ${contig} ${contiglen} || return 1
         fi
     fi
 }
@@ -325,19 +325,19 @@ get_contigs()
     local contiglist=$2
 
     while read contig contiglen; do
-        local mapping=`map_contig ${contig_mapping} ${contig} ${contiglen}` || return 1
+        local mapping=`map_contig "${contig_mapping}" ${contig} ${contiglen}` || return 1
         if [ "$mapping" = "" ]; then
             echo "Error: contig $contig is not a valid accession nor there were mappings for it" >&2
             return 1
         else
             # Determine whether the mapping is an accession number or a
             # file name (absolute file paths should be given)
-            if is_absolute_path ${mapping}; then
+            if is_absolute_path "${mapping}"; then
                 echo "Getting data for contig ${contig} with length ${contiglen} (mapped to file $mapping)..." >&2
-                cat ${mapping} || return 1
+                cat "${mapping}" || return 1
             else
                 echo "Getting data for contig ${contig} with length ${contiglen} (mapped to accession $mapping)..." >&2
-                ${biopanpipe_bindir}/get_entrez_fasta -a ${mapping} | replace_contig_name ${mapping} ${contig}; pipe_fail || return 1
+                "${biopanpipe_bindir}"/get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
             fi
         fi
     done < ${contiglist}
@@ -349,7 +349,7 @@ get_uniq_contigs()
     local cfile1=$1
     local cfile2=$2
 
-    ${SORT} $cfile1 $cfile2 | ${UNIQ} -u
+    "${SORT}" "$cfile1" "$cfile2" | "${UNIQ}" -u
 }
 
 ########
@@ -363,41 +363,41 @@ process_pars()
 
     # Get reference contigs
     echo "* Obtaining list of current reference contig names and their lengths..." >&2
-    get_ref_contig_names $baseref > ${outd}/refcontigs || return 1
+    get_ref_contig_names "$baseref" > "${outd}"/refcontigs || return 1
 
     # Get bam contigs
     echo "* Obtaining list of bam contig names and their lengths..." >&2
-    get_bam_contig_names $bam > ${outd}/bamcontigs || return 1
+    get_bam_contig_names "$bam" > "${outd}"/bamcontigs || return 1
     
     # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
-    get_ref_contig_names_to_keep ${outd}/refcontigs ${outd}/bamcontigs > ${outd}/refcontigs_to_keep || return 1
+    get_ref_contig_names_to_keep "${outd}"/refcontigs "${outd}"/bamcontigs > "${outd}"/refcontigs_to_keep || return 1
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    ${biopanpipe_bindir}/filter_contig_from_genref -g $baseref -l ${outd}/refcontigs_to_keep > ${outd}/unordered_ref.fa || return 1
+    "${biopanpipe_bindir}"/filter_contig_from_genref -g "$baseref" -l ${outd}/refcontigs_to_keep > "${outd}"/unordered_ref.fa || return 1
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
-    get_missing_contig_names ${outd}/refcontigs_to_keep ${outd}/bamcontigs > ${outd}/missing_contigs || return 1
+    get_missing_contig_names "${outd}"/refcontigs_to_keep "${outd}"/bamcontigs > "${outd}"/missing_contigs || return 1
 
     # Enrich reference
     echo "* Enriching reference..." >&2
-    get_contigs ${contig_mapping} ${outd}/missing_contigs >> ${outd}/unordered_ref.fa || { echo "Error during reference enrichment" >&2; return 1; }
+    get_contigs "${contig_mapping}" "${outd}"/missing_contigs >> "${outd}"/unordered_ref.fa || { echo "Error during reference enrichment" >&2; return 1; }
 
     # Reorder contigs
     echo "* Reordering reference contigs..." >&2
-    ${biopanpipe_bindir}/reorder_fa_seqs -f ${outd}/unordered_ref.fa -l ${outd}/bamcontigs > $outfile || { echo "Error during contig reordering" >&2; return 1; }
-    rm ${outd}/unordered_ref.fa || return 1
+    "${biopanpipe_bindir}"/reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
+    rm "${outd}"/unordered_ref.fa || return 1
     
     # Index created reference
     echo "* Indexing created reference..." >&2
-    samtools faidx ${outfile} || return 1
-    extract_contig_info_from_fai ${outfile}.fai > ${outd}/created_ref_contigs || return 1
+    samtools faidx "${outfile}" || return 1
+    extract_contig_info_from_fai "${outfile}".fai > "${outd}"/created_ref_contigs || return 1
 
     # Check created reference
     echo "* Checking created reference..." >&2
-    get_uniq_contigs ${outd}/bamcontigs ${outd}/created_ref_contigs > ${outd}/uniq_contigs
+    get_uniq_contigs "${outd}"/bamcontigs "${outd}"/created_ref_contigs > "${outd}"/uniq_contigs
     num_uniq_contigs=`$WC -l ${outd}/uniq_contigs | $AWK '{print $1}'`
     if [ ${num_uniq_contigs} -gt 0 ]; then
         echo "Bam file and created genome reference do not have the exact same contigs (see ${outd}/uniq_contigs file)" >&2
@@ -416,7 +416,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

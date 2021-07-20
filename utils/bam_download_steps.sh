@@ -47,15 +47,15 @@ copy_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -71,7 +71,7 @@ copy_norm_bam()
 
     # Copy file
     logmsg "* Copying file..."
-    cp ${local_normalbam} ${normalbam} || exit 1
+    cp "${local_normalbam}" "${normalbam}" || exit 1
 }
 
 ########
@@ -92,15 +92,15 @@ copy_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -116,7 +116,7 @@ copy_tum_bam()
 
     # Copy file
     logmsg "* Copying file..."
-    cp ${local_tumorbam} ${tumorbam} || exit 1
+    cp "${local_tumorbam}" "${tumorbam}" || exit 1
 }
 
 ########
@@ -137,15 +137,15 @@ scp_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -161,7 +161,7 @@ scp_norm_bam()
 
     # Copy file
     logmsg "* Copying file..."
-    scp ${remote_normalbam} ${normalbam} || exit 1
+    scp "${remote_normalbam}" "${normalbam}" || exit 1
 }
 
 ########
@@ -182,15 +182,15 @@ scp_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -206,7 +206,7 @@ scp_tum_bam()
 
     # Copy file
     logmsg "* Copying file..."
-    scp ${remote_tumorbam} ${tumorbam} || exit 1
+    scp "${remote_tumorbam}" "${tumorbam}" || exit 1
 }
 
 ########
@@ -239,7 +239,7 @@ download_ega_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -254,9 +254,9 @@ download_ega_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -271,7 +271,7 @@ ega_download_retry()
     local egaid=$3
     local outf=$4
     local download_tries=$5
-    local step_outd=`${DIRNAME} ${outf}`
+    local step_outd=`"${DIRNAME}" "${outf}"`
     
     # Start download with multiple tries
     local ntry=1
@@ -279,15 +279,15 @@ ega_download_retry()
         logmsg "Starting download try number ${ntry}..."
 
         # Remove previously downloaded file (if any)
-        if [ -f ${outf} ]; then
-            rm ${outf}
+        if [ -f "${outf}" ]; then
+            rm "${outf}"
         fi
 
         # Download file
-        pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} ${outf} 2>&1
+        pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} "${outf}" 2>&1
         
         # Check if download was successful
-        if [ $? -eq 0 -a -f ${outf} ]; then
+        if [ $? -eq 0 -a -f "${outf}" ]; then
             return 0
         fi
 
@@ -315,10 +315,10 @@ download_ega_norm_bam()
     conda activate pyega3 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    ega_download_retry ${egastr} ${egacred} ${egaid_normalbam} ${step_outd}/normal.bam ${download_tries} || exit 1
+    ega_download_retry ${egastr} ${egacred} "${egaid_normalbam}" "${step_outd}"/normal.bam ${download_tries} || exit 1
 
     # Move file
-    mv ${step_outd}/normal.bam ${normalbam} || exit 1
+    mv "${step_outd}"/normal.bam "${normalbam}" || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -361,7 +361,7 @@ download_ega_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -376,9 +376,9 @@ download_ega_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -400,10 +400,10 @@ download_ega_tum_bam()
     conda activate pyega3 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    ega_download_retry ${egastr} ${egacred} ${egaid_tumorbam} ${step_outd}/tumor.bam ${download_tries} || exit 1
+    ega_download_retry ${egastr} ${egacred} "${egaid_tumorbam}" "${step_outd}"/tumor.bam ${download_tries} || exit 1
 
     # Move file
-    mv ${step_outd}/tumor.bam ${tumorbam} || exit 1
+    mv "${step_outd}"/tumor.bam "${tumorbam}" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -422,13 +422,13 @@ find_bam_filename()
     local step_outd=$1
     local result=""
     
-    for f in ${step_outd}/*.bam; do
+    for f in "${step_outd}"/*.bam; do
         if [ -f $f ]; then
-            result=$f
+            result="$f"
         fi
     done
 
-    echo ${result}
+    echo "${result}"
 }
 
 ########
@@ -469,7 +469,7 @@ download_ega_asp_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
     
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -490,9 +490,9 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -514,14 +514,14 @@ download_ega_asp_norm_bam()
     
     # Download file
     logmsg "* Executing ascp (${normalbam_file})..."
-    ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${normalbam_file} ${step_outd}/normal.bam.crypt 2>&1 || exit 1
+    ASPERA_SCP_PASS=${aspera_passwd} "${ASPERA_HOME_DIR}"/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${normalbam_file} "${step_outd}"/normal.bam.crypt 2>&1 || exit 1
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/normal.bam.crypt 2>&1 || exit 1
+    $JAVA -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} "${step_outd}"/normal.bam.crypt 2>&1 || exit 1
     
     # Obtain file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -529,10 +529,10 @@ download_ega_asp_norm_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${normalbam} || exit 1
+    mv ${bam_file_name} "${normalbam}" || exit 1
 
     # Remove encrypted file
-    rm ${step_outd}/normal.bam.crypt || exit 1
+    rm "${step_outd}"/normal.bam.crypt || exit 1
 }
 
 ########
@@ -573,7 +573,7 @@ download_ega_asp_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
     
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -594,9 +594,9 @@ download_ega_asp_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -618,14 +618,14 @@ download_ega_asp_tum_bam()
 
     # Download file
     logmsg "* Executing ascp (${tumorbam_file})..."
-    ASPERA_SCP_PASS=${aspera_passwd} ${ASPERA_HOME_DIR}/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${tumorbam_file} ${step_outd}/tumor.bam.crypt 2>&1 || exit 1
+    ASPERA_SCP_PASS=${aspera_passwd} "${ASPERA_HOME_DIR}"/bin/ascp --ignore-host-key -QTl ${max_trans_rate} ${aspera_user}@${aspera_server}:${tumorbam_file} "${step_outd}"/tumor.bam.crypt 2>&1 || exit 1
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} ${step_outd}/tumor.bam.crypt 2>&1 || exit 1
+    $JAVA -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} "${step_outd}"/tumor.bam.crypt 2>&1 || exit 1
 
     # Obtain file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -633,10 +633,10 @@ download_ega_asp_tum_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${tumorbam} || exit 1
+    mv ${bam_file_name} "${tumorbam}" || exit 1
 
     # Remove encrypted file
-    rm ${step_outd}/tumor.bam.crypt || exit 1
+    rm "${step_outd}"/tumor.bam.crypt || exit 1
 }
 
 ########
@@ -661,7 +661,7 @@ decrypt_ega_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
     
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -670,9 +670,9 @@ decrypt_ega_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-egadecrpwd" optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -689,10 +689,10 @@ decrypt_ega_norm_bam()
     
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} --output-folder ${step_outd} ${normalbam_file} 2>&1 || exit 1
+    "$JAVA" -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} --output-folder "${step_outd}" ${normalbam_file} 2>&1 || exit 1
     
     # Obtain file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after decryption process was completed"
@@ -700,7 +700,7 @@ decrypt_ega_norm_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${normalbam} || exit 1
+    mv ${bam_file_name} "${normalbam}" || exit 1
 }
 
 ########
@@ -725,7 +725,7 @@ decrypt_ega_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
     
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -734,9 +734,9 @@ decrypt_ega_tum_bam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-egadecrpwd" optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -753,10 +753,10 @@ decrypt_ega_tum_bam()
     
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    $JAVA -jar ${EGADECRYPT_HOME_DIR}/decryptor.jar ${egadecrypt_pwd} --output-folder ${step_outd} ${tumorbam_file} 2>&1 || exit 1
+    $JAVA -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} --output-folder "${step_outd}" ${tumorbam_file} 2>&1 || exit 1
 
     # Obtain file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after decryption process was completed"
@@ -764,7 +764,7 @@ decrypt_ega_tum_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${tumorbam} || exit 1
+    mv "${bam_file_name}" "${tumorbam}" || exit 1
 }
 
 ########
@@ -789,7 +789,7 @@ decsingle_ega_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
     
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -798,9 +798,9 @@ decsingle_ega_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-ndecsinglepwd" optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -817,7 +817,7 @@ decsingle_ega_norm_bam()
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat ${normalbam_file} | ${DECSINGLE_JAVA_HOME_DIR}/bin/java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${normalbam} ; pipe_fail || exit 1
+    cat "${normalbam_file}" | "${DECSINGLE_JAVA_HOME_DIR}"/bin/java -cp "${DECSINGLE_HOME_DIR}" decSINGLE <(echo ${decsingle_pwd}) > "${normalbam}" ; pipe_fail || exit 1
 }
 
 ########
@@ -842,7 +842,7 @@ decsingle_ega_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
     
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -851,9 +851,9 @@ decsingle_ega_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-tdecsinglepwd" optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -870,7 +870,7 @@ decsingle_ega_tum_bam()
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat ${tumorbam_file} | ${DECSINGLE_JAVA_HOME_DIR}/bin/java -cp ${DECSINGLE_HOME_DIR} decSINGLE <(echo ${decsingle_pwd}) > ${tumorbam} ; pipe_fail || exit 1
+    cat "${tumorbam_file}" | "${DECSINGLE_JAVA_HOME_DIR}"/bin/java -cp "${DECSINGLE_HOME_DIR}" decSINGLE <(echo ${decsingle_pwd}) > "${tumorbam}" ; pipe_fail || exit 1
 }
 
 ########
@@ -895,7 +895,7 @@ download_aws_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -904,9 +904,9 @@ download_aws_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -923,10 +923,10 @@ download_aws_norm_bam()
 
     # Download file
     logmsg "* Executing score-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile aws download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
+    "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile aws download --object-id "${icgcid_normalbam}" --output-dir "${step_outd}" 2>&1 || exit 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -934,7 +934,7 @@ download_aws_norm_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${normalbam} || exit 1
+    mv "${bam_file_name}" "${normalbam}" || exit 1
 }
 
 ########
@@ -959,7 +959,7 @@ download_aws_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -968,9 +968,9 @@ download_aws_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -987,10 +987,10 @@ download_aws_tum_bam()
 
     # Download file
     logmsg "* Executing score-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile aws download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
+    "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile aws download --object-id "${icgcid_tumorbam}" --output-dir "${step_outd}" 2>&1 || exit 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -998,7 +998,7 @@ download_aws_tum_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${tumorbam} || exit 1
+    mv ${bam_file_name} "${tumorbam}" || exit 1
 }
 
 ########
@@ -1023,7 +1023,7 @@ download_collab_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -1032,9 +1032,9 @@ download_collab_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -1051,10 +1051,10 @@ download_collab_norm_bam()
 
     # Download file
     logmsg "* Executing score-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile collab download --object-id ${icgcid_normalbam} --output-dir ${step_outd} 2>&1 || exit 1
+    "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile collab download --object-id "${icgcid_normalbam}" --output-dir "${step_outd}" 2>&1 || exit 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -1062,7 +1062,7 @@ download_collab_norm_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${normalbam} || exit 1
+    mv "${bam_file_name}" "${normalbam}" || exit 1
 }
 
 ########
@@ -1087,7 +1087,7 @@ download_collab_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
     
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -1096,9 +1096,9 @@ download_collab_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -1115,10 +1115,10 @@ download_collab_tum_bam()
 
     # Download file
     logmsg "* Executing score-client..."
-    ${ICGCSTOR_HOME_DIR}/bin/score-client --profile collab download --object-id ${icgcid_tumorbam} --output-dir ${step_outd} 2>&1 || exit 1
+    "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile collab download --object-id "${icgcid_tumorbam}" --output-dir "${step_outd}" 2>&1 || exit 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename ${step_outd}`
+    local bam_file_name=`find_bam_filename "${step_outd}"`
     
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -1126,7 +1126,7 @@ download_collab_tum_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} ${tumorbam} || exit 1
+    mv "${bam_file_name}" "${tumorbam}" || exit 1
 }
 
 ########
@@ -1159,7 +1159,7 @@ download_gdc_norm_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || exit 1
@@ -1174,9 +1174,9 @@ download_gdc_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local normalbam=${abs_datadir}/normal.bam
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -1191,7 +1191,7 @@ get_gdc_bamfname()
 
     outf=`find ${outd} -name "*.bam"` || return 1
 
-    echo ${outf}
+    echo "${outf}"
 }
 
 ########
@@ -1210,7 +1210,7 @@ download_gdc_norm_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdcprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_normalbam} 2>/dev/null || exit 1
+    gdc-client download -n ${gdcprocs} -t ${gdctok} -d "${step_outd}" --retry-amount ${download_tries} "${gdcid_normalbam}" 2>/dev/null || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1218,8 +1218,8 @@ download_gdc_norm_bam()
 
     # Move file
     local gdc_bamfname
-    gdc_bamfname=`get_gdc_bamfname ${gdcid_normalbam} ${step_outd}` || exit 1
-    mv ${gdc_bamfname} ${normalbam} || exit 1
+    gdc_bamfname=`get_gdc_bamfname "${gdcid_normalbam}" "${step_outd}"` || exit 1
+    mv ${gdc_bamfname} "${normalbam}" || exit 1
 }
 
 ########
@@ -1258,7 +1258,7 @@ download_gdc_tum_bam_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || exit 1
@@ -1273,9 +1273,9 @@ download_gdc_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    local tumorbam=${abs_datadir}/tumor.bam
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist    
@@ -1297,7 +1297,7 @@ download_gdc_tum_bam()
     conda activate gdc-client 2>&1 || exit 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdcprocs} -t ${gdctok} -d ${step_outd} --retry-amount ${download_tries} ${gdcid_tumorbam} 2>/dev/null || exit 1
+    gdc-client download -n ${gdcprocs} -t ${gdctok} -d "${step_outd}" --retry-amount ${download_tries} "${gdcid_tumorbam}" 2>/dev/null || exit 1
     
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1305,8 +1305,8 @@ download_gdc_tum_bam()
 
     # Move file
     local gdc_bamfname
-    gdc_bamfname=`get_gdc_bamfname ${gdcid_tumorbam} ${step_outd}` || exit 1
-    mv ${gdc_bamfname} ${tumorbam} || exit 1
+    gdc_bamfname=`get_gdc_bamfname "${gdcid_tumorbam}" "${step_outd}"` || exit 1
+    mv "${gdc_bamfname}" "${tumorbam}" || exit 1
 }
 
 ########

@@ -76,7 +76,7 @@ check_pars()
         echo "Error! -r parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${ref} ]; then
+        if [ ! -f "${ref}" ]; then
             echo "Error! file ${ref} does not exist" >&2
             exit 1
         fi
@@ -86,7 +86,7 @@ check_pars()
         echo "Error! -b parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${bam} ]; then
+        if [ ! -f "${bam}" ]; then
             echo "Error! file ${bam} does not exist" >&2
             exit 1
         fi
@@ -117,7 +117,7 @@ print_pars()
 ########
 filter_bam_stats()
 {
-    ${AWK} '{if($3>0 || $4>0) printf"%s %d\n",$1,$2}'
+    "${AWK}" '{if($3>0 || $4>0) printf"%s %d\n",$1,$2}'
 }
 
 ########
@@ -126,17 +126,17 @@ process_pars()
     conda activate samtools || exit 1
 
     # Obtain reference contigs
-    samtools faidx ${ref}
-    $AWK '{printf "%s %d\n",$1,$2}' ${ref}.fai | ${SORT} > ${outpref}.refcontigs
+    samtools faidx "${ref}"
+    "$AWK" '{printf "%s %d\n",$1,$2}' ${ref}.fai | "${SORT}" > "${outpref}".refcontigs
 
     # Obtain bam contigs
-    samtools idxstats $bam > ${outpref}.bamstats || exit 1
-    cat ${outpref}.bamstats | filter_bam_stats | ${SORT} > ${outpref}.bamcontigs || exit 1
+    samtools idxstats $bam > "${outpref}".bamstats || exit 1
+    cat "${outpref}".bamstats | filter_bam_stats | "${SORT}" > "${outpref}".bamcontigs || exit 1
     
     conda deactivate
 
     # Execute diff command
-    $DIFF ${outpref}.refcontigs ${outpref}.bamcontigs > ${outpref}.contigdiffs || { echo "Contigs in reference and bam files differ!" >&2 ; exit 1; }
+    "$DIFF" "${outpref}".refcontigs "${outpref}".bamcontigs > "${outpref}".contigdiffs || { echo "Contigs in reference and bam files differ!" >&2 ; exit 1; }
 }
 
 ########
@@ -146,7 +146,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

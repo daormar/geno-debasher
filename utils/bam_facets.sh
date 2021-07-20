@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. ${biopanpipe_bindir}/bam_common_lib || exit 1
+. "${biopanpipe_bindir}"/bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #
@@ -26,7 +26,7 @@
 ########
 bam_facets_shared_dirs()
 {
-    define_shared_dir ${DATADIR_BASENAME}
+    define_shared_dir "${DATADIR_BASENAME}"
 }
 
 ########
@@ -73,12 +73,12 @@ snp_pileup_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -99,7 +99,7 @@ snp_pileup()
 
     # Execute snp-pileup
     logmsg "* Executing snp-pileup..."
-    snp-pileup ${snpvcf} ${step_outd}/snp-pileup-counts.csv ${normalbam} ${tumorbam} 2>&1 || exit 1
+    snp-pileup ${snpvcf} "${step_outd}"/snp-pileup-counts.csv "${normalbam}" "${tumorbam}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
@@ -130,13 +130,13 @@ facets_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     local pileup_dep=`find_dependency_for_step "${jobspec}" snp_pileup`
     if [ ${pileup_dep} != ${DEP_NOT_FOUND} ]; then
         local pileup_outd=`get_default_outd_for_dep ${outd} "${pileup_dep}"`
-        local pileup_counts_file=${pileup_outd}/snp-pileup-counts.csv
-        define_opt "-pileup-counts" ${pileup_counts_file} optlist || exit 1
+        local pileup_counts_file="${pileup_outd}"/snp-pileup-counts.csv
+        define_opt "-pileup-counts" "${pileup_counts_file}" optlist || exit 1
     else
         define_cmdline_infile_opt "${cmdline}" "-sp" optlist || exit 1
     fi
@@ -164,7 +164,7 @@ facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript ${biopanpipe_bindir}/run_facets -c ${pileup_counts} -o ${step_outd} 2>&1 || exit 1
+    Rscript "${biopanpipe_bindir}"/run_facets -c "${pileup_counts}" -o "${step_outd}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."

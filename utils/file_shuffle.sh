@@ -27,8 +27,8 @@ shuffle()
     local file=$3
 
     # Shuffle file
-    $AWK -v seed=${seed} 'BEGIN{srand(seed)}{printf"%f %d %s\n",rand(),NR,$0}' ${file} \
-        | LC_ALL=C $SORT -k1n -k2n -T ${tdir} | ${CUT} -d' ' -f3-
+    "$AWK" -v seed=${seed} 'BEGIN{srand(seed)}{printf"%f %d %s\n",rand(),NR,$0}' "${file}" \
+        | LC_ALL=C "$SORT" -k1n -k2n -T "${tdir}" | "${CUT}" -d' ' -f3-
 }
 
 ########
@@ -41,7 +41,7 @@ shuffle_alt()
     local file=$2
     
     # Shuffle file
-    $AWK -v seed=$seed \
+    "$AWK" -v seed=$seed \
         'function random(b) {return rand()*b}
   BEGIN{
          i=0
@@ -74,7 +74,7 @@ shuffle_alt()
            printf"%s\n",line[next_line_num]
          }
 
-       }' $file
+       }' "$file"
 }
 
 ########
@@ -91,6 +91,6 @@ else
     fi
 
     # Invoke shuffling function
-    shuffle $seed $tdir $file
+    shuffle $seed "$tdir" "$file"
 
 fi

@@ -68,7 +68,7 @@ check_pars()
         echo "Error! -r parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${ref} ]; then
+        if [ ! -f "${ref}" ]; then
             echo "Error! file ${ref} does not exist" >&2
             exit 1
         fi
@@ -97,9 +97,9 @@ process_pars()
 {
     conda activate samtools || exit 1
 
-    samtools faidx ${ref}
+    samtools faidx "${ref}"
 
-    $AWK '{print $1 "\t0\t" $2}' ${ref}.fai > ${outpref}.bed
+    "$AWK" '{print $1 "\t0\t" $2}' ${ref}.fai > "${outpref}".bed
     
     conda deactivate
 }
@@ -111,7 +111,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

@@ -38,14 +38,14 @@ get_normal_bam_filename()
     normalbam=`read_opt_value_from_line "$cmdline" "-n"` && given=1
     if [ $given -eq 1 ]; then
         # -n option was given
-        file_exists $normalbam || { errmsg "file $normalbam does not exist" ; return 1; }
-        echo $normalbam
+        file_exists "$normalbam" || { errmsg "file $normalbam does not exist" ; return 1; }
+        echo "$normalbam"
     else
         # Check -extn option
         check_opt_given "$cmdline" "-extn" || { errmsg "-n or -extn option should be given" ; return 1; }
-        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-        normalbam=${abs_datadir}/normal.bam
-        echo $normalbam
+        local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+        normalbam="${abs_datadir}"/normal.bam
+        echo "$normalbam"
     fi
 }
 
@@ -58,14 +58,14 @@ get_tumor_bam_filename()
     tumorbam=`read_opt_value_from_line "$cmdline" "-t"` && given=1
     if [ $given -eq 1 ]; then
         # -t option was given
-        file_exists $tumorbam || { errmsg "file $tumorbam does not exist" ; return 1; }
-        echo $tumorbam
+        file_exists "$tumorbam" || { errmsg "file $tumorbam does not exist" ; return 1; }
+        echo "$tumorbam"
     else
         # Check -extt option
         check_opt_given "$cmdline" "-extt" || { errmsg "-t or -extt option should be given" ; return 1; }
-        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-        tumorbam=${abs_datadir}/tumor.bam
-        echo $tumorbam
+        local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+        tumorbam="${abs_datadir}"/tumor.bam
+        echo "$tumorbam"
     fi
 }
 
@@ -78,12 +78,12 @@ create_summary_file()
     vcf=$3
 
     # Create file
-    echo "$vcf" > ${summarydir}/${label}.${SUMMARY_FILE_EXT}
+    echo "$vcf" > "${summarydir}/${label}.${SUMMARY_FILE_EXT}"
 }
 
 ########
 slurm_to_java_mem_spec()
 {
     local mem=$1
-    echo ${mem} | ${AWK} '{if(substr($1,length($1),1) ~ /^[0-9]/) printf"%sM",$1; else printf"%s",$1}'
+    echo "${mem}" | "${AWK}" '{if(substr($1,length($1),1) ~ /^[0-9]/) printf"%sM",$1; else printf"%s",$1}'
 }

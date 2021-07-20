@@ -59,7 +59,7 @@ check_pars()
         echo "Error! -m parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${manifest} ]; then
+        if [ ! -f "${manifest}" ]; then
             echo "Error! file ${manifest} does not exist" >&2
             exit 1
         fi
@@ -70,7 +70,7 @@ check_pars()
 extract_file_id()
 {
     local entry=$1
-    echo $entry | ${AWK} '{print $1}'
+    echo "$entry" | "${AWK}" '{print $1}'
 }
 
 ########
@@ -81,7 +81,7 @@ obtain_file_ids()
     local file_ids=""
     while read entry; do
         if [ ${lineno} -gt 1 ]; then
-            local file_id=`extract_file_id $entry` || return 1
+            local file_id=`extract_file_id "$entry"` || return 1
             file_id="\"${file_id}\""
             if [ -z "${file_ids}" ]; then
                 file_ids=${file_id}
@@ -90,7 +90,7 @@ obtain_file_ids()
             fi
         fi
         lineno=$((lineno + 1))
-    done < ${manifest}
+    done < "${manifest}"
 
     echo ${file_ids}
 }
@@ -108,7 +108,7 @@ obtain_filters()
 obtain_num_ids()
 {
     local manifest=$1
-    wc -l ${manifest} | awk '{printf"%d",$1-1}'
+    "$WC" -l "${manifest}" | "$AWK" '{printf"%d",$1-1}'
 }
 
 ########
@@ -121,10 +121,10 @@ obtain_fields()
 obtain_payload()
 {
     local manifest=$1
-    local filters=`obtain_filters ${manifest}`
+    local filters=`obtain_filters "${manifest}"`
     local format="TSV"
     local fields=`obtain_fields`
-    local size=`obtain_num_ids ${manifest}`
+    local size=`obtain_num_ids "${manifest}"`
     
     echo "{\"filters\": { ${filters} }, \"format\":\"${format}\" , \"fields\":\"${fields}\" , \"size\":\"${size}\"}"
 }
@@ -132,10 +132,10 @@ obtain_payload()
 ########
 process_pars()
 {
-    tmpfile=`${MKTEMP}`
+    tmpfile=`"${MKTEMP}"`
     trap "rm -f ${tmpfile} 2>/dev/null" EXIT
-    obtain_payload ${manifest} > ${tmpfile}
-    ${WGET} -O - --header='Content-Type:application/json' --post-file=${tmpfile} 'https://api.gdc.cancer.gov/files' || return 1
+    obtain_payload "${manifest}" > "${tmpfile}"
+    "${WGET}" -O - --header='Content-Type:application/json' --post-file="${tmpfile}" 'https://api.gdc.cancer.gov/files' || return 1
 }
 
 ########
@@ -145,7 +145,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

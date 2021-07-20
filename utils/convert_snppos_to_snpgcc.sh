@@ -76,7 +76,7 @@ check_pars()
         echo "Error! -r parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${ref} ]; then
+        if [ ! -f "${ref}" ]; then
             echo "Error! file ${ref} does not exist" >&2
             exit 1
         fi
@@ -100,7 +100,7 @@ process_pars()
     TMPDIR=`${MKTEMP} -d /tmp/convsnp.XXXXX`
 
     # Create temporary directories
-    mkdir ${TMPDIR}/splitPos ${TMPDIR}/splitGc ${TMPDIR}/splitGcLogs
+    mkdir "${TMPDIR}"/splitPos "${TMPDIR}"/splitGc "${TMPDIR}"/splitGcLogs
 
     # Remove temporary directories on exit
     trap "rm -rf ${TMPDIR} 2>/dev/null" EXIT
@@ -111,11 +111,11 @@ process_pars()
         return 1
     else
         echo "* Testing that ${ASCAT_GCC_UTIL} given in ASCAT_GCC_UTIL variable can be executed correctly..." >&2
-        ${ASCAT_GCC_UTIL} > ${TMPDIR}/ascat_gcc_util_test.txt 2>&1
-        if $GREP "USAGE" ${TMPDIR}/ascat_gcc_util_test.txt > /dev/null; then
+        "${ASCAT_GCC_UTIL}" > "${TMPDIR}"/ascat_gcc_util_test.txt 2>&1
+        if "$GREP" "USAGE" "${TMPDIR}"/ascat_gcc_util_test.txt > /dev/null; then
             echo "Test of ${ASCAT_GCC_UTIL} successful"
         else
-            cat ${TMPDIR}/ascat_gcc_util_test.txt
+            cat "${TMPDIR}"/ascat_gcc_util_test.txt
             echo "Error while testing ${ASCAT_GCC_UTIL}" >&2
             return 1
         fi
@@ -123,12 +123,12 @@ process_pars()
 
     # Split file
     echo "* Splitting input file..." >&2
-    $SPLIT --number=l/10 -d ${snpposfile} ${TMPDIR}/splitPos/snpPos.
+    "$SPLIT" --number=l/10 -d "${snpposfile}" "${TMPDIR}"/splitPos/snpPos.
     
     # Process fragments
     echo "* Processing fragments..." >&2
-    for file in `ls ${TMPDIR}/splitPos/`; do
-        ${ASCAT_GCC_UTIL} ${ref} ${TMPDIR}/splitPos/${file} > ${TMPDIR}/splitGc/${file} 2> ${TMPDIR}/splitGcLogs/${file}.log &
+    for file in `ls "${TMPDIR}"/splitPos/`; do
+        "${ASCAT_GCC_UTIL}" "${ref}" "${TMPDIR}"/splitPos/"${file}" > "${TMPDIR}"/splitGc/"${file}" 2> "${TMPDIR}"/splitGcLogs/"${file}".log &
     done
 
     # Wait until all processes finish
@@ -136,8 +136,8 @@ process_pars()
     
     # Merge solutions
     echo "* Merging solutions..." >&2
-    $HEAD -n 1 ${TMPDIR}/splitGc/snpPos.00 > ${outfile}
-    cat ${TMPDIR}/splitGc/snpPos.* | $GREP -vP 'Chr\tPosition' >> ${outfile}    
+    "$HEAD" -n 1 "${TMPDIR}"/splitGc/snpPos.00 > "${outfile}"
+    cat "${TMPDIR}"/splitGc/snpPos.* | "$GREP" -vP 'Chr\tPosition' >> "${outfile}"
 }
 
 ########
@@ -147,7 +147,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

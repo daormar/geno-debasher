@@ -26,7 +26,7 @@
 ########
 bam_ascatngs_shared_dirs()
 {
-    define_shared_dir ${DATADIR_BASENAME}
+    define_shared_dir "${DATADIR_BASENAME}"
 }
 
 ########
@@ -77,7 +77,7 @@ ascatngs_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || exit 1
 
     # -r option
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
@@ -85,12 +85,12 @@ ascatngs_define_opts()
     # -normalbam option
     local normalbam
     normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" $normalbam optlist || exit 1
+    define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # -tumorbam option
     local tumorbam
     tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" $tumorbam optlist || exit 1
+    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # -g option
     define_cmdline_opt "$cmdline" "-g" optlist || exit 1
@@ -129,7 +129,7 @@ ascatngs()
 
     # Run ascat
     logmsg "* Executing ascat.pl..."
-    ascat.pl -n ${normalbam} -t ${tumorbam} -r ${ref} -sg ${snpgccorr} -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o ${step_outd} 2>&1 || exit 1
+    ascat.pl -n "${normalbam}" -t "${tumorbam}" -r "${ref}" -sg "${snpgccorr}" -pr WGS -g ${gender} -gc ${malesexchr} -cpus ${cpus} -o "${step_outd}" 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

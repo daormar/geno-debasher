@@ -114,7 +114,7 @@ check_pars()
         echo "Error! -egalist parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${egalist} ]; then
+        if [ ! -f "${egalist}" ]; then
             echo "Error! file ${egalist} does not exist" >&2
             exit 1
         fi
@@ -124,7 +124,7 @@ check_pars()
         echo "Error! -T parameter not given!" >&2
         exit 1
     else
-        if [ ! -d ${tdir} ]; then
+        if [ ! -d "${tdir}" ]; then
             echo "Error! directory for temporaries does not exist" >&2
             exit 1
         fi
@@ -134,7 +134,7 @@ check_pars()
         echo "Error! -i parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${infofile} ]; then
+        if [ ! -f "${infofile}" ]; then
             echo "Error! file with step information does not exist" >&2
             exit 1
         fi
@@ -148,8 +148,8 @@ create_dirs()
     if [ ! -d "${tmpdir}" ]; then
         echo "Error! cannot create directory for temporary files" >&2; return 1;
     fi
-    mkdir -p ${tmpdir}/scripts || { echo "Error! cannot create directory for scripts" >&2; return 1; }
-    mkdir -p ${tmpdir}/data || { echo "Error! cannot create directory to store data files" >&2; return 1; }
+    mkdir -p "${tmpdir}"/scripts || { echo "Error! cannot create directory for scripts" >&2; return 1; }
+    mkdir -p "${tmpdir}"/data || { echo "Error! cannot create directory to store data files" >&2; return 1; }
 }
 
 ########
@@ -167,7 +167,7 @@ bam_download_and_npz_conv()
     conda activate pyega3 || exit 1
 
     # Download file
-    pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} ${datadir}/${egaid}.bam || exit 1
+    pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} "${datadir}"/${egaid}.bam || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -178,7 +178,7 @@ bam_download_and_npz_conv()
     conda activate samtools || exit 1
 
     # Index file
-    samtools index ${datadir}/${egaid}.bam || exit 1
+    samtools index "${datadir}"/${egaid}.bam || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -190,7 +190,7 @@ bam_download_and_npz_conv()
 
     # Execute conversion
     BINSIZE=5000
-    WisecondorX convert ${datadir}/${egaid}.bam ${datadir}/${egaid}.npz --binsize $BINSIZE || exit 1
+    WisecondorX convert "${datadir}"/${egaid}.bam "${datadir}"/${egaid}.npz --binsize $BINSIZE || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -208,7 +208,7 @@ gen_reffile_wisecondorx()
 
     # Convert tumor bam file into npz
     BINSIZE=5000
-    WisecondorX newref ${datadir}/*.npz ${outf} --binsize $BINSIZE || exit 1
+    WisecondorX newref "${datadir}"/*.npz "${outf}" --binsize $BINSIZE || exit 1
 
     # Deactivate conda environment
     conda deactivate
@@ -221,14 +221,14 @@ remove_dir()
     local dir=$1
 
     # Remove directory
-    rm -rf ${dir} || exit 1
+    rm -rf "${dir}" || exit 1
 }
 
 ########
 extract_egaid_from_entry()
 {
     local entry=$1
-    echo ${entry} | $AWK '{print $1}'
+    echo "${entry}" | $AWK '{print $1}'
 }
 
 ########
@@ -262,10 +262,10 @@ process_pars()
         local stepname=bam_download_and_npz_conv
         local array_size=1
         local task_array_list="1"
-        local stepinfo=`get_step_info ${stepname} ${infofile}`
+        local stepinfo=`get_step_info ${stepname} "${infofile}"`
         local stepdeps=""
         local script_pars=`get_pars_${stepname}`
-        create_script_and_launch ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+        create_script_and_launch "${tmpdir}" ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
 
         # Update variables storing ids
         if [ -z "${ids}" ]; then
@@ -280,10 +280,10 @@ process_pars()
     local stepname=gen_reffile_wisecondorx
     local array_size=1
     local task_array_list="1"
-    local stepinfo=`get_step_info ${stepname} ${infofile}`
+    local stepinfo=`get_step_info ${stepname} "${infofile}"`
     local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
     local script_pars=`get_pars_${stepname}`
-    create_script_and_launch ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+    create_script_and_launch "${tmpdir}" ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
 
     # Update variables storing ids
     ids="${ids},${id}"
@@ -293,10 +293,10 @@ process_pars()
         local stepname=remove_dir
         local array_size=1
         local task_array_list="1"
-        local stepinfo=`get_step_info ${stepname} ${infofile}`
+        local stepinfo=`get_step_info ${stepname} "${infofile}"`
         local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
         local script_pars=`get_pars_${stepname}`
-        create_script_and_launch ${tmpdir} ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+        create_script_and_launch "${tmpdir}" ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
     fi
 }
 
@@ -307,7 +307,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

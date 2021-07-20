@@ -59,7 +59,7 @@ check_pars()
         echo "Error! -b parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${bam} ]; then
+        if [ ! -f "${bam}" ]; then
             echo "Error! file ${bam} does not exist" >&2
             exit 1
         fi
@@ -77,7 +77,7 @@ print_pars()
 ########
 filter_bam_stats()
 {
-    ${AWK} '{if($3>0 || $4>0) printf"%s %d\n",$1,$2}'
+    "${AWK}" '{if($3>0 || $4>0) printf"%s %d\n",$1,$2}'
 }
 
 ########
@@ -86,8 +86,8 @@ process_pars()
     conda activate samtools || return 1
 
     # Obtain bam contigs
-    samtools idxstats $bam > ${outpref}.bamstats || return 1
-    cat ${outpref}.bamstats | filter_bam_stats | ${SORT}
+    samtools idxstats "$bam" > "${outpref}".bamstats || return 1
+    cat "${outpref}".bamstats | filter_bam_stats | "${SORT}"
     
     conda deactivate
 }
@@ -99,7 +99,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

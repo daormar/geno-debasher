@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. ${PANPIPE_HOME_DIR}/bin/panpipe_lib || exit 1
+. "${PANPIPE_HOME_DIR}"/bin/panpipe_lib || exit 1
 
 ########
 print_desc()
@@ -131,7 +131,7 @@ check_pars()
         echo "Error! --pfile parameter not given!" >&2
         exit 1
     else
-        if [ ! -f ${pfile} ]; then
+        if [ ! -f "${pfile}" ]; then
             echo "Warning! file ${pfile} does not exist" >&2
         fi
     fi
@@ -140,7 +140,7 @@ check_pars()
         echo "Error! --outdir parameter not given!" >&2
         exit 1
     else
-        if [ -d ${outd} ]; then
+        if [ -d "${outd}" ]; then
             echo "Warning! output directory does exist" >&2 
         fi
     fi
@@ -168,7 +168,7 @@ check_pars()
     fi
 
     if [ ${ppl_opts_given} -eq 1 ]; then
-        if [ ! -f ${ppl_opts} ]; then
+        if [ ! -f "${ppl_opts}" ]; then
             echo "Error! file ${ppl_opts} does not exist" >&2
             exit 1
         fi
@@ -203,19 +203,19 @@ check_pars()
 absolutize_file_paths()
 {
     if [ ${pfile_given} -eq 1 ]; then   
-        pfile=`get_absolute_path ${pfile}`
+        pfile=`get_absolute_path "${pfile}"`
     fi
 
     if [ ${outdir_given} -eq 1 ]; then
-        outd=`get_absolute_path ${outd}`
+        outd=`get_absolute_path "${outd}"`
     fi
 
     if [ ${metadata_given} -eq 1 ]; then
-        metadata=`get_absolute_path ${metadata}`
+        metadata=`get_absolute_path "${metadata}"`
     fi
 
     if [ ${ppl_opts_given} -eq 1 ]; then
-        ppl_opts=`get_absolute_path ${ppl_opts}`
+        ppl_opts=`get_absolute_path "${ppl_opts}"`
     fi
 }
 
@@ -250,21 +250,21 @@ print_pars()
 ########
 filter_normal_sample()
 {
-    $GREP 'Normal\|normal\|Non-tumor\|non-tumor'
+    "$GREP" 'Normal\|normal\|Non-tumor\|non-tumor'
 }
 
 ########
 extract_normal_sample_info()
 {
     local entry=$1
-    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | filter_normal_sample`
-    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | filter_normal_sample`
+    local sample1=`echo ${entry} | "$AWK" -F ";" '{print $1}' | filter_normal_sample`
+    local sample2=`echo ${entry} | "$AWK" -F ";" '{print $2}' | filter_normal_sample`
 
     if [ ! -z "${sample1}" ]; then
-        echo ${sample1}
+        echo "${sample1}"
     else
         if [ ! -z "${sample2}" ]; then
-            echo ${sample2}
+            echo "${sample2}"
         else
             echo ""
         fi
@@ -274,21 +274,21 @@ extract_normal_sample_info()
 ########
 filter_tumor_sample()
 {
-    $GREP 'Tumour\|tumour\|Tumor\|tumor' | $GREP -v 'Non-tumor\|non-tumor'
+    "$GREP" 'Tumour\|tumour\|Tumor\|tumor' | "$GREP" -v 'Non-tumor\|non-tumor'
 }
 
 ########
 extract_tumor_sample_info()
 {
     local entry=$1
-    local sample1=`echo ${entry} | $AWK -F ";" '{print $1}' | filter_tumor_sample`
-    local sample2=`echo ${entry} | $AWK -F ";" '{print $2}' | filter_tumor_sample`
+    local sample1=`echo ${entry} | "$AWK" -F ";" '{print $1}' | filter_tumor_sample`
+    local sample2=`echo ${entry} | "$AWK" -F ";" '{print $2}' | filter_tumor_sample`
 
     if [ ! -z "${sample1}" ]; then
-        echo ${sample1}
+        echo "${sample1}"
     else
         if [ ! -z "${sample2}" ]; then
-            echo ${sample2}
+            echo "${sample2}"
         else
             echo ""
         fi
@@ -313,14 +313,14 @@ entry_is_ok()
 extract_id_from_sample_info()
 {
     local sample_info=$1
-    echo ${sample_info} | $AWK '{print $1}'
+    echo "${sample_info}" | "$AWK" '{print $1}'
 }
 
 ########
 extract_gender_from_sample_info()
 {
     local sample_info=$1
-    local tmp=`echo ${sample_info} | $GREP 'Female\|female'`
+    local tmp=`echo ${sample_info} | "$GREP" 'Female\|female'`
     if [ ! -z "${tmp}" ]; then
         echo "female"
     else
@@ -335,8 +335,8 @@ get_outd_name()
     local tum_id=$2
 
     # If id contains a file path, retain file name only
-    local norm_id_wo_pathinfo=`$BASENAME ${norm_id}`
-    local tum_id_wo_pathinfo=`$BASENAME ${tum_id}`
+    local norm_id_wo_pathinfo=`"$BASENAME" ${norm_id}`
+    local tum_id_wo_pathinfo=`"$BASENAME" ${tum_id}`
     
     echo ${norm_id_wo_pathinfo}"_"${tum_id_wo_pathinfo}
 }
@@ -344,7 +344,7 @@ get_outd_name()
 ########
 get_ppl_opts_str()
 {
-    cat ${ppl_opts}
+    cat "${ppl_opts}"
 }
 
 ########
@@ -367,7 +367,7 @@ get_lc_opt()
     if [ "${lcxx}" = "" -o "${lcxy}" = "" ]; then
         echo ""
     else
-        if [ ${gender_opt} = "XX" ]; then
+        if [ "${gender_opt}" = "XX" ]; then
             echo "-lc ${lcxx}"
         else
             echo "-lc ${lcxy}"
@@ -423,14 +423,14 @@ process_pars()
             fi
 
             # Print command to execute pipeline
-            echo ${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} ${nopt} ${normal_id} ${topt} ${tumor_id} -g ${gender_opt} ${lc_opt} ${ppl_opts_str}
+            echo "${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} ${nopt} ${normal_id} ${topt} ${tumor_id} -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
         else
             echo "Error in entry number ${entry_num}"
         fi
 
         entry_num=$((entry_num + 1))
         
-    done < ${metadata}
+    done < "${metadata}"
 }
 
 ########
@@ -440,7 +440,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-read_pars $@ || exit 1
+read_pars "$@" || exit 1
 
 check_pars || exit 1
 

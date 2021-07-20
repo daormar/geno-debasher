@@ -335,10 +335,10 @@ get_outd_name()
     local tum_id=$2
 
     # If id contains a file path, retain file name only
-    local norm_id_wo_pathinfo=`"$BASENAME" ${norm_id}`
-    local tum_id_wo_pathinfo=`"$BASENAME" ${tum_id}`
+    local norm_id_wo_pathinfo=`"$BASENAME" "${norm_id}"`
+    local tum_id_wo_pathinfo=`"$BASENAME" "${tum_id}"`
     
-    echo ${norm_id_wo_pathinfo}"_"${tum_id_wo_pathinfo}
+    echo "${norm_id_wo_pathinfo}_${tum_id_wo_pathinfo}"
 }
 
 ########
@@ -407,7 +407,7 @@ process_pars()
             lc_opt=`get_lc_opt ${gender_opt} ${lcxx} ${lcxy}`
             
             # Set name of output directory for analysis
-            analysis_outd=`get_outd_name ${normal_id} ${tumor_id}`
+            analysis_outd=`get_outd_name "${normal_id}" "${tumor_id}"`
 
             # Obtain --dflt-nodes option
             dflt_nodes_opt=`get_dflt_nodes_opt`
@@ -423,7 +423,7 @@ process_pars()
             fi
 
             # Print command to execute pipeline
-            echo "${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile ${pfile} --outdir ${outd}/${analysis_outd} --sched ${sched} ${dflt_nodes_opt} ${nopt} ${normal_id} ${topt} ${tumor_id} -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
+            echo "${PANPIPE_HOME_DIR}/bin/pipe_exec --pfile \"${pfile}\" --outdir \"${outd}/${analysis_outd}\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"${normal_id}\" ${topt} \"${tumor_id}\" -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
         else
             echo "Error in entry number ${entry_num}"
         fi

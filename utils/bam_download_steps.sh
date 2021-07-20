@@ -633,7 +633,7 @@ download_ega_asp_tum_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} "${tumorbam}" || exit 1
+    mv "${bam_file_name}" "${tumorbam}" || exit 1
 
     # Remove encrypted file
     rm "${step_outd}"/tumor.bam.crypt || exit 1
@@ -700,7 +700,7 @@ decrypt_ega_norm_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} "${normalbam}" || exit 1
+    mv "${bam_file_name}" "${normalbam}" || exit 1
 }
 
 ########
@@ -753,7 +753,7 @@ decrypt_ega_tum_bam()
     
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    $JAVA -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} --output-folder "${step_outd}" ${tumorbam_file} 2>&1 || exit 1
+    "$JAVA" -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} --output-folder "${step_outd}" ${tumorbam_file} 2>&1 || exit 1
 
     # Obtain file name
     local bam_file_name=`find_bam_filename "${step_outd}"`
@@ -998,7 +998,7 @@ download_aws_tum_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} "${tumorbam}" || exit 1
+    mv "${bam_file_name}" "${tumorbam}" || exit 1
 }
 
 ########
@@ -1219,7 +1219,7 @@ download_gdc_norm_bam()
     # Move file
     local gdc_bamfname
     gdc_bamfname=`get_gdc_bamfname "${gdcid_normalbam}" "${step_outd}"` || exit 1
-    mv ${gdc_bamfname} "${normalbam}" || exit 1
+    mv "${gdc_bamfname}" "${normalbam}" || exit 1
 }
 
 ########

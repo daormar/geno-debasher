@@ -30,11 +30,7 @@ run_facets.R run_sequenza.R convert_allele_counts.R run_ascat.R		\
 get_two_elem_combs.py filter_nondiscordant_pheno_entries.py		\
 reorder_fa_seqs.py reorder_fa_seqs_lowmem.sh
 
-# Build rules for libraries and bash files implementing steps
-bam_common_lib: bam_common_lib.sh
-	rm -f $@
-	cat bam_common_lib.sh >> $@
-
+# Build rules for bash files implementing steps
 genref_steps: genref_steps.sh
 	rm -f $@
 	cat genref_steps.sh >> $@

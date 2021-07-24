@@ -427,7 +427,7 @@ process_pars()
             fi
 
             # Print command to execute pipeline
-            echo "\"${pipe_exec_path}\" --pfile \"${pfile}\" --outdir \"${outd}/${analysis_outd}\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"${normal_id}\" ${topt} \"${tumor_id}\" -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
+            normalize_cmd "\"${pipe_exec_path}\" --pfile \"${pfile}\" --outdir \"${outd}/${analysis_outd}\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"${normal_id}\" ${topt} \"${tumor_id}\" -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
         else
             echo "Error in entry number ${entry_num}"
         fi

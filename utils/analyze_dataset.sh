@@ -433,7 +433,7 @@ process_pars()
             fi
 
             # Print command to execute pipeline
-            normalize_cmd "\"$(esc_dq ${pipe_exec_path})\" --pfile \"$(esc_dq ${pfile})\" --outdir \"$(esc_dq ${outd}/${analysis_outd})\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"$(esc_dq ${normal_id})\" ${topt} \"$(esc_dq ${tumor_id})\" -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
+            normalize_cmd "\"$(esc_dq "${pipe_exec_path}")\" --pfile \"$(esc_dq "${pfile}")\" --outdir \"$(esc_dq "${outd}/${analysis_outd}")\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"$(esc_dq "${normal_id}")\" ${topt} \"$(esc_dq "${tumor_id}")\" -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
         else
             echo "Error in entry number ${entry_num}"
         fi

@@ -148,15 +148,15 @@ SUFFIXES= .sh .py .r .R
 .sh :
 	rm -f $@
 	echo "#! " $(BASH) > $@
-	echo "biopanpipe_pkgname=\""$(PACKAGE_NAME)"\"" >> $@
-	echo "biopanpipe_version=\""$(PACKAGE_VERSION)"\"" >> $@
+	echo "biopanpipe_pkgname=\"$(PACKAGE_NAME)\"" >> $@
+	echo "biopanpipe_version=\"$(PACKAGE_VERSION)\"" >> $@
 	echo "biopanpipe_bindir=\"$(prefix)/bin/\"" >> $@
 	echo "biopanpipe_datadir=\"$(datadir)/$(PACKAGE_NAME)\"" >> $@
 	echo "BASH=\"$(BASH)\"" >> $@
 	echo "AWK=\"$(AWK)\"" >> $@
 	echo "SORT=\"$(SORT)\"" >> $@
-	echo "sortpars=\""$(sortpars)"\"" >> $@
-	echo "sortT=\""$(sortT)"\"" >> $@
+	echo "sortpars=\"$(sortpars)\"" >> $@
+	echo "sortT=\"$(sortT)\"" >> $@
 	echo "UNIQ=\"$(UNIQ)\"" >> $@
 	echo "GREP=\"$(GREP)\"" >> $@
 	echo "SED=\"$(SED)\"" >> $@

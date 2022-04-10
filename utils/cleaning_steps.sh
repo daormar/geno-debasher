@@ -36,11 +36,11 @@ delete_bam_files_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    define_opt "-step-outd" ${step_outd} optlist || return 1
 
     # -datadir option
     abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
-    define_opt "-datadir" "${abs_datadir}" optlist || exit 1
+    define_opt "-datadir" "${abs_datadir}" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -54,7 +54,7 @@ delete_bam_files()
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
 
     # Delete bam files
-    rm -f "${abs_datadir}"/*.bam || exit 1
+    rm -f "${abs_datadir}"/*.bam || return 1
 }
 
 ########
@@ -73,11 +73,11 @@ clear_datadir_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || return 1
 
     # -datadir option
     abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
-    define_opt "-datadir" "${abs_datadir}" optlist || exit 1
+    define_opt "-datadir" "${abs_datadir}" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -91,8 +91,8 @@ clear_datadir()
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
 
     # Delete bam files
-    rm -rf "${abs_datadir}"/* || exit 1
+    rm -rf "${abs_datadir}"/* || return 1
 
     # Print README.txt file
-    echo "NOTE: This directory was cleared by means of the 'clear_datadir' step" > "${abs_datadir}"/README.txt || exit 1
+    echo "NOTE: This directory was cleared by means of the 'clear_datadir' step" > "${abs_datadir}"/README.txt || return 1
 }

@@ -81,16 +81,16 @@ concat_germline_snvs_define_opts()
 
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+    define_opt "-step-outd" "${step_outd}" optlist || return 1
 
     # Get germline snvs summary directory
     local abs_sumdir=`get_absolute_shdirname ${GERM_SNVS_SUM_DIR_BASENAME}`
 
     # -summarydir option
-    define_opt "-summarydir" "${abs_sumdir}" optlist || exit 1
+    define_opt "-summarydir" "${abs_sumdir}" optlist || return 1
 
     # Save option list
-    save_opt_list optlist    
+    save_opt_list optlist
 }
 
 ########
@@ -99,21 +99,21 @@ concat_germline_snvs()
     # Initialize variables
     local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
     local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
-    
+
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate bcftools 2>&1 || exit 1
+    conda activate bcftools 2>&1 || return 1
 
     # Reheader vcfs
     logmsg "* Reheadering list of vcfs..."
-    reheader_vcf_list "${summarydir}" ${SUMMARY_FILE_EXT} ${GERMLINE_NORMAL_SAMPLE_NAME} || exit 1
+    reheader_vcf_list "${summarydir}" ${SUMMARY_FILE_EXT} ${GERMLINE_NORMAL_SAMPLE_NAME} || return 1
 
     # Generate list file
-    generate_vcf_list "${summarydir}" ${REHEADERED_VCF_EXT} > ${summarydir}/variant_files.list || exit 1
+    generate_vcf_list "${summarydir}" ${REHEADERED_VCF_EXT} > ${summarydir}/variant_files.list || return 1
 
     logmsg "* Executing bcftools concat..."
-    bcftools concat -f "${summarydir}"/variant_files.list > "${summarydir}"/concat_variants.vcf.gz || exit 1
-    
+    bcftools concat -f "${summarydir}"/variant_files.list > "${summarydir}"/concat_variants.vcf.gz || return 1
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1

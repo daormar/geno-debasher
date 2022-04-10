@@ -61,7 +61,7 @@ get_bam_filename()
         echo "$bam"
         return 0
     fi
-    
+
     # Check -n option
     local normalbam
     normalbam=`read_opt_value_from_line "$cmdline" "-n"` && given=1
@@ -70,7 +70,7 @@ get_bam_filename()
         echo "$normalbam"
         return 0
     fi
-    
+
     # Check -extn option
     if check_opt_given "$cmdline" "-extn"; then
         local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
@@ -107,30 +107,30 @@ create_genref_for_bam_define_opts()
     local cmdline=$1
     local stepspec=$2
     local optlist=""
-    
+
     # Define the -step-outd option, the output directory for the step
     local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
-    
+    define_opt "-step-outd" "${step_outd}" optlist || return 1
+
     # -br option
-    define_cmdline_infile_opt "$cmdline" "-br" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-br" optlist || return 1
 
     # -bam option
     local bam
-    bam=`get_bam_filename "$cmdline"` || exit 1
-    define_opt "-bam" "$bam" optlist || exit 1
+    bam=`get_bam_filename "$cmdline"` || return 1
+    define_opt "-bam" "$bam" optlist || return 1
 
     # -cm option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-cm" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-cm" ${NOFILE} optlist || return 1
 
     # -fbr option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-fbr" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_nonmand_opt "$cmdline" "-fbr" ${NOFILE} optlist || return 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/genref.fa optlist || exit 1
+    define_opt "-outfile" "${abs_datadir}"/genref.fa optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -169,16 +169,16 @@ create_genref_for_bam()
         # Genome reference creation failed, check if fallback file was
         # provided
         if [ "${fallback_genref}" = ${NOFILE} ]; then
-            exit 1
+            return 1
         else
             logmsg "Genome reference creation failed but fallback file was provided"
             # Copy fallback file
             logmsg "* Copying fallback file (${fallback_genref})..."
-            cp "${fallback_genref}" "${outfile}" || exit 1
+            cp "${fallback_genref}" "${outfile}" || return 1
             # Index fallback reference
             logmsg "* Indexing fallback reference..."
-            conda activate samtools 2>&1 || exit 1
-            samtools faidx "${outfile}" || exit 1
+            conda activate samtools 2>&1 || return 1
+            samtools faidx "${outfile}" || return 1
             conda deactivate
         fi
     fi
@@ -204,11 +204,11 @@ get_ref_contig_list()
     local ref=$1
 
     if [ ! -f "${ref}".fai ]; then
-        conda activate samtools 2>&1 || exit 1
+        conda activate samtools 2>&1 || return 1
         samtools faidx "${ref}"
         conda deactivate
     fi
-    
+
     "$AWK" '{printf " %s",$1}' "${ref}".fai
 }
 
@@ -248,7 +248,7 @@ get_bam_contig_list()
 {
     local bam=$1
 
-    conda activate samtools 2>&1 || exit 1
+    conda activate samtools 2>&1 || return 1
     samtools idxstats "$bam" | filter_bam_stats
     conda deactivate
 }

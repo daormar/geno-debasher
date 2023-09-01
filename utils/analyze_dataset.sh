@@ -1,19 +1,19 @@
 # Bio-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
@@ -121,13 +121,13 @@ read_pars()
                   ;;
         esac
         shift
-    done   
+    done
 }
 
 ########
 check_pars()
 {
-    if [ ${pfile_given} -eq 0 ]; then   
+    if [ ${pfile_given} -eq 0 ]; then
         echo "Error! --pfile parameter not given!" >&2
         exit 1
     else
@@ -141,7 +141,7 @@ check_pars()
         exit 1
     else
         if [ -d "${outd}" ]; then
-            echo "Warning! output directory does exist" >&2 
+            echo "Warning! output directory does exist" >&2
         fi
     fi
 
@@ -149,7 +149,7 @@ check_pars()
         echo "Error, --sched option should be given" >&2
         exit 1
     fi
-    
+
     if [ ${metadata_given} -eq 0 ]; then
         echo "Error, --metadata option should be given" >&2
         exit 1
@@ -202,7 +202,7 @@ check_pars()
 ########
 absolutize_file_paths()
 {
-    if [ ${pfile_given} -eq 1 ]; then   
+    if [ ${pfile_given} -eq 1 ]; then
         pfile=`get_absolute_path "${pfile}"`
     fi
 
@@ -337,7 +337,7 @@ get_outd_name()
     # If id contains a file path, retain file name only
     local norm_id_wo_pathinfo=`"$BASENAME" "${norm_id}"`
     local tum_id_wo_pathinfo=`"$BASENAME" "${tum_id}"`
-    
+
     echo "${norm_id_wo_pathinfo}_${tum_id_wo_pathinfo}"
 }
 
@@ -400,22 +400,22 @@ process_pars()
             # Extract sample info
             normal_sample_info=`extract_normal_sample_info "$entry"`
             normal_id=`extract_id_from_sample_info "${normal_sample_info}"`
-            
+
             tumor_sample_info=`extract_tumor_sample_info "$entry"`
             tumor_id=`extract_id_from_sample_info "${tumor_sample_info}"`
-            
+
             gender=`extract_gender_from_sample_info "${normal_sample_info}"`
 
             # Obtain value for -g option
             if [ ${gender} = "male" ]; then
                 gender_opt="XY"
-            else                
+            else
                 gender_opt="XX"
             fi
 
             # Obtain value for -lc option
             lc_opt=`get_lc_opt ${gender_opt} ${lcxx} ${lcxy}`
-            
+
             # Set name of output directory for analysis
             analysis_outd=`get_outd_name "${normal_id}" "${tumor_id}"`
 
@@ -429,7 +429,7 @@ process_pars()
                 topt="-t"
             else
                 nopt="-extn"
-                topt="-extt"                
+                topt="-extt"
             fi
 
             # Print command to execute pipeline
@@ -439,7 +439,7 @@ process_pars()
         fi
 
         entry_num=$((entry_num + 1))
-        
+
     done < "${metadata}"
 }
 

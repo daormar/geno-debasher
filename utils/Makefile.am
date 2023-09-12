@@ -1,55 +1,56 @@
-SCRIPTS_TO_BE_BUILT= bam_common_lib genref_steps bam_download_steps	\
-bam_manip_steps cleaning_steps bam_analysis_steps bam_summariz_steps	\
-bam_analysis bam_filter bam_facets bam_ascat bam_ascatngs		\
-analyze_dataset file_shuffle filter_vcf gen_bed_for_genome		\
-check_ref_and_bam_contigs get_bam_contigs get_entrez_fasta		\
-gen_wisecondorx_ref convert_snppos_to_snpgcc create_snv_pos_ascat	\
-query_ega_metadata query_icgc_metadata download_gdc_metadata		\
-query_gdc_metadata create_genref_for_bam filter_contig_from_genref	\
-get_filtered_sam_header get_filtered_sam_align map_contnames		\
-map_vcf_contnames run_facets run_sequenza convert_allele_counts		\
-run_ascat get_two_elem_combs filter_nondiscordant_pheno_entries		\
-reorder_fa_seqs reorder_fa_seqs_lowmem
+SCRIPTS_TO_BE_BUILT= bam_common_lib genref_processes			\
+bam_download_processes bam_manip_processes cleaning_processes		\
+bam_analysis_processes bam_summariz_processes bam_analysis bam_filter	\
+bam_facets bam_ascat bam_ascatngs analyze_dataset file_shuffle		\
+filter_vcf gen_bed_for_genome check_ref_and_bam_contigs get_bam_contigs	\
+get_entrez_fasta gen_wisecondorx_ref convert_snppos_to_snpgcc		\
+create_snv_pos_ascat query_ega_metadata query_icgc_metadata		\
+download_gdc_metadata query_gdc_metadata create_genref_for_bam		\
+filter_contig_from_genref get_filtered_sam_header			\
+get_filtered_sam_align map_contnames map_vcf_contnames run_facets	\
+run_sequenza convert_allele_counts run_ascat get_two_elem_combs		\
+filter_nondiscordant_pheno_entries reorder_fa_seqs			\
+reorder_fa_seqs_lowmem
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
-EXTRA_DIST = bam_common_lib.sh genref_steps.sh bam_download_steps.sh	\
-bam_manip_steps.sh cleaning_steps.sh bam_analysis_steps.sh		\
-bam_summariz_steps.sh bam_analysis.sh bam_filter.sh bam_facets.sh	\
-bam_ascat.sh bam_ascatngs.sh analyze_dataset.sh file_shuffle.sh		\
-filter_vcf.py gen_bed_for_genome.sh check_ref_and_bam_contigs.sh	\
-get_bam_contigs.sh get_entrez_fasta.py gen_wisecondorx_ref.sh		\
-convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
-query_ega_metadata.py download_gdc_metadata.sh query_gdc_metadata.py	\
-query_icgc_metadata.py create_genref_for_bam.sh				\
+EXTRA_DIST = bam_common_lib.sh genref_processes.sh			\
+bam_download_processes.sh bam_manip_processes.sh cleaning_processes.sh	\
+bam_analysis_processes.sh bam_summariz_processes.sh bam_analysis.sh	\
+bam_filter.sh bam_facets.sh bam_ascat.sh bam_ascatngs.sh		\
+analyze_dataset.sh file_shuffle.sh filter_vcf.py gen_bed_for_genome.sh	\
+check_ref_and_bam_contigs.sh get_bam_contigs.sh get_entrez_fasta.py	\
+gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
+create_snv_pos_ascat.py query_ega_metadata.py download_gdc_metadata.sh	\
+query_gdc_metadata.py query_icgc_metadata.py create_genref_for_bam.sh	\
 filter_contig_from_genref.py get_filtered_sam_header.py			\
 get_filtered_sam_align.py map_contnames.py map_vcf_contnames.py		\
 run_facets.R run_sequenza.R convert_allele_counts.R run_ascat.R		\
 get_two_elem_combs.py filter_nondiscordant_pheno_entries.py		\
 reorder_fa_seqs.py reorder_fa_seqs_lowmem.sh
 
-# Build rules for bash files implementing steps
-genref_steps: genref_steps.sh
+# Build rules for bash files implementing processes
+genref_processes: genref_processes.sh
 	rm -f $@
-	cat genref_steps.sh >> $@
+	cat genref_processes.sh >> $@
 
-bam_download_steps: bam_download_steps.sh
+bam_download_processes: bam_download_processes.sh
 	rm -f $@
-	cat bam_download_steps.sh >> $@
+	cat bam_download_processes.sh >> $@
 
-bam_manip_steps: bam_manip_steps.sh
+bam_manip_processes: bam_manip_processes.sh
 	rm -f $@
-	cat bam_manip_steps.sh >> $@
+	cat bam_manip_processes.sh >> $@
 
-bam_analysis_steps: bam_analysis_steps.sh
+bam_analysis_processes: bam_analysis_processes.sh
 	rm -f $@
-	cat bam_analysis_steps.sh >> $@
+	cat bam_analysis_processes.sh >> $@
 
-cleaning_steps: cleaning_steps.sh
+cleaning_processes: cleaning_processes.sh
 	rm -f $@
-	cat cleaning_steps.sh >> $@
+	cat cleaning_processes.sh >> $@
 
 # Build rules for PanPipe modules
 bam_analysis: bam_analysis.sh

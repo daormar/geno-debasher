@@ -1,5 +1,5 @@
 """
-Bio-PanPipe package
+Geno-PanPipe package
 Copyright 2019,2020 Daniel Ortiz-Mart\'inez
  
 This library is free software; you can redistribute it and/or

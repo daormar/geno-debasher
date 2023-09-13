@@ -1,29 +1,29 @@
 # Bio-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
-##########################
-# GENOME REFERENCE STEPS #
-##########################
+##############################
+# GENOME REFERENCE PROCESSES #
+##############################
 
 ########
 create_genref_for_bam_document()
 {
-    step_description "Creates a genome reference file for a given \`bam\` file. For this purpose, the step starts from a basic genome reference file, removing those contigs not present in the \`bam\` file and downloading or copying missing ones from the Internet or from previously existing files."
+    process_description "Creates a genome reference file for a given \`bam\` file. For this purpose, the process starts from a basic genome reference file, removing those contigs not present in the \`bam\` file and downloading or copying missing ones from the Internet or from previously existing files."
 }
 
 ########
@@ -34,7 +34,7 @@ create_genref_for_bam_explain_cmdline_opts()
     explain_cmdline_req_opt "-br" "<string>" "$description"
 
     # -bam option
-    description="bam file (required if no downloading steps or paths of normal or tumor bam files have been defined)"
+    description="bam file (required if no downloading processes or paths of normal or tumor bam files have been defined)"
     explain_cmdline_opt "-bam" "<string>" "$description"
 
     # -cm option
@@ -105,12 +105,12 @@ create_genref_for_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -br option
     define_cmdline_infile_opt "$cmdline" "-br" optlist || return 1
@@ -153,7 +153,7 @@ create_genref_for_bam()
 {
     # Initialize variables
     local baseref=`read_opt_value_from_line "$*" "-br"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local bam=`read_opt_value_from_line "$*" "-bam"`
     local contig_mapping=`read_opt_value_from_line "$*" "-cm"`
     local fallback_genref=`read_opt_value_from_line "$*" "-fbr"`
@@ -161,10 +161,10 @@ create_genref_for_bam()
 
     # Create genome reference
     local cm_opt=`get_create_genref_for_bam_cm_opt ${contig_mapping}`
-    if ${biopanpipe_bindir}/create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${step_outd}"; then
+    if ${biopanpipe_bindir}/create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${process_outd}"; then
         # Move resulting files
-        mv "${step_outd}"/genref_for_bam.fa "${outfile}"
-        mv "${step_outd}"/genref_for_bam.fa.fai "${outfile}".fai
+        mv "${process_outd}"/genref_for_bam.fa "${outfile}"
+        mv "${process_outd}"/genref_for_bam.fa.fai "${outfile}".fai
     else
         # Genome reference creation failed, check if fallback file was
         # provided

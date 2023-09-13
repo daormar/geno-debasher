@@ -35,7 +35,7 @@ usage()
     echo "                      [--lcxx <string> --lcxy <string>]"
     echo "                      [--local-bams] [--help]"
     echo ""
-    echo "--pfile <string>      File with pipeline steps to be performed"
+    echo "--pfile <string>      File with pipeline processes to be performed"
     echo "--outdir <string>     Output directory"
     echo "--sched <string>      Scheduler used to execute the pipelines"
     echo "--metadata <string>   File with metadata, one entry per line."

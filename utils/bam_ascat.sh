@@ -1,20 +1,20 @@
 # Bio-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez and Jose
 # Espinosa-Carrasco (initial version)
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
@@ -36,9 +36,9 @@ bam_ascat_fifos()
     :
 }
 
-###############
-# ASCAT STEPS #
-###############
+###################
+# ASCAT PROCESSES #
+###################
 
 ########
 extract_snp_ids_from_locis()
@@ -54,9 +54,9 @@ remove_snp_ids_from_locis()
     "${AWK}" '{
               for(i=2;i<=NF;++i)
               {
-               printf"%s",$i 
+               printf"%s",$i
                if(i!=NF) printf"\t"
-              } 
+              }
               printf"\n"
             }' "$locis"
 }
@@ -81,7 +81,7 @@ postproc_allelecounter_output()
     local contig_mapping=$2
 
     if [ "${contig_mapping}" = ${NOFILE} ]; then
-        cat "${allelecounterfile}"        
+        cat "${allelecounterfile}"
     else
         "${biopanpipe_bindir}"/map_contnames -m "${contig_mapping}" -f "${allelecounterfile}" -c 0 --invert
     fi
@@ -99,7 +99,7 @@ allele_counter_norm_explain_cmdline_opts()
     explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
+    description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -ma option
@@ -115,9 +115,9 @@ allele_counter_norm_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || exit 1
 
     # -l option
     define_cmdline_infile_opt "$cmdline" "-l" optlist || exit 1
@@ -141,7 +141,7 @@ allele_counter_norm_define_opts()
 allele_counter_norm()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local locis=`read_opt_value_from_line "$*" "-l"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -149,27 +149,27 @@ allele_counter_norm()
 
     # Extract SNP ids to a separate file
     logmsg "* Extracting SNP ids..."
-    extract_snp_ids_from_locis "${locis}" > "${step_outd}"/snpids
-    
+    extract_snp_ids_from_locis "${locis}" > "${process_outd}"/snpids
+
     # Create file for alleleCounter, mapping contigs if required
     logmsg "* Preprocessing locis..."
-    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${step_outd}"/allele_counter_norm.preproc_locis
-    
-    # Activate conda environment    
+    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${process_outd}"/allele_counter_norm.preproc_locis
+
+    # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate allelecount 2>&1 || exit 1
 
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
-    alleleCounter -l "${step_outd}"/allele_counter_norm.preproc_locis -r "${ref}" -b "${normalbam}" -o "${step_outd}"/allele_counter_norm.csv 2>&1 || exit 1
-    
+    alleleCounter -l "${process_outd}"/allele_counter_norm.preproc_locis -r "${ref}" -b "${normalbam}" -o "${process_outd}"/allele_counter_norm.csv 2>&1 || exit 1
+
     # Deactivate conda environment
     logmsg "* Dectivating conda environment..."
     conda deactivate 2>&1
 
     # Postprocess alleleCounter output
     logmsg "* Postprocessing alleleCounter output..."
-    postproc_allelecounter_output "${step_outd}"/allele_counter_norm.csv "${contig_mapping}" > "${step_outd}"/allele_counter_norm_postproc.csv
+    postproc_allelecounter_output "${process_outd}"/allele_counter_norm.csv "${contig_mapping}" > "${process_outd}"/allele_counter_norm_postproc.csv
 }
 
 ########
@@ -190,7 +190,7 @@ allele_counter_tumor_explain_cmdline_opts()
     explain_cmdline_req_opt "-r" "<string>" "$description"
 
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -ma option
@@ -206,9 +206,9 @@ allele_counter_tumor_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || exit 1
 
     # -l option
     define_cmdline_infile_opt "$cmdline" "-l" optlist || exit 1
@@ -232,7 +232,7 @@ allele_counter_tumor_define_opts()
 allele_counter_tumor()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local locis=`read_opt_value_from_line "$*" "-l"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -240,19 +240,19 @@ allele_counter_tumor()
 
     # Extract SNP ids to a separate file
     logmsg "* Extracting SNP ids..."
-    extract_snp_ids_from_locis "${locis}" > "${step_outd}"/snpids
-    
+    extract_snp_ids_from_locis "${locis}" > "${process_outd}"/snpids
+
     # Create file for alleleCounter, mapping contigs if required
     logmsg "* Preprocessing locis..."
-    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${step_outd}"/allele_counter_tumor.preproc_locis
+    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${process_outd}"/allele_counter_tumor.preproc_locis
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate allelecount 2>&1 || exit 1
-    
+
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
-    alleleCounter -l "${step_outd}"/allele_counter_tumor.preproc_locis -r "${ref}" -b "${tumorbam}" -o "${step_outd}"/allele_counter_tumor.csv 2>&1 || exit 1
+    alleleCounter -l "${process_outd}"/allele_counter_tumor.preproc_locis -r "${ref}" -b "${tumorbam}" -o "${process_outd}"/allele_counter_tumor.csv 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Dectivating conda environment..."
@@ -260,7 +260,7 @@ allele_counter_tumor()
 
     # Postprocess alleleCounter output
     logmsg "* Postprocessing alleleCounter output..."
-    postproc_allelecounter_output "${step_outd}"/allele_counter_tumor.csv "${contig_mapping}" > "${step_outd}"/allele_counter_tumor_postproc.csv
+    postproc_allelecounter_output "${process_outd}"/allele_counter_tumor.csv "${contig_mapping}" > "${process_outd}"/allele_counter_tumor_postproc.csv
 }
 
 ########
@@ -300,13 +300,13 @@ ascat_define_opts()
     local cmdline=$1
     local jobspec=$2
     local optlist=""
-    
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || exit 1
 
     # Define -acn option or retrieve dependency
-    local allelecountnorm_dep=`find_dependency_for_step "${jobspec}" allele_counter_norm`
+    local allelecountnorm_dep=`find_dependency_for_process "${jobspec}" allele_counter_norm`
     if [ ${allelecountnorm_dep} = ${DEP_NOT_FOUND} ]; then
         define_cmdline_infile_opt "${cmdline}" "-acn"  optlist || exit 1
     else
@@ -314,9 +314,9 @@ ascat_define_opts()
         local allelecount_norm_file="${acnorm_outd}"/allele_counter_norm_postproc.csv
         define_opt "-acn" "${allelecount_norm_file}" optlist || exit 1
     fi
-    
+
     # Define -act option or retrieve dependency
-    local allelecounttumor_dep=`find_dependency_for_step "${jobspec}" allele_counter_tumor`
+    local allelecounttumor_dep=`find_dependency_for_process "${jobspec}" allele_counter_tumor`
     if [ ${allelecounttumor_dep} = ${DEP_NOT_FOUND} ]; then
         define_cmdline_infile_opt "${cmdline}" "-act"  optlist || exit 1
     else
@@ -326,7 +326,7 @@ ascat_define_opts()
     fi
 
     # Define -snpids option or retrieve dependency
-    local allelecountnorm_dep=`find_dependency_for_step "${jobspec}" allele_counter_norm`
+    local allelecountnorm_dep=`find_dependency_for_process "${jobspec}" allele_counter_norm`
     if [ ${allelecountnorm_dep} = ${DEP_NOT_FOUND} ]; then
         define_cmdline_infile_opt "${cmdline}" "-snpids"  optlist || exit 1
     else
@@ -340,7 +340,7 @@ ascat_define_opts()
 
     # -sg option
     define_cmdline_infile_opt "$cmdline" "-sg" optlist || exit 1
- 
+
     # Save option list
     save_opt_list optlist
 }
@@ -359,7 +359,7 @@ add_snpids_to_convert_allele_counts_outfile()
 ascat()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local allelecounternormal=`read_opt_value_from_line "$*" "-acn"`
     local allelecountertumor=`read_opt_value_from_line "$*" "-act"`
     local snpids=`read_opt_value_from_line "$*" "-snpids"`
@@ -369,21 +369,21 @@ ascat()
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate ascat 2>&1 || exit 1
-    
+
     # Convert allele counts
     logmsg "* Executing convert_allele_counts..."
-    Rscript "${biopanpipe_bindir}"/convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${step_outd}" || exit 1
+    Rscript "${biopanpipe_bindir}"/convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${process_outd}" || exit 1
 
     # Add SNP ids information to convert_allele_counts output
     logmsg "* Add SNP ids information to convert_allele_counts output..."
-    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${step_outd}"/tumor.BAF > "${step_outd}"/tumor_snpids.BAF
-    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${step_outd}"/tumor.LogR > "${step_outd}"/tumor_snpids.LogR
-    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${step_outd}"/normal.BAF > "${step_outd}"/normal_snpids.BAF
-    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${step_outd}"/normal.LogR > "${step_outd}"/normal_snpids.LogR
-    
+    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${process_outd}"/tumor.BAF > "${process_outd}"/tumor_snpids.BAF
+    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${process_outd}"/tumor.LogR > "${process_outd}"/tumor_snpids.LogR
+    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${process_outd}"/normal.BAF > "${process_outd}"/normal_snpids.BAF
+    add_snpids_to_convert_allele_counts_outfile "${snpids}" "${process_outd}"/normal.LogR > "${process_outd}"/normal_snpids.LogR
+
     # Run ascat
     logmsg "* Executing run_ascat..."
-    Rscript "${biopanpipe_bindir}"/run_ascat --tumor_baf="${step_outd}/tumor_snpids.BAF" --tumor_logr="${step_outd}/tumor_snpids.LogR" --normal_baf="${step_outd}/normal_snpids.BAF" --normal_logr="${step_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${step_outd}/" || exit 1
+    Rscript "${biopanpipe_bindir}"/run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

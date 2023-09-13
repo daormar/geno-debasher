@@ -1,19 +1,19 @@
 # Bio-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
@@ -35,19 +35,19 @@ bam_facets_fifos()
     :
 }
 
-#############################
-# SNP-PILEUP + FACETS STEPS #
-#############################
+#################################
+# SNP-PILEUP + FACETS PROCESSES #
+#################################
 
 ########
 snp_pileup_explain_cmdline_opts()
 {
     # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
+    description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -sv option
@@ -63,9 +63,9 @@ snp_pileup_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" ${step_outd} optlist || exit 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" ${process_outd} optlist || exit 1
 
     # -sv option
     define_cmdline_infile_opt "$cmdline" "-sv" optlist || exit 1
@@ -88,7 +88,7 @@ snp_pileup_define_opts()
 snp_pileup()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local snpvcf=`read_opt_value_from_line "$*" "-sv"`
@@ -99,7 +99,7 @@ snp_pileup()
 
     # Execute snp-pileup
     logmsg "* Executing snp-pileup..."
-    snp-pileup ${snpvcf} "${step_outd}"/snp-pileup-counts.csv "${normalbam}" "${tumorbam}" 2>&1 || exit 1
+    snp-pileup ${snpvcf} "${process_outd}"/snp-pileup-counts.csv "${normalbam}" "${tumorbam}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
@@ -116,7 +116,7 @@ snp_pileup_conda_envs()
 facets_explain_cmdline_opts()
 {
     # -pileup-counts option
-    description="SNP pileup file (required if pileup step has not been performed)"
+    description="SNP pileup file (required if pileup process has not been performed)"
     explain_cmdline_opt "-sp" "<string>" "$description"
 }
 
@@ -128,11 +128,11 @@ facets_define_opts()
     local jobspec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || exit 1
 
-    local pileup_dep=`find_dependency_for_step "${jobspec}" snp_pileup`
+    local pileup_dep=`find_dependency_for_process "${jobspec}" snp_pileup`
     if [ ${pileup_dep} != ${DEP_NOT_FOUND} ]; then
         local pileup_outd=`get_default_outd_for_dep ${outd} "${pileup_dep}"`
         local pileup_counts_file="${pileup_outd}"/snp-pileup-counts.csv
@@ -149,7 +149,7 @@ facets_define_opts()
 facets()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local pileup_counts=`read_opt_value_from_line "$*" "-pileup-counts"`
 
     # Define --snpPileupCounts option if output from snp-pileup is available
@@ -164,7 +164,7 @@ facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript "${biopanpipe_bindir}"/run_facets -c "${pileup_counts}" -o "${step_outd}" 2>&1 || exit 1
+    Rscript "${biopanpipe_bindir}"/run_facets -c "${pileup_counts}" -o "${process_outd}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."

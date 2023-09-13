@@ -1,19 +1,19 @@
 # Bio-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 #############
@@ -22,9 +22,9 @@
 
 DEFAULT_MAX_RECORDS_IN_RAM_GATK=1000000
 
-##########################
-# BAM MANIPULATION STEPS #
-##########################
+##############################
+# BAM MANIPULATION PROCESSES #
+##############################
 
 ########
 index_norm_bam_explain_cmdline_opts()
@@ -37,12 +37,12 @@ index_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
@@ -58,7 +58,7 @@ index_norm_bam()
 {
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
 
     # Remove previous index if one was created
     if [ -f "${normalbam}".bai ]; then
@@ -95,12 +95,12 @@ index_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
@@ -116,7 +116,7 @@ index_tum_bam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
 
     # Remove previous index if one was created
     if [ -f "${tumorbam}".bai ]; then
@@ -126,7 +126,7 @@ index_tum_bam()
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || return 1
-    
+
     # Execute samtools
     logmsg "* Executing samtools index..."
     samtools index "${tumorbam}" 2>&1 || return 1
@@ -153,12 +153,12 @@ sort_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
@@ -167,7 +167,7 @@ sort_norm_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -179,7 +179,7 @@ sort_norm_bam()
 {
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Activate conda environment
@@ -193,16 +193,16 @@ sort_norm_bam()
     else
         # Execute samtools
         logmsg "* Executing samtools sort..."
-        samtools sort -T "${step_outd}" -o "${step_outd}"/sorted.bam -m 2G -@ ${cpus} "${normalbam}" 2>&1 || return 1
+        samtools sort -T "${process_outd}" -o "${process_outd}"/sorted.bam -m 2G -@ ${cpus} "${normalbam}" 2>&1 || return 1
         # NOTE: -m option is used here to increase the maximum memory per
         # thread. One lateral efect of this is that the number of tmp files
         # generated is decreased. This constitutes one possible way to avoid
         # the "Too many open files" error reported by samtools
 
         # Replace initial bam file by the sorted one
-        mv "${step_outd}"/sorted.bam "${normalbam}" 2>&1 || return 1
+        mv "${process_outd}"/sorted.bam "${normalbam}" 2>&1 || return 1
     fi
-    
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
@@ -225,12 +225,12 @@ sort_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
@@ -239,7 +239,7 @@ sort_tum_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -251,9 +251,9 @@ sort_tum_bam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
-    
+
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || return 1
@@ -265,16 +265,16 @@ sort_tum_bam()
     else
         # Execute samtools
         logmsg "* Executing samtools sort..."
-        samtools sort -T "${step_outd}" -o "${step_outd}"/sorted.bam -m 2G -@ ${cpus} "${tumorbam}" 2>&1 || return 1
+        samtools sort -T "${process_outd}" -o "${process_outd}"/sorted.bam -m 2G -@ ${cpus} "${tumorbam}" 2>&1 || return 1
         # NOTE: -m option is used here to increase the maximum memory per
         # thread. One lateral efect of this is that the number of tmp files
         # generated is decreased. This constitutes one possible way to avoid
         # the "Too many open files" error reported by samtools
 
         # Replace initial bam file by the sorted one
-        mv "${step_outd}"/sorted.bam "${tumorbam}" 2>&1 || return 1
+        mv "${process_outd}"/sorted.bam "${tumorbam}" 2>&1 || return 1
     fi
-    
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
@@ -294,7 +294,7 @@ sambamba_mpileup_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
+    description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -mpb option
@@ -307,12 +307,12 @@ sambamba_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -329,7 +329,7 @@ sambamba_mpileup_norm_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -352,7 +352,7 @@ get_sambamba_mpileup_l_opt()
 sambamba_mpileup_norm_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -367,7 +367,7 @@ sambamba_mpileup_norm_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${step_outd}" -o "${step_outd}"/normal.pileup "$normalbam" --samtools "-f ${ref}" || return 1
+    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${process_outd}" -o "${process_outd}"/normal.pileup "$normalbam" --samtools "-f ${ref}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -375,7 +375,7 @@ sambamba_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/normal.pileup || return 1
+    "${GZIP}" "${process_outd}"/normal.pileup || return 1
 }
 
 ########
@@ -392,7 +392,7 @@ sambamba_mpileup_tum_bam_explain_cmdline_opts()
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -mpb option
@@ -405,12 +405,12 @@ sambamba_mpileup_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -427,7 +427,7 @@ sambamba_mpileup_tum_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -438,7 +438,7 @@ sambamba_mpileup_tum_bam_define_opts()
 sambamba_mpileup_tum_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -450,18 +450,18 @@ sambamba_mpileup_tum_bam()
 
     # Obtain sambamba mpileup -L opt
     local smp_l_opt=`get_sambamba_mpileup_l_opt "${mpbfile}"`
-    
+
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${step_outd}" -o "${step_outd}"/tumor.pileup "$tumorbam" --samtools "-f ${ref}" || return 1
-    
+    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${process_outd}" -o "${process_outd}"/tumor.pileup "$tumorbam" --samtools "-f ${ref}" || return 1
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/tumor.pileup || return 1
+    "${GZIP}" "${process_outd}"/tumor.pileup || return 1
 }
 
 ########
@@ -488,15 +488,15 @@ parallel_sambamba_mpileup_norm_bam_explain_cmdline_opts()
 
 ########
 parallel_sambamba_mpileup_norm_bam_define_opts()
-{ 
+{
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -511,7 +511,7 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Get name of contig list file
@@ -535,7 +535,7 @@ parallel_sambamba_mpileup_norm_bam_define_opts()
 parallel_sambamba_mpileup_norm_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -550,7 +550,7 @@ parallel_sambamba_mpileup_norm_bam()
     local smp_l_opt=`get_sambamba_mpileup_l_opt "${mpbfile}"`
 
     # Reset tmp directory
-    tmpdir="${step_outd}"/tmp_${contig}
+    tmpdir="${process_outd}"/tmp_${contig}
     if [ -d $tmpdir ]; then
         rm -rf $tmpdir/*
     else
@@ -559,7 +559,7 @@ parallel_sambamba_mpileup_norm_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${tmpdir}" -o "${step_outd}"/normal_${contig}.pileup "$normalbam" --samtools "-f ${ref}" || return 1
+    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${tmpdir}" -o "${process_outd}"/normal_${contig}.pileup "$normalbam" --samtools "-f ${ref}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -567,19 +567,19 @@ parallel_sambamba_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/normal_${contig}.pileup || return 1
+    "${GZIP}" "${process_outd}"/normal_${contig}.pileup || return 1
 }
 
 ########
 parallel_sambamba_mpileup_norm_bam_reset_outdir()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Remove files
     logmsg "* Resetting output directory..."
-    rm -f "${step_outd}"/normal_${contig}.*
+    rm -f "${process_outd}"/normal_${contig}.*
 }
 
 ########
@@ -606,15 +606,15 @@ parallel_sambamba_mpileup_tum_bam_explain_cmdline_opts()
 
 ########
 parallel_sambamba_mpileup_tum_bam_define_opts()
-{ 
+{
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -629,7 +629,7 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Get name of contig list file
@@ -653,7 +653,7 @@ parallel_sambamba_mpileup_tum_bam_define_opts()
 parallel_sambamba_mpileup_tum_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -668,7 +668,7 @@ parallel_sambamba_mpileup_tum_bam()
     local smp_l_opt=`get_sambamba_mpileup_l_opt ${mpbfile}`
 
     # Reset tmp directory
-    tmpdir="${step_outd}"/tmp_${contig}
+    tmpdir="${process_outd}"/tmp_${contig}
     if [ -d $tmpdir ]; then
         rm -rf $tmpdir/*
     else
@@ -677,7 +677,7 @@ parallel_sambamba_mpileup_tum_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${tmpdir}" -o "${step_outd}"/tumor_${contig}.pileup "$tumorbam" --samtools "-f ${ref}" || return 1
+    sambamba mpileup -t ${cpus} "${smp_l_opt}" --tmpdir "${tmpdir}" -o "${process_outd}"/tumor_${contig}.pileup "$tumorbam" --samtools "-f ${ref}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -685,19 +685,19 @@ parallel_sambamba_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/tumor_${contig}.pileup || return 1
+    "${GZIP}" "${process_outd}"/tumor_${contig}.pileup || return 1
 }
 
 ########
 parallel_sambamba_mpileup_tum_bam_reset_outdir()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Remove files
     logmsg "* Resetting output directory..."
-    rm -f "${step_outd}"/tumor_${contig}.*
+    rm -f "${process_outd}"/tumor_${contig}.*
 }
 
 ########
@@ -714,7 +714,7 @@ samtools_mpileup_norm_bam_explain_cmdline_opts()
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
+    description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -mpb option
@@ -727,12 +727,12 @@ samtools_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -767,7 +767,7 @@ get_samtools_mpileup_l_opt()
 samtools_mpileup_norm_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -781,7 +781,7 @@ samtools_mpileup_norm_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${step_outd}"/normal.pileup "$normalbam" || return 1
+    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${process_outd}"/normal.pileup "$normalbam" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -789,7 +789,7 @@ samtools_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/normal.pileup || return 1
+    "${GZIP}" "${process_outd}"/normal.pileup || return 1
 }
 
 ########
@@ -806,7 +806,7 @@ samtools_mpileup_tum_bam_explain_cmdline_opts()
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -mpb option
@@ -819,12 +819,12 @@ samtools_mpileup_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -847,7 +847,7 @@ samtools_mpileup_tum_bam_define_opts()
 samtools_mpileup_tum_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -858,18 +858,18 @@ samtools_mpileup_tum_bam()
 
     # Obtain samtools mpileup -L opt
     local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
-    
+
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${step_outd}"/tumor.pileup "$tumorbam" || return 1
-    
+    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${process_outd}"/tumor.pileup "$tumorbam" || return 1
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/tumor.pileup || return 1
+    "${GZIP}" "${process_outd}"/tumor.pileup || return 1
 }
 
 ########
@@ -899,12 +899,12 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -938,7 +938,7 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 parallel_samtools_mpileup_norm_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -953,7 +953,7 @@ parallel_samtools_mpileup_norm_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${step_outd}"/normal_${contig}.pileup "$normalbam" || return 1
+    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${process_outd}"/normal_${contig}.pileup "$normalbam" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -961,19 +961,19 @@ parallel_samtools_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/normal_${contig}.pileup || return 1
+    "${GZIP}" "${process_outd}"/normal_${contig}.pileup || return 1
 }
 
 ########
 parallel_samtools_mpileup_norm_bam_reset_outdir()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Remove files
     logmsg "* Resetting output directory..."
-    rm -f "${step_outd}"/normal_${contig}.*
+    rm -f "${process_outd}"/normal_${contig}.*
 }
 
 ########
@@ -1000,15 +1000,15 @@ parallel_samtools_mpileup_tum_bam_explain_cmdline_opts()
 
 ########
 parallel_samtools_mpileup_tum_bam_define_opts()
-{ 
+{
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -1042,7 +1042,7 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 parallel_samtools_mpileup_tum_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
@@ -1057,7 +1057,7 @@ parallel_samtools_mpileup_tum_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${step_outd}"/tumor_${contig}.pileup "$tumorbam" || return 1
+    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${process_outd}"/tumor_${contig}.pileup "$tumorbam" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1065,19 +1065,19 @@ parallel_samtools_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${step_outd}"/tumor_${contig}.pileup || return 1
+    "${GZIP}" "${process_outd}"/tumor_${contig}.pileup || return 1
 }
 
 ########
 parallel_samtools_mpileup_tum_bam_reset_outdir()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
 
     # Remove files
     logmsg "* Resetting output directory..."
-    rm -f "${step_outd}"/tumor_${contig}.*
+    rm -f "${process_outd}"/tumor_${contig}.*
 }
 
 ########
@@ -1090,7 +1090,7 @@ parallel_samtools_mpileup_tum_bam_conda_envs()
 parallel_split_norm_bam_explain_cmdline_opts()
 {
     # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
+    description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -lc option
@@ -1103,12 +1103,12 @@ parallel_split_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -datadir option
     abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
@@ -1138,24 +1138,24 @@ parallel_split_norm_bam_define_opts()
 parallel_split_norm_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
-    
+
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
     conda activate samtools 2>&1 || return 1
 
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
-    normalcont="${step_outd}"/normal_${contig}.bam
+    normalcont="${process_outd}"/normal_${contig}.bam
     filter_bam_contig_samtools "$normalbam" $contig $normalcont || return 1
 
     # Index contig
     logmsg "* Indexing contig..."
     samtools index ${normalcont} || return 1
-    
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
@@ -1174,7 +1174,7 @@ parallel_split_norm_bam_conda_envs()
 parallel_split_tum_bam_explain_cmdline_opts()
 {
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -lc option
@@ -1187,12 +1187,12 @@ parallel_split_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -datadir option
     abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
@@ -1222,7 +1222,7 @@ parallel_split_tum_bam_define_opts()
 parallel_split_tum_bam()
 {
     # Initialize variables
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local abs_datadir=`read_opt_value_from_line "$*" "-datadir"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
@@ -1233,17 +1233,17 @@ parallel_split_tum_bam()
 
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
-    tumorcont="${step_outd}"/tumor_${contig}.bam
+    tumorcont="${process_outd}"/tumor_${contig}.bam
     filter_bam_contig_samtools "$tumorbam" $contig $tumorcont || return 1
 
     # Index contig
     logmsg "* Indexing contig..."
     samtools index ${tumorcont} || return 1
-    
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
-        
+
     # Move bam and index file to datadir
     mv ${tumorcont}* "${abs_datadir}" || return 1
 }
@@ -1258,7 +1258,7 @@ parallel_split_tum_bam_conda_envs()
 bedtools_genomecov_norm_bam_explain_cmdline_opts()
 {
     # -n option
-    description="Normal bam file (required if no downloading steps have been defined)"
+    description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 }
 
@@ -1267,12 +1267,12 @@ bedtools_genomecov_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1288,15 +1288,15 @@ bedtools_genomecov_norm_bam()
 {
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-        
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate bedtools 2>&1 || return 1
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
-    bedtools genomecov -ibam "${normalbam}" > "${step_outd}"/genomecov.tsv || return 1
+    bedtools genomecov -ibam "${normalbam}" > "${process_outd}"/genomecov.tsv || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1313,7 +1313,7 @@ bedtools_genomecov_norm_bam_conda_envs()
 bedtools_genomecov_tum_bam_explain_cmdline_opts()
 {
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 }
 
@@ -1322,12 +1322,12 @@ bedtools_genomecov_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -tumorbam option
     local tumorbam
@@ -1343,15 +1343,15 @@ bedtools_genomecov_tum_bam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
-        
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate bedtools 2>&1 || return 1
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
-    bedtools genomecov -ibam "${tumorbam}" > "${step_outd}"/genomecov.tsv || return 1
+    bedtools genomecov -ibam "${tumorbam}" > "${process_outd}"/genomecov.tsv || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1368,7 +1368,7 @@ bedtools_genomecov_tum_bam_conda_envs()
 norm_bam_to_ubam_explain_cmdline_opts()
 {
     # -n option
-    description="Normal unmapped bam file (required if no downloading steps have been defined)"
+    description="Normal unmapped bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -mrec option
@@ -1381,12 +1381,12 @@ norm_bam_to_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1405,11 +1405,11 @@ norm_bam_to_ubam()
 {
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
     # Create tmpdir for gatk
-    tmpdir="${step_outd}"/tmp
+    tmpdir="${process_outd}"/tmp
     mkdir "${tmpdir}" || return 1
 
     # Activate conda environment
@@ -1418,10 +1418,10 @@ norm_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT "${normalbam}" --OUTPUT "${step_outd}"/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT "${normalbam}" --OUTPUT "${process_outd}"/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Replace initial bam file by the mapped one
-    mv "${step_outd}"/unmapped.bam "${normalbam}" 2>&1 || return 1
+    mv "${process_outd}"/unmapped.bam "${normalbam}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1438,7 +1438,7 @@ norm_bam_to_ubam_conda_envs()
 tum_bam_to_ubam_explain_cmdline_opts()
 {
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -mrec option
@@ -1451,12 +1451,12 @@ tum_bam_to_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -tumorbam option
     local tumorbam
@@ -1475,11 +1475,11 @@ tum_bam_to_ubam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
 
     # Create tmpdir for gatk
-    tmpdir="${step_outd}"/tmp
+    tmpdir="${process_outd}"/tmp
     mkdir "${tmpdir}" || return 1
 
     # Activate conda environment
@@ -1488,10 +1488,10 @@ tum_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT "${tumorbam}" --OUTPUT "${step_outd}"/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT "${tumorbam}" --OUTPUT "${process_outd}"/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Replace initial bam file by the mapped one
-    mv "${step_outd}"/unmapped.bam "${tumorbam}" 2>&1 || return 1
+    mv "${process_outd}"/unmapped.bam "${tumorbam}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1512,7 +1512,7 @@ align_norm_ubam_explain_cmdline_opts()
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -n option
-    description="Normal unmapped bam file (required if no downloading steps have been defined)"
+    description="Normal unmapped bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
     # -mrec option
@@ -1525,12 +1525,12 @@ align_norm_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -1547,7 +1547,7 @@ align_norm_ubam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -1573,12 +1573,12 @@ align_norm_ubam()
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local ref=`read_opt_value_from_line "$*" "-r"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Create tmpdir for gatk
-    tmpdir="${step_outd}"/tmp
+    tmpdir="${process_outd}"/tmp
     mkdir "${tmpdir}" || return 1
 
     # Activate conda environment
@@ -1587,7 +1587,7 @@ align_norm_ubam()
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT "${normalbam}" --FASTQ "${step_outd}"/reads_r1.fastq.gz --SECOND_END_FASTQ "${step_outd}"/reads_r2.fastq.gz --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT "${normalbam}" --FASTQ "${process_outd}"/reads_r1.fastq.gz --SECOND_END_FASTQ "${process_outd}"/reads_r2.fastq.gz --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1599,10 +1599,10 @@ align_norm_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem -t ${cpus} "${ref}" <("${GZIP}" -d -c "${step_outd}"/reads_r1.fastq.gz) <("${GZIP}" -d -c "${step_outd}"/reads_r2.fastq.gz) | "${GZIP}" > "${step_outd}"/aln.sam.gz ; pipe_fail || return 1
+    bwa mem -t ${cpus} "${ref}" <("${GZIP}" -d -c "${process_outd}"/reads_r1.fastq.gz) <("${GZIP}" -d -c "${process_outd}"/reads_r2.fastq.gz) | "${GZIP}" > "${process_outd}"/aln.sam.gz ; pipe_fail || return 1
 
     # Remove fastq files
-    rm "${step_outd}"/reads_r1.fastq.gz "${step_outd}"/reads_r2.fastq.gz || return 1
+    rm "${process_outd}"/reads_r1.fastq.gz "${process_outd}"/reads_r2.fastq.gz || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1620,10 +1620,10 @@ align_norm_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk CreateSequenceDictionary..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${normalbam}" --ALIGNED_BAM "${step_outd}"/aln.sam.gz --OUTPUT "${step_outd}"/merged.bam --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${normalbam}" --ALIGNED_BAM "${process_outd}"/aln.sam.gz --OUTPUT "${process_outd}"/merged.bam --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Replace initial unmapped bam file by the mapped one
-    mv "${step_outd}"/merged.bam "${normalbam}" 2>&1 || return 1
+    mv "${process_outd}"/merged.bam "${normalbam}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1645,7 +1645,7 @@ align_tum_ubam_explain_cmdline_opts()
     explain_cmdline_opt "-r" "<string>" "$description"
 
     # -t option
-    description="Tumor bam file (required if no downloading steps have been defined)"
+    description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
 
     # -mrec option
@@ -1658,12 +1658,12 @@ align_tum_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || return 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -1680,7 +1680,7 @@ align_tum_ubam_define_opts()
 
     # -cpus option
     local cpus
-    cpus=`extract_cpus_from_stepspec "$stepspec"` || return 1
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
     # Save option list
@@ -1693,21 +1693,21 @@ align_tum_ubam()
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local ref=`read_opt_value_from_line "$*" "-r"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
 
     # Create tmpdir for gatk
-    tmpdir="${step_outd}"/tmp
+    tmpdir="${process_outd}"/tmp
     mkdir "${tmpdir}" || return 1
-    
+
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
     conda activate gatk4 2>&1 || return 1
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
-    gatk --java-options "-Xmx4G" SamToFastq --INPUT "${tumorbam}" --FASTQ "${step_outd}"/reads_r1.fastq.gz --SECOND_END_FASTQ "${step_outd}"/reads_r2.fastq.gz --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
+    gatk --java-options "-Xmx4G" SamToFastq --INPUT "${tumorbam}" --FASTQ "${process_outd}"/reads_r1.fastq.gz --SECOND_END_FASTQ "${process_outd}"/reads_r2.fastq.gz --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1719,10 +1719,10 @@ align_tum_ubam()
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
-    bwa mem -t ${cpus} "${ref}" <("${GZIP}" -d -c "${step_outd}"/reads_r1.fastq.gz) <("${GZIP}" -d -c "${step_outd}"/reads_r2.fastq.gz) | "${GZIP}" > "${step_outd}"/aln.sam.gz ; pipe_fail || return 1
+    bwa mem -t ${cpus} "${ref}" <("${GZIP}" -d -c "${process_outd}"/reads_r1.fastq.gz) <("${GZIP}" -d -c "${process_outd}"/reads_r2.fastq.gz) | "${GZIP}" > "${process_outd}"/aln.sam.gz ; pipe_fail || return 1
 
     # Remove fastq files
-    rm "${step_outd}"/reads_r1.fastq.gz "${step_outd}"/reads_r2.fastq.gz || return 1
+    rm "${process_outd}"/reads_r1.fastq.gz "${process_outd}"/reads_r2.fastq.gz || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1740,10 +1740,10 @@ align_tum_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${tumorbam}" --ALIGNED_BAM "${step_outd}"/aln.sam.gz --OUTPUT "${step_outd}"/merged.bam --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${tumorbam}" --ALIGNED_BAM "${process_outd}"/aln.sam.gz --OUTPUT "${process_outd}"/merged.bam --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Replace initial unmapped bam file by the mapped one
-    mv "${step_outd}"/merged.bam "${tumorbam}" 2>&1 || return 1
+    mv "${process_outd}"/merged.bam "${tumorbam}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

@@ -1,19 +1,19 @@
 # Bio-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
@@ -38,7 +38,7 @@ usage()
     echo "                     per line)"
     echo "-o <string>          Output file"
     echo "-T <string>          Directory for temporary files"
-    echo "-i <string>          File with information about the steps to execute"
+    echo "-i <string>          File with information about the processes to execute"
     echo "-egastr <int>        Number of streams used by the EGA download client"
     echo "                     (50 by default)"
     echo "-egacred <string>    File with EGA download client credentials"
@@ -104,13 +104,13 @@ read_pars()
                       ;;
         esac
         shift
-    done   
+    done
 }
 
 ########
 check_pars()
 {
-    if [ ${egalist_given} -eq 0 ]; then   
+    if [ ${egalist_given} -eq 0 ]; then
         echo "Error! -egalist parameter not given!" >&2
         exit 1
     else
@@ -135,7 +135,7 @@ check_pars()
         exit 1
     else
         if [ ! -f "${infofile}" ]; then
-            echo "Error! file with step information does not exist" >&2
+            echo "Error! file with process information does not exist" >&2
             exit 1
         fi
     fi
@@ -173,7 +173,7 @@ bam_download_and_npz_conv()
     conda deactivate
 
     ### Index bam file
-    
+
     # Activate conda environment
     conda activate samtools || exit 1
 
@@ -182,7 +182,7 @@ bam_download_and_npz_conv()
 
     # Deactivate conda environment
     conda deactivate
-    
+
     ### Convert bam file into npz file
 
     # Activate conda environment
@@ -257,15 +257,15 @@ process_pars()
     while read entry; do
         # Extract EGA id
         egaid=`extract_egaid_from_entry $entry`
-        
+
         # Process EGA id
-        local stepname=bam_download_and_npz_conv
+        local processname=bam_download_and_npz_conv
         local array_size=1
         local task_array_list="1"
-        local stepinfo=`get_step_info ${stepname} "${infofile}"`
-        local stepdeps=""
-        local script_pars=`get_pars_${stepname}`
-        create_script_and_launch "${tmpdir}" ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+        local processinfo=`get_process_info ${processname} "${infofile}"`
+        local processdeps=""
+        local script_pars=`get_pars_${processname}`
+        create_script_and_launch "${tmpdir}" ${processname} ${array_size} ${task_array_list} "${processinfo}" "${processdeps}" "${script_pars}" id
 
         # Update variables storing ids
         if [ -z "${ids}" ]; then
@@ -277,26 +277,26 @@ process_pars()
     done < ${egalist}
 
     # Generate reference file
-    local stepname=gen_reffile_wisecondorx
+    local processname=gen_reffile_wisecondorx
     local array_size=1
     local task_array_list="1"
-    local stepinfo=`get_step_info ${stepname} "${infofile}"`
-    local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
-    local script_pars=`get_pars_${stepname}`
-    create_script_and_launch "${tmpdir}" ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+    local processinfo=`get_process_info ${processname} "${infofile}"`
+    local processdeps=`apply_deptype_to_processids ${ids} afterok`
+    local script_pars=`get_pars_${processname}`
+    create_script_and_launch "${tmpdir}" ${processname} ${array_size} ${task_array_list} "${processinfo}" "${processdeps}" "${script_pars}" id
 
     # Update variables storing ids
     ids="${ids},${id}"
 
     if [ ${debug} -eq 0 ]; then
         # Remove directory with temporary files
-        local stepname=remove_dir
+        local processname=remove_dir
         local array_size=1
         local task_array_list="1"
-        local stepinfo=`get_step_info ${stepname} "${infofile}"`
-        local stepdeps=`apply_deptype_to_stepids ${ids} afterok`
-        local script_pars=`get_pars_${stepname}`
-        create_script_and_launch "${tmpdir}" ${stepname} ${array_size} ${task_array_list} "${stepinfo}" "${stepdeps}" "${script_pars}" id
+        local processinfo=`get_process_info ${processname} "${infofile}"`
+        local processdeps=`apply_deptype_to_processids ${ids} afterok`
+        local script_pars=`get_pars_${processname}`
+        create_script_and_launch "${tmpdir}" ${processname} ${array_size} ${task_array_list} "${processinfo}" "${processdeps}" "${script_pars}" id
     fi
 }
 

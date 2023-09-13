@@ -1,19 +1,19 @@
 # Bio-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
@@ -35,9 +35,9 @@ bam_filter_fifos()
     :
 }
 
-####################
-# BAM FILTER STEPS #
-####################
+########################
+# BAM FILTER PROCESSES #
+########################
 
 ########
 filter_norm_bam_contigs_explain_cmdline_opts()
@@ -52,12 +52,12 @@ filter_norm_bam_contigs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || exit 1
 
     # -r option
     local genref
@@ -77,7 +77,7 @@ filter_norm_bam_contigs_define_opts()
 get_ref_contigs()
 {
     local faifile=$1
-    
+
     "${AWK}" '{print $1}' ${faifile}
 }
 
@@ -112,36 +112,36 @@ filter_norm_bam_contigs()
     # Initialize variables
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || exit 1
 
     # Obtain contigs given in reference
-    get_ref_contigs "${ref}".fai > "${step_outd}"/refcontigs
-    
+    get_ref_contigs "${ref}".fai > "${process_outd}"/refcontigs
+
     # Obtain new header
 
     ## Extract sam header
-    samtools view -H "${normalbam}" > "${step_outd}"/original_header || exit 1
-	
-    ## Generate new sam header	
-    "${biopanpipe_bindir}"/get_filtered_sam_header -h "${step_outd}"/original_header -l "${step_outd}"/refcontigs > "${step_outd}"/new_header || exit 1
-    
+    samtools view -H "${normalbam}" > "${process_outd}"/original_header || exit 1
+
+    ## Generate new sam header
+    "${biopanpipe_bindir}"/get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
+
     # Generate filtered bam
     {
         # Print header
-        cat "${step_outd}"/new_header
-        
+        cat "${process_outd}"/new_header
+
         # Print contig information
-        contigs=`get_contigs_from_header "${step_outd}"/new_header`
-        samtools view "${normalbam}" "${contigs}" | "${biopanpipe_bindir}"/get_filtered_sam_align -l "${step_outd}"/refcontigs
-    } | samtools view -bo "${step_outd}"/filtered.bam -
-    
+        contigs=`get_contigs_from_header "${process_outd}"/new_header`
+        samtools view "${normalbam}" "${contigs}" | "${biopanpipe_bindir}"/get_filtered_sam_align -l "${process_outd}"/refcontigs
+    } | samtools view -bo "${process_outd}"/filtered.bam -
+
     # Move bam file
-    mv "${step_outd}"/filtered.bam "${normalbam}"
-    
+    mv "${process_outd}"/filtered.bam "${normalbam}"
+
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
@@ -166,12 +166,12 @@ filter_tum_bam_contigs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local stepspec=$2
+    local process_spec=$2
     local optlist=""
 
-    # Define the -step-outd option, the output directory for the step
-    local step_outd=`get_step_outdir_given_stepspec "$stepspec"`
-    define_opt "-step-outd" "${step_outd}" optlist || exit 1
+    # Define the -process-outd option, the output directory for the process
+    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
+    define_opt "-process-outd" "${process_outd}" optlist || exit 1
 
     # -r option
     local genref
@@ -193,35 +193,35 @@ filter_tum_bam_contigs()
     # Initialize variables
     local ref=`read_opt_value_from_line "$*" "-r"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local step_outd=`read_opt_value_from_line "$*" "-step-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || exit 1
 
     # Obtain contigs given in reference
-    get_ref_contigs "${ref}".fai > "${step_outd}"/refcontigs
-    
+    get_ref_contigs "${ref}".fai > "${process_outd}"/refcontigs
+
     # Obtain new header
 
     ## Extract sam header
-    samtools view -H "${tumorbam}" > "${step_outd}"/original_header || exit 1
-	
-    ## Generate new sam header	
-    "${biopanpipe_bindir}"/get_filtered_sam_header -h "${step_outd}"/original_header -l "${step_outd}"/refcontigs > "${step_outd}"/new_header || exit 1
-    
+    samtools view -H "${tumorbam}" > "${process_outd}"/original_header || exit 1
+
+    ## Generate new sam header
+    "${biopanpipe_bindir}"/get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
+
     # Generate filtered bam
     {
         # Print header
-        cat "${step_outd}"/new_header
-        
+        cat "${process_outd}"/new_header
+
         # Print contig information
-        contigs=`get_contigs_from_header "${step_outd}"/new_header`
-        samtools view "${tumorbam}" ${contigs} | "${biopanpipe_bindir}"/get_filtered_sam_align -l "${step_outd}"/refcontigs
-    } | samtools view -bo "${step_outd}"/filtered.bam -
+        contigs=`get_contigs_from_header "${process_outd}"/new_header`
+        samtools view "${tumorbam}" ${contigs} | "${biopanpipe_bindir}"/get_filtered_sam_align -l "${process_outd}"/refcontigs
+    } | samtools view -bo "${process_outd}"/filtered.bam -
 
     # Move bam file
-    mv "${step_outd}"/filtered.bam "${tumorbam}"
+    mv "${process_outd}"/filtered.bam "${tumorbam}"
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

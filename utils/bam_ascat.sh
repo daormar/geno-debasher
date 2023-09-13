@@ -1,4 +1,4 @@
-# Bio-PanPipe package
+# Geno-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez and Jose
 # Espinosa-Carrasco (initial version)
 #

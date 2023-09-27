@@ -30,12 +30,6 @@ bam_ascat_shared_dirs()
     define_shared_dir "${DATADIR_BASENAME}"
 }
 
-########
-bam_ascat_fifos()
-{
-    :
-}
-
 ###################
 # ASCAT PROCESSES #
 ###################

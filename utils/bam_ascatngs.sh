@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. ${biopanpipe_bindir}/bam_common_lib || exit 1
+. "${biopanpipe_bindir}"/bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #
@@ -27,12 +27,6 @@
 bam_ascatngs_shared_dirs()
 {
     define_shared_dir "${DATADIR_BASENAME}"
-}
-
-########
-bam_ascatngs_fifos()
-{
-    :
 }
 
 ##########################

@@ -31,12 +31,6 @@ bam_analysis_shared_dirs()
     define_shared_dir "${GERM_SNVS_SUM_DIR_BASENAME}"
 }
 
-########
-bam_analysis_fifos()
-{
-    :
-}
-
 # INCLUDE BASH FILES IMPLEMENTING PROCESSES
 . "${biopanpipe_bindir}"/genref_processes || exit 1
 . "${biopanpipe_bindir}"/bam_download_processes || exit 1

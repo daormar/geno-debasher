@@ -55,7 +55,7 @@ cleaning_processes: cleaning_processes.sh
 # Build rules for PanPipe modules
 bam_analysis: bam_analysis.sh
 	rm -f $@
-	echo "biopanpipe_bindir=\"$(prefix)/bin/\"" >> $@
+	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -79,7 +79,7 @@ bam_analysis: bam_analysis.sh
 
 bam_facets: bam_facets.sh
 	rm -f $@
-	echo "biopanpipe_bindir=\"$(prefix)/bin/\"" >> $@
+	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -102,7 +102,7 @@ bam_facets: bam_facets.sh
 
 bam_ascat: bam_ascat.sh
 	rm -f $@
-	echo "biopanpipe_bindir=\"$(prefix)/bin/\"" >> $@
+	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -125,7 +125,7 @@ bam_ascat: bam_ascat.sh
 
 bam_ascatngs: bam_ascatngs.sh
 	rm -f $@
-	echo "biopanpipe_bindir=\"$(prefix)/bin/\"" >> $@
+	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
 	echo "CUT=\"$(CUT)\"" >> $@
 	echo "AWK=\"$(AWK)\"" >> $@
 	echo "GREP=\"$(GREP)\"" >> $@
@@ -149,10 +149,10 @@ SUFFIXES= .sh .py .r .R
 .sh :
 	rm -f $@
 	echo "#! " $(BASH) > $@
-	echo "biopanpipe_pkgname=\"$(PACKAGE_NAME)\"" >> $@
-	echo "biopanpipe_version=\"$(PACKAGE_VERSION)\"" >> $@
-	echo "biopanpipe_bindir=\"$(prefix)/bin/\"" >> $@
-	echo "biopanpipe_datadir=\"$(datadir)/$(PACKAGE_NAME)\"" >> $@
+	echo "genopanpipe_pkgname=\"$(PACKAGE_NAME)\"" >> $@
+	echo "genopanpipe_version=\"$(PACKAGE_VERSION)\"" >> $@
+	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
+	echo "genopanpipe_datadir=\"$(datadir)/$(PACKAGE_NAME)\"" >> $@
 	echo "BASH=\"$(BASH)\"" >> $@
 	echo "AWK=\"$(AWK)\"" >> $@
 	echo "SORT=\"$(SORT)\"" >> $@

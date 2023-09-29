@@ -1,8 +1,6 @@
-SCRIPTS_TO_BE_BUILT= bam_common_lib genref_processes			\
-bam_download_processes bam_manip_processes cleaning_processes		\
-bam_analysis_processes bam_summariz_processes bam_analysis bam_filter	\
-bam_facets bam_ascat bam_ascatngs analyze_dataset file_shuffle		\
-filter_vcf gen_bed_for_genome check_ref_and_bam_contigs get_bam_contigs	\
+SCRIPTS_TO_BE_BUILT= bam_common_lib bam_analysis bam_filter bam_facets	\
+bam_ascat bam_ascatngs analyze_dataset file_shuffle filter_vcf		\
+gen_bed_for_genome check_ref_and_bam_contigs get_bam_contigs		\
 get_entrez_fasta gen_wisecondorx_ref convert_snppos_to_snpgcc		\
 create_snv_pos_ascat query_ega_metadata query_icgc_metadata		\
 download_gdc_metadata query_gdc_metadata create_genref_for_bam		\
@@ -13,6 +11,10 @@ filter_nondiscordant_pheno_entries reorder_fa_seqs			\
 reorder_fa_seqs_lowmem
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
+
+libexec_SCRIPTS = genref_processes bam_download_processes	\
+bam_manip_processes cleaning_processes bam_analysis_processes	\
+bam_summariz_processes
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
@@ -30,27 +32,6 @@ get_filtered_sam_align.py map_contnames.py map_vcf_contnames.py		\
 run_facets.R run_sequenza.R convert_allele_counts.R run_ascat.R		\
 get_two_elem_combs.py filter_nondiscordant_pheno_entries.py		\
 reorder_fa_seqs.py reorder_fa_seqs_lowmem.sh
-
-# Build rules for bash files implementing processes
-genref_processes: genref_processes.sh
-	rm -f $@
-	cat genref_processes.sh >> $@
-
-bam_download_processes: bam_download_processes.sh
-	rm -f $@
-	cat bam_download_processes.sh >> $@
-
-bam_manip_processes: bam_manip_processes.sh
-	rm -f $@
-	cat bam_manip_processes.sh >> $@
-
-bam_analysis_processes: bam_analysis_processes.sh
-	rm -f $@
-	cat bam_analysis_processes.sh >> $@
-
-cleaning_processes: cleaning_processes.sh
-	rm -f $@
-	cat cleaning_processes.sh >> $@
 
 # Build rules for PanPipe modules
 bam_analysis: bam_analysis.sh

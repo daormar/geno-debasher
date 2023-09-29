@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${genopanpipe_bindir}"/bam_common_lib || exit 1
+. "${genopanpipe_libexecdir}"/bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #
@@ -32,9 +32,9 @@ bam_analysis_shared_dirs()
 }
 
 # INCLUDE BASH FILES IMPLEMENTING PROCESSES
-. "${genopanpipe_bindir}"/genref_processes || exit 1
-. "${genopanpipe_bindir}"/bam_download_processes || exit 1
-. "${genopanpipe_bindir}"/bam_manip_processes || exit 1
-. "${genopanpipe_bindir}"/bam_analysis_processes || exit 1
-. "${genopanpipe_bindir}"/bam_summariz_processes || exit 1
-. "${genopanpipe_bindir}"/cleaning_processes || exit 1
+. "${genopanpipe_libexecdir}"/genref_processes || exit 1
+. "${genopanpipe_libexecdir}"/bam_download_processes || exit 1
+. "${genopanpipe_libexecdir}"/bam_manip_processes || exit 1
+. "${genopanpipe_libexecdir}"/bam_analysis_processes || exit 1
+. "${genopanpipe_libexecdir}"/bam_summariz_processes || exit 1
+. "${genopanpipe_libexecdir}"/cleaning_processes || exit 1

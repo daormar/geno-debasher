@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. ${PANPIPE_HOME_DIR}/bin/panpipe_lib || exit 1
+. ${PANPIPE_HOME_DIR}/panpipe_lib || exit 1
 
 ########
 print_desc()

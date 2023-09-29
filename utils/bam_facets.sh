@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${biopanpipe_bindir}"/bam_common_lib || exit 1
+. "${genopanpipe_bindir}"/bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #
@@ -158,7 +158,7 @@ facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript "${biopanpipe_bindir}"/run_facets -c "${pileup_counts}" -o "${process_outd}" 2>&1 || exit 1
+    Rscript "${genopanpipe_bindir}"/run_facets -c "${pileup_counts}" -o "${process_outd}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."

@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${biopanpipe_bindir}"/bam_common_lib || exit 1
+. "${genopanpipe_bindir}"/bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #

@@ -18,7 +18,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${biopanpipe_bindir}"/bam_common_lib || exit 1
+. "${genopanpipe_bindir}"/bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #
@@ -64,7 +64,7 @@ preproc_allelecounter_locis()
     if [ "${contig_mapping}" = ${NOFILE} ]; then
         remove_snp_ids_from_locis "${locis}"
     else
-        remove_snp_ids_from_locis "${locis}" | "${biopanpipe_bindir}"/map_contnames -m "${contig_mapping}" -c 0
+        remove_snp_ids_from_locis "${locis}" | "${genopanpipe_bindir}"/map_contnames -m "${contig_mapping}" -c 0
     fi
 }
 
@@ -77,7 +77,7 @@ postproc_allelecounter_output()
     if [ "${contig_mapping}" = ${NOFILE} ]; then
         cat "${allelecounterfile}"
     else
-        "${biopanpipe_bindir}"/map_contnames -m "${contig_mapping}" -f "${allelecounterfile}" -c 0 --invert
+        "${genopanpipe_bindir}"/map_contnames -m "${contig_mapping}" -f "${allelecounterfile}" -c 0 --invert
     fi
 }
 
@@ -366,7 +366,7 @@ ascat()
 
     # Convert allele counts
     logmsg "* Executing convert_allele_counts..."
-    Rscript "${biopanpipe_bindir}"/convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${process_outd}" || exit 1
+    Rscript "${genopanpipe_bindir}"/convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${process_outd}" || exit 1
 
     # Add SNP ids information to convert_allele_counts output
     logmsg "* Add SNP ids information to convert_allele_counts output..."
@@ -377,7 +377,7 @@ ascat()
 
     # Run ascat
     logmsg "* Executing run_ascat..."
-    Rscript "${biopanpipe_bindir}"/run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
+    Rscript "${genopanpipe_bindir}"/run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

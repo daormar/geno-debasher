@@ -337,7 +337,7 @@ get_contigs()
                 cat "${mapping}" || return 1
             else
                 echo "Getting data for contig ${contig} with length ${contiglen} (mapped to accession $mapping)..." >&2
-                "${biopanpipe_bindir}"/get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
+                "${genopanpipe_bindir}"/get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
             fi
         fi
     done < ${contiglist}
@@ -375,7 +375,7 @@ process_pars()
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    "${biopanpipe_bindir}"/filter_contig_from_genref -g "$baseref" -l ${outd}/refcontigs_to_keep > "${outd}"/unordered_ref.fa || return 1
+    "${genopanpipe_bindir}"/filter_contig_from_genref -g "$baseref" -l ${outd}/refcontigs_to_keep > "${outd}"/unordered_ref.fa || return 1
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
@@ -387,7 +387,7 @@ process_pars()
 
     # Reorder contigs
     echo "* Reordering reference contigs..." >&2
-    "${biopanpipe_bindir}"/reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
+    "${genopanpipe_bindir}"/reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
     rm "${outd}"/unordered_ref.fa || return 1
     
     # Index created reference

@@ -90,7 +90,7 @@ process_pars()
 {
     while read seqname; do
 
-        "${biopanpipe_bindir}"/filter_contig_from_genref -g "${fasta}" -k ${seqname}
+        "${genopanpipe_bindir}"/filter_contig_from_genref -g "${fasta}" -k ${seqname}
         
     done < "$listseq"
 }

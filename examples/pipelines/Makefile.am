@@ -1,8 +1,8 @@
 pplfilesdir = $(datadir)/$(PACKAGE)/pipelines
-pplfiles_DATA= nodownload_basic.ppl nodownload_extended.ppl		\
-nodownload_xgs.ppl ega_basic.ppl ega_asp_basic.ppl aws_basic.ppl	\
-collab_basic.ppl ega_asp_extended.ppl ega_decsingle_extended.ppl	\
-copy_extended.ppl copy_harmoniz.ppl copy_debug.ppl gdc_extended.ppl	\
-tcga_xgs.ppl gen_wisecondorx_ref_req.csv
+pplfiles_DATA= nodownload_basic.sh nodownload_extended.sh	\
+nodownload_xgs.sh ega_basic.sh ega_asp_basic.sh aws_basic.sh	\
+collab_basic.sh ega_asp_extended.sh ega_decsingle_extended.sh	\
+copy_extended.sh copy_harmoniz.sh copy_debug.sh gdc_extended.sh	\
+tcga_xgs.sh gen_wisecondorx_ref_req.csv
 
 EXTRA_DIST= $(pplfiles_DATA)

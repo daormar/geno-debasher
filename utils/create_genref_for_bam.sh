@@ -166,7 +166,7 @@ contig_in_list()
 extract_contig_info_from_fai()
 {
     local faifile=$1
-    $AWK '{printf "%s %s\n",$1,$2}' "${faifile}"
+    "$AWK" '{printf "%s %s\n",$1,$2}' "${faifile}"
 }
 
 ########
@@ -183,7 +183,7 @@ get_bam_contig_names()
 {
     local bam=$1
 
-    samtools view -H "$bam" | $AWK '{if($1=="@SQ") printf "%s %s\n",substr($2,4),substr($3,4)}'
+    samtools view -H "$bam" | "$AWK" '{if($1=="@SQ") printf "%s %s\n",substr($2,4),substr($3,4)}'
 }
 
 ########
@@ -340,7 +340,7 @@ get_contigs()
                 "${genopanpipe_bindir}"/get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
             fi
         fi
-    done < ${contiglist}
+    done < "${contiglist}"
 }
 
 ########
@@ -375,7 +375,7 @@ process_pars()
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    "${genopanpipe_bindir}"/filter_contig_from_genref -g "$baseref" -l ${outd}/refcontigs_to_keep > "${outd}"/unordered_ref.fa || return 1
+    "${genopanpipe_bindir}"/filter_contig_from_genref -g "$baseref" -l "${outd}/refcontigs_to_keep" > "${outd}"/unordered_ref.fa || return 1
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2

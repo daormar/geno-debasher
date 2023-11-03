@@ -1,21 +1,21 @@
 """
 Geno-PanPipe package
 Copyright 2019,2020 Daniel Ortiz-Mart\'inez
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
 as published by the Free Software Foundation; either version 3
 of the License, or (at your option) any later version.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
- 
+
 You should have received a copy of the GNU Lesser General Public License
 along with this program; If not, see <http://www.gnu.org/licenses/>.
 """
- 
+
 # *- python -*
 
 # import modules
@@ -73,7 +73,7 @@ def get_info(url,num_retries,time_between_retries=1):
     else:
         print("Maximum number of attempts exceeded, aborting", file=sys.stderr)
         sys.exit(1)
-        
+
 ##################################################
 def extract_esearch_info(accession):
     # Get information
@@ -91,7 +91,7 @@ def extract_esearch_info(accession):
             print("Error while extracting esearch information, aborting (see request result below)", file=sys.stderr)
             print(req.content, file=sys.stderr)
             sys.exit(1)
-            
+
     # Extract QueryKey and WebEnv fields
     key = None
     web = None
@@ -107,7 +107,7 @@ def extract_esearch_info(accession):
         sys.exit(1)
 
     return key,web
-    
+
 ##################################################
 def post_efetch_info(key,web):
     url="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"+"efetch.fcgi?db=nuccore&query_key="+key+"&WebEnv="+web+"&rettype=fasta&retmode=text";
@@ -124,16 +124,16 @@ def post_efetch_info(key,web):
         sys.exit(1)
     except ET.ParseError as e:
         pass
-        
+
     return req
-    
+
 ##################################################
 def process_pars(flags,values):
     key,web=extract_esearch_info(values["accession"])
-        
+
     req=post_efetch_info(key,web)
     print(req.text)
-    
+
 ##################################################
 def main(argv):
     # take parameters
@@ -144,6 +144,6 @@ def main(argv):
 
     # process parameters
     process_pars(flags,values)
-    
+
 if __name__ == "__main__":
     main(sys.argv)

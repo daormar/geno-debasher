@@ -1,19 +1,19 @@
 # Geno-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
@@ -82,13 +82,13 @@ read_pars()
                   ;;
         esac
         shift
-    done   
+    done
 }
 
 ########
 check_pars()
 {
-    if [ ${r_given} -eq 0 ]; then   
+    if [ ${r_given} -eq 0 ]; then
         echo "Error! -r parameter not given!" >&2
         exit 1
     else
@@ -98,7 +98,7 @@ check_pars()
         fi
     fi
 
-    if [ ${b_given} -eq 0 ]; then   
+    if [ ${b_given} -eq 0 ]; then
         echo "Error! -b parameter not given!" >&2
         exit 1
     else
@@ -108,14 +108,14 @@ check_pars()
         fi
     fi
 
-    if [ ${cm_given} -eq 1 ]; then   
+    if [ ${cm_given} -eq 1 ]; then
         if [ ! -f "${contig_mapping}" ]; then
             echo "Error! file ${contig_mapping} does not exist" >&2
             exit 1
         fi
     fi
 
-    if [ ${o_given} -eq 0 ]; then   
+    if [ ${o_given} -eq 0 ]; then
         echo "Error! -o parameter not given!" >&2
         exit 1
     else
@@ -191,7 +191,7 @@ get_missing_contig_names()
 {
     local refcontigs=$1
     local bamcontigs=$2
-            
+
     while read bamcontigname contiglen; do
         if ! contig_in_list $bamcontigname $contiglen $refcontigs; then
             echo $bamcontigname $contiglen
@@ -204,12 +204,12 @@ get_ref_contig_names_to_keep()
 {
     local refcontigs=$1
     local bamcontigs=$2
-            
+
     while read refcontigname contiglen; do
         if contig_in_list $refcontigname $contiglen $bamcontigs; then
             echo $refcontigname $contiglen
         fi
-    done < "$refcontigs"    
+    done < "$refcontigs"
 }
 
 ########
@@ -233,7 +233,7 @@ map_contig_with_len_using_file()
     local contig=$2
     local contiglen=$3
     local contig_plus_len="${contig}_${contiglen}"
-    
+
     while read entry; do
         local fields=($entry)
         local num_fields=${#fields[@]}
@@ -281,7 +281,7 @@ map_contig_using_file()
         if [ "${mapping}" != "" ]; then
             echo ${mapping}
         fi
-    fi    
+    fi
 }
 
 ########
@@ -355,8 +355,8 @@ get_uniq_contigs()
 ########
 process_pars()
 {
-    outfile=$outd/genref_for_bam.fa
-    
+    outfile="$outd/genref_for_bam.fa"
+
     # Activate conda environment
     echo "* Activating conda environment (samtools)..." >&2
     conda activate samtools || return 1
@@ -368,7 +368,7 @@ process_pars()
     # Get bam contigs
     echo "* Obtaining list of bam contig names and their lengths..." >&2
     get_bam_contig_names "$bam" > "${outd}"/bamcontigs || return 1
-    
+
     # Obtain list of contigs to keep in the reference file
     echo "* Obtaining list of reference contigs to keep..." >&2
     get_ref_contig_names_to_keep "${outd}"/refcontigs "${outd}"/bamcontigs > "${outd}"/refcontigs_to_keep || return 1
@@ -389,7 +389,7 @@ process_pars()
     echo "* Reordering reference contigs..." >&2
     "${genopanpipe_bindir}"/reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
     rm "${outd}"/unordered_ref.fa || return 1
-    
+
     # Index created reference
     echo "* Indexing created reference..." >&2
     samtools faidx "${outfile}" || return 1
@@ -403,7 +403,7 @@ process_pars()
         echo "Bam file and created genome reference do not have the exact same contigs (see ${outd}/uniq_contigs file)" >&2
         return 1
     fi
-    
+
     # Deactivate conda environment
     echo "* Deactivating conda environment..." >&2
     conda deactivate

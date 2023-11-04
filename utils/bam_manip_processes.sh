@@ -40,14 +40,13 @@ index_norm_bam_define_opts()
     local process_spec=$2
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
-
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
+
+    # -out-nbidx option
+    define_opt "-out-nbidx" "$normalbam".bai optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -58,11 +57,11 @@ index_norm_bam()
 {
     # Initialize variables
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local idx_file=`read_opt_value_from_line "$*" "-out-nbidx"`
 
     # Remove previous index if one was created
-    if [ -f "${normalbam}".bai ]; then
-        rm "${normalbam}".bai || return 1
+    if [ -f "${idx_file}" ]; then
+        rm "${idx_file}" || return 1
     fi
 
     # Activate conda environment
@@ -71,7 +70,7 @@ index_norm_bam()
 
     # Execute samtools
     logmsg "* Executing samtools index..."
-    samtools index "${normalbam}" 2>&1 || return 1
+    samtools index "${normalbam}" "${idx_file}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -98,14 +97,13 @@ index_tum_bam_define_opts()
     local process_spec=$2
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
-
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
+
+    # -out-tbidx option
+    define_opt "-out-tbidx" "$tumorbam".bai optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -116,11 +114,11 @@ index_tum_bam()
 {
     # Initialize variables
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local idx_file=`read_opt_value_from_line "$*" "-out-tbidx"`
 
     # Remove previous index if one was created
-    if [ -f "${tumorbam}".bai ]; then
-        rm "${tumorbam}".bai || return 1
+    if [ -f "${idx_file}" ]; then
+        rm "${idx_file}" || return 1
     fi
 
     # Activate conda environment
@@ -129,7 +127,7 @@ index_tum_bam()
 
     # Execute samtools
     logmsg "* Executing samtools index..."
-    samtools index "${tumorbam}" 2>&1 || return 1
+    samtools index "${tumorbam}" "${idx_file}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

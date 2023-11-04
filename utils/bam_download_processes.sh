@@ -29,7 +29,7 @@ DEFAULT_ASP_MAX_TRANS_RATE=100m
 # BAM DOWNLOAD PROCESSES #
 ##########################
 
-########
+#######
 copy_norm_bam_explain_cmdline_opts()
 {
     # -extn option
@@ -45,17 +45,13 @@ copy_norm_bam_define_opts()
     local process_spec=$2
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
-
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -65,13 +61,12 @@ copy_norm_bam_define_opts()
 copy_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local local_normalbam=`read_opt_value_from_line "$*" "-extn"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local out_normalbam=`read_opt_value_from_line "$*" "-out-nb"`
 
     # Copy file
     logmsg "* Copying file..."
-    cp "${local_normalbam}" "${normalbam}" || return 1
+    cp "${local_normalbam}" "${out_normalbam}" || return 1
 }
 
 ########
@@ -90,9 +85,6 @@ copy_tum_bam_define_opts()
     local process_spec=$2
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
@@ -100,7 +92,7 @@ copy_tum_bam_define_opts()
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -110,13 +102,12 @@ copy_tum_bam_define_opts()
 copy_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local local_tumorbam=`read_opt_value_from_line "$*" "-extt"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local out_tumorbam=`read_opt_value_from_line "$*" "-out-tb"`
 
     # Copy file
     logmsg "* Copying file..."
-    cp "${local_tumorbam}" "${tumorbam}" || return 1
+    cp "${local_tumorbam}" "${out_tumorbam}" || return 1
 }
 
 ########

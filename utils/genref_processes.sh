@@ -120,6 +120,10 @@ create_genref_for_bam_define_opts()
     bam=`get_bam_filename "$cmdline"` || return 1
     define_opt "-bam" "$bam" optlist || return 1
 
+    # -bam-idx option (it is defined for process synchronization
+    # -purposes)
+    define_opt "-bam-idx" "$bam".bai optlist || return 1
+
     # -cm option
     define_cmdline_infile_nonmand_opt "$cmdline" "-cm" ${NOFILE} optlist || return 1
 
@@ -155,13 +159,14 @@ create_genref_for_bam()
     local baseref=`read_opt_value_from_line "$*" "-br"`
     local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local bam=`read_opt_value_from_line "$*" "-bam"`
+    local bam_idx=`read_opt_value_from_line "$*" "-bam-idx"`
     local contig_mapping=`read_opt_value_from_line "$*" "-cm"`
     local fallback_genref=`read_opt_value_from_line "$*" "-fbr"`
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Create genome reference
     local cm_opt=`get_create_genref_for_bam_cm_opt ${contig_mapping}`
-    if ${genopanpipe_bindir}/create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${process_outd}"; then
+    if "${genopanpipe_bindir}"/create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${process_outd}"; then
         # Move resulting files
         mv "${process_outd}"/genref_for_bam.fa "${outfile}"
         mv "${process_outd}"/genref_for_bam.fa.fai "${outfile}".fai

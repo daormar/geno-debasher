@@ -1,24 +1,26 @@
 name: samtools
 channels:
-  - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - bzip2=1.0.6=h470a237_2
-  - ca-certificates=2018.11.29=ha4d7672_0
-  - curl=7.63.0=h74213dd_0
-  - krb5=1.16.3=hbb41f41_0
-  - libcurl=7.63.0=hbdb9355_0
-  - libdeflate=1.0=h470a237_0
-  - libedit=3.1.20170329=haf1bffa_1
-  - libgcc-ng=7.2.0=hdf63c60_3
-  - libssh2=1.8.0=h5b517e9_3
-  - libstdcxx-ng=7.2.0=hdf63c60_3
-  - ncurses=6.1=hfc679d8_2
-  - openssl=1.0.2p=h470a237_2
-  - samtools=1.9=h8ee4bcc_1
-  - tk=8.6.9=ha92aebf_0
-  - xz=5.2.4=h470a237_1
-  - zlib=1.2.11=h470a237_4
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=5.1
+  - bzip2=1.0.8
+  - c-ares=1.19.0
+  - ca-certificates=2023.01.10
+  - curl=7.88.1
+  - krb5=1.19.4
+  - libcurl=7.88.1
+  - libedit=3.1.20221030
+  - libev=4.33
+  - libgcc-ng=11.2.0
+  - libgomp=11.2.0
+  - libnghttp2=1.46.0
+  - libssh2=1.10.0
+  - libstdcxx-ng=11.2.0
+  - ncurses=6.4
+  - openssl=1.1.1t
+  - samtools=1.6
+  - xz=5.2.10
+  - zlib=1.2.13
 prefix: /home/dortiz/miniconda3/envs/samtools
-

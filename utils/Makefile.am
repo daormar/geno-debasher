@@ -1,4 +1,4 @@
-SCRIPTS_TO_BE_BUILT= bam_common_lib bam_analysis bam_filter bam_facets	\
+SCRIPTS_TO_BE_BUILT= bam_analysis bam_filter bam_facets	\
 bam_ascat bam_ascatngs analyze_dataset file_shuffle filter_vcf		\
 gen_bed_for_genome check_ref_and_bam_contigs get_bam_contigs		\
 get_entrez_fasta gen_wisecondorx_ref convert_snppos_to_snpgcc		\
@@ -12,9 +12,9 @@ reorder_fa_seqs_lowmem
 
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
-libexec_SCRIPTS = genref_processes bam_download_processes	\
-bam_manip_processes cleaning_processes bam_analysis_processes	\
-bam_summariz_processes
+libexec_SCRIPTS = genref_processes bam_common_lib		\
+bam_download_processes bam_manip_processes cleaning_processes	\
+bam_analysis_processes bam_summariz_processes
 
 CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
 
@@ -37,6 +37,7 @@ reorder_fa_seqs.py reorder_fa_seqs_lowmem.sh
 bam_analysis: bam_analysis.sh
 	rm -f $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
+	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -61,6 +62,7 @@ bam_analysis: bam_analysis.sh
 bam_facets: bam_facets.sh
 	rm -f $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
+	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -84,6 +86,7 @@ bam_facets: bam_facets.sh
 bam_ascat: bam_ascat.sh
 	rm -f $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
+	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -107,6 +110,7 @@ bam_ascat: bam_ascat.sh
 bam_ascatngs: bam_ascatngs.sh
 	rm -f $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
+	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "CUT=\"$(CUT)\"" >> $@
 	echo "AWK=\"$(AWK)\"" >> $@
 	echo "GREP=\"$(GREP)\"" >> $@
@@ -133,6 +137,7 @@ SUFFIXES= .sh .py .r .R
 	echo "genopanpipe_pkgname=\"$(PACKAGE_NAME)\"" >> $@
 	echo "genopanpipe_version=\"$(PACKAGE_VERSION)\"" >> $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
+	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "genopanpipe_datadir=\"$(datadir)/$(PACKAGE_NAME)\"" >> $@
 	echo "BASH=\"$(BASH)\"" >> $@
 	echo "AWK=\"$(AWK)\"" >> $@

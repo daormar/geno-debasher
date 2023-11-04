@@ -106,11 +106,12 @@ create_genref_for_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -br option
     define_cmdline_infile_opt "$cmdline" "-br" optlist || return 1
@@ -157,7 +158,7 @@ create_genref_for_bam()
 {
     # Initialize variables
     local baseref=`read_opt_value_from_line "$*" "-br"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local bam=`read_opt_value_from_line "$*" "-bam"`
     local bam_idx=`read_opt_value_from_line "$*" "-bam-idx"`
     local contig_mapping=`read_opt_value_from_line "$*" "-cm"`

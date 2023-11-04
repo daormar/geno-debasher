@@ -1,10 +1,9 @@
-SCRIPTS_TO_BE_BUILT= bam_analysis bam_filter bam_facets	\
-bam_ascat bam_ascatngs analyze_dataset file_shuffle filter_vcf		\
-gen_bed_for_genome check_ref_and_bam_contigs get_bam_contigs		\
-get_entrez_fasta gen_wisecondorx_ref convert_snppos_to_snpgcc		\
-create_snv_pos_ascat query_ega_metadata query_icgc_metadata		\
-download_gdc_metadata query_gdc_metadata create_genref_for_bam		\
-filter_contig_from_genref get_filtered_sam_header			\
+SCRIPTS_TO_BE_BUILT= bam_analysis bam_filter bam_facets bam_ascat	\
+bam_ascatngs analyze_dataset file_shuffle filter_vcf gen_bed_for_genome	\
+check_ref_and_bam_contigs get_bam_contigs get_entrez_fasta		\
+convert_snppos_to_snpgcc create_snv_pos_ascat query_ega_metadata	\
+query_icgc_metadata download_gdc_metadata query_gdc_metadata		\
+create_genref_for_bam filter_contig_from_genref get_filtered_sam_header	\
 get_filtered_sam_align map_contnames map_vcf_contnames run_facets	\
 run_sequenza convert_allele_counts run_ascat get_two_elem_combs		\
 filter_nondiscordant_pheno_entries reorder_fa_seqs			\
@@ -24,9 +23,9 @@ bam_analysis_processes.sh bam_summariz_processes.sh bam_analysis.sh	\
 bam_filter.sh bam_facets.sh bam_ascat.sh bam_ascatngs.sh		\
 analyze_dataset.sh file_shuffle.sh filter_vcf.py gen_bed_for_genome.sh	\
 check_ref_and_bam_contigs.sh get_bam_contigs.sh get_entrez_fasta.py	\
-gen_wisecondorx_ref.sh convert_snppos_to_snpgcc.sh			\
-create_snv_pos_ascat.py query_ega_metadata.py download_gdc_metadata.sh	\
-query_gdc_metadata.py query_icgc_metadata.py create_genref_for_bam.sh	\
+convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py			\
+query_ega_metadata.py download_gdc_metadata.sh query_gdc_metadata.py	\
+query_icgc_metadata.py create_genref_for_bam.sh				\
 filter_contig_from_genref.py get_filtered_sam_header.py			\
 get_filtered_sam_align.py map_contnames.py map_vcf_contnames.py		\
 run_facets.R run_sequenza.R convert_allele_counts.R run_ascat.R		\

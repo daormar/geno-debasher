@@ -808,7 +808,7 @@ decsingle_ega_norm_bam()
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat "${normalbam_file}" | "${DECSINGLE_JAVA_HOME_DIR}"/bin/java -cp "${DECSINGLE_HOME_DIR}" decSINGLE <(echo ${decsingle_pwd}) > "${normalbam}" ; pipe_fail || return 1
+    "${CAT}" "${normalbam_file}" | "${DECSINGLE_JAVA_HOME_DIR}"/bin/java -cp "${DECSINGLE_HOME_DIR}" decSINGLE <(echo ${decsingle_pwd}) > "${normalbam}" ; pipe_fail || return 1
 }
 
 ########
@@ -861,7 +861,7 @@ decsingle_ega_tum_bam()
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
-    cat "${tumorbam_file}" | "${DECSINGLE_JAVA_HOME_DIR}"/bin/java -cp "${DECSINGLE_HOME_DIR}" decSINGLE <(echo ${decsingle_pwd}) > "${tumorbam}" ; pipe_fail || return 1
+    "${CAT}" "${tumorbam_file}" | "${DECSINGLE_JAVA_HOME_DIR}"/bin/java -cp "${DECSINGLE_HOME_DIR}" decSINGLE <(echo ${decsingle_pwd}) > "${tumorbam}" ; pipe_fail || return 1
 }
 
 ########

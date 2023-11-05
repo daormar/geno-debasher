@@ -53,7 +53,7 @@ reheader_vcf_list()
 
     # Generate vcf list
     for file in "${summarydir}"/*.${extension}; do
-        local vcf=`cat "${file}"`
+        local vcf=`"${CAT}" "${file}"`
         local vcf_basen=`basename "${vcf}"`
         bcftools reheader -s "${summarydir}"/snames.txt ${vcf} > "${summarydir}/${vcf_basen}.${REHEADERED_VCF_EXT}"
     done

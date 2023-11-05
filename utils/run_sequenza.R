@@ -6,7 +6,7 @@ library(R.utils)
 
 ## Collect arguments
 args <- commandArgs(asValue=TRUE, excludeReserved=TRUE)[-1]
- 
+
 # Turn arguments into R variables
 keys <- attachLocally(args)
 
@@ -14,14 +14,14 @@ keys <- attachLocally(args)
 
 ## Check --help option
 if("help" %in% keys || length(keys)==0)
-{    
+{
     cat("run_sequenza [arguments]
- 
+
 Arguments:
 -s     <string>        seqz file
 -o     <string>        output directory
 --help                 print this text\n")
-  
+
     q(save="no",status=0)
 }
 
@@ -46,7 +46,7 @@ library(sequenza)
 seqzinfo <- sequenza.extract(s)
 
 # Save file
-save(seqzinfo,file=paste(o,"/info.seqz",sep=""))
+save(seqzinfo, file=paste(o, "/info.seqz", sep=""))
 
 # Infer cellularity and ploidy
 CP.example <- sequenza.fit(seqzinfo)

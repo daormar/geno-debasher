@@ -897,11 +897,12 @@ lofreq_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -931,7 +932,7 @@ lofreq_somatic_define_opts()
 lofreq_somatic()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`

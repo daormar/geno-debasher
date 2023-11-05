@@ -1982,11 +1982,12 @@ delly_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -2026,7 +2027,7 @@ get_delly_x_opt()
 delly()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -2040,7 +2041,7 @@ delly()
     # "command" built-in is used here to execute the "delly" program
     # instead of the "delly" function
     local x_opt=`get_delly_x_opt ${exclude}`
-    command delly call -g "${ref}" "${x_opt}" -o "${process_outd}"/out.bcf "${tumorbam}" "${normalbam}" || return 1
+    command delly call -g "${ref}" ${x_opt} -o "${process_outd}"/out.bcf "${tumorbam}" "${normalbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2088,19 +2089,20 @@ parallel_delly_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # Obtain splitdir directory
+    abs_splitdir=`get_absolute_shdirname "${SPLITDIR_BASENAME}"`
 
     # -r option
     local genref
     genref=`get_ref_filename "$cmdline"` || return 1
     define_opt "-r" "$genref" optlist || return 1
-
-    # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -dx option
     define_cmdline_infile_nonmand_opt "$cmdline" "-dx" ${NOFILE} optlist || return 1
@@ -2115,9 +2117,9 @@ parallel_delly_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        normalbam="${abs_datadir}"/normal_${contig}.bam
+        normalbam="${abs_splitdir}"/normal_${contig}.bam
         define_opt "-normalbam" "${normalbam}" specific_optlist || return 1
-        tumorbam="${abs_datadir}"/tumor_${contig}.bam
+        tumorbam="${abs_splitdir}"/tumor_${contig}.bam
         define_opt "-tumorbam" "${tumorbam}" specific_optlist || return 1
         define_opt "-contig" $contig specific_optlist || return 1
         save_opt_list specific_optlist
@@ -2128,7 +2130,7 @@ parallel_delly_define_opts()
 parallel_delly()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -2143,7 +2145,7 @@ parallel_delly()
     # "command" built-in is used here to execute the "delly" program
     # instead of the "delly" function
     local x_opt=`get_delly_x_opt ${exclude}`
-    command delly call -g "$ref" "${x_opt}" -o "${process_outd}"/out${contig}.bcf "${tumorbam}" "${normalbam}" || return 1
+    command delly call -g "$ref" ${x_opt} -o "${process_outd}"/out${contig}.bcf "${tumorbam}" "${normalbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

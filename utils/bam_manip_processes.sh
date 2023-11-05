@@ -960,19 +960,24 @@ norm_bam_to_ubam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-normalbam" "${abs_datadir}"/normal.bam optlist || return 1
 
     # -mrec option
     define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+
+    # -outfile option
+    define_opt "-outfile" "${abs_datadir}"/normal_unmapped.bam optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -982,9 +987,10 @@ norm_bam_to_ubam_define_opts()
 norm_bam_to_ubam()
 {
     # Initialize variables
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp
@@ -996,10 +1002,7 @@ norm_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT "${normalbam}" --OUTPUT "${process_outd}"/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
-
-    # Replace initial bam file by the mapped one
-    mv "${process_outd}"/unmapped.bam "${normalbam}" 2>&1 || return 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT "${normalbam}" --OUTPUT "${outfile}" --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1030,19 +1033,24 @@ tum_bam_to_ubam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-tumorbam" "${abs_datadir}"/tumor.bam optlist || return 1
 
     # -mrec option
     define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+
+    # -outfile option
+    define_opt "-outfile" "${abs_datadir}"/tumor_unmapped.bam optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1052,9 +1060,10 @@ tum_bam_to_ubam_define_opts()
 tum_bam_to_ubam()
 {
     # Initialize variables
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp
@@ -1066,10 +1075,7 @@ tum_bam_to_ubam()
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
-    gatk --java-options "-Xmx4G" RevertSam --INPUT "${tumorbam}" --OUTPUT "${process_outd}"/unmapped.bam --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
-
-    # Replace initial bam file by the mapped one
-    mv "${process_outd}"/unmapped.bam "${tumorbam}" 2>&1 || return 1
+    gatk --java-options "-Xmx4G" RevertSam --INPUT "${tumorbam}" --OUTPUT "${outfile}" --SANITIZE true --SORT_ORDER queryname --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1104,21 +1110,23 @@ align_norm_ubam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
     genref=`get_ref_filename "$cmdline"` || return 1
     define_opt "-r" "$genref" optlist || return 1
 
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+
     # -normalbam option
-    local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-normalbam" "${abs_datadir}"/normal_unmapped.bam optlist || return 1
 
     # -mrec option
     define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
@@ -1127,6 +1135,9 @@ align_norm_ubam_define_opts()
     local cpus
     cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
+
+    # -outfile option
+    define_opt "-outfile" "${abs_datadir}"/normal_aligned.bam optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1149,11 +1160,12 @@ gatk_dict_exists()
 align_norm_ubam()
 {
     # Initialize variables
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local ref=`read_opt_value_from_line "$*" "-r"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp
@@ -1173,9 +1185,12 @@ align_norm_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (bwa)..."
-    conda activate gatk4 2>&1 || return 1
+    conda activate bwa 2>&1 || return 1
 
     # Execute bwa
+    logmsg "* Executing bwa index..."
+    bwa index -a bwtsw "${ref}"
+
     logmsg "* Executing bwa mem..."
     bwa mem -t ${cpus} "${ref}" <("${GZIP}" -d -c "${process_outd}"/reads_r1.fastq.gz) <("${GZIP}" -d -c "${process_outd}"/reads_r2.fastq.gz) | "${GZIP}" > "${process_outd}"/aln.sam.gz ; pipe_fail || return 1
 
@@ -1198,10 +1213,7 @@ align_norm_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk CreateSequenceDictionary..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${normalbam}" --ALIGNED_BAM "${process_outd}"/aln.sam.gz --OUTPUT "${process_outd}"/merged.bam --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
-
-    # Replace initial unmapped bam file by the mapped one
-    mv "${process_outd}"/merged.bam "${normalbam}" 2>&1 || return 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${normalbam}" --ALIGNED_BAM "${process_outd}"/aln.sam.gz --OUTPUT "${outfile}" --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1237,21 +1249,23 @@ align_tum_ubam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
     genref=`get_ref_filename "$cmdline"` || return 1
     define_opt "-r" "$genref" optlist || return 1
 
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+
     # -tumorbam option
-    local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-tumorbam" "${abs_datadir}"/tumor_unmapped.bam optlist || return 1
 
     # -mrec option
     define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
@@ -1261,6 +1275,9 @@ align_tum_ubam_define_opts()
     cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
     define_opt "-cpus" $cpus optlist
 
+    # -outfile option
+    define_opt "-outfile" "${abs_datadir}"/tumor_aligned.bam optlist || return 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -1269,11 +1286,12 @@ align_tum_ubam_define_opts()
 align_tum_ubam()
 {
     # Initialize variables
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local ref=`read_opt_value_from_line "$*" "-r"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local max_records=`read_opt_value_from_line "$*" "-mrec"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp
@@ -1293,7 +1311,7 @@ align_tum_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (bwa)..."
-    conda activate gatk4 2>&1 || return 1
+    conda activate bwa 2>&1 || return 1
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
@@ -1318,10 +1336,7 @@ align_tum_ubam()
 
     # Execute gatk
     logmsg "* Executing gatk MergeBamAlignment..."
-    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${tumorbam}" --ALIGNED_BAM "${process_outd}"/aln.sam.gz --OUTPUT "${process_outd}"/merged.bam --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
-
-    # Replace initial unmapped bam file by the mapped one
-    mv "${process_outd}"/merged.bam "${tumorbam}" 2>&1 || return 1
+    gatk --java-options "-Xmx4G" MergeBamAlignment --REFERENCE_SEQUENCE "${ref}" --UNMAPPED_BAM "${tumorbam}" --ALIGNED_BAM "${process_outd}"/aln.sam.gz --OUTPUT "${outfile}" --SORT_ORDER coordinate --TMP_DIR "${tmpdir}" --MAX_RECORDS_IN_RAM ${max_records} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

@@ -27,6 +27,7 @@
 bam_analysis_shared_dirs()
 {
     define_shared_dir "${DATADIR_BASENAME}"
+    define_shared_dir "${SPLITDIR_BASENAME}"
     define_shared_dir "${SUMMARYDIR_BASENAME}"
     define_shared_dir "${GERM_SNVS_SUM_DIR_BASENAME}"
 }

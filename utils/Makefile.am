@@ -45,6 +45,7 @@ bam_analysis: bam_analysis.sh
 	echo "GREP=\"$(GREP)\"" >> $@
 	echo "SED=\"$(SED)\"" >> $@
 	echo "FIND=\"$(FIND)\"" >> $@
+	echo "CAT=\"$(CAT)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@
@@ -93,6 +94,7 @@ bam_ascat: bam_ascat.sh
 	echo "AWK=\"$(AWK)\"" >> $@
 	echo "GREP=\"$(GREP)\"" >> $@
 	echo "SED=\"$(SED)\"" >> $@
+	echo "CAT=\"$(CAT)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@
@@ -158,6 +160,7 @@ SUFFIXES= .sh .py .r .R
 	echo "WC=\"$(WC)\"" >> $@
 	echo "MKTEMP=\"$(MKTEMP)\"" >> $@
 	echo "FLOCK=\"$(FLOCK)\"" >> $@
+	echo "CAT=\"$(CAT)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "WGET=\"$(WGET)\"" >> $@

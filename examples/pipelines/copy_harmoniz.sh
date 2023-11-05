@@ -19,7 +19,7 @@ copy_harmoniz_pipeline()
     add_panpipe_process "strelka_somatic"       "cpus=4  mem=6G   time=48:00:00"
     add_panpipe_process "mutect2_somatic"       "cpus=4  mem=8G   time=48:00:00"
     add_panpipe_process "lofreq_somatic"        "cpus=4  mem=4096 time=48:00:00"
-    add_panpipe_process "msisensor"             "cpus=2  mem=4096 time=48:00:00"
+    add_panpipe_process "msisensor_pro"         "cpus=2  mem=4096 time=48:00:00"
     add_panpipe_process "concat_germline_snvs"  "cpus=1  mem=2048 time=48:00:00"
 }
 

@@ -24,7 +24,7 @@ copy_extended_pipeline()
     add_panpipe_process "strelka_germline"            "cpus=8  mem=6G      time=6:00:00,12:00:00"
     add_panpipe_process "manta_somatic"               "cpus=8  mem=8G      time=8:00:00,16:00:00"
     add_panpipe_process "strelka_somatic"             "cpus=8  mem=6G      time=8:00:00,16:00:00"
-    add_panpipe_process "msisensor"                   "cpus=2  mem=10G,20G time=8:00:00,24:00:00"
+    add_panpipe_process "msisensor_pro"               "cpus=2  mem=10G,20G time=8:00:00,24:00:00"
     add_panpipe_process "snp_pileup_plus_facets"      "cpus=1  mem=25G     time=8:00:00,24:00:00"
     add_panpipe_process "cnvkit"                      "cpus=8  mem=30G     time=6:00:00,24:00:00"
     add_panpipe_process "platypus_germline"           "cpus=1  mem=4096    time=8:00:00,16:00:00"

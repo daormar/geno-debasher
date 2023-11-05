@@ -846,11 +846,12 @@ bedtools_genomecov_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -865,8 +866,8 @@ bedtools_genomecov_norm_bam_define_opts()
 bedtools_genomecov_norm_bam()
 {
     # Initialize variables
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -901,11 +902,12 @@ bedtools_genomecov_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -tumorbam option
     local tumorbam
@@ -920,8 +922,8 @@ bedtools_genomecov_tum_bam_define_opts()
 bedtools_genomecov_tum_bam()
 {
     # Initialize variables
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."

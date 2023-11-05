@@ -21,6 +21,7 @@
 #############
 
 DATADIR_BASENAME="data"
+SPLITDIR_BASENAME="split"
 SUMMARYDIR_BASENAME="summary"
 GERM_SNVS_SUM_DIR_BASENAME="summary/germline_snvs"
 SUMMARY_FILE_EXT="sum"

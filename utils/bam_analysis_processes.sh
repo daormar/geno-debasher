@@ -114,7 +114,7 @@ manta_germline()
 
     # Configure Manta
     logmsg "* Executing configManta.py..."
-    configManta.py --bam "${normalbam}" --referenceFasta "${ref}" "${call_reg_opt}" --runDir "${process_outd}" 2>&1 || return 1
+    configManta.py --bam "${normalbam}" --referenceFasta "${ref}" ${call_reg_opt} --runDir "${process_outd}" 2>&1 || return 1
 
     # Execute Manta
     logmsg "* Executing runWorkflow.py..."
@@ -216,7 +216,7 @@ manta_somatic()
 
     # Configure Manta
     logmsg "* Executing configManta.py..."
-    configManta.py --normalBam "${normalbam}" --tumorBam "${tumorbam}" --referenceFasta "${ref}" "${call_reg_opt}" --runDir "${process_outd}" 2>&1 || return 1
+    configManta.py --normalBam "${normalbam}" --tumorBam "${tumorbam}" --referenceFasta "${ref}" ${call_reg_opt} --runDir "${process_outd}" 2>&1 || return 1
 
     # Execute Manta
     logmsg "* Executing runWorkflow.py..."
@@ -334,7 +334,7 @@ gridss_somatic()
 
     # Execute Gridss
     logmsg "* Executing Gridss..."
-    gridss --reference "${ref}" --output "${process_outd}"/output.vcf.gz --workingdir "${process_outd}"/workingdir --assembly "${process_outd}"/assembly.bam --threads ${cpus} "${blacklist_opt}" "${normalbam}" "${tumorbam}" 2>&1 || return 1
+    gridss --reference "${ref}" --output "${process_outd}"/output.vcf.gz --workingdir "${process_outd}"/workingdir --assembly "${process_outd}"/assembly.bam --threads ${cpus} ${blacklist_opt} "${normalbam}" "${tumorbam}" 2>&1 || return 1
 
     # Remove working directory
     rm -rf "${process_outd}"/workingdir
@@ -432,7 +432,7 @@ strelka_germline()
 
     # Configure Strelka
     logmsg "* Executing configureStrelkaGermlineWorkflow.py..."
-    configureStrelkaGermlineWorkflow.py --bam "${normalbam}" --referenceFasta "${ref}" "${call_reg_opt}" --runDir "${process_outd}" 2>&1 || return 1
+    configureStrelkaGermlineWorkflow.py --bam "${normalbam}" --referenceFasta "${ref}" ${call_reg_opt} --runDir "${process_outd}" 2>&1 || return 1
 
     # Execute Strelka
     logmsg "* Executing runWorkflow.py..."
@@ -760,7 +760,7 @@ strelka_somatic()
 
     # Configure Strelka
     logmsg "* Executing configureStrelkaSomaticWorkflow.py..."
-    configureStrelkaSomaticWorkflow.py --normalBam "${normalbam}" --tumorBam "${tumorbam}" --referenceFasta "${ref}" "${indel_cand_opt}" "${call_reg_opt}" --runDir "${process_outd}" 2>&1 || return 1
+    configureStrelkaSomaticWorkflow.py --normalBam "${normalbam}" --tumorBam "${tumorbam}" --referenceFasta "${ref}" ${indel_cand_opt} ${call_reg_opt} --runDir "${process_outd}" 2>&1 || return 1
 
     # Execute Strelka
     logmsg "* Executing runWorkflow.py..."

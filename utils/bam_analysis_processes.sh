@@ -1556,11 +1556,12 @@ lumpy_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1595,7 +1596,7 @@ get_lumpyexpress_x_opt()
 lumpy()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local exclude=`read_opt_value_from_line "$*" "-lx"`
@@ -1615,7 +1616,7 @@ lumpy()
     else
         logmsg "* Executing lumpyexpress..."
         local x_opt=`get_lumpyexpress_x_opt ${exclude}`
-        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B "${tumorbam}","${normalbam}" "${x_opt}" -o "${process_outd}"/out.vcf || return 1
+        ${LUMPY_HOME_DIR}/bin/lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -o "${process_outd}"/out.vcf || return 1
     fi
 }
 
@@ -1647,11 +1648,12 @@ parallel_exclude_plus_lumpy_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1701,7 +1703,7 @@ gen_exclusion_bed_given_bam()
 parallel_exclude_plus_lumpy()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
@@ -1786,17 +1788,18 @@ parallel_lumpy_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # Obtain splitdir directory
+    abs_splitdir=`get_absolute_shdirname "${SPLITDIR_BASENAME}"`
 
     # -lx option
     define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || return 1
-
-    # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # Get name of contig list file
     local clist
@@ -1808,9 +1811,9 @@ parallel_lumpy_define_opts()
     local contig
     for contig in ${contigs}; do
         local specific_optlist=${optlist}
-        normalbam="${abs_datadir}"/normal_${contig}.bam
+        normalbam="${abs_splitdir}"/normal_${contig}.bam
         define_opt "-normalbam" "${normalbam}" specific_optlist || return 1
-        tumorbam="${abs_datadir}"/tumor_${contig}.bam
+        tumorbam="${abs_splitdir}"/tumor_${contig}.bam
         define_opt "-tumorbam" "${tumorbam}" specific_optlist || return 1
         define_opt "-contig" ${contig} specific_optlist || return 1
 
@@ -1822,7 +1825,7 @@ parallel_lumpy_define_opts()
 parallel_lumpy()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
@@ -1835,7 +1838,7 @@ parallel_lumpy()
 
         logmsg "* Executing lumpyexpress (contig $contig)..."
         local x_opt=`get_lumpyexpress_x_opt ${exclude}`
-        lumpyexpress -B "${tumorbam}","${normalbam}" "${x_opt}" -T "${process_outd}"/tmp_${contig} -o "${process_outd}"/out${contig}.vcf || return 1
+        lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${process_outd}"/tmp_${contig} -o "${process_outd}"/out${contig}.vcf || return 1
 
         # Deactivate conda environment
         logmsg "* Deactivating conda environment..."
@@ -1943,7 +1946,7 @@ smoove()
     export TMPDIR="${process_outd}"
     local exclude_opt=`get_smoove_exclude_opt ${exclude}`
     local project_name="smoove"
-    command smoove call --outdir "${process_outd}" "${exclude_opt}" --name ${project_name} --fasta "${ref}" -p ${cpus} --genotype "${normalbam}" "${tumorbam}" || return 1
+    command smoove call --outdir "${process_outd}" ${exclude_opt} --name ${project_name} --fasta "${ref}" -p ${cpus} --genotype "${normalbam}" "${tumorbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

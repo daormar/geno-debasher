@@ -2267,7 +2267,7 @@ parallel_svtyper_conda_envs()
 }
 
 ########
-msisensor_explain_cmdline_opts()
+msisensor_pro_explain_cmdline_opts()
 {
     # -r option
     description="Reference genome file"
@@ -2283,16 +2283,17 @@ msisensor_explain_cmdline_opts()
 }
 
 ########
-msisensor_define_opts()
+msisensor_pro_define_opts()
 {
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -2319,10 +2320,10 @@ msisensor_define_opts()
 }
 
 ########
-msisensor()
+msisensor_pro()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -2330,15 +2331,15 @@ msisensor()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate msisensor 2>&1 || return 1
+    conda activate msisensor-pro 2>&1 || return 1
 
     # Create homopolymer and microsatellites file
-    logmsg "* Executing msisensor scan..."
-    command msisensor scan -d "${ref}" -o "${process_outd}"/msisensor.list 2>&1 || return 1
+    logmsg "* Executing msisensor-pro scan..."
+    msisensor-pro scan -d "${ref}" -o "${process_outd}"/msisensor_pro.list 2>&1 || return 1
 
-    # Run MSIsensor analysis
-    logmsg "* Executing msisensor msi..."
-    command msisensor msi -d "${process_outd}"/msisensor.list -n "${normalbam}" -t "${tumorbam}" -o "${process_outd}"/output -l 1 -q 1 -b ${cpus} 2>&1 || return 1
+    # Run Msisensor_Pro analysis
+    logmsg "* Executing msisensor-pro msi..."
+    msisensor-pro msi -d "${process_outd}"/msisensor_pro.list -n "${normalbam}" -t "${tumorbam}" -o "${process_outd}"/output -l 1 -q 1 -b ${cpus} 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2346,7 +2347,7 @@ msisensor()
 }
 
 ########
-msisensor_conda_envs()
+msisensor_pro_conda_envs()
 {
-    define_conda_env msisensor msisensor.yml
+    define_conda_env msisensor-pro msisensor_pro.yml
 }

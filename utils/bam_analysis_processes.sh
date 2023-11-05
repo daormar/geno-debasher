@@ -1769,30 +1769,7 @@ filter_bam_contig_samtools()
     local outbam=$3
     local error=0
 
-    samtools view -h -O BAM "$inbam" $contig > "${outbam}" 2> "${outbam}".log || error=1
-
-    if [ $error -eq 1 ]; then
-        if check_contig_does_not_exist_given_log_file "${outbam}".log; then
-            errmsg "Warning: contig ${contig} does not exist in ${inbam} file (see ${outbam}.log)"
-            return 0
-        else
-            errmsg "Error while filtering ${contig} in ${inbam} file (see ${outbam}.log)"
-            return 1
-        fi
-    else
-        return 0
-    fi
-}
-
-########
-filter_bam_contig_sambamba()
-{
-    local inbam=$1
-    local contig=$2
-    local outbam=$3
-    local error=0
-
-    sambamba view -h -f bam "$inbam" $contig > "${outbam}" 2> "${outbam}".log || error=1
+    samtools view -h -O BAM "$inbam" $contig > "${outbam}" || error=1
 
     if [ $error -eq 1 ]; then
         if check_contig_does_not_exist_given_log_file "${outbam}".log; then

@@ -4,29 +4,39 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - bzip2=1.0.6=h14c3975_5
-  - ca-certificates=2018.03.07=0
-  - certifi=2018.8.24=py27_1
-  - curl=7.61.0=h84994c4_0
-  - htslib=1.9=hc238db4_4
-  - libcurl=7.61.0=h1ad7b7a_0
-  - libdeflate=1.0=h470a237_0
-  - libedit=3.1.20170329=h6b74fdf_2
-  - libffi=3.2.1=hd88cf55_4
-  - libgcc-ng=8.2.0=hdf63c60_1
-  - libssh2=1.8.0=h9cfc8f7_4
-  - libstdcxx-ng=8.2.0=hdf63c60_1
-  - ncurses=6.1=hf484d3e_0
-  - openssl=1.0.2p=h14c3975_0
-  - pip=10.0.1=py27_0
-  - platypus-variant=0.8.1.1=py27hdbffeaa_3
-  - python=2.7.15=h1571d57_0
-  - readline=7.0=ha6073c6_4
-  - setuptools=40.2.0=py27_0
-  - sqlite=3.24.0=h84994c4_0
-  - tk=8.6.7=hc745277_3
-  - wheel=0.31.1=py27_0
-  - xz=5.2.4=h14c3975_4
-  - zlib=1.2.11=ha838bed_2
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=4.5
+  - bzip2=1.0.8
+  - c-ares=1.21.0
+  - ca-certificates=2023.7.22
+  - certifi=2019.11.28
+  - htslib=1.17
+  - keyutils=1.6.1
+  - krb5=1.20.1
+  - ld_impl_linux-64=2.40
+  - libcurl=7.87.0
+  - libdeflate=1.19
+  - libedit=3.1.20191231
+  - libev=4.33
+  - libffi=3.2.1
+  - libgcc-ng=13.2.0
+  - libgomp=13.2.0
+  - libnghttp2=1.51.0
+  - libsqlite=3.44.0
+  - libssh2=1.10.0
+  - libstdcxx-ng=13.2.0
+  - libzlib=1.2.13
+  - ncurses=6.4
+  - openssl=1.1.1w
+  - pip=20.1.1
+  - platypus-variant=0.8.1.2
+  - python=2.7.15
+  - python_abi=2.7
+  - readline=8.2
+  - setuptools=44.0.0
+  - sqlite=3.44.0
+  - tk=8.6.13
+  - wheel=0.37.1
+  - xz=5.2.6
+  - zlib=1.2.13
 prefix: /home/dortiz/miniconda3/envs/platypus
-

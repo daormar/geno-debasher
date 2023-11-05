@@ -1,31 +1,31 @@
 name: gatk4
 channels:
-  - r
-  - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - _libgcc_mutex=0.1=conda_forge
-  - _openmp_mutex=4.5=0_gnu
-  - ca-certificates=2020.4.5.1=hecc5488_0
-  - certifi=2020.4.5.1=py38h32f6830_0
-  - gatk4=4.1.7.0=py38_0
-  - ld_impl_linux-64=2.34=h53a641e_0
-  - libffi=3.2.1=he1b5a44_1007
-  - libgcc-ng=9.2.0=h24d8f2e_2
-  - libgomp=9.2.0=h24d8f2e_2
-  - libstdcxx-ng=9.2.0=hdf63c60_2
-  - ncurses=6.1=hf484d3e_1002
-  - openjdk=8.0.192=h516909a_1004
-  - openssl=1.1.1g=h516909a_0
-  - pip=20.1=pyh9f0ad1d_0
-  - python=3.8.2=he5300dc_7_cpython
-  - python_abi=3.8=1_cp38
-  - readline=8.0=hf8c457e_0
-  - setuptools=46.1.3=py38h32f6830_0
-  - sqlite=3.30.1=hcee41ef_0
-  - tk=8.6.10=hed695b0_0
-  - wheel=0.34.2=py_1
-  - xz=5.2.5=h516909a_0
-  - zlib=1.2.11=h516909a_1006
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=5.1
+  - bzip2=1.0.8
+  - ca-certificates=2023.08.22
+  - expat=2.5.0
+  - gatk4=4.0.5.1
+  - ld_impl_linux-64=2.38
+  - libffi=3.4.4
+  - libgcc-ng=11.2.0
+  - libgomp=11.2.0
+  - libstdcxx-ng=11.2.0
+  - libuuid=1.41.5
+  - ncurses=6.4
+  - openjdk=8.0.152
+  - openssl=3.0.12
+  - pip=23.3
+  - python=3.12.0
+  - readline=8.2
+  - setuptools=68.0.0
+  - sqlite=3.41.2
+  - tk=8.6.12
+  - tzdata=2023c
+  - wheel=0.41.2
+  - xz=5.4.2
+  - zlib=1.2.13
 prefix: /home/dortiz/miniconda3/envs/gatk4

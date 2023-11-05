@@ -1,0 +1,14 @@
+name: msisensor-pro
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=5.1
+  - libgcc-ng=11.2.0
+  - libgomp=11.2.0
+  - libstdcxx-ng=11.2.0
+  - msisensor-pro=1.1.a
+  - ncurses=6.2
+  - zlib=1.2.13
+prefix: /home/dortiz/miniconda3/envs/msisensor-pro

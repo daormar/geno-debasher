@@ -1226,11 +1226,9 @@ gen_sequenza_gcc_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
-
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -r option
     local genref
@@ -1251,7 +1249,6 @@ gen_sequenza_gcc_define_opts()
 gen_sequenza_gcc()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
@@ -1261,14 +1258,17 @@ gen_sequenza_gcc()
 
     # Generate GC content file
     logmsg "* Generating GC content file..."
-    sequenza-utils gc_wiggle -w 50 -f "$ref" -o "${process_outd}"/sequenza_gccfile.txt.gz || return 1
+    sequenza-utils gc_wiggle -w 50 -f "$ref" -o "$outfile" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
     conda deactivate 2>&1
+}
 
-    # Move result file to final location
-    mv "${process_outd}"/sequenza_gccfile.txt.gz "$outfile" || return 1
+########
+gen_sequenza_gcc_conda_envs()
+{
+    define_conda_env sequenza sequenza.yml
 }
 
 ########
@@ -1280,47 +1280,24 @@ sequenza_explain_cmdline_opts()
 }
 
 ########
-get_gcc_filename()
-{
-    local cmdline=$1
-    local process_spec=$2
-    local given=0
-
-    gccfile=`read_opt_value_from_line "$cmdline" "-gcc"` && given=1
-    if [ $given -eq 1 ]; then
-        # -gcc option was given
-        file_exists "$gccfile" || { errmsg "file $gccfile does not exist" ; return 1; }
-        echo "$gccfile"
-    else
-        # Check if gen_sequenza_gcc process dependency was defined
-        local gen_sequenza_gcc_dep=`find_dependency_for_process "${process_spec}" gen_sequenza_gcc`
-        if [ ${gen_sequenza_gcc_dep} != ${DEP_NOT_FOUND} ]; then
-            local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
-            gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
-            echo "$gccfile"
-            return 0
-        else
-            errmsg "-gcc or dependency with gen_sequenza_gcc process should be given"
-            return 1
-        fi
-    fi
-}
-
-########
 sequenza_define_opts()
 {
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_spec=$2
+    local process_name=$3
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -gcc option
     local gccfile
-    gccfile=`get_gcc_filename "$cmdline" "$process_spec"` || return 1
+    gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
     define_opt "-gcc" "$gccfile" optlist || return 1
 
     # Get normal pileup file
@@ -1342,7 +1319,7 @@ sequenza_define_opts()
 sequenza()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local gccont=`read_opt_value_from_line "$*" "-gcc"`
     local npileup=`read_opt_value_from_line "$*" "-npileup"`
     local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
@@ -1391,24 +1368,28 @@ parallel_bam2seqz_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # Get data directory
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -gcc option
     local gccfile
-    gccfile=`get_gcc_filename "$cmdline" "$process_spec"` || return 1
+    gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
     define_opt "-gcc" "$gccfile" optlist || return 1
 
     # Get normal pileup directory
     local npileupdir
-    npileupdir=`get_outd_for_dep_given_process_spec "${process_spec}" parallel_samtools_mpileup_norm_bam` || { errmsg "Error: dependency parallel_samtools_mpileup_norm_bam not defined for parallel_bam2seqz"; return 1; }
+    npileupdir=`get_process_outdir_adaptive parallel_samtools_mpileup_norm_bam`
 
     # Get tumor pileup directory
     local tpileupdir
-    tpileupdir=`get_outd_for_dep_given_process_spec "${process_spec}" parallel_samtools_mpileup_tum_bam` || { errmsg "Error: dependency parallel_samtools_mpileup_tum_bam not defined for parallel_bam2seqz"; return 1; }
+    tpileupdir=`get_process_outdir_adaptive parallel_samtools_mpileup_tum_bam`
 
     # Get name of contig list file
     local clist
@@ -1425,6 +1406,7 @@ parallel_bam2seqz_define_opts()
         tpileup="${tpileupdir}"/tumor_${contig}.pileup.gz
         define_opt "-tpileup" "${tpileup}" specific_optlist || return 1
         define_opt "-contig" $contig specific_optlist || return 1
+        define_opt "-outfile" "${process_outdir}"/${contig}_seqz.gz specific_optlist || return 1
 
         save_opt_list specific_optlist
     done
@@ -1434,11 +1416,11 @@ parallel_bam2seqz_define_opts()
 parallel_bam2seqz()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local gccont=`read_opt_value_from_line "$*" "-gcc"`
     local npileup=`read_opt_value_from_line "$*" "-npileup"`
     local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sequenza)..."
@@ -1446,7 +1428,7 @@ parallel_bam2seqz()
 
     # Generate seqz file
     logmsg "* Generating seqz file (contig $contig)..."
-    sequenza-utils bam2seqz --pileup -gc "${gccont}" -n "${npileup}" -t "${tpileup}" | "${GZIP}" > "${process_outd}"/${contig}_seqz.gz ; pipe_fail || return 1
+    sequenza-utils bam2seqz --pileup -gc "${gccont}" -n "${npileup}" -t "${tpileup}" | "${GZIP}" > "${outfile}" ; pipe_fail || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1473,14 +1455,16 @@ seqzmerge_plus_sequenza_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get seqz directory
-    seqzdir=`get_outd_for_dep_given_process_spec "${process_spec}" parallel_bam2seqz` || { errmsg "Error: dependency parallel_bam2seqz not defined for seqzmerge_plus_sequenza"; return 1; }
+    local seqzdir
+    seqzdir=`get_process_outdir_adaptive parallel_bam2seqz`
     define_opt "-seqzdir" "${seqzdir}" optlist || return 1
 
     # -lc option
@@ -1517,7 +1501,7 @@ seqzmerge()
 seqzmerge_plus_sequenza()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local seqzdir=`read_opt_value_from_line "$*" "-seqzdir"`
     local clist=`read_opt_value_from_line "$*" "-lc"`
 

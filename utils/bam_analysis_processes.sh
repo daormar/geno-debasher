@@ -54,11 +54,12 @@ manta_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -99,7 +100,7 @@ get_callreg_opt()
 manta_germline()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local callregf=`read_opt_value_from_line "$*" "-cr"`
@@ -163,11 +164,12 @@ manta_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -200,7 +202,7 @@ manta_somatic_define_opts()
 manta_somatic()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
@@ -378,11 +380,12 @@ strelka_germline_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -416,7 +419,7 @@ strelka_germline_define_opts()
 strelka_germline()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local callregf=`read_opt_value_from_line "$*" "-cr"`
@@ -678,11 +681,12 @@ strelka_somatic_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -700,11 +704,9 @@ strelka_somatic_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -manta-outd option
-    local manta_dep=`find_dependency_for_process "${process_spec}" manta_somatic`
-    if [ ${manta_dep} != ${DEP_NOT_FOUND} ]; then
-        local manta_outd=`get_outd_for_dep "${manta_dep}"`
-        define_opt "-manta-outd" "${manta_outd}" optlist || return 1
-    fi
+    local manta_outd
+    manta_outd=`get_process_outdir_adaptive manta_somatic`
+    define_opt "-manta-outd" "${manta_outd}" optlist || return 1
 
     # -cr option
     define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || return 1
@@ -740,7 +742,7 @@ get_indel_cand_opt()
 strelka_somatic()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local manta_outd=`read_opt_value_from_line "$*" "-manta-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
@@ -1816,6 +1818,7 @@ parallel_lumpy_define_opts()
         tumorbam="${abs_splitdir}"/tumor_${contig}.bam
         define_opt "-tumorbam" "${tumorbam}" specific_optlist || return 1
         define_opt "-contig" ${contig} specific_optlist || return 1
+        define_opt "-outfile" "${process_outdir}"/out${contig}.vcf specific_optlist || return 1
 
         save_opt_list specific_optlist
     done
@@ -1830,6 +1833,7 @@ parallel_lumpy()
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
     local exclude=`read_opt_value_from_line "$*" "-lx"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
@@ -1838,7 +1842,7 @@ parallel_lumpy()
 
         logmsg "* Executing lumpyexpress (contig $contig)..."
         local x_opt=`get_lumpyexpress_x_opt ${exclude}`
-        lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${process_outd}"/tmp_${contig} -o "${process_outd}"/out${contig}.vcf || return 1
+        lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${process_outd}"/tmp_${contig} -o "${outfile}" || return 1
 
         # Deactivate conda environment
         logmsg "* Deactivating conda environment..."
@@ -1846,7 +1850,7 @@ parallel_lumpy()
     else
         logmsg "* Executing lumpyexpress (contig $contig)..."
         local x_opt=`get_lumpyexpress_x_opt ${exclude}`
-        "${LUMPY_HOME_DIR}"/bin/lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${process_outd}"/tmp_${contig} -o "${process_outd}"/out${contig}.vcf || return 1
+        "${LUMPY_HOME_DIR}"/bin/lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${process_outd}"/tmp_${contig} -o "${outfile}" || return 1
     fi
 }
 
@@ -2065,7 +2069,7 @@ delly()
 }
 
 ########
-parallel_lumpy_conda_envs()
+parallel_delly_conda_envs()
 {
     define_conda_env bcftools bcftools.yml
     define_conda_env delly delly.yml
@@ -2192,32 +2196,14 @@ parallel_svtyper_explain_cmdline_opts()
 }
 
 ########
-get_vcfdir_for_svtyper()
-{
-    local process_spec=$1
-
-    # Check dependency with parallel_lumpy
-    local parallel_lumpy_dep=`find_dependency_for_process "${process_spec}" parallel_lumpy`
-    if [ ${parallel_lumpy_dep} != ${DEP_NOT_FOUND} ]; then
-        local vcfdir=`get_outd_for_dep "${parallel_lumpy_dep}"`
-        echo "$vcfdir"
-        return 0
-    fi
-
-    return 1
-}
-
-########
 parallel_svtyper_define_opts()
 {
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
-
-    # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -2234,7 +2220,8 @@ parallel_svtyper_define_opts()
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
     # Determine vcf directory
-    vcfdir=`get_vcfdir_for_svtyper "${process_spec}"` || { errmsg "Error: vcf directory for svtyper could not be determined"; return 1; }
+    local vcfdir
+    vcfdir=`get_process_outdir_adaptive parallel_lumpy`
 
     # Generate option lists for each contig
     local contigs
@@ -2245,6 +2232,7 @@ parallel_svtyper_define_opts()
         define_opt "-contig" $contig specific_optlist || return 1
         vcf="${vcfdir}"/out${contig}.vcf
         define_opt "-vcf" "$vcf" specific_optlist || return 1
+        define_opt "-outfile"  "${process_outdir}"/out${contig}.vcf specific_optlist || return 1
         save_opt_list specific_optlist
     done
 }
@@ -2253,11 +2241,11 @@ parallel_svtyper_define_opts()
 parallel_svtyper()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
     local vcf=`read_opt_value_from_line "$*" "-vcf"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (svtyper)..."
@@ -2265,7 +2253,7 @@ parallel_svtyper()
 
     # Execute svtyper
     logmsg "* Executing svtyper (contig $contig)..."
-    svtyper -i "${vcf}" -B "${tumorbam}","${normalbam}" > "${process_outd}"/out${contig}.vcf || return 1
+    svtyper -i "${vcf}" -B "${tumorbam}","${normalbam}" > "${outfile}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

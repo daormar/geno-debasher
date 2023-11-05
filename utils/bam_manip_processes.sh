@@ -359,7 +359,7 @@ samtools_mpileup_norm_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${process_outd}"/normal.pileup "$normalbam" || return 1
+    samtools mpileup ${smp_l_opt} -f "${ref}" -o "${process_outd}"/normal.pileup "$normalbam" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -439,7 +439,7 @@ samtools_mpileup_tum_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
-    samtools mpileup "${smp_l_opt}" -f "${ref}" -o "${process_outd}"/tumor.pileup "$tumorbam" || return 1
+    samtools mpileup ${smp_l_opt} -f "${ref}" -o "${process_outd}"/tumor.pileup "$tumorbam" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

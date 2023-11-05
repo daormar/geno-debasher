@@ -509,6 +509,7 @@ parallel_samtools_mpileup_norm_bam_define_opts()
         normalbam="${abs_splitdir}"/normal_${contig}.bam
         define_opt "-normalbam" "${normalbam}" specific_optlist || return 1
         define_opt "-contig" $contig specific_optlist || return 1
+        define_opt "-outfile" "${process_outdir}"/normal_${contig}.pileup.gz specific_optlist || return 1
         save_opt_list specific_optlist
     done
 }
@@ -522,6 +523,7 @@ parallel_samtools_mpileup_norm_bam()
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
@@ -540,7 +542,7 @@ parallel_samtools_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${process_outd}"/normal_${contig}.pileup || return 1
+    "${GZIP}" -c "${process_outd}"/normal_${contig}.pileup > "${outfile}" || return 1
 }
 
 ########
@@ -614,6 +616,7 @@ parallel_samtools_mpileup_tum_bam_define_opts()
         tumorbam="${abs_splitdir}"/tumor_${contig}.bam
         define_opt "-tumorbam" "${tumorbam}" specific_optlist || return 1
         define_opt "-contig" $contig specific_optlist || return 1
+        define_opt "-outfile" "${process_outdir}"/tumor_${contig}.pileup.gz specific_optlist || return 1
         save_opt_list specific_optlist
     done
 }
@@ -627,6 +630,7 @@ parallel_samtools_mpileup_tum_bam()
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
     local mpbfile=`read_opt_value_from_line "$*" "-mpb"`
     local contig=`read_opt_value_from_line "$*" "-contig"`
+    local outfile=`read_opt_value_from_line "$*" "-outfile"`
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
@@ -645,7 +649,7 @@ parallel_samtools_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" "${process_outd}"/tumor_${contig}.pileup || return 1
+    "${GZIP}" -c "${process_outd}"/tumor_${contig}.pileup > "${outfile}" || return 1
 }
 
 ########

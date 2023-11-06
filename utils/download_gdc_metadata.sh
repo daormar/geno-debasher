@@ -1,19 +1,19 @@
 # Geno-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 ########
@@ -49,13 +49,13 @@ read_pars()
                   ;;
         esac
         shift
-    done   
+    done
 }
 
 ########
 check_pars()
 {
-    if [ ${m_given} -eq 0 ]; then   
+    if [ ${m_given} -eq 0 ]; then
         echo "Error! -m parameter not given!" >&2
         exit 1
     else
@@ -100,7 +100,7 @@ obtain_filters()
 {
     local manifest=$1
     local file_ids=`obtain_file_ids $manifest`
-    
+
     echo "\"op\":\"in\", \"content\": {\"field\":\"files.file_id\", \"value\": [${file_ids} ] }"
 }
 
@@ -125,7 +125,7 @@ obtain_payload()
     local format="TSV"
     local fields=`obtain_fields`
     local size=`obtain_num_ids "${manifest}"`
-    
+
     echo "{\"filters\": { ${filters} }, \"format\":\"${format}\" , \"fields\":\"${fields}\" , \"size\":\"${size}\"}"
 }
 

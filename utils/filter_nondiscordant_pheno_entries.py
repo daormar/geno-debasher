@@ -19,47 +19,52 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 # *- python -*
 
 # import modules
-import io, sys, operator, getopt
+import io
+import sys
+import operator
+import getopt
 
 ##################################################
 def take_pars():
-    flags={}
-    values={}
-    flags["f_given"]=False
+    flags = {}
+    values = {}
+    flags["f_given"] = False
     values["file"] = ""
-    flags["h_given"]=False
+    flags["h_given"] = False
     values["healthy_label"] = "non-tumor"
-    flags["t_given"]=False
+    flags["t_given"] = False
     values["tumor_label"] = "tumor"
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"f:h:t:",["file=","healthy-label=","tumor-label="])
+        opts, args = getopt.getopt(sys.argv[1:], "f:h:t:", [
+                                   "file=", "healthy-label=", "tumor-label="])
     except getopt.GetoptError:
         print_help()
         sys.exit(2)
-    if(len(opts)>3):
+    if(len(opts) > 3):
         print_help()
         sys.exit()
     else:
         for opt, arg in opts:
             if opt in ("-f", "--file"):
                 values["file"] = arg
-                flags["f_given"]=True
+                flags["f_given"] = True
             elif opt in ("-h", "--healthy-label"):
                 values["healthy_label"] = arg
-                flags["h_given"]=True
+                flags["h_given"] = True
             elif opt in ("-t", "--tumor-label"):
                 values["tumor_label"] = arg
-                flags["t_given"]=True
-    return (flags,values)
+                flags["t_given"] = True
+    return (flags, values)
 
 ##################################################
-def check_pars(flags,values):
+def check_pars(flags, values):
     None
 
 ##################################################
 def print_help():
-    print("filter_nondiscordant_pheno_entries [-f <string>] [-h <string>] [-t <string>]", file=sys.stderr)
+    print(
+        "filter_nondiscordant_pheno_entries [-f <string>] [-h <string>] [-t <string>]", file=sys.stderr)
     print("", file=sys.stderr)
     print("-f <string>        File containing output of query metadata tools (if not", file=sys.stderr)
     print("                   given, input is read from stdin)", file=sys.stderr)
@@ -67,29 +72,30 @@ def print_help():
     print("-t <string>        Label to identify tumor samples (\"tumor\" by default)", file=sys.stderr)
 
 ##################################################
-def process_pars(flags,values):
+def process_pars(flags, values):
     # Determine stream to be processed
-    if values["file"]=="":
+    if values["file"] == "":
         stream = sys.stdin
     else:
         stream = open(values["file"], 'r')
 
     # Filter entries
     for line in stream:
-        line=line.strip("\n")
-        if line.find("="+values["tumor_label"])!=-1 and line.find("="+values["healthy_label"])!=-1:
+        line = line.strip("\n")
+        if line.find("="+values["tumor_label"]) != -1 and line.find("="+values["healthy_label"]) != -1:
             print(line)
 
 ##################################################
 def main(argv):
     # take parameters
-    (flags,values)=take_pars()
+    (flags, values) = take_pars()
 
     # check parameters
-    check_pars(flags,values)
+    check_pars(flags, values)
 
     # process parameters
-    process_pars(flags,values)
+    process_pars(flags, values)
+
 
 if __name__ == "__main__":
     main(sys.argv)

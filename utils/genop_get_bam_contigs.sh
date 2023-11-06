@@ -1,32 +1,32 @@
 # Geno-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 ########
 print_desc()
 {
-    echo "get_bam_contigs gets list of contigs contained in bam file"
+    echo "genop_get_bam_contigs gets list of contigs contained in bam file"
     echo "type \"get_bam_contigs --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "get_bam_contigs  -b <string> [--help]"
+    echo "genop_get_bam_contigs  -b <string> [--help]"
     echo ""
     echo "-b <string>      bam file"
     echo "--help           Display this help and exit"
@@ -49,13 +49,13 @@ read_pars()
                   ;;
         esac
         shift
-    done   
+    done
 }
 
 ########
 check_pars()
 {
-    if [ ${b_given} -eq 0 ]; then   
+    if [ ${b_given} -eq 0 ]; then
         echo "Error! -b parameter not given!" >&2
         exit 1
     else
@@ -88,7 +88,7 @@ process_pars()
     # Obtain bam contigs
     samtools idxstats "$bam" > "${outpref}".bamstats || return 1
     cat "${outpref}".bamstats | filter_bam_stats | "${SORT}"
-    
+
     conda deactivate
 }
 

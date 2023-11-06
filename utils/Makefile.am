@@ -1,7 +1,7 @@
 bin_SCRIPTS= genop_bam_analysis genop_proc_dataset filter_vcf		\
-gen_bed_for_genome genop_check_ref_and_bam_contigs get_bam_contigs	\
-get_entrez_fasta convert_snppos_to_snpgcc create_snv_pos_ascat		\
-genop_query_ega_metadata genop_query_icgc_metadata			\
+gen_bed_for_genome genop_check_ref_and_bam_contigs			\
+genop_get_bam_contigs get_entrez_fasta convert_snppos_to_snpgcc		\
+create_snv_pos_ascat genop_query_ega_metadata genop_query_icgc_metadata	\
 download_gdc_metadata genop_query_gdc_metadata create_genref_for_bam	\
 filter_contig_from_genref get_filtered_sam_header			\
 get_filtered_sam_align map_contnames map_vcf_contnames			\
@@ -25,7 +25,7 @@ genop_bam_summariz_processes.sh genop_bam_analysis.sh			\
 genop_bam_filter_processes.sh genop_bam_facets_processes.sh		\
 genop_bam_ascat_processes.sh genop_proc_dataset.sh			\
 genop_file_shuffle.sh filter_vcf.py gen_bed_for_genome.sh		\
-genop_check_ref_and_bam_contigs.sh get_bam_contigs.sh			\
+genop_check_ref_and_bam_contigs.sh genop_get_bam_contigs.sh		\
 get_entrez_fasta.py convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py	\
 genop_query_ega_metadata.py download_gdc_metadata.sh			\
 genop_query_gdc_metadata.py genop_query_icgc_metadata.py		\

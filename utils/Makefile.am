@@ -5,8 +5,7 @@ genop_query_ega_metadata genop_query_icgc_metadata			\
 download_gdc_metadata genop_query_gdc_metadata create_genref_for_bam	\
 filter_contig_from_genref genop_map_contnames genop_map_vcf_contnames	\
 convert_allele_counts genop_get_two_elem_combs				\
-genop_filter_nondiscordant_pheno_entries 		\
-reorder_fa_seqs_lowmem
+genop_filter_nondiscordant_pheno_entries
 
 libexec_SCRIPTS= genop_genref_processes genop_bam_common_lib		\
 genop_bam_download_processes genop_bam_manip_processes			\
@@ -15,7 +14,8 @@ genop_bam_summariz_processes genop_bam_filter_processes			\
 genop_bam_facets_processes genop_bam_ascat_processes genop_run_facets	\
 genop_run_sequenza genop_run_ascat genop_file_shuffle			\
 genop_get_entrez_fasta genop_get_filtered_sam_align			\
-genop_get_filtered_sam_header genop_reorder_fa_seqs
+genop_get_filtered_sam_header genop_reorder_fa_seqs			\
+genop_reorder_fa_seqs_lowmem
 
 CLEANFILES = $(bin_SCRIPTS) $(libexec_SCRIPTS)
 
@@ -36,7 +36,7 @@ genop_get_filtered_sam_align.py genop_map_contnames.py			\
 genop_map_vcf_contnames.py genop_run_facets.R genop_run_sequenza.R	\
 convert_allele_counts.R genop_run_ascat.R genop_get_two_elem_combs.py	\
 genop_filter_nondiscordant_pheno_entries.py genop_reorder_fa_seqs.py	\
-reorder_fa_seqs_lowmem.sh
+genop_reorder_fa_seqs_lowmem.sh
 
 # Build rules for PanPipe modules
 bam_analysis: bam_analysis.sh

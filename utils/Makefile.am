@@ -13,9 +13,8 @@ libexec_SCRIPTS= genop_genref_processes genop_bam_common_lib		\
 genop_bam_download_processes genop_bam_manip_processes			\
 genop_cleaning_processes genop_bam_analysis_processes			\
 genop_bam_summariz_processes genop_bam_filter_processes			\
-genop_bam_facets_processes genop_bam_ascat_processes			\
-genop_bam_ascatngs_processes genop_run_facets genop_run_sequenza	\
-genop_run_ascat
+genop_bam_facets_processes genop_bam_ascat_processes genop_run_facets	\
+genop_run_sequenza genop_run_ascat
 
 CLEANFILES = $(bin_SCRIPTS) $(libexec_SCRIPTS)
 
@@ -24,16 +23,16 @@ genop_bam_download_processes.sh genop_bam_manip_processes.sh		\
 genop_cleaning_processes.sh genop_bam_analysis_processes.sh		\
 genop_bam_summariz_processes.sh genop_bam_analysis.sh			\
 genop_bam_filter_processes.sh genop_bam_facets_processes.sh		\
-genop_bam_ascat_processes.sh genop_bam_ascatngs_processes.sh		\
-genop_proc_dataset.sh file_shuffle.sh filter_vcf.py			\
-gen_bed_for_genome.sh check_ref_and_bam_contigs.sh get_bam_contigs.sh	\
-get_entrez_fasta.py convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py	\
-genop_query_ega_metadata.py download_gdc_metadata.sh			\
-genop_query_gdc_metadata.py genop_query_icgc_metadata.py		\
-create_genref_for_bam.sh filter_contig_from_genref.py			\
-get_filtered_sam_header.py get_filtered_sam_align.py map_contnames.py	\
-map_vcf_contnames.py genop_run_facets.R genop_run_sequenza.R		\
-convert_allele_counts.R genop_run_ascat.R get_two_elem_combs.py		\
+genop_bam_ascat_processes.sh genop_proc_dataset.sh file_shuffle.sh	\
+filter_vcf.py gen_bed_for_genome.sh check_ref_and_bam_contigs.sh	\
+get_bam_contigs.sh get_entrez_fasta.py convert_snppos_to_snpgcc.sh	\
+create_snv_pos_ascat.py genop_query_ega_metadata.py			\
+download_gdc_metadata.sh genop_query_gdc_metadata.py			\
+genop_query_icgc_metadata.py create_genref_for_bam.sh			\
+filter_contig_from_genref.py get_filtered_sam_header.py			\
+get_filtered_sam_align.py map_contnames.py map_vcf_contnames.py		\
+genop_run_facets.R genop_run_sequenza.R convert_allele_counts.R		\
+genop_run_ascat.R get_two_elem_combs.py					\
 filter_nondiscordant_pheno_entries.py reorder_fa_seqs.py		\
 reorder_fa_seqs_lowmem.sh
 
@@ -112,27 +111,6 @@ bam_ascat: bam_ascat.sh
 	echo "DECSINGLE_HOME_DIR=\"$(DECSINGLE_HOME_DIR)\"" >> $@
 	echo "DECSINGLE_JAVA_HOME_DIR=\"$(DECSINGLE_JAVA_HOME_DIR)\"" >> $@
 	cat bam_ascat.sh >> $@
-
-bam_ascatngs: bam_ascatngs.sh
-	rm -f $@
-	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
-	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
-	echo "CUT=\"$(CUT)\"" >> $@
-	echo "AWK=\"$(AWK)\"" >> $@
-	echo "GREP=\"$(GREP)\"" >> $@
-	echo "SED=\"$(SED)\"" >> $@
-	echo "ZCAT=\"$(ZCAT)\"" >> $@
-	echo "GZIP=\"$(GZIP)\"" >> $@
-	echo "BASENAME=\"$(BASENAME)\"" >> $@
-	echo "DIRNAME=\"$(DIRNAME)\"" >> $@
-	echo "PLATYPUS_HOME_DIR=\"$(PLATYPUS_HOME_DIR)\"" >> $@
-	echo "LUMPY_HOME_DIR=\"$(LUMPY_HOME_DIR)\"" >> $@
-	echo "ICGCSCOR_HOME_DIR=\"$(ICGCSCOR_HOME_DIR)\"" >> $@
-	echo "ASPERA_HOME_DIR=\"$(ASPERA_HOME_DIR)\"" >> $@
-	echo "EGADECRYPT_HOME_DIR=\"$(EGADECRYPT_HOME_DIR)\"" >> $@
-	echo "DECSINGLE_HOME_DIR=\"$(DECSINGLE_HOME_DIR)\"" >> $@
-	echo "DECSINGLE_JAVA_HOME_DIR=\"$(DECSINGLE_JAVA_HOME_DIR)\"" >> $@
-	cat bam_ascatngs.sh >> $@
 
 # Build using suffix rules (portable)
 SUFFIXES= .sh .py .r .R

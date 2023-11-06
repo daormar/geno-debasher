@@ -24,7 +24,7 @@
 #################
 
 ########
-bam_analysis_shared_dirs()
+genop_bam_analysis_shared_dirs()
 {
     define_shared_dir "${DATADIR_BASENAME}"
     define_shared_dir "${SPLITDIR_BASENAME}"

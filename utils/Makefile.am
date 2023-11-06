@@ -4,17 +4,18 @@ get_entrez_fasta convert_snppos_to_snpgcc create_snv_pos_ascat		\
 genop_query_ega_metadata genop_query_icgc_metadata			\
 download_gdc_metadata genop_query_gdc_metadata create_genref_for_bam	\
 filter_contig_from_genref get_filtered_sam_header			\
-get_filtered_sam_align map_contnames map_vcf_contnames run_facets	\
-run_sequenza convert_allele_counts run_ascat get_two_elem_combs		\
+get_filtered_sam_align map_contnames map_vcf_contnames			\
+convert_allele_counts get_two_elem_combs				\
 filter_nondiscordant_pheno_entries reorder_fa_seqs			\
 reorder_fa_seqs_lowmem
 
-libexec_SCRIPTS= genop_genref_processes genop_bam_common_lib	\
-genop_bam_download_processes genop_bam_manip_processes		\
-genop_cleaning_processes genop_bam_analysis_processes		\
-genop_bam_summariz_processes genop_bam_filter_processes		\
-genop_bam_facets_processes genop_bam_ascat_processes		\
-genop_bam_ascatngs_processes
+libexec_SCRIPTS= genop_genref_processes genop_bam_common_lib		\
+genop_bam_download_processes genop_bam_manip_processes			\
+genop_cleaning_processes genop_bam_analysis_processes			\
+genop_bam_summariz_processes genop_bam_filter_processes			\
+genop_bam_facets_processes genop_bam_ascat_processes			\
+genop_bam_ascatngs_processes genop_run_facets genop_run_sequenza	\
+genop_run_ascat
 
 CLEANFILES = $(bin_SCRIPTS) $(libexec_SCRIPTS)
 
@@ -31,8 +32,8 @@ genop_query_ega_metadata.py download_gdc_metadata.sh			\
 genop_query_gdc_metadata.py genop_query_icgc_metadata.py		\
 create_genref_for_bam.sh filter_contig_from_genref.py			\
 get_filtered_sam_header.py get_filtered_sam_align.py map_contnames.py	\
-map_vcf_contnames.py run_facets.R run_sequenza.R			\
-convert_allele_counts.R run_ascat.R get_two_elem_combs.py		\
+map_vcf_contnames.py genop_run_facets.R genop_run_sequenza.R		\
+convert_allele_counts.R genop_run_ascat.R get_two_elem_combs.py		\
 filter_nondiscordant_pheno_entries.py reorder_fa_seqs.py		\
 reorder_fa_seqs_lowmem.sh
 

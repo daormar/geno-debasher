@@ -1,32 +1,32 @@
 # Geno-PanPipe package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
-#  
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
-#  
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-#  
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; If not, see <http://www.gnu.org/licenses/>.
-  
+
 # *- bash -*
 
 ########
 print_desc()
 {
-    echo "gen_bed_for_genome generates bed file for whole genome"
+    echo "genop_gen_bed_for_genome generates bed file for whole genome"
     echo "type \"gen_bed_for_genome --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "gen_bed_for_genome   -r <string> -o <string>"
+    echo "genop_gen_bed_for_genome -r <string> -o <string>"
     echo "                     [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
@@ -58,13 +58,13 @@ read_pars()
                   ;;
         esac
         shift
-    done   
+    done
 }
 
 ########
 check_pars()
 {
-    if [ ${r_given} -eq 0 ]; then   
+    if [ ${r_given} -eq 0 ]; then
         echo "Error! -r parameter not given!" >&2
         exit 1
     else
@@ -100,7 +100,7 @@ process_pars()
     samtools faidx "${ref}"
 
     "$AWK" '{print $1 "\t0\t" $2}' ${ref}.fai > "${outpref}".bed
-    
+
     conda deactivate
 }
 

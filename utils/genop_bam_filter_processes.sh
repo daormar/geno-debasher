@@ -111,7 +111,7 @@ filter_norm_bam_contigs()
     samtools view -H "${normalbam}" > "${process_outd}"/original_header || exit 1
 
     ## Generate new sam header
-    "${genopanpipe_bindir}"/get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
+    "${genopanpipe_libexecdir}"/genop_get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
 
     # Generate filtered bam
     {
@@ -192,7 +192,7 @@ filter_tum_bam_contigs()
     samtools view -H "${tumorbam}" > "${process_outd}"/original_header || exit 1
 
     ## Generate new sam header
-    "${genopanpipe_bindir}"/get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
+    "${genopanpipe_libexecdir}"/genop_get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
 
     # Generate filtered bam
     {

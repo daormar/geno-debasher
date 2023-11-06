@@ -62,7 +62,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("reorder_fa_seqs -f <string> -l <string>", file=sys.stderr)
+    print("genop_reorder_fa_seqs -f <string> -l <string>", file=sys.stderr)
     print("", file=sys.stderr)
     print("-f <string>    File with genome reference", file=sys.stderr)
     print("-l <string>    File with ordered list of sequence names", file=sys.stderr)

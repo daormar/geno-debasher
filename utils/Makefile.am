@@ -1,10 +1,10 @@
-bin_SCRIPTS= genop_bam_analysis genop_proc_dataset filter_vcf	\
-genop_gen_bed_for_genome genop_check_ref_and_bam_contigs	\
-genop_get_bam_contigs genop_convert_snppos_to_snpgcc		\
-genop_create_snv_pos_ascat genop_query_ega_metadata		\
-genop_query_icgc_metadata genop_download_gdc_metadata		\
-genop_query_gdc_metadata genop_create_genref_for_bam		\
-genop_map_vcf_contnames genop_get_two_elem_combs		\
+bin_SCRIPTS= genop_bam_analysis genop_proc_dataset genop_filter_vcf	\
+genop_gen_bed_for_genome genop_check_ref_and_bam_contigs		\
+genop_get_bam_contigs genop_convert_snppos_to_snpgcc			\
+genop_create_snv_pos_ascat genop_query_ega_metadata			\
+genop_query_icgc_metadata genop_download_gdc_metadata			\
+genop_query_gdc_metadata genop_create_genref_for_bam			\
+genop_map_vcf_contnames genop_get_two_elem_combs			\
 genop_filter_nondiscordant_pheno_entries
 
 libexec_SCRIPTS= genop_genref_processes genop_bam_common_lib		\
@@ -26,7 +26,7 @@ genop_cleaning_processes.sh genop_bam_analysis_processes.sh		\
 genop_bam_summariz_processes.sh genop_bam_analysis.sh			\
 genop_bam_filter_processes.sh genop_bam_facets_processes.sh		\
 genop_bam_ascat_processes.sh genop_proc_dataset.sh			\
-genop_file_shuffle.sh filter_vcf.py genop_gen_bed_for_genome.sh		\
+genop_file_shuffle.sh genop_filter_vcf.py genop_gen_bed_for_genome.sh	\
 genop_check_ref_and_bam_contigs.sh genop_get_bam_contigs.sh		\
 genop_get_entrez_fasta.py genop_convert_snppos_to_snpgcc.sh		\
 genop_create_snv_pos_ascat.py genop_query_ega_metadata.py		\

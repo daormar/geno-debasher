@@ -3,7 +3,7 @@ genop_gen_bed_for_genome genop_check_ref_and_bam_contigs		\
 genop_get_bam_contigs convert_snppos_to_snpgcc create_snv_pos_ascat	\
 genop_query_ega_metadata genop_query_icgc_metadata			\
 download_gdc_metadata genop_query_gdc_metadata create_genref_for_bam	\
-filter_contig_from_genref map_contnames map_vcf_contnames		\
+filter_contig_from_genref genop_map_contnames map_vcf_contnames		\
 convert_allele_counts genop_get_two_elem_combs				\
 genop_filter_nondiscordant_pheno_entries reorder_fa_seqs		\
 reorder_fa_seqs_lowmem
@@ -32,9 +32,9 @@ create_snv_pos_ascat.py genop_query_ega_metadata.py			\
 download_gdc_metadata.sh genop_query_gdc_metadata.py			\
 genop_query_icgc_metadata.py create_genref_for_bam.sh			\
 filter_contig_from_genref.py genop_get_filtered_sam_header.py		\
-genop_get_filtered_sam_align.py map_contnames.py map_vcf_contnames.py	\
-genop_run_facets.R genop_run_sequenza.R convert_allele_counts.R		\
-genop_run_ascat.R genop_get_two_elem_combs.py				\
+genop_get_filtered_sam_align.py genop_map_contnames.py			\
+map_vcf_contnames.py genop_run_facets.R genop_run_sequenza.R		\
+convert_allele_counts.R genop_run_ascat.R genop_get_two_elem_combs.py	\
 genop_filter_nondiscordant_pheno_entries.py reorder_fa_seqs.py		\
 reorder_fa_seqs_lowmem.sh
 

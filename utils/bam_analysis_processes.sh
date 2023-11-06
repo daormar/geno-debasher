@@ -588,6 +588,10 @@ gatk_haplotypecaller_explain_cmdline_opts()
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
+
+    # -sample-name option
+    description="Sample name"
+    explain_cmdline_req_opt "-sample-name" "<string>" "$description"
 }
 
 ########
@@ -613,6 +617,9 @@ gatk_haplotypecaller_define_opts()
     normalbam=`get_normal_bam_filename "$cmdline"` || return 1
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
+    # -sample-name option
+    define_cmdline_opt "$cmdline" "-sample-name" optlist || return 1
+
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
@@ -635,6 +642,7 @@ gatk_haplotypecaller()
     local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local sample_name=`read_opt_value_from_line "$*" "-sample-name"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
     local mem=`read_opt_value_from_line "$*" "-mem"`
 
@@ -644,7 +652,7 @@ gatk_haplotypecaller()
 
     # Run gatk HaplotypeCaller
     logmsg "* Executing gatk HaplotypeCaller..."
-    gatk --java-options "-Xmx${mem}" HaplotypeCaller -R "${ref}" -I "${normalbam}" -O "${process_outd}"/output.g.vcf.gz -ERC GVCF --native-pair-hmm-threads ${cpus} || return 1
+    gatk --java-options "-Xmx${mem}" HaplotypeCaller -R "${ref}" -I "${normalbam}" -O "${process_outd}"/output.g.vcf.gz -ERC GVCF --sample-name "${sample_name}" --native-pair-hmm-threads ${cpus} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

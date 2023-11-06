@@ -22,14 +22,14 @@
 ########
 print_desc()
 {
-    echo "create_genref_for_bam creates genome reference specific for bam file"
+    echo "genop_create_genref_for_bam creates genome reference specific for bam file"
     echo "type \"create_genref_for_bam --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "create_genref_for_bam  -r <string> -b <string> [-cm <string>]"
+    echo "genop_create_genref_for_bam  -r <string> -b <string> [-cm <string>]"
     echo "                       -o <string> [--help]"
     echo ""
     echo "-r <string>            File with base reference genome"

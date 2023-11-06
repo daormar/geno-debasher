@@ -379,7 +379,7 @@ process_pars()
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    "${genopanpipe_bindir}"/filter_contig_from_genref -g "$baseref" -l "${outd}/refcontigs_to_keep" > "${outd}"/unordered_ref.fa || return 1
+    "${genopanpipe_libexecdir}"/genop_filter_contig_from_genref -g "$baseref" -l "${outd}/refcontigs_to_keep" > "${outd}"/unordered_ref.fa || return 1
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2

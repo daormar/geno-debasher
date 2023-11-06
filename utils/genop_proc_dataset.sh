@@ -22,14 +22,14 @@
 ########
 print_desc()
 {
-    echo "analyze_dataset analyses samples of a given dataset"
+    echo "genop_proc_dataset analyses samples of a given dataset"
     echo "type \"analyze_dataset --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "analyze_dataset       --pfile <string> --outdir <string>"
+    echo "genop_proc_dataset    --pfile <string> --outdir <string>"
     echo "                      --sched <string> --metadata <string>"
     echo "                      [--dflt-nodes <string>] --ppl-opts <string>"
     echo "                      [--lcxx <string> --lcxy <string>]"

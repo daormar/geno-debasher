@@ -154,6 +154,26 @@ get_create_genref_for_bam_cm_opt()
 }
 
 ########
+create_seq_dict_for_ref()
+{
+    local ref=$1
+
+    conda activate gatk4 2>&1 || return 1
+    gatk CreateSequenceDictionary -R "${ref}" || return 1
+    conda deactivate
+}
+
+########
+index_ref()
+{
+    local ref=$1
+
+    conda activate samtools 2>&1 || return 1
+    samtools faidx "${ref}" || return 1
+    conda deactivate
+}
+
+########
 create_genref_for_bam()
 {
     # Initialize variables
@@ -171,6 +191,10 @@ create_genref_for_bam()
         # Move resulting files
         mv "${process_outd}"/genref_for_bam.fa "${outfile}"
         mv "${process_outd}"/genref_for_bam.fa.fai "${outfile}".fai
+
+        # Create sequence dictionary for reference
+        logmsg "* Creating sequence dictionary for reference..."
+        create_seq_dict_for_ref "${outfile}" || return 1
     else
         # Genome reference creation failed, check if fallback file was
         # provided
@@ -181,11 +205,14 @@ create_genref_for_bam()
             # Copy fallback file
             logmsg "* Copying fallback file (${fallback_genref})..."
             cp "${fallback_genref}" "${outfile}" || return 1
+
             # Index fallback reference
             logmsg "* Indexing fallback reference..."
-            conda activate samtools 2>&1 || return 1
-            samtools faidx "${outfile}" || return 1
-            conda deactivate
+            index_ref "${outfile}" || return 1
+
+            # Create sequence dictionary for fallback reference
+            logmsg "* Creating sequence dictionary for fallback reference..."
+            create_seq_dict_for_ref "${outfile}" || return 1
         fi
     fi
 }

@@ -63,8 +63,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print(
-        "filter_nondiscordant_pheno_entries [-f <string>] [-h <string>] [-t <string>]", file=sys.stderr)
+    print("genop_filter_nondiscordant_pheno_entries [-f <string>] [-h <string>] [-t <string>]", file=sys.stderr)
     print("", file=sys.stderr)
     print("-f <string>        File containing output of query metadata tools (if not", file=sys.stderr)
     print("                   given, input is read from stdin)", file=sys.stderr)

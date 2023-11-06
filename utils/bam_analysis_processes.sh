@@ -792,6 +792,14 @@ mutect2_somatic_explain_cmdline_opts()
     description="Normal bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-n" "<string>" "$description"
 
+    # -norm-sample-name option
+    description="Normal sample name"
+    explain_cmdline_req_opt "-norm-sample-name" "<string>" "$description"
+
+    # -panel-of-normals
+    description="File name with panel of normals"
+    explain_cmdline_req_opt "-panel-of-normals" "<string>" "$description"
+
     # -t option
     description="Tumor bam file (required if no downloading processes have been defined)"
     explain_cmdline_opt "-t" "<string>" "$description"
@@ -825,6 +833,12 @@ mutect2_somatic_define_opts()
     tumorbam=`get_tumor_bam_filename "$cmdline"` || return 1
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
+    # -norm-sample-name option
+    define_cmdline_opt "$cmdline" "-norm-sample-name" optlist || return 1
+
+    # -panel-of-normals option
+    define_cmdline_opt "$cmdline" "-panel-of-normals" optlist || return 1
+
     # -cpus option
     local cpus
     cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
@@ -847,7 +861,9 @@ mutect2_somatic()
     local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
     local ref=`read_opt_value_from_line "$*" "-r"`
     local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
+    local norm_sample_name=`read_opt_value_from_line "$*" "-norm-sample-name"`
     local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
+    local panel_of_normals=`read_opt_value_from_line "$*" "-panel-of-normals"`
     local cpus=`read_opt_value_from_line "$*" "-cpus"`
     local mem=`read_opt_value_from_line "$*" "-mem"`
 
@@ -855,14 +871,9 @@ mutect2_somatic()
     logmsg "* Activating conda environment..."
     conda activate gatk4 2>&1 || return 1
 
-    # Obtain sample name
-    logmsg "* Executing gatk GetSampleName..."
-    gatk GetSampleName -I "${tumorbam}" -O "${process_outd}"/tumor_sample || return 1
-    local tumor_sample=`"${CAT}" "${process_outd}"/tumor_sample`
-
     # Run Mutect2
     logmsg "* Executing gatk Mutect2..."
-    gatk --java-options "-Xmx${mem}" Mutect2 -R "${ref}" -I "${normalbam}" -I "${tumorbam}" -O "${process_outd}"/somatic.vcf.gz --tumor-sample "${tumor_sample}" --native-pair-hmm-threads ${cpus} || return 1
+    gatk --java-options "-Xmx${mem}" Mutect2 -R "${ref}" -I "${normalbam}" -I "${tumorbam}" -O "${process_outd}"/somatic.vcf.gz -normal "${norm_sample_name}" --panel-of-normals "${panel_of_normals}" --native-pair-hmm-threads ${cpus} || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

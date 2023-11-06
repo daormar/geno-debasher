@@ -19,14 +19,14 @@
 ########
 print_desc()
 {
-    echo "download_gdc_metadata downloads gdc metadata given a manifest file"
-    echo "type \"download_gdc_metadata --help\" to get usage information"
+    echo "genop_download_gdc_metadata downloads gdc metadata given a manifest file"
+    echo "type \"genop_download_gdc_metadata --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "download_gdc_metadata  -m <string> [--help]"
+    echo "genop_download_gdc_metadata  -m <string> [--help]"
     echo ""
     echo "-m <string>      Manifest file"
     echo "--help           Display this help and exit"

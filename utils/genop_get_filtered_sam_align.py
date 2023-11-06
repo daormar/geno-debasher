@@ -53,7 +53,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("get_filtered_sam_align -l <string>", file=sys.stderr)
+    print("genop_get_filtered_sam_align -l <string>", file=sys.stderr)
     print("", file=sys.stderr)
     print("-l <string>    List of contigs to keep (one contig name per line)", file=sys.stderr)
 

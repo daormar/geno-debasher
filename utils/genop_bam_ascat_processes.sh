@@ -54,7 +54,7 @@ preproc_allelecounter_locis()
     if [ "${contig_mapping}" = ${NOFILE} ]; then
         remove_snp_ids_from_locis "${locis}"
     else
-        remove_snp_ids_from_locis "${locis}" | "${genopanpipe_bindir}"/map_contnames -m "${contig_mapping}" -c 0
+        remove_snp_ids_from_locis "${locis}" | "${genopanpipe_libexecdir}"/genop_map_contnames -m "${contig_mapping}" -c 0
     fi
 }
 
@@ -67,7 +67,7 @@ postproc_allelecounter_output()
     if [ "${contig_mapping}" = ${NOFILE} ]; then
         cat "${allelecounterfile}"
     else
-        "${genopanpipe_bindir}"/map_contnames -m "${contig_mapping}" -f "${allelecounterfile}" -c 0 --invert
+        "${genopanpipe_libexecdir}"/genop_map_contnames -m "${contig_mapping}" -f "${allelecounterfile}" -c 0 --invert
     fi
 }
 
@@ -356,7 +356,7 @@ ascat()
 
     # Convert allele counts
     logmsg "* Executing convert_allele_counts..."
-    Rscript "${genopanpipe_bindir}"/convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${process_outd}" || exit 1
+    Rscript "${genopanpipe_libexecdir}"/genop_convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${process_outd}" || exit 1
 
     # Add SNP ids information to convert_allele_counts output
     logmsg "* Add SNP ids information to convert_allele_counts output..."

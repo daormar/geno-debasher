@@ -19,16 +19,6 @@
 # INCLUDE BASH LIBRARY
 . "${genopanpipe_libexecdir}"/genop_bam_common_lib || exit 1
 
-#################
-# CFG FUNCTIONS #
-#################
-
-########
-bam_ascatngs_shared_dirs()
-{
-    define_shared_dir "${DATADIR_BASENAME}"
-}
-
 ##########################
 # BAM ASCATNGS PROCESSES #
 ##########################

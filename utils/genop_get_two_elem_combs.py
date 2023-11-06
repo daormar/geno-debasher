@@ -52,7 +52,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("get_two_elem_combs [-f <string>]", file=sys.stderr)
+    print("genop_get_two_elem_combs [-f <string>]", file=sys.stderr)
     print("", file=sys.stderr)
     print("-f <string>        File containing output of query metadata tools (if not", file=sys.stderr)
     print("                   given, input is read from stdin)", file=sys.stderr)

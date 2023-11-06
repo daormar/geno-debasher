@@ -9,7 +9,7 @@ d <- 35
 
 # Collect arguments
 args <- commandArgs(asValue=TRUE, excludeReserved=TRUE)[-1]
- 
+
 # Turn arguments into R variables
 keys <- attachLocally(args)
 
@@ -17,16 +17,16 @@ keys <- attachLocally(args)
 
 ## Check --help option
 if("help" %in% keys || length(keys)==0)
-{    
-    cat("run_facets [arguments]
- 
+{
+    cat("genop_run_facets [arguments]
+
 Arguments:
 -c     <string>        File containing snp-pileup counts
 -d     <int>           Minimum sequencing depth to keep when
                        preprocessing sample (35 by default)
 -o     <string>        Output directory
 --help                 Print this text\n")
-  
+
     q(save="no",status=0)
 }
 

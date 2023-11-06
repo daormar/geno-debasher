@@ -34,7 +34,7 @@ if ( length(args) < 1) {
 ## Help section
 if("--help" %in% args) {
   cat("
-      run_ascat.R
+      genop_run_ascat.R
 
       Arguments:
       --tumor_baf=path_tumor_baf   - character
@@ -148,7 +148,7 @@ ascat.bc <- ascat.loadData(Tumor_LogR_file = tumor_logr,
         # ascat.bc <- ascat.runAscat(ascat.bc) ## do not apply anything if file for GC corrections is not provided by the user
         write("[INFO]: File for GC correction not provided, skipped.", stderr())
     }
-    else {        	
+    else {
 	write(paste0("[INFO]: GC file used for the correction.", gc_correction), stderr())
         ascat.bc <- ascat.GCcorrect(ascat.bc, gc_correction)
 	write("[INFO]: GC correction has been performed.", stderr())

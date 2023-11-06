@@ -15,7 +15,7 @@ keys <- attachLocally(args)
 ## Check --help option
 if("help" %in% keys || length(keys)==0)
 {
-    cat("run_sequenza [arguments]
+    cat("genop_run_sequenza [arguments]
 
 Arguments:
 -s     <string>        seqz file

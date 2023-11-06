@@ -1152,7 +1152,7 @@ snp_pileup_plus_facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript "${genopanpipe_bindir}"/run_facets -c "${process_outd}"/snp-pileup-counts.csv -d ${mindepth} -o "${process_outd}" 2>&1 || return 1
+    Rscript "${genopanpipe_libexecdir}"/genop_run_facets -c "${process_outd}"/snp-pileup-counts.csv -d ${mindepth} -o "${process_outd}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

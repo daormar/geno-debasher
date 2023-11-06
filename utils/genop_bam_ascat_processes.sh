@@ -366,8 +366,8 @@ ascat()
     add_snpids_to_convert_allele_counts_outfile "${snpids}" "${process_outd}"/normal.LogR > "${process_outd}"/normal_snpids.LogR
 
     # Run ascat
-    logmsg "* Executing run_ascat..."
-    Rscript "${genopanpipe_bindir}"/run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
+    logmsg "* Executing ascat..."
+    Rscript "${genopanpipe_libexecdir}"/genop_run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

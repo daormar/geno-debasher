@@ -23,7 +23,7 @@
 print_desc()
 {
     echo "genop_proc_dataset analyses samples of a given dataset"
-    echo "type \"analyze_dataset --help\" to get usage information"
+    echo "type \"genop_proc_dataset --help\" to get usage information"
 }
 
 ########

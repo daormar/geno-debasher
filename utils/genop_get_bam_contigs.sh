@@ -20,7 +20,7 @@
 print_desc()
 {
     echo "genop_get_bam_contigs gets list of contigs contained in bam file"
-    echo "type \"get_bam_contigs --help\" to get usage information"
+    echo "type \"genop_get_bam_contigs --help\" to get usage information"
 }
 
 ########

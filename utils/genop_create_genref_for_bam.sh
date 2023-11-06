@@ -23,7 +23,7 @@
 print_desc()
 {
     echo "genop_create_genref_for_bam creates genome reference specific for bam file"
-    echo "type \"create_genref_for_bam --help\" to get usage information"
+    echo "type \"genop_create_genref_for_bam --help\" to get usage information"
 }
 
 ########

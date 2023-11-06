@@ -20,7 +20,7 @@
 print_desc()
 {
     echo "genop_check_ref_and_bam_contigs check contig equivalence between bam and reference genome"
-    echo "type \"check_ref_and_bam_contigs --help\" to get usage information"
+    echo "type \"genop_check_ref_and_bam_contigs --help\" to get usage information"
 }
 
 ########

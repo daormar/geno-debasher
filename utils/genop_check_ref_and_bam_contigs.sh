@@ -19,14 +19,14 @@
 ########
 print_desc()
 {
-    echo "check_ref_and_bam_contigs check contig equivalence between bam and reference genome"
+    echo "genop_check_ref_and_bam_contigs check contig equivalence between bam and reference genome"
     echo "type \"check_ref_and_bam_contigs --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "check_ref_and_bam_contigs  -r <string> -b <string> -o <string>"
+    echo "genop_check_ref_and_bam_contigs  -r <string> -b <string> -o <string>"
     echo "                           [--help]"
     echo ""
     echo "-r <string>                File with reference genome"

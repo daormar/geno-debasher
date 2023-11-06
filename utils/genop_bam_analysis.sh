@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${genopanpipe_libexecdir}"/genop_common_lib || exit 1
+. "${genopanpipe_libexecdir}"/genop_bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #

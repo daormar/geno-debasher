@@ -1,6 +1,6 @@
 # *- bash -*
 
-load_panpipe_module "bam_analysis"
+load_panpipe_module "genop_bam_analysis"
 
 nodownload_extended_pipeline()
 {

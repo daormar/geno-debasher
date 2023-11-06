@@ -1,6 +1,6 @@
 # *- bash -*
 
-load_panpipe_module "bam_analysis"
+load_panpipe_module "genop_bam_analysis"
 
 ega_asp_extended_pipeline()
 {

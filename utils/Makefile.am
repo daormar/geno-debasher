@@ -9,13 +9,15 @@ run_sequenza convert_allele_counts run_ascat get_two_elem_combs		\
 filter_nondiscordant_pheno_entries reorder_fa_seqs			\
 reorder_fa_seqs_lowmem
 
+UTILITY_SCRIPTS= genref_processes bam_common_lib bam_download_processes	\
+bam_manip_processes cleaning_processes bam_analysis_processes		\
+bam_summariz_processes
+
 bin_SCRIPTS = $(SCRIPTS_TO_BE_BUILT)
 
-libexec_SCRIPTS = genref_processes bam_common_lib		\
-bam_download_processes bam_manip_processes cleaning_processes	\
-bam_analysis_processes bam_summariz_processes
+libexec_SCRIPTS = $(UTILITY_SCRIPTS)
 
-CLEANFILES = $(SCRIPTS_TO_BE_BUILT)
+CLEANFILES = $(SCRIPTS_TO_BE_BUILT) $(UTILITY_SCRIPTS)
 
 EXTRA_DIST = bam_common_lib.sh genref_processes.sh			\
 bam_download_processes.sh bam_manip_processes.sh cleaning_processes.sh	\

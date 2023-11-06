@@ -4,7 +4,7 @@ genop_get_bam_contigs convert_snppos_to_snpgcc create_snv_pos_ascat	\
 genop_query_ega_metadata genop_query_icgc_metadata			\
 download_gdc_metadata genop_query_gdc_metadata				\
 genop_create_genref_for_bam filter_contig_from_genref			\
-genop_map_contnames genop_map_vcf_contnames genop_get_two_elem_combs	\
+genop_map_vcf_contnames genop_get_two_elem_combs			\
 genop_filter_nondiscordant_pheno_entries
 
 libexec_SCRIPTS= genop_genref_processes genop_bam_common_lib		\
@@ -15,7 +15,8 @@ genop_bam_facets_processes genop_bam_ascat_processes genop_run_facets	\
 genop_run_sequenza genop_run_ascat genop_file_shuffle			\
 genop_get_entrez_fasta genop_get_filtered_sam_align			\
 genop_get_filtered_sam_header genop_reorder_fa_seqs			\
-genop_reorder_fa_seqs_lowmem genop_convert_allele_counts
+genop_reorder_fa_seqs_lowmem genop_convert_allele_counts		\
+genop_map_contnames
 
 CLEANFILES = $(bin_SCRIPTS) $(libexec_SCRIPTS)
 

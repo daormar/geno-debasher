@@ -2,7 +2,7 @@
 
 load_panpipe_module "genop_bam_analysis"
 
-copy_extended_pipeline()
+genop_copy_extended_pipeline()
 {
     add_panpipe_process "copy_norm_bam"               "cpus=1  mem=2048    time=24:00:00"
     add_panpipe_process "copy_tum_bam"                "cpus=1  mem=2048    time=24:00:00"

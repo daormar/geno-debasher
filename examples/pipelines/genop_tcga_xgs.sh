@@ -2,7 +2,7 @@
 
 load_panpipe_module "genop_bam_analysis"
 
-tcga_xgs_pipeline()
+genop_tcga_xgs_pipeline()
 {
     add_panpipe_process "download_gdc_norm_bam"       "cpus=1  mem=2048    time=24:00:00"          "processdeps=none"
     add_panpipe_process "download_gdc_tum_bam"        "cpus=1  mem=2048    time=24:00:00"          "processdeps=none"

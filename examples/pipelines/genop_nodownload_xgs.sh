@@ -2,7 +2,7 @@
 
 load_panpipe_module "genop_bam_analysis"
 
-nodownload_xgs_pipeline()
+genop_nodownload_xgs_pipeline()
 {
     add_panpipe_process "create_genref_for_bam"       "cpus=1  mem=8G      time=4:00:00"  "processdeps=none"
     add_panpipe_process "bedtools_genomecov_norm_bam" "cpus=1  mem=1024    time=4:00:00"  "processdeps=none"

@@ -2,7 +2,7 @@
 
 load_panpipe_module "genop_bam_analysis"
 
-nodownload_extended_pipeline()
+genop_nodownload_extended_pipeline()
 {
     add_panpipe_process "create_genref_for_bam"     "cpus=1  mem=8G      time=4:00:00"  "processdeps=none"
     add_panpipe_process "parallel_split_norm_bam"   "cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16" "processdeps=none"

@@ -1,7 +1,7 @@
 bin_SCRIPTS= genop_bam_analysis genop_proc_dataset filter_vcf		\
 genop_gen_bed_for_genome genop_check_ref_and_bam_contigs		\
-genop_get_bam_contigs get_entrez_fasta convert_snppos_to_snpgcc		\
-create_snv_pos_ascat genop_query_ega_metadata genop_query_icgc_metadata	\
+genop_get_bam_contigs convert_snppos_to_snpgcc create_snv_pos_ascat	\
+genop_query_ega_metadata genop_query_icgc_metadata			\
 download_gdc_metadata genop_query_gdc_metadata create_genref_for_bam	\
 filter_contig_from_genref get_filtered_sam_header			\
 get_filtered_sam_align map_contnames map_vcf_contnames			\
@@ -14,26 +14,28 @@ genop_bam_download_processes genop_bam_manip_processes			\
 genop_cleaning_processes genop_bam_analysis_processes			\
 genop_bam_summariz_processes genop_bam_filter_processes			\
 genop_bam_facets_processes genop_bam_ascat_processes genop_run_facets	\
-genop_run_sequenza genop_run_ascat genop_file_shuffle
+genop_run_sequenza genop_run_ascat genop_file_shuffle			\
+genop_get_entrez_fasta
 
 CLEANFILES = $(bin_SCRIPTS) $(libexec_SCRIPTS)
 
-EXTRA_DIST = genop_bam_common_lib.sh genop_genref_processes.sh		\
-genop_bam_download_processes.sh genop_bam_manip_processes.sh		\
-genop_cleaning_processes.sh genop_bam_analysis_processes.sh		\
-genop_bam_summariz_processes.sh genop_bam_analysis.sh			\
-genop_bam_filter_processes.sh genop_bam_facets_processes.sh		\
-genop_bam_ascat_processes.sh genop_proc_dataset.sh			\
-genop_file_shuffle.sh filter_vcf.py genop_gen_bed_for_genome.sh		\
-genop_check_ref_and_bam_contigs.sh genop_get_bam_contigs.sh		\
-get_entrez_fasta.py convert_snppos_to_snpgcc.sh create_snv_pos_ascat.py	\
-genop_query_ega_metadata.py download_gdc_metadata.sh			\
-genop_query_gdc_metadata.py genop_query_icgc_metadata.py		\
-create_genref_for_bam.sh filter_contig_from_genref.py			\
-get_filtered_sam_header.py get_filtered_sam_align.py map_contnames.py	\
-map_vcf_contnames.py genop_run_facets.R genop_run_sequenza.R		\
-convert_allele_counts.R genop_run_ascat.R get_two_elem_combs.py		\
-filter_nondiscordant_pheno_entries.py reorder_fa_seqs.py		\
+EXTRA_DIST = genop_bam_common_lib.sh genop_genref_processes.sh	\
+genop_bam_download_processes.sh genop_bam_manip_processes.sh	\
+genop_cleaning_processes.sh genop_bam_analysis_processes.sh	\
+genop_bam_summariz_processes.sh genop_bam_analysis.sh		\
+genop_bam_filter_processes.sh genop_bam_facets_processes.sh	\
+genop_bam_ascat_processes.sh genop_proc_dataset.sh		\
+genop_file_shuffle.sh filter_vcf.py genop_gen_bed_for_genome.sh	\
+genop_check_ref_and_bam_contigs.sh genop_get_bam_contigs.sh	\
+genop_get_entrez_fasta.py convert_snppos_to_snpgcc.sh		\
+create_snv_pos_ascat.py genop_query_ega_metadata.py		\
+download_gdc_metadata.sh genop_query_gdc_metadata.py		\
+genop_query_icgc_metadata.py create_genref_for_bam.sh		\
+filter_contig_from_genref.py get_filtered_sam_header.py		\
+get_filtered_sam_align.py map_contnames.py map_vcf_contnames.py	\
+genop_run_facets.R genop_run_sequenza.R convert_allele_counts.R	\
+genop_run_ascat.R get_two_elem_combs.py				\
+filter_nondiscordant_pheno_entries.py reorder_fa_seqs.py	\
 reorder_fa_seqs_lowmem.sh
 
 # Build rules for PanPipe modules

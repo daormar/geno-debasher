@@ -120,7 +120,7 @@ filter_norm_bam_contigs()
 
         # Print contig information
         contigs=`get_contigs_from_header "${process_outd}"/new_header`
-        samtools view "${normalbam}" "${contigs}" | "${genopanpipe_bindir}"/get_filtered_sam_align -l "${process_outd}"/refcontigs
+        samtools view "${normalbam}" "${contigs}" | "${genopanpipe_libexecdir}"/genop_get_filtered_sam_align -l "${process_outd}"/refcontigs
     } | samtools view -bo "${process_outd}"/filtered.bam -
 
     # Move bam file

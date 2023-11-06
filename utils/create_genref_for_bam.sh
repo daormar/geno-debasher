@@ -341,7 +341,7 @@ get_contigs()
                 cat "${mapping}" || return 1
             else
                 echo "Getting data for contig ${contig} with length ${contiglen} (mapped to accession $mapping)..." >&2
-                "${genopanpipe_bindir}"/get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
+                "${genopanpipe_libexecdir}"/genop_get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
             fi
         fi
     done < "${contiglist}"

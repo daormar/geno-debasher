@@ -1,4 +1,4 @@
-SCRIPTS_BIN= bam_analysis bam_filter bam_facets bam_ascat	\
+bin_SCRIPTS= bam_analysis bam_filter bam_facets bam_ascat	\
 bam_ascatngs analyze_dataset file_shuffle filter_vcf gen_bed_for_genome	\
 check_ref_and_bam_contigs get_bam_contigs get_entrez_fasta		\
 convert_snppos_to_snpgcc create_snv_pos_ascat query_ega_metadata	\
@@ -9,15 +9,11 @@ run_sequenza convert_allele_counts run_ascat get_two_elem_combs		\
 filter_nondiscordant_pheno_entries reorder_fa_seqs			\
 reorder_fa_seqs_lowmem
 
-SCRIPTS_LIBEXEC= genref_processes bam_common_lib bam_download_processes	\
+libexec_SCRIPTS= genref_processes bam_common_lib bam_download_processes	\
 bam_manip_processes cleaning_processes bam_analysis_processes		\
 bam_summariz_processes
 
-bin_SCRIPTS = $(SCRIPTS_BIN)
-
-libexec_SCRIPTS = $(SCRIPTS_LIBEXEC)
-
-CLEANFILES = $(SCRIPTS_BIN) $(SCRIPTS_LIBEXEC)
+CLEANFILES = $(bin_SCRIPTS) $(libexec_SCRIPTS)
 
 EXTRA_DIST = bam_common_lib.sh genref_processes.sh			\
 bam_download_processes.sh bam_manip_processes.sh cleaning_processes.sh	\

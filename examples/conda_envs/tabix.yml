@@ -1,12 +1,32 @@
 name: tabix
 channels:
-  - r
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - libgcc-ng=7.3.0=hdf63c60_0
-  - tabix=0.2.6=ha92aebf_0
-  - zlib=1.2.11=h14c3975_1004
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=4.5
+  - bzip2=1.0.8
+  - c-ares=1.21.0
+  - ca-certificates=2023.7.22
+  - curl=7.88.1
+  - htslib=1.9
+  - keyutils=1.6.1
+  - krb5=1.20.1
+  - libcurl=7.88.1
+  - libdeflate=1.2
+  - libedit=3.1.20191231
+  - libev=4.33
+  - libgcc-ng=13.2.0
+  - libgomp=13.2.0
+  - libnghttp2=1.58.0
+  - libssh2=1.11.0
+  - libstdcxx-ng=13.2.0
+  - libzlib=1.2.13
+  - ncurses=6.4
+  - openssl=3.1.4
+  - tabix=1.11
+  - xz=5.2.6
+  - zlib=1.2.13
+  - zstd=1.5.5
 prefix: /home/dortiz/miniconda3/envs/tabix
-

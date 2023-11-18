@@ -260,9 +260,9 @@ ega_download_retry()
     local egastr=$1
     local egacred=$2
     local egaid=$3
-    local outf=$4
-    local download_tries=$5
-    local process_outd=`"${DIRNAME}" "${outf}"`
+    local outd=$4
+    local outf=$5
+    local download_tries=$6
 
     # Start download with multiple tries
     local ntry=1
@@ -275,7 +275,7 @@ ega_download_retry()
         fi
 
         # Download file
-        pyega3 -c ${egastr} -cf ${egacred} fetch ${egaid} "${outf}" 2>&1
+        pyega3 -c ${egastr} -cf "${egacred}" fetch ${egaid} --output-dir "${outd}" 2>&1
 
         # Check if download was successful
         if [ $? -eq 0 -a -f "${outf}" ]; then
@@ -284,6 +284,9 @@ ega_download_retry()
 
         ntry=$((ntry+1))
     done
+
+    # Rename file
+    # TO-BE-DONE
 
     logmsg "All download attempts failed!"
 
@@ -306,7 +309,7 @@ download_ega_norm_bam()
     conda activate pyega3 2>&1 || return 1
 
     # Download file (with multiple tries)
-    ega_download_retry ${egastr} ${egacred} "${egaid_normalbam}" "${process_outd}"/normal.bam ${download_tries} || return 1
+    ega_download_retry ${egastr} "${egacred}" "${egaid_normalbam}" "${process_outd}" "normal.bam" ${download_tries} || return 1
 
     # Move file
     mv "${process_outd}"/normal.bam "${normalbam}" || return 1
@@ -391,7 +394,7 @@ download_ega_tum_bam()
     conda activate pyega3 2>&1 || return 1
 
     # Download file (with multiple tries)
-    ega_download_retry ${egastr} ${egacred} "${egaid_tumorbam}" "${process_outd}"/tumor.bam ${download_tries} || return 1
+    ega_download_retry ${egastr} "${egacred}" "${egaid_tumorbam}" "${process_outd}" "tumor.bam" ${download_tries} || return 1
 
     # Move file
     mv "${process_outd}"/tumor.bam "${tumorbam}" || return 1
@@ -1201,7 +1204,7 @@ download_gdc_norm_bam()
     conda activate gdc-client 2>&1 || return 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdcprocs} -t ${gdctok} -d "${process_outd}" --retry-amount ${download_tries} "${gdcid_normalbam}" 2>/dev/null || return 1
+    gdc-client download -n ${gdcprocs} -t "${gdctok}" -d "${process_outd}" --retry-amount ${download_tries} "${gdcid_normalbam}" 2>/dev/null || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1288,7 +1291,7 @@ download_gdc_tum_bam()
     conda activate gdc-client 2>&1 || return 1
 
     # Download file (with multiple tries)
-    gdc-client download -n ${gdcprocs} -t ${gdctok} -d "${process_outd}" --retry-amount ${download_tries} "${gdcid_tumorbam}" 2>/dev/null || return 1
+    gdc-client download -n ${gdcprocs} -t "${gdctok}" -d "${process_outd}" --retry-amount ${download_tries} "${gdcid_tumorbam}" 2>/dev/null || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

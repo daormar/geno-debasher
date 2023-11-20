@@ -125,11 +125,11 @@ allele_counter_norm_define_opts()
 allele_counter_norm()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
-    local locis=`read_opt_value_from_line "$*" "-l"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local contig_mapping=`read_opt_value_from_line "$*" "-ma"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local locis=`read_opt_value_from_func_args "-l" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local contig_mapping=`read_opt_value_from_func_args "-ma" $@`
 
     # Extract SNP ids to a separate file
     logmsg "* Extracting SNP ids..."
@@ -216,11 +216,11 @@ allele_counter_tumor_define_opts()
 allele_counter_tumor()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
-    local locis=`read_opt_value_from_line "$*" "-l"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig_mapping=`read_opt_value_from_line "$*" "-ma"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local locis=`read_opt_value_from_func_args "-l" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local contig_mapping=`read_opt_value_from_func_args "-ma" $@`
 
     # Extract SNP ids to a separate file
     logmsg "* Extracting SNP ids..."
@@ -343,12 +343,12 @@ add_snpids_to_convert_allele_counts_outfile()
 ascat()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
-    local allelecounternormal=`read_opt_value_from_line "$*" "-acn"`
-    local allelecountertumor=`read_opt_value_from_line "$*" "-act"`
-    local snpids=`read_opt_value_from_line "$*" "-snpids"`
-    local gender=`read_opt_value_from_line "$*" "-g"`
-    local snpgccorr=`read_opt_value_from_line "$*" "-sg"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local allelecounternormal=`read_opt_value_from_func_args "-acn" $@`
+    local allelecountertumor=`read_opt_value_from_func_args "-act" $@`
+    local snpids=`read_opt_value_from_func_args "-snpids" $@`
+    local gender=`read_opt_value_from_func_args "-g" $@`
+    local snpgccorr=`read_opt_value_from_func_args "-sg" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."

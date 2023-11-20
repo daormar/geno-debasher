@@ -94,9 +94,9 @@ get_contigs_from_header()
 filter_norm_bam_contigs()
 {
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -175,9 +175,9 @@ filter_tum_bam_contigs_define_opts()
 filter_tum_bam_contigs()
 {
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."

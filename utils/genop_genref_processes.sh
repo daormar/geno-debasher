@@ -177,13 +177,13 @@ index_ref()
 create_genref_for_bam()
 {
     # Initialize variables
-    local baseref=`read_opt_value_from_line "$*" "-br"`
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local bam=`read_opt_value_from_line "$*" "-bam"`
-    local bam_idx=`read_opt_value_from_line "$*" "-bam-idx"`
-    local contig_mapping=`read_opt_value_from_line "$*" "-cm"`
-    local fallback_genref=`read_opt_value_from_line "$*" "-fbr"`
-    local outfile=`read_opt_value_from_line "$*" "-outfile"`
+    local baseref=`read_opt_value_from_func_args "-br" $@`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local bam=`read_opt_value_from_func_args "-bam" $@`
+    local bam_idx=`read_opt_value_from_func_args "-bam-idx" $@`
+    local contig_mapping=`read_opt_value_from_func_args "-cm" $@`
+    local fallback_genref=`read_opt_value_from_func_args "-fbr" $@`
+    local outfile=`read_opt_value_from_func_args "-outfile" $@`
 
     # Create genome reference
     local cm_opt=`get_create_genref_for_bam_cm_opt ${contig_mapping}`

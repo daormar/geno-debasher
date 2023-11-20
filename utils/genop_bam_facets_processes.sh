@@ -72,10 +72,10 @@ snp_pileup_define_opts()
 snp_pileup()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local snpvcf=`read_opt_value_from_line "$*" "-sv"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local snpvcf=`read_opt_value_from_func_args "-sv" $@`
 
     # Activate conda environment if needed
     logmsg "* Activating conda environment..."
@@ -133,11 +133,8 @@ facets_define_opts()
 facets()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-process-outd"`
-    local pileup_counts=`read_opt_value_from_line "$*" "-pileup-counts"`
-
-    # Define --snpPileupCounts option if output from snp-pileup is available
-    # snp_pìleup_opt=`get_snp_pileup_opt "${pileup_outd}"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local pileup_counts=`read_opt_value_from_func_args "-pileup-counts" $@`
 
     # Activate conda environment if needed
     logmsg "* Activating conda environment..."

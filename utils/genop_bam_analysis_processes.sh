@@ -100,11 +100,11 @@ get_callreg_opt()
 manta_germline()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local callregf=`read_opt_value_from_line "$*" "-cr"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local callregf=`read_opt_value_from_func_args "-cr" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Define --callRegions option
     call_reg_opt=`get_callreg_opt "${callregf}"`
@@ -202,12 +202,12 @@ manta_somatic_define_opts()
 manta_somatic()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local callregf=`read_opt_value_from_line "$*" "-cr"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local callregf=`read_opt_value_from_func_args "-cr" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Define --callRegions option
     call_reg_opt=`get_callreg_opt "${callregf}"`
@@ -302,12 +302,12 @@ strelka_germline_define_opts()
 strelka_germline()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local callregf=`read_opt_value_from_line "$*" "-cr"`
-    local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local callregf=`read_opt_value_from_func_args "-cr" $@`
+    local summarydir=`read_opt_value_from_func_args "-summarydir" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Define --callRegions option
     call_reg_opt=`get_callreg_opt "${callregf}"`
@@ -442,11 +442,11 @@ platypus_germline_local()
 platypus_germline()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local summarydir=`read_opt_value_from_line "$*" "-summarydir"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local summarydir=`read_opt_value_from_func_args "-summarydir" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
         platypus_germline_conda "${ref}" "${normalbam}" "${process_outd}" "${summarydir}" ${cpus}
@@ -522,12 +522,12 @@ gatk_haplotypecaller_define_opts()
 gatk_haplotypecaller()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local sample_name=`read_opt_value_from_line "$*" "-sample-name"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
-    local mem=`read_opt_value_from_line "$*" "-mem"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local sample_name=`read_opt_value_from_func_args "-sample-name" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
+    local mem=`read_opt_value_from_func_args "-mem" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -635,13 +635,13 @@ get_indel_cand_opt()
 strelka_somatic()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local manta_outd=`read_opt_value_from_line "$*" "-manta-outd"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local callregf=`read_opt_value_from_line "$*" "-cr"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local manta_outd=`read_opt_value_from_func_args "-manta-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local callregf=`read_opt_value_from_func_args "-cr" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Define --indelCandidates option if output from Manta is available
     indel_cand_opt=`get_indel_cand_opt "${manta_outd}"`
@@ -749,14 +749,14 @@ mutect2_somatic_define_opts()
 mutect2_somatic()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local norm_sample_name=`read_opt_value_from_line "$*" "-norm-sample-name"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local panel_of_normals=`read_opt_value_from_line "$*" "-panel-of-normals"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
-    local mem=`read_opt_value_from_line "$*" "-mem"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local norm_sample_name=`read_opt_value_from_func_args "-norm-sample-name" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local panel_of_normals=`read_opt_value_from_func_args "-panel-of-normals" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
+    local mem=`read_opt_value_from_func_args "-mem" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -834,11 +834,11 @@ lofreq_somatic_define_opts()
 lofreq_somatic()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -922,11 +922,11 @@ cnvkit_define_opts()
 cnvkit()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1008,11 +1008,11 @@ snp_pileup_plus_facets_define_opts()
 snp_pileup_plus_facets()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local snpvcf=`read_opt_value_from_line "$*" "-sv"`
-    local mindepth=`read_opt_value_from_line "$*" "-md"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local snpvcf=`read_opt_value_from_func_args "-sv" $@`
+    local mindepth=`read_opt_value_from_func_args "-md" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment (snp-pileup)..."
@@ -1090,8 +1090,8 @@ gen_sequenza_gcc_define_opts()
 gen_sequenza_gcc()
 {
     # Initialize variables
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local outfile=`read_opt_value_from_line "$*" "-outfile"`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local outfile=`read_opt_value_from_func_args "-outfile" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1160,10 +1160,10 @@ sequenza_define_opts()
 sequenza()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local gccont=`read_opt_value_from_line "$*" "-gcc"`
-    local npileup=`read_opt_value_from_line "$*" "-npileup"`
-    local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local gccont=`read_opt_value_from_func_args "-gcc" $@`
+    local npileup=`read_opt_value_from_func_args "-npileup" $@`
+    local tpileup=`read_opt_value_from_func_args "-tpileup" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sequenza)..."
@@ -1257,11 +1257,11 @@ parallel_bam2seqz_define_opts()
 parallel_bam2seqz()
 {
     # Initialize variables
-    local gccont=`read_opt_value_from_line "$*" "-gcc"`
-    local npileup=`read_opt_value_from_line "$*" "-npileup"`
-    local tpileup=`read_opt_value_from_line "$*" "-tpileup"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-    local outfile=`read_opt_value_from_line "$*" "-outfile"`
+    local gccont=`read_opt_value_from_func_args "-gcc" $@`
+    local npileup=`read_opt_value_from_func_args "-npileup" $@`
+    local tpileup=`read_opt_value_from_func_args "-tpileup" $@`
+    local contig=`read_opt_value_from_func_args "-contig" $@`
+    local outfile=`read_opt_value_from_func_args "-outfile" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sequenza)..."
@@ -1342,9 +1342,9 @@ seqzmerge()
 seqzmerge_plus_sequenza()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local seqzdir=`read_opt_value_from_line "$*" "-seqzdir"`
-    local clist=`read_opt_value_from_line "$*" "-lc"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local seqzdir=`read_opt_value_from_func_args "-seqzdir" $@`
+    local clist=`read_opt_value_from_func_args "-lc" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment (sequenza)..."
@@ -1437,10 +1437,10 @@ get_lumpyexpress_x_opt()
 lumpy()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local exclude=`read_opt_value_from_line "$*" "-lx"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local exclude=`read_opt_value_from_func_args "-lx" $@`
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
@@ -1523,12 +1523,12 @@ parallel_lumpy_define_opts()
 parallel_lumpy()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-    local exclude=`read_opt_value_from_line "$*" "-lx"`
-    local outfile=`read_opt_value_from_line "$*" "-outfile"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local contig=`read_opt_value_from_func_args "-contig" $@`
+    local exclude=`read_opt_value_from_func_args "-lx" $@`
+    local outfile=`read_opt_value_from_func_args "-outfile" $@`
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
@@ -1631,12 +1631,12 @@ get_smoove_exclude_opt()
 smoove()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local exclude=`read_opt_value_from_line "$*" "-lx"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local exclude=`read_opt_value_from_func_args "-lx" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1730,11 +1730,11 @@ get_delly_x_opt()
 delly()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local exclude=`read_opt_value_from_line "$*" "-dx"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local exclude=`read_opt_value_from_func_args "-dx" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment (delly)..."
@@ -1833,12 +1833,12 @@ parallel_delly_define_opts()
 parallel_delly()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-    local exclude=`read_opt_value_from_line "$*" "-dx"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local contig=`read_opt_value_from_func_args "-contig" $@`
+    local exclude=`read_opt_value_from_func_args "-dx" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment (delly)..."
@@ -1936,11 +1936,11 @@ parallel_svtyper_define_opts()
 parallel_svtyper()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local contig=`read_opt_value_from_line "$*" "-contig"`
-    local vcf=`read_opt_value_from_line "$*" "-vcf"`
-    local outfile=`read_opt_value_from_line "$*" "-outfile"`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local contig=`read_opt_value_from_func_args "-contig" $@`
+    local vcf=`read_opt_value_from_func_args "-vcf" $@`
+    local outfile=`read_opt_value_from_func_args "-outfile" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment (svtyper)..."
@@ -2018,11 +2018,11 @@ msisensor_pro_define_opts()
 msisensor_pro()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_line "$*" "-out-processdir"`
-    local ref=`read_opt_value_from_line "$*" "-r"`
-    local normalbam=`read_opt_value_from_line "$*" "-normalbam"`
-    local tumorbam=`read_opt_value_from_line "$*" "-tumorbam"`
-    local cpus=`read_opt_value_from_line "$*" "-cpus"`
+    local process_outd=`read_opt_value_from_func_args "-out-processdir" $@`
+    local ref=`read_opt_value_from_func_args "-r" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
+    local cpus=`read_opt_value_from_func_args "-cpus" $@`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."

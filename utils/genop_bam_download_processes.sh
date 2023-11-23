@@ -61,8 +61,8 @@ copy_norm_bam_define_opts()
 copy_norm_bam()
 {
     # Initialize variables
-    local local_normalbam=`read_opt_value_from_func_args "-extn" $@`
-    local out_normalbam=`read_opt_value_from_func_args "-out-nb" $@`
+    local local_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
+    local out_normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
 
     # Copy file
     logmsg "* Copying file..."
@@ -102,8 +102,8 @@ copy_tum_bam_define_opts()
 copy_tum_bam()
 {
     # Initialize variables
-    local local_tumorbam=`read_opt_value_from_func_args "-extt" $@`
-    local out_tumorbam=`read_opt_value_from_func_args "-out-tb" $@`
+    local local_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
+    local out_tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
 
     # Copy file
     logmsg "* Copying file..."
@@ -146,9 +146,9 @@ scp_norm_bam_define_opts()
 scp_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local remote_normalbam=`read_opt_value_from_func_args "-extn" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local remote_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Copy file
     logmsg "* Copying file..."
@@ -191,9 +191,9 @@ scp_tum_bam_define_opts()
 scp_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local remote_tumorbam=`read_opt_value_from_func_args "-extt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local remote_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Copy file
     logmsg "* Copying file..."
@@ -297,12 +297,12 @@ ega_download_retry()
 download_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local egaid_normalbam=`read_opt_value_from_func_args "-extn" $@`
-    local egastr=`read_opt_value_from_func_args "-egastr" $@`
-    local egacred=`read_opt_value_from_func_args "-egacred" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local egaid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
+    local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
+    local egacred=`read_opt_value_from_func_args "-egacred" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -382,12 +382,12 @@ download_ega_tum_bam_define_opts()
 download_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local egaid_tumorbam=`read_opt_value_from_func_args "-extt" $@`
-    local egastr=`read_opt_value_from_func_args "-egastr" $@`
-    local egacred=`read_opt_value_from_func_args "-egacred" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local egaid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
+    local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
+    local egacred=`read_opt_value_from_func_args "-egacred" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -496,14 +496,14 @@ download_ega_asp_norm_bam_define_opts()
 download_ega_asp_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local normalbam_file=`read_opt_value_from_func_args "-extn" $@`
-    local aspera_user=`read_opt_value_from_func_args "-asperausr" $@`
-    local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" $@`
-    local aspera_server=`read_opt_value_from_func_args "-asperaserv" $@`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
+    local aspera_user=`read_opt_value_from_func_args "-asperausr" "$@"`
+    local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" "$@"`
+    local aspera_server=`read_opt_value_from_func_args "-asperaserv" "$@"`
+    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
 
     # Download file
@@ -600,14 +600,14 @@ download_ega_asp_tum_bam_define_opts()
 download_ega_asp_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local tumorbam_file=`read_opt_value_from_func_args "-extt" $@`
-    local aspera_user=`read_opt_value_from_func_args "-asperausr" $@`
-    local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" $@`
-    local aspera_server=`read_opt_value_from_func_args "-asperaserv" $@`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
+    local aspera_user=`read_opt_value_from_func_args "-asperausr" "$@"`
+    local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" "$@"`
+    local aspera_server=`read_opt_value_from_func_args "-asperaserv" "$@"`
+    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
 
     # Download file
@@ -676,10 +676,10 @@ decrypt_ega_norm_bam_define_opts()
 decrypt_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local normalbam_file=`read_opt_value_from_func_args "-extn" $@`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
+    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
@@ -740,10 +740,10 @@ decrypt_ega_tum_bam_define_opts()
 decrypt_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local tumorbam_file=`read_opt_value_from_func_args "-extt" $@`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
+    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
@@ -804,10 +804,10 @@ decsingle_ega_norm_bam_define_opts()
 decsingle_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local normalbam_file=`read_opt_value_from_func_args "-extn" $@`
-    local decsingle_pwd=`read_opt_value_from_func_args "-ndecsinglepwd" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
+    local decsingle_pwd=`read_opt_value_from_func_args "-ndecsinglepwd" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
@@ -857,10 +857,10 @@ decsingle_ega_tum_bam_define_opts()
 decsingle_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local tumorbam_file=`read_opt_value_from_func_args "-extt" $@`
-    local decsingle_pwd=`read_opt_value_from_func_args "-tdecsinglepwd" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
+    local decsingle_pwd=`read_opt_value_from_func_args "-tdecsinglepwd" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
@@ -910,10 +910,10 @@ download_aws_norm_bam_define_opts()
 download_aws_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local icgcid_normalbam=`read_opt_value_from_func_args "-extn" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
     logmsg "* Executing score-client..."
@@ -974,10 +974,10 @@ download_aws_tum_bam_define_opts()
 download_aws_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
     logmsg "* Executing score-client..."
@@ -1038,10 +1038,10 @@ download_collab_norm_bam_define_opts()
 download_collab_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local icgcid_normalbam=`read_opt_value_from_func_args "-extn" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
     logmsg "* Executing score-client..."
@@ -1102,10 +1102,10 @@ download_collab_tum_bam_define_opts()
 download_collab_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
     logmsg "* Executing score-client..."
@@ -1192,12 +1192,12 @@ get_gdc_bamfname()
 download_gdc_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" $@`
-    local gdcid_normalbam=`read_opt_value_from_func_args "-extn" $@`
-    local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" $@`
-    local gdctok=`read_opt_value_from_func_args "-gdctok" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local gdcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
+    local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
+    local gdctok=`read_opt_value_from_func_args "-gdctok" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1279,12 +1279,12 @@ download_gdc_tum_bam_define_opts()
 download_gdc_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" $@`
-    local gdcid_tumorbam=`read_opt_value_from_func_args "-extt" $@`
-    local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" $@`
-    local gdctok=`read_opt_value_from_func_args "-gdctok" $@`
-    local download_tries=`read_opt_value_from_func_args "-nt" $@`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
+    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local gdcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
+    local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
+    local gdctok=`read_opt_value_from_func_args "-gdctok" "$@"`
+    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."

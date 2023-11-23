@@ -97,8 +97,8 @@ concat_germline_snvs_define_opts()
 concat_germline_snvs()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-process-outd" $@`
-    local summarydir=`read_opt_value_from_func_args "-summarydir" $@`
+    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local summarydir=`read_opt_value_from_func_args "-summarydir" "$@"`
 
     # Activate conda environment
     logmsg "* Activating conda environment..."

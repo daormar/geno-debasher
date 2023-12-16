@@ -392,7 +392,7 @@ process_pars()
     # Reorder contigs
     echo "* Reordering reference contigs..." >&2
     "${genopanpipe_libexecdir}"/genop_reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
-    rm "${outd}"/unordered_ref.fa || return 1
+    "${RM}" "${outd}"/unordered_ref.fa || return 1
 
     # Index created reference
     echo "* Indexing created reference..." >&2

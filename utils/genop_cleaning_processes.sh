@@ -54,7 +54,7 @@ delete_bam_files()
     local abs_datadir=`read_opt_value_from_func_args "-datadir" "$@"`
 
     # Delete bam files
-    rm -f "${abs_datadir}"/*.bam || return 1
+    "${RM}" -f "${abs_datadir}"/*.bam || return 1
 }
 
 ########
@@ -91,7 +91,7 @@ clear_datadir()
     local abs_datadir=`read_opt_value_from_func_args "-datadir" "$@"`
 
     # Delete bam files
-    rm -rf "${abs_datadir}"/* || return 1
+    "${RM}" -rf "${abs_datadir}"/* || return 1
 
     # Print README.txt file
     echo "NOTE: This directory was cleared by means of the 'clear_datadir' process" > "${abs_datadir}"/README.txt || return 1

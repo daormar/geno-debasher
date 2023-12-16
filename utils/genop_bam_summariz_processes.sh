@@ -119,7 +119,7 @@ concat_germline_snvs()
     conda deactivate 2>&1
 
     # Clean reheadered vcf files
-    rm "${summarydir}"/variant_files.list "${summarydir}"/*.${REHEADERED_VCF_EXT}
+    "${RM}" "${summarydir}"/variant_files.list "${summarydir}"/*.${REHEADERED_VCF_EXT}
 }
 
 ########

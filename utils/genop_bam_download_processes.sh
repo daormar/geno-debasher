@@ -271,7 +271,7 @@ ega_download_retry()
 
         # Remove previously downloaded file (if any)
         if [ -f "${outf}" ]; then
-            rm "${outf}"
+            "${RM}" "${outf}"
         fi
 
         # Download file
@@ -526,7 +526,7 @@ download_ega_asp_norm_bam()
     mv ${bam_file_name} "${normalbam}" || return 1
 
     # Remove encrypted file
-    rm "${process_outd}"/normal.bam.crypt || return 1
+    "${RM}" "${process_outd}"/normal.bam.crypt || return 1
 }
 
 ########
@@ -630,7 +630,7 @@ download_ega_asp_tum_bam()
     mv "${bam_file_name}" "${tumorbam}" || return 1
 
     # Remove encrypted file
-    rm "${process_outd}"/tumor.bam.crypt || return 1
+    "${RM}" "${process_outd}"/tumor.bam.crypt || return 1
 }
 
 ########

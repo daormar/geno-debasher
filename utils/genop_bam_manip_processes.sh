@@ -61,7 +61,7 @@ index_norm_bam()
 
     # Remove previous index if one was created
     if [ -f "${idx_file}" ]; then
-        rm "${idx_file}" || return 1
+        "${RM}" "${idx_file}" || return 1
     fi
 
     # Activate conda environment
@@ -118,7 +118,7 @@ index_tum_bam()
 
     # Remove previous index if one was created
     if [ -f "${idx_file}" ]; then
-        rm "${idx_file}" || return 1
+        "${RM}" "${idx_file}" || return 1
     fi
 
     # Activate conda environment
@@ -554,7 +554,7 @@ parallel_samtools_mpileup_norm_bam_reset_outdir()
 
     # Remove files
     logmsg "* Resetting output directory..."
-    rm -f "${process_outd}"/normal_${contig}.*
+    "${RM}" -f "${process_outd}"/normal_${contig}.*
 }
 
 ########
@@ -661,7 +661,7 @@ parallel_samtools_mpileup_tum_bam_reset_outdir()
 
     # Remove files
     logmsg "* Resetting output directory..."
-    rm -f "${process_outd}"/tumor_${contig}.*
+    "${RM}" -f "${process_outd}"/tumor_${contig}.*
 }
 
 ########
@@ -1189,7 +1189,7 @@ align_norm_ubam()
     bwa mem -t ${cpus} "${ref}" <("${GZIP}" -d -c "${process_outd}"/reads_r1.fastq.gz) <("${GZIP}" -d -c "${process_outd}"/reads_r2.fastq.gz) | "${GZIP}" > "${process_outd}"/aln.sam.gz ; pipe_fail || return 1
 
     # Remove fastq files
-    rm "${process_outd}"/reads_r1.fastq.gz "${process_outd}"/reads_r2.fastq.gz || return 1
+    "${RM}" "${process_outd}"/reads_r1.fastq.gz "${process_outd}"/reads_r2.fastq.gz || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1312,7 +1312,7 @@ align_tum_ubam()
     bwa mem -t ${cpus} "${ref}" <("${GZIP}" -d -c "${process_outd}"/reads_r1.fastq.gz) <("${GZIP}" -d -c "${process_outd}"/reads_r2.fastq.gz) | "${GZIP}" > "${process_outd}"/aln.sam.gz ; pipe_fail || return 1
 
     # Remove fastq files
-    rm "${process_outd}"/reads_r1.fastq.gz "${process_outd}"/reads_r2.fastq.gz || return 1
+    "${RM}" "${process_outd}"/reads_r1.fastq.gz "${process_outd}"/reads_r2.fastq.gz || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

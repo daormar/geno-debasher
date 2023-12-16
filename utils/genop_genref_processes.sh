@@ -189,8 +189,8 @@ create_genref_for_bam()
     local cm_opt=`get_create_genref_for_bam_cm_opt ${contig_mapping}`
     if "${genopanpipe_bindir}"/genop_create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${process_outd}"; then
         # Move resulting files
-        mv "${process_outd}"/genref_for_bam.fa "${outfile}"
-        mv "${process_outd}"/genref_for_bam.fa.fai "${outfile}".fai
+        "${MV}" "${process_outd}"/genref_for_bam.fa "${outfile}"
+        "${MV}" "${process_outd}"/genref_for_bam.fa.fai "${outfile}".fai
 
         # Create sequence dictionary for reference
         logmsg "* Creating sequence dictionary for reference..."

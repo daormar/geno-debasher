@@ -198,7 +198,7 @@ sort_norm_bam()
         # the "Too many open files" error reported by samtools
 
         # Replace initial bam file by the sorted one
-        mv "${process_outd}"/sorted.bam "${normalbam}" 2>&1 || return 1
+        "${MV}" "${process_outd}"/sorted.bam "${normalbam}" 2>&1 || return 1
     fi
 
     # Deactivate conda environment
@@ -270,7 +270,7 @@ sort_tum_bam()
         # the "Too many open files" error reported by samtools
 
         # Replace initial bam file by the sorted one
-        mv "${process_outd}"/sorted.bam "${tumorbam}" 2>&1 || return 1
+        "${MV}" "${process_outd}"/sorted.bam "${tumorbam}" 2>&1 || return 1
     fi
 
     # Deactivate conda environment

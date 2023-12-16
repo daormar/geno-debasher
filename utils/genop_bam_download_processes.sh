@@ -312,7 +312,7 @@ download_ega_norm_bam()
     ega_download_retry ${egastr} "${egacred}" "${egaid_normalbam}" "${process_outd}" "normal.bam" ${download_tries} || return 1
 
     # Move file
-    mv "${process_outd}"/normal.bam "${normalbam}" || return 1
+    "${MV}" "${process_outd}"/normal.bam "${normalbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -397,7 +397,7 @@ download_ega_tum_bam()
     ega_download_retry ${egastr} "${egacred}" "${egaid_tumorbam}" "${process_outd}" "tumor.bam" ${download_tries} || return 1
 
     # Move file
-    mv "${process_outd}"/tumor.bam "${tumorbam}" || return 1
+    "${MV}" "${process_outd}"/tumor.bam "${tumorbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -523,7 +523,7 @@ download_ega_asp_norm_bam()
     fi
 
     # Move file
-    mv ${bam_file_name} "${normalbam}" || return 1
+    "${MV}" ${bam_file_name} "${normalbam}" || return 1
 
     # Remove encrypted file
     "${RM}" "${process_outd}"/normal.bam.crypt || return 1
@@ -627,7 +627,7 @@ download_ega_asp_tum_bam()
     fi
 
     # Move file
-    mv "${bam_file_name}" "${tumorbam}" || return 1
+    "${MV}" "${bam_file_name}" "${tumorbam}" || return 1
 
     # Remove encrypted file
     "${RM}" "${process_outd}"/tumor.bam.crypt || return 1
@@ -694,7 +694,7 @@ decrypt_ega_norm_bam()
     fi
 
     # Move file
-    mv "${bam_file_name}" "${normalbam}" || return 1
+    "${MV}" "${bam_file_name}" "${normalbam}" || return 1
 }
 
 ########
@@ -758,7 +758,7 @@ decrypt_ega_tum_bam()
     fi
 
     # Move file
-    mv "${bam_file_name}" "${tumorbam}" || return 1
+    "${MV}" "${bam_file_name}" "${tumorbam}" || return 1
 }
 
 ########
@@ -928,7 +928,7 @@ download_aws_norm_bam()
     fi
 
     # Move file
-    mv "${bam_file_name}" "${normalbam}" || return 1
+    "${MV}" "${bam_file_name}" "${normalbam}" || return 1
 }
 
 ########
@@ -992,7 +992,7 @@ download_aws_tum_bam()
     fi
 
     # Move file
-    mv "${bam_file_name}" "${tumorbam}" || return 1
+    "${MV}" "${bam_file_name}" "${tumorbam}" || return 1
 }
 
 ########
@@ -1056,7 +1056,7 @@ download_collab_norm_bam()
     fi
 
     # Move file
-    mv "${bam_file_name}" "${normalbam}" || return 1
+    "${MV}" "${bam_file_name}" "${normalbam}" || return 1
 }
 
 ########
@@ -1120,7 +1120,7 @@ download_collab_tum_bam()
     fi
 
     # Move file
-    mv "${bam_file_name}" "${tumorbam}" || return 1
+    "${MV}" "${bam_file_name}" "${tumorbam}" || return 1
 }
 
 ########
@@ -1213,7 +1213,7 @@ download_gdc_norm_bam()
     # Move file
     local gdc_bamfname
     gdc_bamfname=`get_gdc_bamfname "${gdcid_normalbam}" "${process_outd}"` || return 1
-    mv "${gdc_bamfname}" "${normalbam}" || return 1
+    "${MV}" "${gdc_bamfname}" "${normalbam}" || return 1
 }
 
 ########
@@ -1300,7 +1300,7 @@ download_gdc_tum_bam()
     # Move file
     local gdc_bamfname
     gdc_bamfname=`get_gdc_bamfname "${gdcid_tumorbam}" "${process_outd}"` || return 1
-    mv "${gdc_bamfname}" "${tumorbam}" || return 1
+    "${MV}" "${gdc_bamfname}" "${tumorbam}" || return 1
 }
 
 ########

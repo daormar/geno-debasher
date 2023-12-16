@@ -124,7 +124,7 @@ filter_norm_bam_contigs()
     } | samtools view -bo "${process_outd}"/filtered.bam -
 
     # Move bam file
-    mv "${process_outd}"/filtered.bam "${normalbam}"
+    "${MV}" "${process_outd}"/filtered.bam "${normalbam}"
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -205,7 +205,7 @@ filter_tum_bam_contigs()
     } | samtools view -bo "${process_outd}"/filtered.bam -
 
     # Move bam file
-    mv "${process_outd}"/filtered.bam "${tumorbam}"
+    "${MV}" "${process_outd}"/filtered.bam "${tumorbam}"
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

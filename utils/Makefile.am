@@ -54,6 +54,7 @@ bam_analysis: bam_analysis.sh
 	echo "FIND=\"$(FIND)\"" >> $@
 	echo "CAT=\"$(CAT)\"" >> $@
 	echo "RM=\"$(RM_CMD)\"" >> $@
+	echo "MV=\"$(MV)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@
@@ -80,6 +81,7 @@ bam_facets: bam_facets.sh
 	echo "SED=\"$(SED)\"" >> $@
 	echo "CAT=\"$(CAT)\"" >> $@
 	echo "RM=\"$(RM_CMD)\"" >> $@
+	echo "MV=\"$(MV)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@
@@ -144,6 +146,7 @@ SUFFIXES= .sh .py .r .R
 	echo "CUT=\"$(CUT)\"" >> $@
 	echo "CAT=\"$(CAT)\"" >> $@
 	echo "RM=\"$(RM_CMD)\"" >> $@
+	echo "MV=\"$(MV)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@

@@ -53,6 +53,7 @@ bam_analysis: bam_analysis.sh
 	echo "SED=\"$(SED)\"" >> $@
 	echo "FIND=\"$(FIND)\"" >> $@
 	echo "CAT=\"$(CAT)\"" >> $@
+	echo "RM=\"$(RM_CMD)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@
@@ -77,6 +78,8 @@ bam_facets: bam_facets.sh
 	echo "AWK=\"$(AWK)\"" >> $@
 	echo "GREP=\"$(GREP)\"" >> $@
 	echo "SED=\"$(SED)\"" >> $@
+	echo "CAT=\"$(CAT)\"" >> $@
+	echo "RM=\"$(RM_CMD)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@
@@ -102,6 +105,7 @@ bam_ascat: bam_ascat.sh
 	echo "GREP=\"$(GREP)\"" >> $@
 	echo "SED=\"$(SED)\"" >> $@
 	echo "CAT=\"$(CAT)\"" >> $@
+	echo "RM=\"$(RM_CMD)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@
@@ -138,6 +142,8 @@ SUFFIXES= .sh .py .r .R
 	echo "DIRNAME=\"$(DIRNAME)\"" >> $@
 	echo "SPLIT=\"$(SPLIT)\"" >> $@
 	echo "CUT=\"$(CUT)\"" >> $@
+	echo "CAT=\"$(CAT)\"" >> $@
+	echo "RM=\"$(RM_CMD)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@

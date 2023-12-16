@@ -108,6 +108,7 @@ bam_ascat: bam_ascat.sh
 	echo "SED=\"$(SED)\"" >> $@
 	echo "CAT=\"$(CAT)\"" >> $@
 	echo "RM=\"$(RM_CMD)\"" >> $@
+	echo "MV=\"$(MV)\"" >> $@
 	echo "ZCAT=\"$(ZCAT)\"" >> $@
 	echo "GZIP=\"$(GZIP)\"" >> $@
 	echo "BASENAME=\"$(BASENAME)\"" >> $@

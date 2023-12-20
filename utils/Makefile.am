@@ -44,6 +44,7 @@ bam_analysis: bam_analysis.sh
 	rm -f $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
 	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
+	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -72,6 +73,7 @@ bam_facets: bam_facets.sh
 	rm -f $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
 	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
+	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -99,6 +101,7 @@ bam_ascat: bam_ascat.sh
 	rm -f $@
 	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
 	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
+	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
 	echo "PASTE=\"$(PASTE)\"" >> $@
@@ -134,6 +137,7 @@ SUFFIXES= .sh .py .r .R
 	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "genopanpipe_datadir=\"$(datadir)/$(PACKAGE_NAME)\"" >> $@
 	echo "BASH=\"$(BASH)\"" >> $@
+	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "AWK=\"$(AWK)\"" >> $@
 	echo "SORT=\"$(SORT)\"" >> $@
 	echo "sortpars=\"$(sortpars)\"" >> $@

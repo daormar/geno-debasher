@@ -2,7 +2,7 @@
 
 load_panpipe_module "genop_bam_analysis"
 
-genop_copy_harmoniz_pipeline()
+genop_copy_harmoniz_program()
 {
     add_panpipe_process "copy_norm_bam"         "cpus=1  mem=2048 time=48:00:00"
     add_panpipe_process "copy_tum_bam"          "cpus=1  mem=2048 time=48:00:00"

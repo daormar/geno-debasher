@@ -1,4 +1,4 @@
-pplfilesdir = $(datadir)/$(PACKAGE)/programs
+pplfilesdir = $(datadir)/$(PACKAGE)/debasher_programs
 pplfiles_DATA= genop_nodownload_basic.sh genop_nodownload_extended.sh	\
 genop_nodownload_xgs.sh genop_ega_basic.sh genop_ega_asp_basic.sh	\
 genop_aws_basic.sh genop_collab_basic.sh genop_ega_asp_extended.sh	\

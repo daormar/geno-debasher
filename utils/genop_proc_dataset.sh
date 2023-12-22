@@ -31,17 +31,17 @@ usage()
 {
     echo "genop_proc_dataset    --pfile <string> --outdir <string>"
     echo "                      --sched <string> --metadata <string>"
-    echo "                      [--dflt-nodes <string>] --ppl-opts <string>"
+    echo "                      [--dflt-nodes <string>] --prg-opts <string>"
     echo "                      [--lcxx <string> --lcxy <string>]"
     echo "                      [--local-bams] [--help]"
     echo ""
-    echo "--pfile <string>      File with pipeline processes to be performed"
+    echo "--pfile <string>      File with program to be executed"
     echo "--outdir <string>     Output directory"
-    echo "--sched <string>      Scheduler used to execute the pipelines"
+    echo "--sched <string>      Scheduler used to execute the programs"
     echo "--metadata <string>   File with metadata, one entry per line."
     echo "                      Format: ID PHENOTYPE GENDER ; ID PHENOTYPE GENDER"
-    echo "--dflt-nodes <string> Default set of nodes used to execute the pipeline"
-    echo "--ppl-opts <string>   File containing a string with pipeline options"
+    echo "--dflt-nodes <string> Default set of nodes used to execute the program"
+    echo "--prg-opts <string>   File containing a string with program options"
     echo "--lcxx <string>       File containing list of contigs of interest for XX samples"
     echo "--lcxy <string>       File containing list of contigs of interest for XY samples"
     echo "--local-bams          ID's for bam files contained in metadata are considered"
@@ -57,7 +57,7 @@ read_pars()
     sched_given=0
     metadata_given=0
     dflt_nodes_given=0
-    ppl_opts_given=0
+    prg_opts_given=0
     lcxx_given=0
     lcxy_given=0
     local_bams_given=0
@@ -96,10 +96,10 @@ read_pars()
                       dflt_nodes_given=1
                   fi
                   ;;
-            "--ppl-opts") shift
+            "--prg-opts") shift
                   if [ $# -ne 0 ]; then
-                      ppl_opts=$1
-                      ppl_opts_given=1
+                      prg_opts=$1
+                      prg_opts_given=1
                   fi
                   ;;
             "--lcxx") shift
@@ -162,14 +162,14 @@ check_pars()
         fi
     fi
 
-    if [ ${ppl_opts_given} -eq 0 ]; then
-        echo "Error, --ppl-opts option should be given" >&2
+    if [ ${prg_opts_given} -eq 0 ]; then
+        echo "Error, --prg-opts option should be given" >&2
         exit 1
     fi
 
-    if [ ${ppl_opts_given} -eq 1 ]; then
-        if [ ! -f "${ppl_opts}" ]; then
-            echo "Error! file ${ppl_opts} does not exist" >&2
+    if [ ${prg_opts_given} -eq 1 ]; then
+        if [ ! -f "${prg_opts}" ]; then
+            echo "Error! file ${prg_opts} does not exist" >&2
             exit 1
         fi
     fi
@@ -214,8 +214,8 @@ absolutize_file_paths()
         metadata=`get_absolute_path "${metadata}"`
     fi
 
-    if [ ${ppl_opts_given} -eq 1 ]; then
-        ppl_opts=`get_absolute_path "${ppl_opts}"`
+    if [ ${prg_opts_given} -eq 1 ]; then
+        prg_opts=`get_absolute_path "${prg_opts}"`
     fi
 }
 
@@ -242,8 +242,8 @@ print_pars()
         echo "--dflt-nodes is ${dflt_nodes}" >&2
     fi
 
-    if [ ${ppl_opts_given} -eq 1 ]; then
-        echo "--ppl-opts is ${ppl_opts}" >&2
+    if [ ${prg_opts_given} -eq 1 ]; then
+        echo "--prg-opts is ${prg_opts}" >&2
     fi
 }
 
@@ -342,9 +342,9 @@ get_outd_name()
 }
 
 ########
-get_ppl_opts_str()
+get_prg_opts_str()
 {
-    cat "${ppl_opts}"
+    cat "${prg_opts}"
 }
 
 ########
@@ -385,7 +385,7 @@ esc_dq()
 process_pars()
 {
     # Set options
-    ppl_opts_str=`get_ppl_opts_str`
+    prg_opts_str=`get_prg_opts_str`
 
     # Get pipe_exec path
     local pipe_exec_path
@@ -432,8 +432,8 @@ process_pars()
                 topt="-extt"
             fi
 
-            # Print command to execute pipeline
-            normalize_cmd "\"$(esc_dq "${panpipe_exec_path}")\" --pfile \"$(esc_dq "${pfile}")\" --outdir \"$(esc_dq "${outd}/${analysis_outd}")\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"$(esc_dq "${normal_id}")\" ${topt} \"$(esc_dq "${tumor_id}")\" -g ${gender_opt} ${lc_opt} ${ppl_opts_str}"
+            # Print command to execute program
+            normalize_cmd "\"$(esc_dq "${panpipe_exec_path}")\" --pfile \"$(esc_dq "${pfile}")\" --outdir \"$(esc_dq "${outd}/${analysis_outd}")\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"$(esc_dq "${normal_id}")\" ${topt} \"$(esc_dq "${tumor_id}")\" -g ${gender_opt} ${lc_opt} ${prg_opts_str}"
         else
             echo "Error in entry number ${entry_num}"
         fi

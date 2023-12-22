@@ -1,1 +1,1 @@
-SUBDIRS= programs conda_envs
+SUBDIRS= debasher_programs conda_envs

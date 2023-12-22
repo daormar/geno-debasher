@@ -2,18 +2,18 @@
 
 load_panpipe_module "genop_bam_analysis"
 
-genop_ega_asp_extended_pipeline()
+genop_gdc_extended_program()
 {
-    add_panpipe_process "download_ega_asp_norm_bam" "cpus=1  mem=2048    time=24:00:00" "processdeps=none"
-    add_panpipe_process "download_ega_asp_tum_bam"  "cpus=1  mem=2048    time=24:00:00" "processdeps=none"
-    add_panpipe_process "index_norm_bam"            "cpus=1  mem=1024    time=4:00:00"  "processdeps=afterok:download_ega_asp_norm_bam"
-    add_panpipe_process "index_tum_bam"             "cpus=1  mem=1024    time=4:00:00"  "processdeps=afterok:download_ega_asp_tum_bam"
+    add_panpipe_process "download_gdc_norm_bam"     "cpus=1  mem=4096    time=24:00:00" "processdeps=none"
+    add_panpipe_process "download_gdc_tum_bam"      "cpus=1  mem=4096    time=24:00:00" "processdeps=none"
+    add_panpipe_process "index_norm_bam"            "cpus=1  mem=1024    time=4:00:00"  "processdeps=afterok:download_gdc_norm_bam"
+    add_panpipe_process "index_tum_bam"             "cpus=1  mem=1024    time=4:00:00"  "processdeps=afterok:download_gdc_tum_bam"
     add_panpipe_process "create_genref_for_bam"     "cpus=1  mem=8G      time=4:00:00"  "processdeps=afterok:index_norm_bam"
     add_panpipe_process "parallel_split_norm_bam"   "cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16" "processdeps=afterok:index_norm_bam"
     add_panpipe_process "parallel_split_tum_bam"    "cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16" "processdeps=afterok:index_tum_bam"
     add_panpipe_process "parallel_samtools_mpileup_norm_bam" "cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24" "processdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_norm_bam"
     add_panpipe_process "parallel_samtools_mpileup_tum_bam"  "cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24" "processdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_tum_bam"
-    add_panpipe_process "gen_sequenza_gcc"          "cpus=1  mem=1G      time=01:00:00 processdeps=afterok:create_genref_for_bam"
+    add_panpipe_process "gen_sequenza_gcc"          "cpus=1  mem=1G      time=01:00:00" "processdeps=afterok:create_genref_for_bam"
     add_panpipe_process "parallel_bam2seqz"         "cpus=1  mem=2G      time=5:00:00  throttle=16" "processdeps=afterok:gen_sequenza_gcc,aftercorr:parallel_samtools_mpileup_norm_bam,aftercorr:parallel_samtools_mpileup_tum_bam"
     add_panpipe_process "seqzmerge_plus_sequenza"   "cpus=1  mem=10G     time=5:00:00,10:00:00"  "processdeps=afterok:parallel_bam2seqz"
     add_panpipe_process "parallel_delly"            "cpus=1  mem=10G,30G time=5:00:00  throttle=16" "processdeps=afterok:create_genref_for_bam,aftercorr:parallel_split_norm_bam,aftercorr:parallel_split_tum_bam"

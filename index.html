@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Geno-PanPipe Package for Detection of Germline and Somatic Variants</title>
+    <title>Geno-DeBasher Package for Detection of Germline and Somatic Variants</title>
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <!-- begin TOC stuff -->
@@ -24,26 +24,26 @@
   <body>
     <div class="wrapper">
       <header>
-        <!-- <p style="text-align:center;">  <IMG SRC="images/my_logo_bio_panpipe.jpg" Alt="Geno-PanPipe package for detection of germline and somatic variants" WIDTH=125> </p> -->
-        <p> <font size="4">Geno-PanPipe package</font></p>
+        <!-- <p style="text-align:center;">  <IMG SRC="images/my_logo_bio_debasher.jpg" Alt="Geno-DeBasher package for detection of germline and somatic variants" WIDTH=125> </p> -->
+        <p> <font size="4">Geno-DeBasher package</font></p>
         <div id="toc"></div>
-        <p class="view"><a href="https://github.com/daormar/geno-panpipe">View the Project on GitHub <small>daormar/geno-panpipe</small></a></p>
+        <p class="view"><a href="https://github.com/daormar/geno-debasher">View the Project on GitHub <small>daormar/geno-debasher</small></a></p>
 
       </header>
       <section>
-        <p style="font-size:28px; font-weight:bold; color:black">Geno-PanPipe Package for Genomic Variant Calling</p>
+        <p style="font-size:28px; font-weight:bold; color:black">Geno-DeBasher Package for Genomic Variant Calling</p>
 
 <h2>
 <a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
-<p>Geno-PanPipe is a software package designed to execute bioinformatics
-pipelines, with a particular focus on genome variant calling. Pipelines
-are implemented as modules that can be executed by means of
-the <a href="https://daormar.github.io/panpipe/">PanPipe Workflow
-Manager</a>. Geno-PanPipe also provides some utilities useful to automate
-experiments on complete datasets.</p>
+<p>Geno-DeBasher is a software package designed to execute
+bioinformatics pipelines, with a particular focus on genome variant
+calling. Pipelines are implemented as modules that can be executed by
+means of the <a href="https://daormar.github.io/debasher/">DeBasher
+flow-based programming Bash extension</a>. Geno-DeBasher also provides
+some utilities useful to automate experiments on complete datasets.</p>
 
-<p>The Geno-PanPipe package was created and is currently maintained
+<p>The Geno-DeBasher package was created and is currently maintained
 by <a href="http://daormar.github.io/">Daniel Ortiz-Martínez</a>.
 Daniel is an experienced machine learning researcher and also holds
 an MSc degree in Bioinformatics.</p>
@@ -77,7 +77,7 @@ an MSc degree in Bioinformatics.</p>
 <h2>
 <a id="distribution-details" class="anchor" href="#distribution-details" aria-hidden="true"><span class="octicon octicon-link"></span></a>Distribution Details</h2>
 
-<p>Geno-PanPipe has been coded using shell-scripting. Geno-PanPipe is
+<p>Geno-DeBasher has been coded using shell-scripting. Geno-DeBasher is
 known to compile on Unix-like and Windows (using Cygwin) systems. See
 the "Documentation and Support" section of these instructions if you
 experience problems during compilation.</p>
@@ -90,21 +90,21 @@ experience problems during compilation.</p>
 <h4>
 <a id="basic-installation-procedure" class="anchor" href="#basic-installation-procedure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Installation Procedure</h4>
 
-<p>To install Geno-PanPipe, first you need to install the autotools
+<p>To install Geno-DeBasher, first you need to install the autotools
 (autoconf, autoconf-archive, automake and libtool packages in
-Ubuntu). If you are planning to use Geno-PanPipe on a Windows platform,
+Ubuntu). If you are planning to use Geno-DeBasher on a Windows platform,
 you also need to install
 the <a href="https://www.cygwin.com/">Cygwin</a>
 environment. Alternatively, the tool can also be installed on Mac OS X
 systems using <a href="https://www.macports.org/">MacPorts</a>.</p>
 
-<p>Pipeline modules provided by Geno-PanPipe are designed to be executed
-by the <a href="https://daormar.github.io/panpipe/">PanPipe workflow
-manager</a>. Therefore, PanPipe and all of its requirements should also
-be installed before installing Geno-PanPipe.</p>
+<p>Pipeline modules provided by Geno-DeBasher are designed to be executed
+by the <a href="https://daormar.github.io/debasher/">DeBasher workflow
+manager</a>. Therefore, DeBasher and all of its requirements should also
+be installed before installing Geno-DeBasher.</p>
 
 <p>On the other hand, some of the functionality incorporated by
-Geno-PanPipe requires the previous installation of third-party software
+Geno-DeBasher requires the previous installation of third-party software
 (<a href="#third-party-software">see below</a>).</p>
 
 <p>Once the autotools are available (as well as other required software
@@ -115,16 +115,16 @@ the tool by following the next sequence of steps:</p>
 <li>
 <p>Obtain the package using git:</p>
 
-<pre><code>$ git clone https://github.com/daormar/geno-panpipe.git
+<pre><code>$ git clone https://github.com/daormar/geno-debasher.git
 </code></pre>
 
-<p>Or <a href="https://github.com/daormar/geno-panpipe/archive/master.zip">download it in a zip file</a></p>
+<p>Or <a href="https://github.com/daormar/geno-debasher/archive/master.zip">download it in a zip file</a></p>
 </li>
 <li><p><code>cd</code> to the directory containing the package's source code and type
 <code>./reconf</code>.</p></li>
-<li><p>Type <code>./configure --with-panpipe=&ltDIR&gt</code> to configure
+<li><p>Type <code>./configure --with-debasher=&ltDIR&gt</code> to configure
 the package (where <code>&ltDIR&gt</code> is the build directory of the
-PanPipe package).</p></li>
+DeBasher package).</p></li>
 <li><p>Type <code>make</code> to compile the package.</p></li>
 <li><p>Type <code>make install</code> to install the programs and any data files and
 documentation.</p></li>
@@ -137,21 +137,21 @@ similar, depending on the OS you use); however, since Step 5 requires
 root privileges, another directory can be specified during Step 3 by
 typing:</p>
 
-<pre><code> $ configure --with-panpipe=&ltDIR&gt --prefix=&lt;absolute-installation-path&gt;
+<pre><code> $ configure --with-debasher=&ltDIR&gt --prefix=&lt;absolute-installation-path&gt;
 </code></pre>
 
-<p>For example, if "user1" wants to install the Geno-PanPipe package in
-the directory /home/user1/geno-panpipe, the sequence of commands to
+<p>For example, if "user1" wants to install the Geno-DeBasher package in
+the directory /home/user1/geno-debasher, the sequence of commands to
 execute should be the following:</p>
 
 <pre><code> $ ./reconf
- $ configure --prefix=/home/user1/geno-panpipe
+ $ configure --prefix=/home/user1/geno-debasher
  $ make
  $ make install
 </code></pre>
 
 <p>The installation directory can be the same directory where the
-Geno-PanPipe package was decompressed.</p>
+Geno-DeBasher package was decompressed.</p>
 
 <!-- <h4 id="checking-package-installation">Checking Package Installation</h4> -->
 
@@ -171,17 +171,17 @@ Geno-PanPipe package was decompressed.</p>
 <h4>
 <a id="alternative-installation-options" class="anchor" href="#alternative-installation-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Alternative Installation Options</h4>
 
-<p>The Geno-PanPipe configure script can be used to modify the toolkit
+<p>The Geno-DeBasher configure script can be used to modify the toolkit
 behavior. Here is a list of current installation options:</p>
 
 <ul>
-<li> <b><code>--with-icgcscor=&ltDIR&gt</code></b>: allows Geno-PanPipe
+<li> <b><code>--with-icgcscor=&ltDIR&gt</code></b>: allows Geno-DeBasher
 to use the ICGC score client. The ICGC score client can be used to
 interact with cloud repositories.</li>
 <li> <b><code>--with-aspera=&ltDIR&gt</code></b>: enables use of the
 Aspera commercial file transfer protocol to download <code>bam</code>
 files.</li>
-<li> <b><code>--with-egadecrypt=&ltDIR&gt</code></b>: allows Geno-PanPipe
+<li> <b><code>--with-egadecrypt=&ltDIR&gt</code></b>: allows Geno-DeBasher
 to access decryption functionality provided by the EGACryptor
 client.</li>
 </ul>
@@ -203,19 +203,19 @@ link</a>.</p>
 <p><a href="https://asperasoft.com/">ASPERA Connect</a> is a file
 transfer protocol that may provide faster transfer speeds with respect
 to the standard FTP protocol. The ASPERA download client can be used by
-Geno-PanPipe to download <code>bam</code> files. The client can be
+Geno-DeBasher to download <code>bam</code> files. The client can be
 downloaded <a href="https://downloads.asperasoft.com/downloads">here</a>.</p>
 
 <h5>EGA Decryptor</h5>
 <p><a href="https://ega-archive.org/submission/tools/egacryptor">EGACryptor</a>
 is a JAVA based client providing encryption and decryption
-functionality. It is used by Geno-PanPipe to decrypt information
+functionality. It is used by Geno-DeBasher to decrypt information
 downloaded from EGA repositories.</p>
 
 <h2>
 <a id="current-status" class="anchor" href="#current-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current Status</h2>
 
-<p> The Geno-PanPipe package is under development. Basic usage
+<p> The Geno-DeBasher package is under development. Basic usage
   instructions are being added.
   
 <!-- <p>Finally, here is a list of known issues with the Thot toolkit that are -->
@@ -249,14 +249,14 @@ downloaded from EGA repositories.</p>
 <ul>
 <li>These instructions.</li>
 <li>A set
-of <a href="http://daormar.github.io/geno-panpipe/docsupport/slides.pdf">slides</a>
+of <a href="http://daormar.github.io/geno-debasher/docsupport/slides.pdf">slides</a>
 ("slides.pdf" under the "doc" directory).</li>
 </ul>
 
 <p>If you need additional help, you can:</p>
 
 <ul>
-<li>use the <a href="https://github.com/daormar/geno-panpipe/issues">github issue tracker</a>.
+<li>use the <a href="https://github.com/daormar/geno-debasher/issues">github issue tracker</a>.
 </li>
 <li><a href="mailto:daniel.ortiz.phd@gmail.com">send an e-mail to the author</a>.</li>
 </li>

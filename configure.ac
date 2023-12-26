@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([geno-panpipe],[1.0],[daniel.ortiz@ub.edu])
+AC_INIT([geno-debasher],[1.0],[daniel.ortiz@ub.edu])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 dnl AC_CONFIG_HEADERS([config.h])
@@ -433,21 +433,21 @@ AC_COMPILE_IFELSE(
 # Checks for doxygen
 AC_PATH_PROG(DOXYGEN,doxygen)
 
-# Adds an extra argument to configure (enable use of Panpipe)
-AC_MSG_CHECKING(whether to enable panpipe library)
-AC_ARG_WITH([panpipe],
- [AS_HELP_STRING([--with-panpipe=DIR],
-   [installs the package with the necessary code to combine it with the panpipe library @<:@default=no@:>@])],
- [with_panpipe=$withval],
- [with_panpipe=""])
-if test "$with_panpipe" = ""; then
- enable_panpipe_lib="no"
+# Adds an extra argument to configure (enable use of DeBasher)
+AC_MSG_CHECKING(whether to enable debasher library)
+AC_ARG_WITH([debasher],
+ [AS_HELP_STRING([--with-debasher=DIR],
+   [installs the package with the necessary code to combine it with the debasher library @<:@default=no@:>@])],
+ [with_debasher=$withval],
+ [with_debasher=""])
+if test "$with_debasher" = ""; then
+ enable_debasher_lib="no"
  AC_MSG_RESULT(no)
 else
- enable_panpipe_lib="yes"
+ enable_debasher_lib="yes"
  AC_MSG_RESULT(yes)
 fi
-AC_SUBST(PANPIPE_HOME_DIR,$with_panpipe)
+AC_SUBST(DEBASHER_HOME_DIR,$with_debasher)
 
 # Adds an extra argument to configure (enable use of Platypus)
 AC_MSG_CHECKING(whether to enable platypus library)

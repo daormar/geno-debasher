@@ -1,4 +1,4 @@
-# Geno-PanPipe package
+# Geno-DeBasher package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${genopanpipe_libexecdir}"/genop_bam_common_lib || exit 1
+. "${genodebasher_libexecdir}"/genop_bam_common_lib || exit 1
 
 #################################
 # SNP-PILEUP + FACETS PROCESSES #
@@ -145,7 +145,7 @@ facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript "${genopanpipe_libexecdir}"/genop_run_facets -c "${pileup_counts}" -o "${process_outd}" 2>&1 || exit 1
+    Rscript "${genodebasher_libexecdir}"/genop_run_facets -c "${pileup_counts}" -o "${process_outd}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."

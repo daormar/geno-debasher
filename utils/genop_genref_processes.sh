@@ -1,4 +1,4 @@
-# Geno-PanPipe package
+# Geno-DeBasher package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -187,7 +187,7 @@ create_genref_for_bam()
 
     # Create genome reference
     local cm_opt=`get_create_genref_for_bam_cm_opt ${contig_mapping}`
-    if "${genopanpipe_bindir}"/genop_create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${process_outd}"; then
+    if "${genodebasher_bindir}"/genop_create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${process_outd}"; then
         # Move resulting files
         "${MV}" "${process_outd}"/genref_for_bam.fa "${outfile}"
         "${MV}" "${process_outd}"/genref_for_bam.fa.fai "${outfile}".fai

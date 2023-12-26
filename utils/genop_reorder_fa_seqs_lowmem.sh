@@ -1,4 +1,4 @@
-# Geno-PanPipe package
+# Geno-DeBasher package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -90,7 +90,7 @@ process_pars()
 {
     while read seqname; do
 
-        "${genopanpipe_libexecdir}"/genop_filter_contig_from_genref -g "${fasta}" -k ${seqname}
+        "${genodebasher_libexecdir}"/genop_filter_contig_from_genref -g "${fasta}" -k ${seqname}
 
     done < "$listseq"
 }

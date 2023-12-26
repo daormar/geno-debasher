@@ -39,11 +39,11 @@ genop_convert_allele_counts.R genop_run_ascat.R				\
 genop_get_two_elem_combs.py genop_filter_nondiscordant_pheno_entries.py	\
 genop_reorder_fa_seqs.py genop_reorder_fa_seqs_lowmem.sh
 
-# Build rules for PanPipe modules
+# Build rules for Debasher modules
 bam_analysis: bam_analysis.sh
 	rm -f $@
-	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
-	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
+	echo "genodebasher_bindir=\"$(bindir)\"" >> $@
+	echo "genodebasher_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
@@ -71,8 +71,8 @@ bam_analysis: bam_analysis.sh
 
 bam_facets: bam_facets.sh
 	rm -f $@
-	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
-	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
+	echo "genodebasher_bindir=\"$(bindir)\"" >> $@
+	echo "genodebasher_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
@@ -99,8 +99,8 @@ bam_facets: bam_facets.sh
 
 bam_ascat: bam_ascat.sh
 	rm -f $@
-	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
-	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
+	echo "genodebasher_bindir=\"$(bindir)\"" >> $@
+	echo "genodebasher_libexecdir=\"$(libexecdir)\"" >> $@
 	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "HEAD=\"$(HEAD)\"" >> $@
 	echo "TAIL=\"$(TAIL)\"" >> $@
@@ -131,11 +131,11 @@ SUFFIXES= .sh .py .r .R
 .sh :
 	rm -f $@
 	echo "#! " $(BASH) > $@
-	echo "genopanpipe_pkgname=\"$(PACKAGE_NAME)\"" >> $@
-	echo "genopanpipe_version=\"$(PACKAGE_VERSION)\"" >> $@
-	echo "genopanpipe_bindir=\"$(bindir)\"" >> $@
-	echo "genopanpipe_libexecdir=\"$(libexecdir)\"" >> $@
-	echo "genopanpipe_datadir=\"$(datadir)/$(PACKAGE_NAME)\"" >> $@
+	echo "genodebasher_pkgname=\"$(PACKAGE_NAME)\"" >> $@
+	echo "genodebasher_version=\"$(PACKAGE_VERSION)\"" >> $@
+	echo "genodebasher_bindir=\"$(bindir)\"" >> $@
+	echo "genodebasher_libexecdir=\"$(libexecdir)\"" >> $@
+	echo "genodebasher_datadir=\"$(datadir)/$(PACKAGE_NAME)\"" >> $@
 	echo "BASH=\"$(BASH)\"" >> $@
 	echo "ECHO=\"$(ECHO)\"" >> $@
 	echo "AWK=\"$(AWK)\"" >> $@
@@ -168,7 +168,7 @@ SUFFIXES= .sh .py .r .R
 	echo "PYTHON=\"$(PYTHON)\"" >> $@
 	echo "RSCRIPT=\"$(RSCRIPT)\"" >> $@
 	echo "JAVA=\"$(JAVA)\"" >> $@
-	echo "PANPIPE_HOME_DIR=\"$(PANPIPE_HOME_DIR)\"" >> $@
+	echo "DEBASHER_HOME_DIR=\"$(DEBASHER_HOME_DIR)\"" >> $@
 	echo "PLATYPUS_HOME_DIR=\"$(PLATYPUS_HOME_DIR)\"" >> $@
 	echo "LUMPY_HOME_DIR=\"$(LUMPY_HOME_DIR)\"" >> $@
 	echo "ICGCSCOR_HOME_DIR=\"$(ICGCSCOR_HOME_DIR)\"" >> $@

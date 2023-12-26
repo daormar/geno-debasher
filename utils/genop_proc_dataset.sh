@@ -1,4 +1,4 @@
-# Geno-PanPipe package
+# Geno-DeBasher package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${PANPIPE_HOME_DIR}"/panpipe_lib || exit 1
+. "${DEBASHER_HOME_DIR}"/debasher_lib || exit 1
 
 ########
 print_desc()
@@ -389,7 +389,7 @@ process_pars()
 
     # Get pipe_exec path
     local pipe_exec_path
-    panpipe_exec_path=`get_panpipe_exec_path`
+    debasher_exec_path=`get_debasher_exec_path`
 
     # Read metadata file
     entry_num=1
@@ -433,7 +433,7 @@ process_pars()
             fi
 
             # Print command to execute program
-            normalize_cmd "\"$(esc_dq "${panpipe_exec_path}")\" --pfile \"$(esc_dq "${pfile}")\" --outdir \"$(esc_dq "${outd}/${analysis_outd}")\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"$(esc_dq "${normal_id}")\" ${topt} \"$(esc_dq "${tumor_id}")\" -g ${gender_opt} ${lc_opt} ${prg_opts_str}"
+            normalize_cmd "\"$(esc_dq "${debasher_exec_path}")\" --pfile \"$(esc_dq "${pfile}")\" --outdir \"$(esc_dq "${outd}/${analysis_outd}")\" --sched ${sched} ${dflt_nodes_opt} ${nopt} \"$(esc_dq "${normal_id}")\" ${topt} \"$(esc_dq "${tumor_id}")\" -g ${gender_opt} ${lc_opt} ${prg_opts_str}"
         else
             echo "Error in entry number ${entry_num}"
         fi

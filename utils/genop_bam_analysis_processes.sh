@@ -1,4 +1,4 @@
-# Geno-PanPipe package
+# Geno-DeBasher package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -1035,7 +1035,7 @@ snp_pileup_plus_facets()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing facets..."
-    Rscript "${genopanpipe_libexecdir}"/genop_run_facets -c "${process_outd}"/snp-pileup-counts.csv -d ${mindepth} -o "${process_outd}" 2>&1 || return 1
+    Rscript "${genodebasher_libexecdir}"/genop_run_facets -c "${process_outd}"/snp-pileup-counts.csv -d ${mindepth} -o "${process_outd}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1178,7 +1178,7 @@ sequenza()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing sequenza..."
-    Rscript "${genopanpipe_bindir}"/run_sequenza -s "${process_outd}"/seqz.gz -o "${process_outd}" 2>&1 || return 1
+    Rscript "${genodebasher_bindir}"/run_sequenza -s "${process_outd}"/seqz.gz -o "${process_outd}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1362,7 +1362,7 @@ seqzmerge_plus_sequenza()
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
     logmsg "* Executing sequenza..."
-    Rscript "${genopanpipe_bindir}"/run_sequenza -s "${process_outd}"/merged_seqz.gz -o "${process_outd}" 2>&1 || return 1
+    Rscript "${genodebasher_bindir}"/run_sequenza -s "${process_outd}"/merged_seqz.gz -o "${process_outd}" 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

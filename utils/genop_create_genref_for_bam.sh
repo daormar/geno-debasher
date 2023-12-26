@@ -1,4 +1,4 @@
-# Geno-PanPipe package
+# Geno-DeBasher package
 # Copyright (C) 2019,2020 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${PANPIPE_HOME_DIR}"/panpipe_lib || exit 1
+. "${DEBASHER_HOME_DIR}"/debasher_lib || exit 1
 
 ########
 print_desc()
@@ -341,7 +341,7 @@ get_contigs()
                 cat "${mapping}" || return 1
             else
                 echo "Getting data for contig ${contig} with length ${contiglen} (mapped to accession $mapping)..." >&2
-                "${genopanpipe_libexecdir}"/genop_get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
+                "${genodebasher_libexecdir}"/genop_get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
             fi
         fi
     done < "${contiglist}"
@@ -379,7 +379,7 @@ process_pars()
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    "${genopanpipe_libexecdir}"/genop_filter_contig_from_genref -g "$baseref" -l "${outd}/refcontigs_to_keep" > "${outd}"/unordered_ref.fa || return 1
+    "${genodebasher_libexecdir}"/genop_filter_contig_from_genref -g "$baseref" -l "${outd}/refcontigs_to_keep" > "${outd}"/unordered_ref.fa || return 1
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
@@ -391,7 +391,7 @@ process_pars()
 
     # Reorder contigs
     echo "* Reordering reference contigs..." >&2
-    "${genopanpipe_libexecdir}"/genop_reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
+    "${genodebasher_libexecdir}"/genop_reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
     "${RM}" "${outd}"/unordered_ref.fa || return 1
 
     # Index created reference

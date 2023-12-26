@@ -1,26 +1,26 @@
 # *- bash -*
 
-load_panpipe_module "genop_bam_analysis"
+load_debasher_module "genop_bam_analysis"
 
 genop_copy_harmoniz_program()
 {
-    add_panpipe_process "copy_norm_bam"         "cpus=1  mem=2048 time=48:00:00"
-    add_panpipe_process "copy_tum_bam"          "cpus=1  mem=2048 time=48:00:00"
-    add_panpipe_process "norm_bam_to_ubam"      "cpus=1  mem=4096 time=48:00:00"
-    add_panpipe_process "align_norm_ubam"       "cpus=6  mem=8192 time=48:00:00"
-    add_panpipe_process "tum_bam_to_ubam"       "cpus=1  mem=4096 time=48:00:00"
-    add_panpipe_process "align_tum_ubam"        "cpus=6  mem=8192 time=48:00:00"
-    add_panpipe_process "index_norm_bam"        "cpus=1  mem=1024 time=48:00:00"
-    add_panpipe_process "index_tum_bam"         "cpus=1  mem=1024 time=48:00:00"
-    add_panpipe_process "strelka_germline"      "cpus=4  mem=6G   time=48:00:00"
-    add_panpipe_process "platypus_germline"     "cpus=1  mem=4096 time=48:00:00"
-    add_panpipe_process "gatk_haplotypecaller"  "cpus=4  mem=4096 time=48:00:00"
-    add_panpipe_process "manta_somatic"         "cpus=2  mem=4096 time=48:00:00"
-    add_panpipe_process "strelka_somatic"       "cpus=4  mem=6G   time=48:00:00"
-    add_panpipe_process "mutect2_somatic"       "cpus=4  mem=8G   time=48:00:00"
-    add_panpipe_process "lofreq_somatic"        "cpus=4  mem=4096 time=48:00:00"
-    add_panpipe_process "msisensor_pro"         "cpus=2  mem=4096 time=48:00:00"
-    add_panpipe_process "concat_germline_snvs"  "cpus=1  mem=2048 time=48:00:00"
+    add_debasher_process "copy_norm_bam"         "cpus=1  mem=2048 time=48:00:00"
+    add_debasher_process "copy_tum_bam"          "cpus=1  mem=2048 time=48:00:00"
+    add_debasher_process "norm_bam_to_ubam"      "cpus=1  mem=4096 time=48:00:00"
+    add_debasher_process "align_norm_ubam"       "cpus=6  mem=8192 time=48:00:00"
+    add_debasher_process "tum_bam_to_ubam"       "cpus=1  mem=4096 time=48:00:00"
+    add_debasher_process "align_tum_ubam"        "cpus=6  mem=8192 time=48:00:00"
+    add_debasher_process "index_norm_bam"        "cpus=1  mem=1024 time=48:00:00"
+    add_debasher_process "index_tum_bam"         "cpus=1  mem=1024 time=48:00:00"
+    add_debasher_process "strelka_germline"      "cpus=4  mem=6G   time=48:00:00"
+    add_debasher_process "platypus_germline"     "cpus=1  mem=4096 time=48:00:00"
+    add_debasher_process "gatk_haplotypecaller"  "cpus=4  mem=4096 time=48:00:00"
+    add_debasher_process "manta_somatic"         "cpus=2  mem=4096 time=48:00:00"
+    add_debasher_process "strelka_somatic"       "cpus=4  mem=6G   time=48:00:00"
+    add_debasher_process "mutect2_somatic"       "cpus=4  mem=8G   time=48:00:00"
+    add_debasher_process "lofreq_somatic"        "cpus=4  mem=4096 time=48:00:00"
+    add_debasher_process "msisensor_pro"         "cpus=2  mem=4096 time=48:00:00"
+    add_debasher_process "concat_germline_snvs"  "cpus=1  mem=2048 time=48:00:00"
 }
 
 copy_norm_bam_define_opts()

@@ -1,43 +1,45 @@
-bin_SCRIPTS= genop_bam_analysis genop_proc_dataset genop_filter_vcf	\
-genop_gen_bed_for_genome genop_check_ref_and_bam_contigs		\
-genop_get_bam_contigs genop_convert_snppos_to_snpgcc			\
-genop_create_snv_pos_ascat genop_query_ega_metadata			\
-genop_query_icgc_metadata genop_download_gdc_metadata			\
-genop_query_gdc_metadata genop_create_genref_for_bam			\
-genop_map_vcf_contnames genop_get_two_elem_combs			\
-genop_filter_nondiscordant_pheno_entries
+bin_SCRIPTS= genodb_bam_analysis genodb_proc_dataset genodb_filter_vcf	\
+genodb_gen_bed_for_genome genodb_check_ref_and_bam_contigs		\
+genodb_get_bam_contigs genodb_convert_snppos_to_snpgcc			\
+genodb_create_snv_pos_ascat genodb_query_ega_metadata			\
+genodb_query_icgc_metadata genodb_download_gdc_metadata			\
+genodb_query_gdc_metadata genodb_create_genref_for_bam			\
+genodb_map_vcf_contnames genodb_get_two_elem_combs			\
+genodb_filter_nondiscordant_pheno_entries
 
-libexec_SCRIPTS= genop_genref_processes genop_bam_common_lib		\
-genop_bam_download_processes genop_bam_manip_processes			\
-genop_cleaning_processes genop_bam_analysis_processes			\
-genop_bam_summariz_processes genop_bam_filter_processes			\
-genop_bam_facets_processes genop_bam_ascat_processes genop_run_facets	\
-genop_run_sequenza genop_run_ascat genop_file_shuffle			\
-genop_get_entrez_fasta genop_get_filtered_sam_align			\
-genop_get_filtered_sam_header genop_reorder_fa_seqs			\
-genop_reorder_fa_seqs_lowmem genop_convert_allele_counts		\
-genop_map_contnames genop_filter_contig_from_genref
+libexec_SCRIPTS= genodb_genref_processes genodb_bam_common_lib	\
+genodb_bam_download_processes genodb_bam_manip_processes	\
+genodb_cleaning_processes genodb_bam_analysis_processes		\
+genodb_bam_summariz_processes genodb_bam_filter_processes	\
+genodb_bam_facets_processes genodb_bam_ascat_processes		\
+genodb_run_facets genodb_run_sequenza genodb_run_ascat		\
+genodb_file_shuffle genodb_get_entrez_fasta			\
+genodb_get_filtered_sam_align genodb_get_filtered_sam_header	\
+genodb_reorder_fa_seqs genodb_reorder_fa_seqs_lowmem		\
+genodb_convert_allele_counts genodb_map_contnames		\
+genodb_filter_contig_from_genref
 
 CLEANFILES = $(bin_SCRIPTS) $(libexec_SCRIPTS)
 
-EXTRA_DIST = genop_bam_common_lib.sh genop_genref_processes.sh		\
-genop_bam_download_processes.sh genop_bam_manip_processes.sh		\
-genop_cleaning_processes.sh genop_bam_analysis_processes.sh		\
-genop_bam_summariz_processes.sh genop_bam_analysis.sh			\
-genop_bam_filter_processes.sh genop_bam_facets_processes.sh		\
-genop_bam_ascat_processes.sh genop_proc_dataset.sh			\
-genop_file_shuffle.sh genop_filter_vcf.py genop_gen_bed_for_genome.sh	\
-genop_check_ref_and_bam_contigs.sh genop_get_bam_contigs.sh		\
-genop_get_entrez_fasta.py genop_convert_snppos_to_snpgcc.sh		\
-genop_create_snv_pos_ascat.py genop_query_ega_metadata.py		\
-genop_download_gdc_metadata.sh genop_query_gdc_metadata.py		\
-genop_query_icgc_metadata.py genop_create_genref_for_bam.sh		\
-genop_filter_contig_from_genref.py genop_get_filtered_sam_header.py	\
-genop_get_filtered_sam_align.py genop_map_contnames.py			\
-genop_map_vcf_contnames.py genop_run_facets.R genop_run_sequenza.R	\
-genop_convert_allele_counts.R genop_run_ascat.R				\
-genop_get_two_elem_combs.py genop_filter_nondiscordant_pheno_entries.py	\
-genop_reorder_fa_seqs.py genop_reorder_fa_seqs_lowmem.sh
+EXTRA_DIST = genodb_bam_common_lib.sh genodb_genref_processes.sh	\
+genodb_bam_download_processes.sh genodb_bam_manip_processes.sh		\
+genodb_cleaning_processes.sh genodb_bam_analysis_processes.sh		\
+genodb_bam_summariz_processes.sh genodb_bam_analysis.sh			\
+genodb_bam_filter_processes.sh genodb_bam_facets_processes.sh		\
+genodb_bam_ascat_processes.sh genodb_proc_dataset.sh			\
+genodb_file_shuffle.sh genodb_filter_vcf.py				\
+genodb_gen_bed_for_genome.sh genodb_check_ref_and_bam_contigs.sh	\
+genodb_get_bam_contigs.sh genodb_get_entrez_fasta.py			\
+genodb_convert_snppos_to_snpgcc.sh genodb_create_snv_pos_ascat.py	\
+genodb_query_ega_metadata.py genodb_download_gdc_metadata.sh		\
+genodb_query_gdc_metadata.py genodb_query_icgc_metadata.py		\
+genodb_create_genref_for_bam.sh genodb_filter_contig_from_genref.py	\
+genodb_get_filtered_sam_header.py genodb_get_filtered_sam_align.py	\
+genodb_map_contnames.py genodb_map_vcf_contnames.py genodb_run_facets.R	\
+genodb_run_sequenza.R genodb_convert_allele_counts.R genodb_run_ascat.R	\
+genodb_get_two_elem_combs.py						\
+genodb_filter_nondiscordant_pheno_entries.py genodb_reorder_fa_seqs.py	\
+genodb_reorder_fa_seqs_lowmem.sh
 
 # Build rules for Debasher modules
 bam_analysis: bam_analysis.sh

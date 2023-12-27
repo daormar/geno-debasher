@@ -1,8 +1,8 @@
 # *- bash -*
 
-load_debasher_module "genop_bam_analysis"
+load_debasher_module "genodb_bam_analysis"
 
-genop_nodownload_xgs_program()
+genodb_nodownload_xgs_program()
 {
     add_debasher_process "create_genref_for_bam"       "cpus=1  mem=8G      time=4:00:00"  "processdeps=none"
     add_debasher_process "bedtools_genomecov_norm_bam" "cpus=1  mem=1024    time=4:00:00"  "processdeps=none"

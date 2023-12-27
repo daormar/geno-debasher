@@ -1,8 +1,8 @@
 # *- bash -*
 
-load_debasher_module "genop_bam_analysis"
+load_debasher_module "genodb_bam_analysis"
 
-genop_ega_basic_program()
+genodb_ega_basic_program()
 {
     add_debasher_process "download_ega_norm_bam" "cpus=1  mem=2048 time=48:00:00" "processdeps=none"
     add_debasher_process "download_ega_tum_bam"  "cpus=1  mem=2048 time=48:00:00" "processdeps=none"

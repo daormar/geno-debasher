@@ -99,7 +99,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("genop_query_icgc_metadata -d <string> -a <string> -t <string> -f <int> [-v]", file=sys.stderr)
+    print("genodb_query_icgc_metadata -d <string> -a <string> -t <string> -f <int> [-v]", file=sys.stderr)
     print("", file=sys.stderr)
     print("-d <string>    File with donor information", file=sys.stderr)
     print("-a <string>    File with aws manifest", file=sys.stderr)

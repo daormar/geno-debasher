@@ -17,14 +17,14 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${genodebasher_libexecdir}"/genop_bam_common_lib || exit 1
+. "${genodebasher_libexecdir}"/genodb_bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #
 #################
 
 ########
-genop_bam_analysis_shared_dirs()
+genodb_bam_analysis_shared_dirs()
 {
     define_shared_dir "${DATADIR_BASENAME}"
     define_shared_dir "${SPLITDIR_BASENAME}"
@@ -33,9 +33,9 @@ genop_bam_analysis_shared_dirs()
 }
 
 # INCLUDE BASH FILES IMPLEMENTING PROCESSES
-. "${genodebasher_libexecdir}"/genop_genref_processes || exit 1
-. "${genodebasher_libexecdir}"/genop_bam_download_processes || exit 1
-. "${genodebasher_libexecdir}"/genop_bam_manip_processes || exit 1
-. "${genodebasher_libexecdir}"/genop_bam_analysis_processes || exit 1
-. "${genodebasher_libexecdir}"/genop_bam_summariz_processes || exit 1
-. "${genodebasher_libexecdir}"/genop_cleaning_processes || exit 1
+. "${genodebasher_libexecdir}"/genodb_genref_processes || exit 1
+. "${genodebasher_libexecdir}"/genodb_bam_download_processes || exit 1
+. "${genodebasher_libexecdir}"/genodb_bam_manip_processes || exit 1
+. "${genodebasher_libexecdir}"/genodb_bam_analysis_processes || exit 1
+. "${genodebasher_libexecdir}"/genodb_bam_summariz_processes || exit 1
+. "${genodebasher_libexecdir}"/genodb_cleaning_processes || exit 1

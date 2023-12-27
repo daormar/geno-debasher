@@ -18,7 +18,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${genodebasher_libexecdir}"/genop_bam_common_lib || exit 1
+. "${genodebasher_libexecdir}"/genodb_bam_common_lib || exit 1
 
 ###################
 # ASCAT PROCESSES #
@@ -54,7 +54,7 @@ preproc_allelecounter_locis()
     if [ "${contig_mapping}" = ${NOFILE} ]; then
         remove_snp_ids_from_locis "${locis}"
     else
-        remove_snp_ids_from_locis "${locis}" | "${genodebasher_libexecdir}"/genop_map_contnames -m "${contig_mapping}" -c 0
+        remove_snp_ids_from_locis "${locis}" | "${genodebasher_libexecdir}"/genodb_map_contnames -m "${contig_mapping}" -c 0
     fi
 }
 
@@ -67,7 +67,7 @@ postproc_allelecounter_output()
     if [ "${contig_mapping}" = ${NOFILE} ]; then
         cat "${allelecounterfile}"
     else
-        "${genodebasher_libexecdir}"/genop_map_contnames -m "${contig_mapping}" -f "${allelecounterfile}" -c 0 --invert
+        "${genodebasher_libexecdir}"/genodb_map_contnames -m "${contig_mapping}" -f "${allelecounterfile}" -c 0 --invert
     fi
 }
 
@@ -356,7 +356,7 @@ ascat()
 
     # Convert allele counts
     logmsg "* Executing convert_allele_counts..."
-    Rscript "${genodebasher_libexecdir}"/genop_convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${process_outd}" || exit 1
+    Rscript "${genodebasher_libexecdir}"/genodb_convert_allele_counts "tumor" "${allelecountertumor}" "normal" "${allelecounternormal}" ${gender} "${process_outd}" || exit 1
 
     # Add SNP ids information to convert_allele_counts output
     logmsg "* Add SNP ids information to convert_allele_counts output..."
@@ -367,7 +367,7 @@ ascat()
 
     # Run ascat
     logmsg "* Executing ascat..."
-    Rscript "${genodebasher_libexecdir}"/genop_run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
+    Rscript "${genodebasher_libexecdir}"/genodb_run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."

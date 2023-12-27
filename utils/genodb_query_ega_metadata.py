@@ -111,7 +111,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("genop_query_ega_metadata -s <string> -a <string> -t <string> -f <int>", file=sys.stderr)
+    print("genodb_query_ega_metadata -s <string> -a <string> -t <string> -f <int>", file=sys.stderr)
     print("               [-p <string>] [-v]", file=sys.stderr)
     print("", file=sys.stderr)
     print("-s <string>    File with sample information", file=sys.stderr)

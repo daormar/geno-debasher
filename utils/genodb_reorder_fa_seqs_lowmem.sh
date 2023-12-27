@@ -19,14 +19,14 @@
 ########
 print_desc()
 {
-    echo "genop_reorder_fa_seqs_lowmem reorder sequences in fasta file"
-    echo "type \"genop_reorder_fa_seqs_lowmem --help\" to get usage information"
+    echo "genodb_reorder_fa_seqs_lowmem reorder sequences in fasta file"
+    echo "type \"genodb_reorder_fa_seqs_lowmem --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "genop_reorder_fa_seqs_lowmem -f <string> -l <string>"
+    echo "genodb_reorder_fa_seqs_lowmem -f <string> -l <string>"
     echo "                           [--help]"
     echo ""
     echo "-f <string>                Fasta file"
@@ -90,7 +90,7 @@ process_pars()
 {
     while read seqname; do
 
-        "${genodebasher_libexecdir}"/genop_filter_contig_from_genref -g "${fasta}" -k ${seqname}
+        "${genodebasher_libexecdir}"/genodb_filter_contig_from_genref -g "${fasta}" -k ${seqname}
 
     done < "$listseq"
 }

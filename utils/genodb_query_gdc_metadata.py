@@ -67,7 +67,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("genop_query_gdc_metadata -m <string> -f <int>", file=sys.stderr)
+    print("genodb_query_gdc_metadata -m <string> -f <int>", file=sys.stderr)
     print("               [-v]", file=sys.stderr)
     print("", file=sys.stderr)
     print("-m <string>    File with metadata information", file=sys.stderr)

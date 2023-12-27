@@ -22,15 +22,15 @@
 ########
 print_desc()
 {
-    echo "genop_create_genref_for_bam creates genome reference specific for bam file"
-    echo "type \"genop_create_genref_for_bam --help\" to get usage information"
+    echo "genodb_create_genref_for_bam creates genome reference specific for bam file"
+    echo "type \"genodb_create_genref_for_bam --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "genop_create_genref_for_bam  -r <string> -b <string> [-cm <string>]"
-    echo "                       -o <string> [--help]"
+    echo "genodb_create_genref_for_bam -r <string> -b <string> [-cm <string>]"
+    echo "                             -o <string> [--help]"
     echo ""
     echo "-r <string>            File with base reference genome"
     echo "-b <string>            bam file"
@@ -341,7 +341,7 @@ get_contigs()
                 cat "${mapping}" || return 1
             else
                 echo "Getting data for contig ${contig} with length ${contiglen} (mapped to accession $mapping)..." >&2
-                "${genodebasher_libexecdir}"/genop_get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
+                "${genodebasher_libexecdir}"/genodb_get_entrez_fasta -a "${mapping}" | replace_contig_name "${mapping}" ${contig}; pipe_fail || return 1
             fi
         fi
     done < "${contiglist}"
@@ -379,7 +379,7 @@ process_pars()
 
     # Copy base genome reference without extra contigs
     echo "* Copying base genome reference without extra contigs..." >&2
-    "${genodebasher_libexecdir}"/genop_filter_contig_from_genref -g "$baseref" -l "${outd}/refcontigs_to_keep" > "${outd}"/unordered_ref.fa || return 1
+    "${genodebasher_libexecdir}"/genodb_filter_contig_from_genref -g "$baseref" -l "${outd}/refcontigs_to_keep" > "${outd}"/unordered_ref.fa || return 1
 
     # Obtain list of missing contigs
     echo "* Obtaining list of missing contigs..." >&2
@@ -391,7 +391,7 @@ process_pars()
 
     # Reorder contigs
     echo "* Reordering reference contigs..." >&2
-    "${genodebasher_libexecdir}"/genop_reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
+    "${genodebasher_libexecdir}"/genodb_reorder_fa_seqs -f "${outd}"/unordered_ref.fa -l "${outd}"/bamcontigs > "$outfile" || { echo "Error during contig reordering" >&2; return 1; }
     "${RM}" "${outd}"/unordered_ref.fa || return 1
 
     # Index created reference

@@ -19,14 +19,14 @@
 ########
 print_desc()
 {
-    echo "genop_get_bam_contigs gets list of contigs contained in bam file"
-    echo "type \"genop_get_bam_contigs --help\" to get usage information"
+    echo "genodb_get_bam_contigs gets list of contigs contained in bam file"
+    echo "type \"genodb_get_bam_contigs --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "genop_get_bam_contigs  -b <string> [--help]"
+    echo "genodb_get_bam_contigs -b <string> [--help]"
     echo ""
     echo "-b <string>      bam file"
     echo "--help           Display this help and exit"

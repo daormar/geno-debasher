@@ -82,7 +82,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("genop_filter_contig_from_genref -g <string> {-r <string> | -k <string> | -l <string>}", file=sys.stderr)
+    print("genodb_filter_contig_from_genref -g <string> {-r <string> | -k <string> | -l <string>}", file=sys.stderr)
     print("", file=sys.stderr)
     print("-g <string>    File with genome reference", file=sys.stderr)
     print("-r <string>    Name of contig to remove", file=sys.stderr)

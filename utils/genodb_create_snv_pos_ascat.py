@@ -74,7 +74,7 @@ def check_pars(flags, values):
 
 ##################################################
 def print_help():
-    print("genop_create_snv_pos_ascat -m <float> -g <int> -v <string> -l <string>", file=sys.stderr)
+    print("genodb_create_snv_pos_ascat -m <float> -g <int> -v <string> -l <string>", file=sys.stderr)
     print("", file=sys.stderr)
     print("-m <float>     MAF value", file=sys.stderr)
     print("-g <int>       GAP value", file=sys.stderr)

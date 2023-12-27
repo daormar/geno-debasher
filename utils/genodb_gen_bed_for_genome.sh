@@ -19,15 +19,15 @@
 ########
 print_desc()
 {
-    echo "genop_gen_bed_for_genome generates bed file for whole genome"
-    echo "type \"genop_gen_bed_for_genome --help\" to get usage information"
+    echo "genodb_gen_bed_for_genome generates bed file for whole genome"
+    echo "type \"genodb_gen_bed_for_genome --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "genop_gen_bed_for_genome -r <string> -o <string>"
-    echo "                     [--help]"
+    echo "genodb_gen_bed_for_genome -r <string> -o <string>"
+    echo "                          [--help]"
     echo ""
     echo "-r <string>          File with reference genome"
     echo "-o <string>          Prefix of output files"

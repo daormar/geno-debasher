@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${genodebasher_libexecdir}"/genop_bam_common_lib || exit 1
+. "${genodebasher_libexecdir}"/genodb_bam_common_lib || exit 1
 
 ########################
 # BAM FILTER PROCESSES #
@@ -111,7 +111,7 @@ filter_norm_bam_contigs()
     samtools view -H "${normalbam}" > "${process_outd}"/original_header || exit 1
 
     ## Generate new sam header
-    "${genodebasher_libexecdir}"/genop_get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
+    "${genodebasher_libexecdir}"/genodb_get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
 
     # Generate filtered bam
     {
@@ -120,7 +120,7 @@ filter_norm_bam_contigs()
 
         # Print contig information
         contigs=`get_contigs_from_header "${process_outd}"/new_header`
-        samtools view "${normalbam}" "${contigs}" | "${genodebasher_libexecdir}"/genop_get_filtered_sam_align -l "${process_outd}"/refcontigs
+        samtools view "${normalbam}" "${contigs}" | "${genodebasher_libexecdir}"/genodb_get_filtered_sam_align -l "${process_outd}"/refcontigs
     } | samtools view -bo "${process_outd}"/filtered.bam -
 
     # Move bam file
@@ -192,7 +192,7 @@ filter_tum_bam_contigs()
     samtools view -H "${tumorbam}" > "${process_outd}"/original_header || exit 1
 
     ## Generate new sam header
-    "${genodebasher_libexecdir}"/genop_get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
+    "${genodebasher_libexecdir}"/genodb_get_filtered_sam_header -h "${process_outd}"/original_header -l "${process_outd}"/refcontigs > "${process_outd}"/new_header || exit 1
 
     # Generate filtered bam
     {

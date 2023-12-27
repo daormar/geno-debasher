@@ -19,15 +19,15 @@
 ########
 print_desc()
 {
-    echo "genop_convert_snppos_to_snpgcc converts snp positions file to gc correction file"
-    echo "type \"genop_convert_snppos_to_snpgcc --help\" to get usage information"
+    echo "genodb_convert_snppos_to_snpgcc converts snp positions file to gc correction file"
+    echo "type \"genodb_convert_snppos_to_snpgcc --help\" to get usage information"
 }
 
 ########
 usage()
 {
-    echo "genop_convert_snppos_to_snpgcc   -r <string> -s <string> -o <string>"
-    echo "                           [--help]"
+    echo "genodb_convert_snppos_to_snpgcc -r <string> -s <string> -o <string>"
+    echo "                                [--help]"
     echo ""
     echo "-r <string>                File with reference genome"
     echo "-s <string>                SNP positions file"

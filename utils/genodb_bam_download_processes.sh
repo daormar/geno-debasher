@@ -247,7 +247,7 @@ download_ega_norm_bam_define_opts()
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -297,7 +297,7 @@ ega_download_retry()
 download_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local egaid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
     local egacred=`read_opt_value_from_func_args "-egacred" "$@"`
@@ -372,7 +372,7 @@ download_ega_tum_bam_define_opts()
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -382,7 +382,7 @@ download_ega_tum_bam_define_opts()
 download_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local egaid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
     local egacred=`read_opt_value_from_func_args "-egacred" "$@"`

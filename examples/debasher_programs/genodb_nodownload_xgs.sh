@@ -10,7 +10,7 @@ genodb_nodownload_xgs_program()
     add_debasher_process "strelka_germline"            "cpus=8  mem=6G      time=6:00:00,12:00:00"  "processdeps=afterok:create_genref_for_bam"
     add_debasher_process "manta_somatic"               "cpus=8  mem=8G      time=8:00:00,16:00:00"  "processdeps=afterok:create_genref_for_bam"
     add_debasher_process "strelka_somatic"             "cpus=8  mem=6G      time=8:00:00,16:00:00"  "processdeps=afterok:create_genref_for_bam,afterok:manta_somatic"
-    add_debasher_process "msisensor"                   "cpus=2  mem=8G      time=8:00:00,24:00:00"  "processdeps=afterok:create_genref_for_bam"
+    add_debasher_process "msisensor_pro"               "cpus=2  mem=8G      time=8:00:00,24:00:00"  "processdeps=afterok:create_genref_for_bam"
     add_debasher_process "snp_pileup_plus_facets"      "cpus=1  mem=8G      time=8:00:00,24:00:00"  "processdeps=afterok:create_genref_for_bam"
     add_debasher_process "platypus_germline"           "cpus=1  mem=4096    time=8:00:00,16:00:00"  "processdeps=afterok:create_genref_for_bam"
 }

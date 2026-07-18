@@ -319,7 +319,7 @@ samtools_mpileup_norm_bam_define_opts()
 
     # -normalbam option
     local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || return 1
+    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # -mpb option
@@ -411,7 +411,7 @@ samtools_mpileup_tum_bam_define_opts()
 
     # -tumorbam option
     local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || return 1
+    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -mpb option
@@ -697,7 +697,7 @@ parallel_split_norm_bam_define_opts()
 
     # -normalbam option
     local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || return 1
+    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # Get name of contig list file
@@ -774,7 +774,7 @@ parallel_split_tum_bam_define_opts()
 
     # -tumorbam option
     local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || return 1
+    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # Get name of contig list file
@@ -847,7 +847,7 @@ bedtools_genomecov_norm_bam_define_opts()
 
     # -normalbam option
     local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || return 1
+    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # Save option list
@@ -903,7 +903,7 @@ bedtools_genomecov_tum_bam_define_opts()
 
     # -tumorbam option
     local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || return 1
+    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # Save option list

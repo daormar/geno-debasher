@@ -111,7 +111,7 @@ allele_counter_norm_define_opts()
 
     # -normalbam option
     local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # -ma option
@@ -202,7 +202,7 @@ allele_counter_tumor_define_opts()
 
     # -tumorbam option
     local normalbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # -ma option

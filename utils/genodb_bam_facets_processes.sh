@@ -56,12 +56,12 @@ snp_pileup_define_opts()
 
     # -normalbam option
     local normalbam
-    normalbam=`get_normal_bam_filename "$cmdline"` || exit 1
+    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || exit 1
     define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # -tumorbam option
     local tumorbam
-    tumorbam=`get_tumor_bam_filename "$cmdline"` || exit 1
+    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # Save option list

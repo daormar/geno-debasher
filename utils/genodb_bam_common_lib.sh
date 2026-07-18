@@ -31,7 +31,7 @@ GENODB_BAM_COMMON_SUMMARY_FILE_EXT="sum"
 #############
 
 ########
-get_normal_bam_filename()
+genodb_bam_common::get_normal_bam_filename()
 {
     local cmdline=$1
     local given=0
@@ -51,7 +51,7 @@ get_normal_bam_filename()
 }
 
 ########
-get_tumor_bam_filename()
+genodb_bam_common::get_tumor_bam_filename()
 {
     local cmdline=$1
     local given=0
@@ -71,7 +71,7 @@ get_tumor_bam_filename()
 }
 
 ########
-create_summary_file()
+genodb_bam_common::create_summary_file()
 {
     # Initialize variables
     summarydir=$1
@@ -83,7 +83,7 @@ create_summary_file()
 }
 
 ########
-slurm_to_java_mem_spec()
+genodb_bam_common::slurm_to_java_mem_spec()
 {
     local mem=$1
     echo "${mem}" | "${AWK}" '{if(substr($1,length($1),1) ~ /^[0-9]/) printf"%sM",$1; else printf"%s",$1}'

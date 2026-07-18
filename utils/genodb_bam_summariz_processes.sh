@@ -84,7 +84,7 @@ concat_germline_snvs_define_opts()
     define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # Get germline snvs summary directory
-    local abs_sumdir=`get_absolute_shdirname ${GERM_SNVS_SUM_DIR_BASENAME}`
+    local abs_sumdir=`get_absolute_shdirname ${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}`
 
     # -summarydir option
     define_opt "-summarydir" "${abs_sumdir}" optlist || return 1
@@ -106,7 +106,7 @@ concat_germline_snvs()
 
     # Reheader vcfs
     logmsg "* Reheadering list of vcfs..."
-    reheader_vcf_list "${summarydir}" ${SUMMARY_FILE_EXT} ${GERMLINE_NORMAL_SAMPLE_NAME} || return 1
+    reheader_vcf_list "${summarydir}" ${GENODB_BAM_COMMON_SUMMARY_FILE_EXT} ${GERMLINE_NORMAL_SAMPLE_NAME} || return 1
 
     # Generate list file
     generate_vcf_list "${summarydir}" ${REHEADERED_VCF_EXT} > ${summarydir}/variant_files.list || return 1

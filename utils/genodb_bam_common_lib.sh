@@ -20,11 +20,11 @@
 # CONSTANTS #
 #############
 
-DATADIR_BASENAME="data"
-SPLITDIR_BASENAME="split"
-SUMMARYDIR_BASENAME="summary"
-GERM_SNVS_SUM_DIR_BASENAME="summary/germline_snvs"
-SUMMARY_FILE_EXT="sum"
+GENODB_BAM_COMMON_DATADIR_BASENAME="data"
+GENODB_BAM_COMMON_SPLITDIR_BASENAME="split"
+GENODB_BAM_COMMON_SUMMARYDIR_BASENAME="summary"
+GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME="summary/germline_snvs"
+GENODB_BAM_COMMON_SUMMARY_FILE_EXT="sum"
 
 #############
 # FUNCTIONS #
@@ -44,7 +44,7 @@ get_normal_bam_filename()
     else
         # Check -extn option
         check_opt_given "$cmdline" "-extn" || { errmsg "-n or -extn option should be given" ; return 1; }
-        local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+        local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
         normalbam="${abs_datadir}"/normal.bam
         echo "$normalbam"
     fi
@@ -64,7 +64,7 @@ get_tumor_bam_filename()
     else
         # Check -extt option
         check_opt_given "$cmdline" "-extt" || { errmsg "-t or -extt option should be given" ; return 1; }
-        local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+        local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
         tumorbam="${abs_datadir}"/tumor.bam
         echo "$tumorbam"
     fi
@@ -79,7 +79,7 @@ create_summary_file()
     vcf=$3
 
     # Create file
-    echo "$vcf" > "${summarydir}/${label}.${SUMMARY_FILE_EXT}"
+    echo "$vcf" > "${summarydir}/${label}.${GENODB_BAM_COMMON_SUMMARY_FILE_EXT}"
 }
 
 ########

@@ -39,7 +39,7 @@ delete_bam_files_define_opts()
     define_opt "-process-outd" ${process_outd} optlist || return 1
 
     # -datadir option
-    abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     define_opt "-datadir" "${abs_datadir}" optlist || return 1
 
     # Save option list
@@ -76,7 +76,7 @@ clear_datadir_define_opts()
     define_opt "-process-outd" "${process_outd}" optlist || return 1
 
     # -datadir option
-    abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    abs_datadir=`get_absolute_shdirname ${GENODB_BAM_COMMON_DATADIR_BASENAME}`
     define_opt "-datadir" "${abs_datadir}" optlist || return 1
 
     # Save option list

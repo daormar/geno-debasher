@@ -284,7 +284,7 @@ strelka_germline_define_opts()
     define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || return 1
 
     # Get germline snvs summary directory
-    local abs_sumdir=`get_absolute_shdirname ${GERM_SNVS_SUM_DIR_BASENAME}`
+    local abs_sumdir=`get_absolute_shdirname ${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}`
 
     # -summarydir option
     define_opt "-summarydir" "${abs_sumdir}" optlist || return 1
@@ -376,7 +376,7 @@ platypus_germline_define_opts()
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # Get germline snvs summary directory
-    local abs_sumdir=`get_absolute_shdirname "${GERM_SNVS_SUM_DIR_BASENAME}"`
+    local abs_sumdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}"`
 
     # -summarydir option
     define_opt "-summarydir" "${abs_sumdir}" optlist || return 1
@@ -1077,7 +1077,7 @@ gen_sequenza_gcc_define_opts()
     define_opt "-r" "$genref" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -outfile option
     define_opt "-outfile" "${abs_datadir}"/sequenza_gccfile.txt.gz optlist || return 1
@@ -1134,7 +1134,7 @@ sequenza_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -gcc option
     local gccfile
@@ -1217,7 +1217,7 @@ parallel_bam2seqz_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -gcc option
     local gccfile
@@ -1493,7 +1493,7 @@ parallel_lumpy_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${SPLITDIR_BASENAME}"`
+    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
     # -lx option
     define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || return 1
@@ -1800,7 +1800,7 @@ parallel_delly_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${SPLITDIR_BASENAME}"`
+    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
     # -r option
     local genref

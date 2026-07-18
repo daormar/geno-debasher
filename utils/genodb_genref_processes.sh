@@ -73,7 +73,7 @@ get_bam_filename()
 
     # Check -extn option
     if check_opt_given "$cmdline" "-extn"; then
-        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+        local abs_datadir=`get_absolute_shdirname ${GENODB_BAM_COMMON_DATADIR_BASENAME}`
         normalbam="${abs_datadir}"/normal.bam
         echo "$normalbam"
         return 0
@@ -90,7 +90,7 @@ get_bam_filename()
 
     # Check -extt option
     if check_opt_given "$cmdline" "-extt"; then
-        local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+        local abs_datadir=`get_absolute_shdirname ${GENODB_BAM_COMMON_DATADIR_BASENAME}`
         tumorbam="${abs_datadir}"/tumor.bam
         echo "$tumorbam"
         return 0
@@ -132,7 +132,7 @@ create_genref_for_bam_define_opts()
     define_cmdline_infile_nonmand_opt "$cmdline" "-fbr" ${NOFILE} optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -outfile option
     define_opt "-outfile" "${abs_datadir}"/genref.fa optlist || return 1
@@ -259,7 +259,7 @@ get_ref_filename()
     else
         # Check -br option
         if check_opt_given "$cmdline" "-br"; then
-            local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+            local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
             ref="${abs_datadir}"/genref.fa
             echo "$ref"
             return 0

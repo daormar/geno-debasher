@@ -49,7 +49,7 @@ filter_norm_bam_contigs_define_opts()
     define_opt "-r" "$genref" optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname ${DATADIR_BASENAME}`
+    local abs_datadir=`get_absolute_shdirname ${GENODB_BAM_COMMON_DATADIR_BASENAME}`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || exit 1
 
@@ -163,7 +163,7 @@ filter_tum_bam_contigs_define_opts()
     define_opt "-r" "$genref" optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 

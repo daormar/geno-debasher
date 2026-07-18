@@ -49,7 +49,7 @@ copy_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -90,7 +90,7 @@ copy_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -134,7 +134,7 @@ scp_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -179,7 +179,7 @@ scp_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -245,7 +245,7 @@ download_ega_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -370,7 +370,7 @@ download_ega_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -484,7 +484,7 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -588,7 +588,7 @@ download_ega_asp_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -664,7 +664,7 @@ decrypt_ega_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -728,7 +728,7 @@ decrypt_ega_tum_bam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -792,7 +792,7 @@ decsingle_ega_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-ndecsinglepwd" optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -845,7 +845,7 @@ decsingle_ega_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-tdecsinglepwd" optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -898,7 +898,7 @@ download_aws_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -962,7 +962,7 @@ download_aws_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -1026,7 +1026,7 @@ download_collab_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -1090,7 +1090,7 @@ download_collab_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -1168,7 +1168,7 @@ download_gdc_norm_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -1267,7 +1267,7 @@ download_gdc_tum_bam_define_opts()
     define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 

@@ -16,9 +16,6 @@
 
 # *- bash -*
 
-# INCLUDE BASH LIBRARY
-. "${genodebasher_libexecdir}"/genodb_bam_common_lib || exit 1
-
 #################################
 # SNP-PILEUP + FACETS PROCESSES #
 #################################

@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${genodebasher_libexecdir}"/genodb_bam_common_lib || exit 1
+. "${genodebasher_pkglibdir}"/genodb_bam_common_lib || exit 1
 
 #################
 # CFG FUNCTIONS #
@@ -33,9 +33,14 @@ genodb_bam_analysis_shared_dirs()
 }
 
 # INCLUDE BASH FILES IMPLEMENTING PROCESSES
-. "${genodebasher_libexecdir}"/genodb_genref_processes || exit 1
-. "${genodebasher_libexecdir}"/genodb_bam_download_processes || exit 1
-. "${genodebasher_libexecdir}"/genodb_bam_manip_processes || exit 1
-. "${genodebasher_libexecdir}"/genodb_bam_analysis_processes || exit 1
-. "${genodebasher_libexecdir}"/genodb_bam_summariz_processes || exit 1
-. "${genodebasher_libexecdir}"/genodb_cleaning_processes || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_genref_processes.sh || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_bam_download_processes.sh || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_bam_manip_processes.sh || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_bam_filter_processes.sh || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_bam_analysis_processes.sh || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_bam_summariz_processes.sh || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_cleaning_processes.sh || exit 1
+
+# EXTRA FILES
+. "${genodebasher_debasher_programs_dir}"/genodb_bam_ascat_processes.sh || exit 1
+. "${genodebasher_debasher_programs_dir}"/genodb_bam_facets_processes.sh || exit 1

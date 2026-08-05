@@ -27,7 +27,7 @@ create_genref_for_bam_document()
 }
 
 ########
-create_genref_for_bam_explain_cmdline_opts()
+create_genref_for_bam_explain_opts()
 {
     # -br option
     description="Base reference genome file"

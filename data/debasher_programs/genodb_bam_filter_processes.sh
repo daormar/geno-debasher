@@ -21,11 +21,19 @@
 ########################
 
 ########
-filter_norm_bam_contigs_explain_cmdline_opts()
+filter_norm_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
     explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -normalbam option
+    local description="normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -135,11 +143,19 @@ filter_norm_bam_contigs_conda_envs()
 }
 
 ########
-filter_tum_bam_contigs_explain_cmdline_opts()
+filter_tum_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
     explain_cmdline_opt "-r" "<string>" "$description"
+
+    # -tumorbam option
+    local description="tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########

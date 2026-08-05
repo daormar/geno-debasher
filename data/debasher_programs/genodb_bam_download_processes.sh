@@ -30,11 +30,15 @@ DEFAULT_ASP_MAX_TRANS_RATE=100m
 ##########################
 
 #######
-copy_norm_bam_explain_cmdline_opts()
+copy_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
     explain_cmdline_opt "-extn" "<string>" "$description"
+
+    # -out-nb option
+    local description="output file"
+    explain_non_cmdline_opt "-out-nb" "<string>" "$description"
 }
 
 ########
@@ -70,11 +74,15 @@ copy_norm_bam()
 }
 
 ########
-copy_tum_bam_explain_cmdline_opts()
+copy_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
     explain_cmdline_req_opt "-extt" "<string>" "$description"
+
+    # -out-tb option
+    local description="output file"
+    explain_non_cmdline_opt "-out-tb" "<string>" "$description"
 }
 
 ########
@@ -84,7 +92,6 @@ copy_tum_bam_define_opts()
     local cmdline=$1
     local process_spec=$2
     local optlist=""
-
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
@@ -111,11 +118,19 @@ copy_tum_bam()
 }
 
 ########
-scp_norm_bam_explain_cmdline_opts()
+scp_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
     explain_cmdline_opt "-extn" "<string>" "$description"
+
+    # -normalbam option
+    local description="Normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -156,11 +171,19 @@ scp_norm_bam()
 }
 
 ########
-scp_tum_bam_explain_cmdline_opts()
+scp_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
     explain_cmdline_req_opt "-extt" "<string>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -201,7 +224,7 @@ scp_tum_bam()
 }
 
 ########
-download_ega_norm_bam_explain_cmdline_opts()
+download_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -218,6 +241,14 @@ download_ega_norm_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -normalbam option
+    local description="Normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -326,7 +357,7 @@ download_ega_norm_bam_conda_envs()
 }
 
 ########
-download_ega_tum_bam_explain_cmdline_opts()
+download_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -343,6 +374,14 @@ download_ega_tum_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -426,7 +465,7 @@ find_bam_filename()
 }
 
 ########
-download_ega_asp_norm_bam_explain_cmdline_opts()
+download_ega_asp_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -451,6 +490,14 @@ download_ega_asp_norm_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -normalbam option
+    local description="Normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -530,7 +577,7 @@ download_ega_asp_norm_bam()
 }
 
 ########
-download_ega_asp_tum_bam_explain_cmdline_opts()
+download_ega_asp_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -555,6 +602,14 @@ download_ega_asp_tum_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -634,7 +689,7 @@ download_ega_asp_tum_bam()
 }
 
 ########
-decrypt_ega_norm_bam_explain_cmdline_opts()
+decrypt_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
@@ -643,6 +698,14 @@ decrypt_ega_norm_bam_explain_cmdline_opts()
     # -egadecrpwd option
     description="File with EGA decryptor password"
     explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+
+    # -normalbam option
+    local description="Normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -698,7 +761,7 @@ decrypt_ega_norm_bam()
 }
 
 ########
-decrypt_ega_tum_bam_explain_cmdline_opts()
+decrypt_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
@@ -707,6 +770,14 @@ decrypt_ega_tum_bam_explain_cmdline_opts()
     # -egadecrpwd option
     description="File with EGA decryptor password"
     explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -762,7 +833,7 @@ decrypt_ega_tum_bam()
 }
 
 ########
-decsingle_ega_norm_bam_explain_cmdline_opts()
+decsingle_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
@@ -771,6 +842,14 @@ decsingle_ega_norm_bam_explain_cmdline_opts()
     # -ndecsinglepwd option
     description="Password for bam file to be processed with decSINGLE tool"
     explain_cmdline_req_opt "-ndecsinglepwd" "<string>" "$description"
+
+    # -normalbam option
+    local description="Normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -815,7 +894,7 @@ decsingle_ega_norm_bam()
 }
 
 ########
-decsingle_ega_tum_bam_explain_cmdline_opts()
+decsingle_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
@@ -824,6 +903,14 @@ decsingle_ega_tum_bam_explain_cmdline_opts()
     # -tdecsinglepwd option
     description="Password for bam file to be processed with decSINGLE tool"
     explain_cmdline_req_opt "-tdecsinglepwd" "<string>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -868,7 +955,7 @@ decsingle_ega_tum_bam()
 }
 
 ########
-download_aws_norm_bam_explain_cmdline_opts()
+download_aws_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -877,6 +964,14 @@ download_aws_norm_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -normalbam option
+    local description="Normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -932,7 +1027,7 @@ download_aws_norm_bam()
 }
 
 ########
-download_aws_tum_bam_explain_cmdline_opts()
+download_aws_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -941,6 +1036,14 @@ download_aws_tum_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -996,7 +1099,7 @@ download_aws_tum_bam()
 }
 
 ########
-download_collab_norm_bam_explain_cmdline_opts()
+download_collab_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -1005,6 +1108,14 @@ download_collab_norm_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -normalbam option
+    local description="Normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -1060,7 +1171,7 @@ download_collab_norm_bam()
 }
 
 ########
-download_collab_tum_bam_explain_cmdline_opts()
+download_collab_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -1069,6 +1180,14 @@ download_collab_tum_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -1124,7 +1243,7 @@ download_collab_tum_bam()
 }
 
 ########
-download_gdc_norm_bam_explain_cmdline_opts()
+download_gdc_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -1141,6 +1260,14 @@ download_gdc_norm_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -normalbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -1223,7 +1350,7 @@ download_gdc_norm_bam_conda_envs()
 }
 
 ########
-download_gdc_tum_bam_explain_cmdline_opts()
+download_gdc_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -1240,6 +1367,14 @@ download_gdc_tum_bam_explain_cmdline_opts()
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_cmdline_opt "-nt" "<int>" "$description"
+
+    # -tumorbam option
+    local description="Tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########

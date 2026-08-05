@@ -21,7 +21,7 @@
 #################################
 
 ########
-snp_pileup_explain_cmdline_opts()
+snp_pileup_explain_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
@@ -34,6 +34,18 @@ snp_pileup_explain_cmdline_opts()
     # -sv option
     description="SNP vcf file"
     explain_cmdline_req_opt "-sv" "<string>" "$description"
+
+    # -normalbam option
+    local description="normal bam file"
+    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+
+    # -tumorbam option
+    local description="tumor bam file"
+    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -94,11 +106,15 @@ snp_pileup_conda_envs()
 }
 
 #######
-facets_explain_cmdline_opts()
+facets_explain_opts()
 {
     # -pileup-counts option
     description="SNP pileup file (required if pileup process has not been performed)"
     explain_cmdline_opt "-sp" "<string>" "$description"
+
+    # -pileup-counts option
+    local description="pile up counts file"
+    explain_non_cmdline_opt "-pileup-counts" "<string>" "$description"
 }
 
 ########

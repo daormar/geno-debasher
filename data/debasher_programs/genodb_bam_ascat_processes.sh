@@ -69,7 +69,7 @@ postproc_allelecounter_output()
 }
 
 ########
-allele_counter_norm_explain_cmdline_opts()
+allele_counter_norm_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
@@ -79,13 +79,17 @@ allele_counter_norm_explain_cmdline_opts()
     description="Reference genome file"
     explain_cmdline_req_opt "-r" "<string>" "$description"
 
-    # -n option
+    # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
+    explain_cmdline_opt "-normalbam" "<string>" "$description"
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
     explain_cmdline_opt "-ma" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -160,7 +164,7 @@ allele_counter_norm_conda_envs()
 }
 
 ########
-allele_counter_tumor_explain_cmdline_opts()
+allele_counter_tumor_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
@@ -170,13 +174,17 @@ allele_counter_tumor_explain_cmdline_opts()
     description="Reference genome file"
     explain_cmdline_req_opt "-r" "<string>" "$description"
 
-    # -t option
+    # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"
+    explain_cmdline_opt "-tumorbam" "<string>" "$description"
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
     explain_cmdline_opt "-ma" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########
@@ -251,7 +259,7 @@ allele_counter_tumor_conda_envs()
 }
 
 ########
-ascat_explain_cmdline_opts()
+ascat_explain_opts()
 {
     # -acn option
     description="alleleCounter normal file"
@@ -272,6 +280,10 @@ ascat_explain_cmdline_opts()
     # -sg option
     description="SNP GC correction file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
     explain_cmdline_req_opt "-sg" "<string>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
 }
 
 ########

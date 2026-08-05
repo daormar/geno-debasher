@@ -21,9 +21,15 @@
 ######################
 
 ########
-delete_bam_files_explain_cmdline_opts()
+delete_bam_files_explain_opts()
 {
-    :
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+
+    # -datadir option
+    local description="data directory"
+    explain_non_cmdline_opt "-datadir" "<string>" "$description"
 }
 
 ########
@@ -58,9 +64,15 @@ delete_bam_files()
 }
 
 ########
-clear_datadir_explain_cmdline_opts()
+clear_datadir_explain_opts()
 {
-    :
+    # -process-outd option
+    local description="output directory"
+    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+
+    # -datadir option
+    local description="data directory"
+    explain_non_cmdline_opt "-datadir" "<string>" "$description"
 }
 
 ########

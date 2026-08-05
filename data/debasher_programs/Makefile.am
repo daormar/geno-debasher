@@ -13,6 +13,8 @@ genodb_tcga_xgs.sh
 
 EXTRA_DIST= $(genodbfiles_DATA)
 
+CLEANFILES = genodb_bam_analysis.sh
+
 genodb_bam_analysis.sh: genodb_bam_analysis_pred.sh
 	echo "genodebasher_pkglibdir=\"$(libdir)/$(PACKAGE_NAME)\"" >> $@
 	echo "genodebasher_debasher_programs_dir=\"$(datadir)/$(PACKAGE_NAME)/debasher_programs\"" >> $@

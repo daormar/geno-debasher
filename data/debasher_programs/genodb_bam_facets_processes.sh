@@ -1,4 +1,4 @@
-# Geno-DeBasher package
+1# Geno-DeBasher package
 # Copyright (C) 2019-2024 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -25,27 +25,35 @@ snp_pileup_explain_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
+    explain_opt "-n" "<string>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"
+    explain_opt "-t" "<string>" "$description"
 
     # -sv option
     description="SNP vcf file"
-    explain_cmdline_req_opt "-sv" "<string>" "$description"
+    explain_opt "-sv" "<string>" "$description"
 
     # -normalbam option
     local description="normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     local description="tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+snp_pileup_identify_cmdline_opts()
+{
+    opt_is_cmdline "-n"
+    opt_is_cmdline "-t"
+    opt_is_cmdline "-sv"
 }
 
 ########
@@ -110,11 +118,17 @@ facets_explain_opts()
 {
     # -pileup-counts option
     description="SNP pileup file (required if pileup process has not been performed)"
-    explain_cmdline_opt "-sp" "<string>" "$description"
+    explain_opt "-sp" "<string>" "$description"
 
     # -pileup-counts option
     local description="pile up counts file"
-    explain_non_cmdline_opt "-pileup-counts" "<string>" "$description"
+    explain_opt "-pileup-counts" "<string>" "$description"
+}
+
+########
+facets_identify_cmdline_opts()
+{
+    opt_is_cmdline "-sp"
 }
 
 ########

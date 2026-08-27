@@ -34,11 +34,17 @@ copy_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -out-nb option
     local description="output file"
-    explain_non_cmdline_opt "-out-nb" "<string>" "$description"
+    explain_opt "-out-nb" "<string>" "$description"
+}
+
+########
+copy_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
 }
 
 ########
@@ -78,11 +84,17 @@ copy_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -out-tb option
     local description="output file"
-    explain_non_cmdline_opt "-out-tb" "<string>" "$description"
+    explain_opt "-out-tb" "<string>" "$description"
+}
+
+########
+copy_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
 }
 
 ########
@@ -122,15 +134,21 @@ scp_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+scp_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
 }
 
 ########
@@ -175,15 +193,21 @@ scp_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+scp_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
 }
 
 ########
@@ -228,27 +252,36 @@ download_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -egastr option
     description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
-    explain_cmdline_opt "-egastr" "<int>" "$description"
+    explain_opt "-egastr" "<int>" "$description"
 
     # -egacred option
     description="File with EGA download client credentials"
-    explain_cmdline_req_opt "-egacred" "<string>" "$description"
+    explain_opt "-egacred" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_ega_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
+    opt_is_cmdline "-egastr"
+    opt_is_cmdline "-egacred"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -361,27 +394,36 @@ download_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -egastr option
     description="Number of streams used by the EGA download client (${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} by default)"
-    explain_cmdline_opt "-egastr" "<int>" "$description"
+    explain_opt "-egastr" "<int>" "$description"
 
     # -egacred option
     description="File with EGA download client credentials"
-    explain_cmdline_req_opt "-egacred" "<string>" "$description"
+    explain_opt "-egacred" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_ega_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
+    opt_is_cmdline "-egastr"
+    opt_is_cmdline "-egacred"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -469,35 +511,46 @@ download_ega_asp_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
-    explain_cmdline_req_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -asperausr option
     description="Username for Aspera server"
-    explain_cmdline_req_opt "-asperausr" "<string>" "$description"
+    explain_opt "-asperausr" "<string>" "$description"
 
     # -asperapwd option
     description="Password for Aspera server"
-    explain_cmdline_req_opt "-asperapwd" "<string>" "$description"
+    explain_opt "-asperapwd" "<string>" "$description"
 
     # -asperaserv option
     description="Name of Aspera server"
-    explain_cmdline_req_opt "-asperaserv" "<string>" "$description"
+    explain_opt "-asperaserv" "<string>" "$description"
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_ega_asp_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
+    opt_is_cmdline "-asperausr"
+    opt_is_cmdline "-asperapwd"
+    opt_is_cmdline "-asperaserv"
+    opt_is_cmdline "-egadecrpwd"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -581,35 +634,46 @@ download_ega_asp_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -asperausr option
     description="Username for Aspera server"
-    explain_cmdline_req_opt "-asperausr" "<string>" "$description"
+    explain_opt "-asperausr" "<string>" "$description"
 
     # -asperapwd option
     description="Password for Aspera server"
-    explain_cmdline_req_opt "-asperapwd" "<string>" "$description"
+    explain_opt "-asperapwd" "<string>" "$description"
 
     # -asperaserv option
     description="Name of Aspera server"
-    explain_cmdline_req_opt "-asperaserv" "<string>" "$description"
+    explain_opt "-asperaserv" "<string>" "$description"
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_ega_asp_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
+    opt_is_cmdline "-asperausr"
+    opt_is_cmdline "-asperapwd"
+    opt_is_cmdline "-asperaserv"
+    opt_is_cmdline "-egadecrpwd"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -693,19 +757,27 @@ decrypt_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
-    explain_cmdline_req_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<string>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+decrypt_ega_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
+    opt_is_cmdline "-egadecrpwd"
+    opt_is_cmdline "-normalbam"
 }
 
 ########
@@ -765,19 +837,27 @@ decrypt_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_cmdline_req_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<string>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+decrypt_ega_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
+    opt_is_cmdline "-egadecrpwd"
+    opt_is_cmdline "-normalbam"
 }
 
 ########
@@ -837,19 +917,26 @@ decsingle_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
-    explain_cmdline_req_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -ndecsinglepwd option
     description="Password for bam file to be processed with decSINGLE tool"
-    explain_cmdline_req_opt "-ndecsinglepwd" "<string>" "$description"
+    explain_opt "-ndecsinglepwd" "<string>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+decsingle_ega_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
+    opt_is_cmdline "-ndecsinglepwd"
 }
 
 ########
@@ -898,19 +985,26 @@ decsingle_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -tdecsinglepwd option
     description="Password for bam file to be processed with decSINGLE tool"
-    explain_cmdline_req_opt "-tdecsinglepwd" "<string>" "$description"
+    explain_opt "-tdecsinglepwd" "<string>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+decsingle_ega_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
+    opt_is_cmdline "-tdecsinglepwd"
 }
 
 ########
@@ -959,19 +1053,26 @@ download_aws_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
-    explain_cmdline_req_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_aws_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -1031,19 +1132,26 @@ download_aws_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_aws_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -1103,19 +1211,26 @@ download_collab_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
-    explain_cmdline_req_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_collab_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -1175,19 +1290,26 @@ download_collab_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
-    explain_cmdline_req_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_collab_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -1247,27 +1369,36 @@ download_gdc_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
-    explain_cmdline_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<string>" "$description"
 
     # -gdcprocs option
     description="Number of processes used by the gdc download client (${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} by default)"
-    explain_cmdline_opt "-gdcprocs" "<int>" "$description"
+    explain_opt "-gdcprocs" "<int>" "$description"
 
     # -gdctok option
     description="GDC API auth token file"
-    explain_cmdline_req_opt "-gdctok" "<string>" "$description"
+    explain_opt "-gdctok" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -normalbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_gdc_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extn"
+    opt_is_cmdline "-gdcprocs"
+    opt_is_cmdline "-gdctok"
+    opt_is_cmdline "-nt"
 }
 
 ########
@@ -1354,27 +1485,36 @@ download_gdc_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
-    explain_cmdline_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<string>" "$description"
 
     # -gdcprocs option
     description="Number of processes used by the gdc download client (${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} by default)"
-    explain_cmdline_opt "-gdcprocs" "<int>" "$description"
+    explain_opt "-gdcprocs" "<int>" "$description"
 
     # -gdctok option
     description="GDC API auth token file"
-    explain_cmdline_req_opt "-gdctok" "<string>" "$description"
+    explain_opt "-gdctok" "<string>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
-    explain_cmdline_opt "-nt" "<int>" "$description"
+    explain_opt "-nt" "<int>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+download_gdc_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-extt"
+    opt_is_cmdline "-gdcprocs"
+    opt_is_cmdline "-gdctok"
+    opt_is_cmdline "-nt"
 }
 
 ########

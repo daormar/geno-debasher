@@ -37,23 +37,31 @@ manta_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_cmdline_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
+}
+
+########
+manta_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -151,27 +159,36 @@ manta_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_cmdline_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
+}
+
+########
+manta_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -262,27 +279,35 @@ strelka_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_cmdline_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
 
     # -summarydir option
     local description="summary directory"
-    explain_non_cmdline_opt "-summarydir" "<string>" "$description"
+    explain_opt "-summarydir" "<string>" "$description"
+}
+
+########
+strelka_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -373,23 +398,30 @@ platypus_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
 
     # -summarydir option
     local description="summary directory"
-    explain_non_cmdline_opt "-summarydir" "<string>" "$description"
+    explain_opt "-summarydir" "<string>" "$description"
+}
+
+########
+platypus_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
 }
 
 ########
@@ -506,27 +538,35 @@ gatk_haplotypecaller_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -sample-name option
     description="Sample name"
-    explain_cmdline_req_opt "-sample-name" "<string>" "$description"
+    explain_opt "-sample-name" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
 
     # -mem option
     local description="available memory"
-    explain_non_cmdline_opt "-mem" "<int>" "$description"
+    explain_opt "-mem" "<int>" "$description"
+}
+
+########
+gatk_haplotypecaller_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-sample-name"
 }
 
 ########
@@ -605,27 +645,36 @@ strelka_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_cmdline_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
+}
+
+########
+strelka_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -737,35 +786,45 @@ mutect2_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-n" "<string>" "$description"
+    explain_opt "-n" "<string>" "$description"
 
     # -norm-sample-name option
     description="Normal sample name"
-    explain_cmdline_req_opt "-norm-sample-name" "<string>" "$description"
+    explain_opt "-norm-sample-name" "<string>" "$description"
 
     # -panel-of-normals
     description="File name with panel of normals"
-    explain_cmdline_req_opt "-panel-of-normals" "<string>" "$description"
+    explain_opt "-panel-of-normals" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
 
     # -mem option
     local description="available memory"
-    explain_non_cmdline_opt "-mem" "<int>" "$description"
+    explain_opt "-mem" "<int>" "$description"
+}
+
+########
+mutect2_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-n"
+    opt_is_cmdline "-norm-sample-name"
+    opt_is_cmdline "-panel-of-normals"
+    opt_is_cmdline "-tumorbam"
 }
 
 ########
@@ -854,23 +913,31 @@ lofreq_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
+}
+
+########
+lofreq_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
 }
 
 ########
@@ -950,23 +1017,31 @@ cnvkit_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
+}
+
+########
+cnvkit_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
 }
 
 ########
@@ -1044,23 +1119,32 @@ snp_pileup_plus_facets_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -sv option
     description="SNP vcf file"
-    explain_cmdline_req_opt "-sv" "<string>" "$description"
+    explain_opt "-sv" "<string>" "$description"
 
     # -md option
     description="Minimum sequencing depth to keep when preprocessing sample (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
-    explain_cmdline_opt "-md" "<int>" "$description"
+    explain_opt "-md" "<int>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+snp_pileup_plus_facets_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-sv"
+    opt_is_cmdline "-md"
 }
 
 ########
@@ -1150,11 +1234,17 @@ gen_sequenza_gcc_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -outfile option
     local description="output file"
-    explain_non_cmdline_opt "-outfile" "<string>" "$description"
+    explain_opt "-outfile" "<string>" "$description"
+}
+
+########
+gen_sequenza_gcc_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
 }
 
 ########
@@ -1213,19 +1303,25 @@ sequenza_explain_opts()
 {
     # -gcc option
     description="GC content wiggle file for sequenza (required if no gen_sequenza_gcc process is defined)"
-    explain_cmdline_opt "-gcc" "<string>" "$description"
+    explain_opt "-gcc" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -npileup
     local description="normal pileup file"
-    explain_non_cmdline_opt "-npileup" "<string>" "$description"
+    explain_opt "-npileup" "<string>" "$description"
 
     # -tpileup
     local description="tumor pileup file"
-    explain_non_cmdline_opt "-tpileup" "<string>" "$description"
+    explain_opt "-tpileup" "<string>" "$description"
+}
+
+########
+gen_sequenza_gcc_identify_cmdline_opts()
+{
+    opt_is_cmdline "-gcc"
 }
 
 ########
@@ -1304,27 +1400,34 @@ parallel_bam2seqz_explain_opts()
 {
     # -gcc option
     description="GC content wiggle file for bam2seqz"
-    explain_cmdline_opt "-gcc" "<string>" "$description"
+    explain_opt "-gcc" "<string>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -npileup
     local description="normal pileup file"
-    explain_non_cmdline_opt "-npileup" "<string>" "$description"
+    explain_opt "-npileup" "<string>" "$description"
 
     # -tpileup
     local description="tumor pileup file"
-    explain_non_cmdline_opt "-tpileup" "<string>" "$description"
+    explain_opt "-tpileup" "<string>" "$description"
 
     # -contig
     local description="contig id"
-    explain_non_cmdline_opt "-contig" "<string>" "$description"
+    explain_opt "-contig" "<string>" "$description"
+}
+
+########
+parallel_bam2seqz_identify_cmdline_opts()
+{
+    opt_is_cmdline "-gcc"
+    opt_is_cmdline "-lc"
 }
 
 ########
@@ -1411,15 +1514,21 @@ seqzmerge_plus_sequenza_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -seqzdir
     local description="seqz directory"
-    explain_non_cmdline_opt "-seqzdir" "<string>" "$description"
+    explain_opt "-seqzdir" "<string>" "$description"
+}
+
+########
+seqzmerge_plus_sequenza_identify_cmdline_opts()
+{
+    opt_is_cmdline "-lc"
 }
 
 ########
@@ -1512,19 +1621,27 @@ lumpy_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -lx option
     description="File with regions to exclude in bed format"
-    explain_cmdline_opt "-lx" "<string>" "$description"
+    explain_opt "-lx" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+lumpy_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-lx"
 }
 
 ########
@@ -1608,27 +1725,36 @@ parallel_lumpy_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<string>" "$description"
 
     # -lx option
     description="File with regions to exclude in bed format"
-    explain_cmdline_opt "-lx" "<string>" "$description"
+    explain_opt "-lx" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -outfile option
     local description="output file"
-    explain_non_cmdline_opt "-outfile" "<string>" "$description"
+    explain_opt "-outfile" "<string>" "$description"
 
     # -contig
     local description="contig id"
-    explain_non_cmdline_opt "-contig" "<string>" "$description"
+    explain_opt "-contig" "<string>" "$description"
+}
+
+########
+parallel_lumpy_identify_cmdline_opts()
+{
+    opt_is_cmdline "-lc"
+    opt_is_cmdline "-lx"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
 }
 
 ########
@@ -1712,27 +1838,36 @@ smoove_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -lx option
     description="File with regions to exclude in bed format"
-    explain_cmdline_opt "-lx" "<string>" "$description"
+    explain_opt "-lx" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
+}
+
+########
+smoove_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-lx"
 }
 
 ########
@@ -1824,23 +1959,32 @@ delly_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -dx option
     description="File with regions to exclude in bed format"
-    explain_cmdline_opt "-dx" "<string>" "$description"
+    explain_opt "-dx" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+delly_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-dx"
 }
 
 ########
@@ -1939,31 +2083,41 @@ parallel_delly_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -dx option
     description="File with regions to exclude in bed format"
-    explain_cmdline_opt "-dx" "<string>" "$description"
+    explain_opt "-dx" "<string>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -contig option
     local description="contig id"
-    explain_non_cmdline_opt "-contig" "<string>" "$description"
+    explain_opt "-contig" "<string>" "$description"
+}
+
+########
+parallel_delly_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-dx"
+    opt_is_cmdline "-lc"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
 }
 
 ########
@@ -2059,23 +2213,31 @@ parallel_svtyper_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-t" "<string>" "$description"
+    explain_opt "-t" "<string>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_cmdline_req_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<string>" "$description"
 
     # -vcf option
     local description="vcf name"
-    explain_non_cmdline_opt "-vcf" "<string>" "$description"
+    explain_opt "-vcf" "<string>" "$description"
 
     # -outfile option
     local description="output file"
-    explain_non_cmdline_opt "-outfile" "<string>" "$description"
+    explain_opt "-outfile" "<string>" "$description"
+}
+
+########
+parallel_svtyper_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-t"
+    opt_is_cmdline "-lc"
 }
 
 ########
@@ -2154,23 +2316,31 @@ msisensor_pro_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
 
     # -cpus option
     local description="number of cpus"
-    explain_non_cmdline_opt "-cpus" "<int>" "$description"
+    explain_opt "-cpus" "<int>" "$description"
+}
+
+########
+msisensor_pro_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
 }
 
 ########

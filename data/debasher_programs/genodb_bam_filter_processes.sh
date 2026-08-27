@@ -25,15 +25,21 @@ filter_norm_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     local description="normal bam file"
-    explain_non_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+filter_norm_bam_contigs_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
 }
 
 ########
@@ -147,15 +153,21 @@ filter_tum_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_cmdline_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -tumorbam option
     local description="tumor bam file"
-    explain_non_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+filter_tum_bam_contigs_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
 }
 
 ########

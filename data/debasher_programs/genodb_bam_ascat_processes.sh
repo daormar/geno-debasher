@@ -73,23 +73,32 @@ allele_counter_norm_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
-    explain_cmdline_req_opt "-l" "<string>" "$description"
+    explain_opt "-l" "<string>" "$description"
 
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<string>" "$description"
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
-    explain_cmdline_opt "-ma" "<string>" "$description"
+    explain_opt "-ma" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+allele_counter_norm_identify_cmdline_opts()
+{
+    opt_is_cmdline "-l"
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-ma"
 }
 
 ########
@@ -168,23 +177,32 @@ allele_counter_tumor_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
-    explain_cmdline_req_opt "-l" "<string>" "$description"
+    explain_opt "-l" "<string>" "$description"
 
     # -r option
     description="Reference genome file"
-    explain_cmdline_req_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<string>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_cmdline_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<string>" "$description"
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
-    explain_cmdline_opt "-ma" "<string>" "$description"
+    explain_opt "-ma" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+allele_counter_tumor_identify_cmdline_opts()
+{
+    opt_is_cmdline "-l"
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-ma"
 }
 
 ########
@@ -263,27 +281,37 @@ ascat_explain_opts()
 {
     # -acn option
     description="alleleCounter normal file"
-    explain_cmdline_opt "-acn" "<string>" "$description"
+    explain_opt "-acn" "<string>" "$description"
 
     # -act option
     description="alleleCounter tumor file"
-    explain_cmdline_opt "-act" "<string>" "$description"
+    explain_opt "-act" "<string>" "$description"
 
     # -snpids option
     description="File with snp ids for alleleCounter output"
-    explain_cmdline_opt "-snpids" "<string>" "$description"
+    explain_opt "-snpids" "<string>" "$description"
 
     # -g option
     description="Sample gender: XX|XY"
-    explain_cmdline_req_opt "-g" "<string>" "$description"
+    explain_opt "-g" "<string>" "$description"
 
     # -sg option
     description="SNP GC correction file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
-    explain_cmdline_req_opt "-sg" "<string>" "$description"
+    explain_opt "-sg" "<string>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_non_cmdline_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<string>" "$description"
+}
+
+########
+ascat_identify_cmdline_opts()
+{
+    opt_is_cmdline "-acn"
+    opt_is_cmdline "-act"
+    opt_is_cmdline "-snipids"
+    opt_is_cmdline "-g"
+    opt_is_cmdline "-sg"
 }
 
 ########

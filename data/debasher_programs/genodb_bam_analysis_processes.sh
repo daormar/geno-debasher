@@ -29,7 +29,7 @@ DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC=35
 ########
 manta_germline_document()
 {
-    process_description "Analyzes a normal \`bam\` file using Manta."
+    document_process "Analyzes a normal \`bam\` file using Manta."
 }
 
 ########
@@ -151,7 +151,7 @@ manta_germline_conda_envs()
 ########
 manta_somatic_document()
 {
-    process_description "Analyzes a pair of normal and tumor \`bam\` files using Manta."
+    document_process "Analyzes a pair of normal and tumor \`bam\` files using Manta."
 }
 
 ########
@@ -271,7 +271,7 @@ manta_somatic_conda_envs()
 ########
 strelka_germline_document()
 {
-    process_description "Analyzes a normal \`bam\` files using Strelka."
+    document_process "Analyzes a normal \`bam\` files using Strelka."
 }
 
 ########
@@ -1009,7 +1009,7 @@ lofreq_somatic_conda_envs()
 ########
 cnvkit_document()
 {
-    process_description "Analyzes a pair of normal and tumor \`bam\` files using CNVkit."
+    document_process "Analyzes a pair of normal and tumor \`bam\` files using CNVkit."
 }
 
 ########

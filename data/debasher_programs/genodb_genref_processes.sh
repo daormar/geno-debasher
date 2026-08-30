@@ -23,7 +23,7 @@
 ########
 create_genref_for_bam_document()
 {
-    process_description "Creates a genome reference file for a given \`bam\` file. For this purpose, the process starts from a basic genome reference file, removing those contigs not present in the \`bam\` file and downloading or copying missing ones from the Internet or from previously existing files."
+    document_process "Creates a genome reference file for a given \`bam\` file. For this purpose, the process starts from a basic genome reference file, removing those contigs not present in the \`bam\` file and downloading or copying missing ones from the Internet or from previously existing files."
 }
 
 ########

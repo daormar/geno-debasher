@@ -62,7 +62,7 @@ reheader_vcf_list()
 ########
 concat_germline_snvs_document()
 {
-    process_description "Concatenate generated germline vcfs."
+    document_process "Concatenate generated germline vcfs."
 }
 
 ########

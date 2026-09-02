@@ -25,15 +25,15 @@ filter_norm_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     local description="normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -153,15 +153,15 @@ filter_tum_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -tumorbam option
     local description="tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########

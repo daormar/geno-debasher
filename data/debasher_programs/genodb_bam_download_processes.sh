@@ -34,11 +34,11 @@ copy_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
-    explain_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<file>" "$description"
 
     # -out-nb option
     local description="output file"
-    explain_opt "-out-nb" "<string>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 }
 
 ########
@@ -84,11 +84,11 @@ copy_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
-    explain_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<file>" "$description"
 
     # -out-tb option
     local description="output file"
-    explain_opt "-out-tb" "<string>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 }
 
 ########
@@ -134,15 +134,15 @@ scp_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
-    explain_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<file>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -193,15 +193,15 @@ scp_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
-    explain_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<file>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -260,7 +260,7 @@ download_ega_norm_bam_explain_opts()
 
     # -egacred option
     description="File with EGA download client credentials"
-    explain_opt "-egacred" "<string>" "$description"
+    explain_opt "-egacred" "<file>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -268,11 +268,11 @@ download_ega_norm_bam_explain_opts()
 
     # -normalbam option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -402,7 +402,7 @@ download_ega_tum_bam_explain_opts()
 
     # -egacred option
     description="File with EGA download client credentials"
-    explain_opt "-egacred" "<string>" "$description"
+    explain_opt "-egacred" "<file>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -410,11 +410,11 @@ download_ega_tum_bam_explain_opts()
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -527,7 +527,7 @@ download_ega_asp_norm_bam_explain_opts()
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<file>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -535,11 +535,11 @@ download_ega_asp_norm_bam_explain_opts()
 
     # -normalbam option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -650,7 +650,7 @@ download_ega_asp_tum_bam_explain_opts()
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<file>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -658,11 +658,11 @@ download_ega_asp_tum_bam_explain_opts()
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -757,19 +757,19 @@ decrypt_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
-    explain_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<file>" "$description"
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<file>" "$description"
 
     # -normalbam option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -837,19 +837,19 @@ decrypt_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
-    explain_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<file>" "$description"
 
     # -egadecrpwd option
     description="File with EGA decryptor password"
-    explain_opt "-egadecrpwd" "<string>" "$description"
+    explain_opt "-egadecrpwd" "<file>" "$description"
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -917,7 +917,7 @@ decsingle_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
-    explain_opt "-extn" "<string>" "$description"
+    explain_opt "-extn" "<file>" "$description"
 
     # -ndecsinglepwd option
     description="Password for bam file to be processed with decSINGLE tool"
@@ -925,11 +925,11 @@ decsingle_ega_norm_bam_explain_opts()
 
     # -normalbam option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -985,7 +985,7 @@ decsingle_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
-    explain_opt "-extt" "<string>" "$description"
+    explain_opt "-extt" "<file>" "$description"
 
     # -tdecsinglepwd option
     description="Password for bam file to be processed with decSINGLE tool"
@@ -993,11 +993,11 @@ decsingle_ega_tum_bam_explain_opts()
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1061,11 +1061,11 @@ download_aws_norm_bam_explain_opts()
 
     # -normalbam option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1140,11 +1140,11 @@ download_aws_tum_bam_explain_opts()
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1219,11 +1219,11 @@ download_collab_norm_bam_explain_opts()
 
     # -normalbam option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1298,11 +1298,11 @@ download_collab_tum_bam_explain_opts()
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1377,7 +1377,7 @@ download_gdc_norm_bam_explain_opts()
 
     # -gdctok option
     description="GDC API auth token file"
-    explain_opt "-gdctok" "<string>" "$description"
+    explain_opt "-gdctok" "<file>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -1385,11 +1385,11 @@ download_gdc_norm_bam_explain_opts()
 
     # -normalbam option
     local description="Tumor bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1493,7 +1493,7 @@ download_gdc_tum_bam_explain_opts()
 
     # -gdctok option
     description="GDC API auth token file"
-    explain_opt "-gdctok" "<string>" "$description"
+    explain_opt "-gdctok" "<file>" "$description"
 
     # -nt option
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
@@ -1501,11 +1501,11 @@ download_gdc_tum_bam_explain_opts()
 
     # -tumorbam option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########

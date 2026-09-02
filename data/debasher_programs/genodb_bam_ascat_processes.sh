@@ -77,11 +77,11 @@ allele_counter_norm_explain_opts()
 
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
@@ -89,7 +89,7 @@ allele_counter_norm_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -181,11 +181,11 @@ allele_counter_tumor_explain_opts()
 
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
@@ -193,7 +193,7 @@ allele_counter_tumor_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -301,7 +301,7 @@ ascat_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########

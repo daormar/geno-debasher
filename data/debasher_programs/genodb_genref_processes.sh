@@ -31,19 +31,19 @@ create_genref_for_bam_explain_opts()
 {
     # -br option
     description="Base reference genome file"
-    explain_opt "-br" "<string>" "$description"
+    explain_opt "-br" "<file>" "$description"
 
     # -bam option
     description="bam file (required if no downloading processes or paths of normal or tumor bam files have been defined)"
-    explain_opt "-bam" "<string>" "$description"
+    explain_opt "-bam" "<file>" "$description"
 
     # -cm option
     description="File containing a mapping between contig names and accession numbers"
-    explain_opt "-cm" "<string>" "$description"
+    explain_opt "-cm" "<file>" "$description"
 
     # -fbr option
     description="Name of fallback genome reference file. If creation process fails, this file is copied as reference output file instead"
-    explain_opt "-fbr" "<string>" "$description"
+    explain_opt "-fbr" "<file>" "$description"
 }
 
 ########

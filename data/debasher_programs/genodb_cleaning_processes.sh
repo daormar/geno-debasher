@@ -25,11 +25,11 @@ delete_bam_files_explain_opts()
 {
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -datadir option
     local description="data directory"
-    explain_opt "-datadir" "<string>" "$description"
+    explain_opt "-datadir" "<file>" "$description"
 }
 
 ########
@@ -74,11 +74,11 @@ clear_datadir_explain_opts()
 {
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -datadir option
     local description="data directory"
-    explain_opt "-datadir" "<string>" "$description"
+    explain_opt "-datadir" "<file>" "$description"
 }
 
 ########

@@ -25,27 +25,27 @@ snp_pileup_explain_opts()
 {
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-n" "<string>" "$description"
+    explain_opt "-n" "<file>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-t" "<string>" "$description"
+    explain_opt "-t" "<file>" "$description"
 
     # -sv option
     description="SNP vcf file"
-    explain_opt "-sv" "<string>" "$description"
+    explain_opt "-sv" "<file>" "$description"
 
     # -normalbam option
     local description="normal bam file"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     local description="tumor bam file"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########

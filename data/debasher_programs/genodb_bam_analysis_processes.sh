@@ -37,19 +37,19 @@ manta_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -159,23 +159,23 @@ manta_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -279,19 +279,19 @@ strelka_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -299,7 +299,7 @@ strelka_germline_explain_opts()
 
     # -summarydir option
     local description="summary directory"
-    explain_opt "-summarydir" "<string>" "$description"
+    explain_opt "-summarydir" "<file>" "$description"
 }
 
 ########
@@ -398,15 +398,15 @@ platypus_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -414,7 +414,7 @@ platypus_germline_explain_opts()
 
     # -summarydir option
     local description="summary directory"
-    explain_opt "-summarydir" "<string>" "$description"
+    explain_opt "-summarydir" "<file>" "$description"
 }
 
 ########
@@ -538,11 +538,11 @@ gatk_haplotypecaller_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -sample-name option
     description="Sample name"
@@ -550,7 +550,7 @@ gatk_haplotypecaller_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -645,23 +645,23 @@ strelka_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -cr option
     description="bgzipped and tabixed bed file to specify regions to call"
-    explain_opt "-cr" "<string>" "$description"
+    explain_opt "-cr" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -786,11 +786,11 @@ mutect2_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -n option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-n" "<string>" "$description"
+    explain_opt "-n" "<file>" "$description"
 
     # -norm-sample-name option
     description="Normal sample name"
@@ -798,15 +798,15 @@ mutect2_somatic_explain_opts()
 
     # -panel-of-normals
     description="File name with panel of normals"
-    explain_opt "-panel-of-normals" "<string>" "$description"
+    explain_opt "-panel-of-normals" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -913,19 +913,19 @@ lofreq_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -1017,19 +1017,19 @@ cnvkit_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -1119,15 +1119,15 @@ snp_pileup_plus_facets_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -sv option
     description="SNP vcf file"
-    explain_opt "-sv" "<string>" "$description"
+    explain_opt "-sv" "<file>" "$description"
 
     # -md option
     description="Minimum sequencing depth to keep when preprocessing sample (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
@@ -1135,7 +1135,7 @@ snp_pileup_plus_facets_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1234,11 +1234,11 @@ gen_sequenza_gcc_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -outfile option
     local description="output file"
-    explain_opt "-outfile" "<string>" "$description"
+    explain_opt "-outfile" "<file>" "$description"
 }
 
 ########
@@ -1303,19 +1303,19 @@ sequenza_explain_opts()
 {
     # -gcc option
     description="GC content wiggle file for sequenza (required if no gen_sequenza_gcc process is defined)"
-    explain_opt "-gcc" "<string>" "$description"
+    explain_opt "-gcc" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -npileup
     local description="normal pileup file"
-    explain_opt "-npileup" "<string>" "$description"
+    explain_opt "-npileup" "<file>" "$description"
 
     # -tpileup
     local description="tumor pileup file"
-    explain_opt "-tpileup" "<string>" "$description"
+    explain_opt "-tpileup" "<file>" "$description"
 }
 
 ########
@@ -1400,23 +1400,23 @@ parallel_bam2seqz_explain_opts()
 {
     # -gcc option
     description="GC content wiggle file for bam2seqz"
-    explain_opt "-gcc" "<string>" "$description"
+    explain_opt "-gcc" "<file>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -npileup
     local description="normal pileup file"
-    explain_opt "-npileup" "<string>" "$description"
+    explain_opt "-npileup" "<file>" "$description"
 
     # -tpileup
     local description="tumor pileup file"
-    explain_opt "-tpileup" "<string>" "$description"
+    explain_opt "-tpileup" "<file>" "$description"
 
     # -contig
     local description="contig id"
@@ -1514,15 +1514,15 @@ seqzmerge_plus_sequenza_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
-    explain_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -seqzdir
     local description="seqz directory"
-    explain_opt "-seqzdir" "<string>" "$description"
+    explain_opt "-seqzdir" "<file>" "$description"
 }
 
 ########
@@ -1621,19 +1621,19 @@ lumpy_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -lx option
     description="File with regions to exclude in bed format"
-    explain_opt "-lx" "<string>" "$description"
+    explain_opt "-lx" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -1725,23 +1725,23 @@ parallel_lumpy_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
-    explain_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<file>" "$description"
 
     # -lx option
     description="File with regions to exclude in bed format"
-    explain_opt "-lx" "<string>" "$description"
+    explain_opt "-lx" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -outfile option
     local description="output file"
-    explain_opt "-outfile" "<string>" "$description"
+    explain_opt "-outfile" "<file>" "$description"
 
     # -contig
     local description="contig id"
@@ -1838,23 +1838,23 @@ smoove_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -lx option
     description="File with regions to exclude in bed format"
-    explain_opt "-lx" "<string>" "$description"
+    explain_opt "-lx" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus
     local description="number of cpus"
@@ -1959,23 +1959,23 @@ delly_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -dx option
     description="File with regions to exclude in bed format"
-    explain_opt "-dx" "<string>" "$description"
+    explain_opt "-dx" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -2083,27 +2083,27 @@ parallel_delly_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -dx option
     description="File with regions to exclude in bed format"
-    explain_opt "-dx" "<string>" "$description"
+    explain_opt "-dx" "<file>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -contig option
     local description="contig id"
@@ -2213,23 +2213,23 @@ parallel_svtyper_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -t option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-t" "<string>" "$description"
+    explain_opt "-t" "<file>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
-    explain_opt "-lc" "<string>" "$description"
+    explain_opt "-lc" "<file>" "$description"
 
     # -vcf option
     local description="vcf name"
-    explain_opt "-vcf" "<string>" "$description"
+    explain_opt "-vcf" "<file>" "$description"
 
     # -outfile option
     local description="output file"
-    explain_opt "-outfile" "<string>" "$description"
+    explain_opt "-outfile" "<file>" "$description"
 }
 
 ########
@@ -2316,19 +2316,19 @@ msisensor_pro_explain_opts()
 {
     # -r option
     description="Reference genome file"
-    explain_opt "-r" "<string>" "$description"
+    explain_opt "-r" "<file>" "$description"
 
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-normalbam" "<string>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-tumorbam" "<string>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"

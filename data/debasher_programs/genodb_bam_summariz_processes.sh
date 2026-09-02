@@ -70,11 +70,11 @@ concat_germline_snvs_explain_opts()
 {
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<string>" "$description"
+    explain_opt "-process-outd" "<file>" "$description"
 
     # -summarydir option
     local description="summary directory"
-    explain_opt "-summarydir" "<string>" "$description"
+    explain_opt "-summarydir" "<file>" "$description"
 }
 
 ########

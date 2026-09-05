@@ -73,7 +73,7 @@ allele_counter_norm_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
-    explain_opt "-l" "<string>" "$description"
+    explain_opt "-l" "<file>" "$description"
 
     # -r option
     description="Reference genome file"
@@ -85,11 +85,19 @@ allele_counter_norm_explain_opts()
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
-    explain_opt "-ma" "<string>" "$description"
+    explain_opt "-ma" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
     explain_opt "-process-outd" "<file>" "$description"
+
+    # -outcsv option
+    description="Postprocessed alleleCounter output for the normal sample"
+    explain_opt "-outcsv" "<file>" "$description"
+
+    # -outsnpids option
+    description="File with snp ids for alleleCounter output"
+    explain_opt "-outsnpids" "<file>" "$description"
 }
 
 ########
@@ -106,12 +114,13 @@ allele_counter_norm_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || exit 1
+    define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
     # -l option
     define_cmdline_infile_opt "$cmdline" "-l" optlist || exit 1
@@ -125,7 +134,15 @@ allele_counter_norm_define_opts()
     define_opt "-normalbam" "$normalbam" optlist || exit 1
 
     # -ma option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-ma" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-ma" optlist || exit 1
+
+    # -outcsv option
+    local outcsv="${process_outdir}"/allele_counter_norm_postproc.csv
+    define_opt "-outcsv" "$outcsv" optlist || exit 1
+
+    # -outsnpids option
+    local outsnpids="${process_outdir}"/snpids
+    define_opt "-outsnpids" "$outsnpids" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -140,10 +157,15 @@ allele_counter_norm()
     local ref=`read_opt_value_from_func_args "-r" "$@"`
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local contig_mapping=`read_opt_value_from_func_args "-ma" "$@"`
+    if [ "$contig_mapping" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        contig_mapping=${NOFILE}
+    fi
+    local outcsv=`read_opt_value_from_func_args "-outcsv" "$@"`
+    local outsnpids=`read_opt_value_from_func_args "-outsnpids" "$@"`
 
     # Extract SNP ids to a separate file
     logmsg "* Extracting SNP ids..."
-    extract_snp_ids_from_locis "${locis}" > "${process_outd}"/snpids
+    extract_snp_ids_from_locis "${locis}" > "${outsnpids}"
 
     # Create file for alleleCounter, mapping contigs if required
     logmsg "* Preprocessing locis..."
@@ -163,7 +185,7 @@ allele_counter_norm()
 
     # Postprocess alleleCounter output
     logmsg "* Postprocessing alleleCounter output..."
-    postproc_allelecounter_output "${process_outd}"/allele_counter_norm.csv "${contig_mapping}" > "${process_outd}"/allele_counter_norm_postproc.csv
+    postproc_allelecounter_output "${process_outd}"/allele_counter_norm.csv "${contig_mapping}" > "${outcsv}"
 }
 
 ########
@@ -177,7 +199,7 @@ allele_counter_tumor_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
-    explain_opt "-l" "<string>" "$description"
+    explain_opt "-l" "<file>" "$description"
 
     # -r option
     description="Reference genome file"
@@ -189,11 +211,15 @@ allele_counter_tumor_explain_opts()
 
     # -ma option
     description="File containing a mapping from standard contig names expected by ASCAT (without the 'chr' prefix) to bam contig names"
-    explain_opt "-ma" "<string>" "$description"
+    explain_opt "-ma" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
     explain_opt "-process-outd" "<file>" "$description"
+
+    # -outcsv option
+    description="Postprocessed alleleCounter output for the tumor sample"
+    explain_opt "-outcsv" "<file>" "$description"
 }
 
 ########
@@ -210,12 +236,13 @@ allele_counter_tumor_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || exit 1
+    define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
     # -l option
     define_cmdline_infile_opt "$cmdline" "-l" optlist || exit 1
@@ -224,12 +251,16 @@ allele_counter_tumor_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -tumorbam option
-    local normalbam
+    local tumorbam
     tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
     # -ma option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-ma" ${NOFILE} optlist || exit 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-ma" optlist || exit 1
+
+    # -outcsv option
+    local outcsv="${process_outdir}"/allele_counter_tumor_postproc.csv
+    define_opt "-outcsv" "$outcsv" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
@@ -244,6 +275,10 @@ allele_counter_tumor()
     local ref=`read_opt_value_from_func_args "-r" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local contig_mapping=`read_opt_value_from_func_args "-ma" "$@"`
+    if [ "$contig_mapping" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        contig_mapping=${NOFILE}
+    fi
+    local outcsv=`read_opt_value_from_func_args "-outcsv" "$@"`
 
     # Extract SNP ids to a separate file
     logmsg "* Extracting SNP ids..."
@@ -267,7 +302,7 @@ allele_counter_tumor()
 
     # Postprocess alleleCounter output
     logmsg "* Postprocessing alleleCounter output..."
-    postproc_allelecounter_output "${process_outd}"/allele_counter_tumor.csv "${contig_mapping}" > "${process_outd}"/allele_counter_tumor_postproc.csv
+    postproc_allelecounter_output "${process_outd}"/allele_counter_tumor.csv "${contig_mapping}" > "${outcsv}"
 }
 
 ########
@@ -281,15 +316,15 @@ ascat_explain_opts()
 {
     # -acn option
     description="alleleCounter normal file"
-    explain_opt "-acn" "<string>" "$description"
+    explain_opt "-acn" "<file>" "$description"
 
     # -act option
     description="alleleCounter tumor file"
-    explain_opt "-act" "<string>" "$description"
+    explain_opt "-act" "<file>" "$description"
 
     # -snpids option
     description="File with snp ids for alleleCounter output"
-    explain_opt "-snpids" "<string>" "$description"
+    explain_opt "-snpids" "<file>" "$description"
 
     # -g option
     description="Sample gender: XX|XY"
@@ -297,7 +332,7 @@ ascat_explain_opts()
 
     # -sg option
     description="SNP GC correction file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
-    explain_opt "-sg" "<string>" "$description"
+    explain_opt "-sg" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -309,7 +344,7 @@ ascat_identify_cmdline_opts()
 {
     opt_is_cmdline "-acn"
     opt_is_cmdline "-act"
-    opt_is_cmdline "-snipids"
+    opt_is_cmdline "-snpids"
     opt_is_cmdline "-g"
     opt_is_cmdline "-sg"
 }
@@ -319,42 +354,22 @@ ascat_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || exit 1
+    define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
-    # Define -acn option or retrieve dependency
-    local allelecountnorm_dep=`find_dependency_for_process "${jobspec}" allele_counter_norm`
-    if [ ${allelecountnorm_dep} = ${DEP_NOT_FOUND} ]; then
-        define_cmdline_infile_opt "${cmdline}" "-acn"  optlist || exit 1
-    else
-        local acnorm_outd=`get_outd_for_dep "${allelecountnorm_dep}"`
-        local allelecount_norm_file="${acnorm_outd}"/allele_counter_norm_postproc.csv
-        define_opt "-acn" "${allelecount_norm_file}" optlist || exit 1
-    fi
+    # -acn option
+    define_opt_from_proc_out "-acn" "allele_counter_norm" "-outcsv" optlist || exit 1
 
-    # Define -act option or retrieve dependency
-    local allelecounttumor_dep=`find_dependency_for_process "${jobspec}" allele_counter_tumor`
-    if [ ${allelecounttumor_dep} = ${DEP_NOT_FOUND} ]; then
-        define_cmdline_infile_opt "${cmdline}" "-act"  optlist || exit 1
-    else
-        local actumor_outd=`get_outd_for_dep "${allelecounttumor_dep}"`
-        local allelecount_tumor_file="${actumor_outd}"/allele_counter_tumor_postproc.csv
-        define_opt "-act" "${allelecount_tumor_file}" optlist || exit 1
-    fi
+    # -act option
+    define_opt_from_proc_out "-act" "allele_counter_tumor" "-outcsv" optlist || exit 1
 
-    # Define -snpids option or retrieve dependency
-    local allelecountnorm_dep=`find_dependency_for_process "${jobspec}" allele_counter_norm`
-    if [ ${allelecountnorm_dep} = ${DEP_NOT_FOUND} ]; then
-        define_cmdline_infile_opt "${cmdline}" "-snpids"  optlist || exit 1
-    else
-        local acnorm_outd=`get_outd_for_dep "${allelecountnorm_dep}"`
-        local snpids_file=${acnorm_outd}/snpids
-        define_opt "-snpids" "${snpids_file}" optlist || exit 1
-    fi
+    # -snpids option
+    define_opt_from_proc_out "-snpids" "allele_counter_norm" "-outsnpids" optlist || exit 1
 
     # -g option
     define_cmdline_opt "$cmdline" "-g" optlist || exit 1

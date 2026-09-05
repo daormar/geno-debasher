@@ -1,4 +1,4 @@
-1# Geno-DeBasher package
+# Geno-DeBasher package
 # Copyright (C) 2019-2024 Daniel Ortiz-Mart\'inez
 #
 # This library is free software; you can redistribute it and/or
@@ -46,6 +46,10 @@ snp_pileup_explain_opts()
     # -process-outd option
     local description="output directory"
     explain_opt "-process-outd" "<file>" "$description"
+
+    # -outcounts option
+    local description="pile up counts file"
+    explain_opt "-outcounts" "<file>" "$description"
 }
 
 ########
@@ -61,12 +65,13 @@ snp_pileup_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" ${process_outd} optlist || exit 1
+    define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
     # -sv option
     define_cmdline_infile_opt "$cmdline" "-sv" optlist || exit 1
@@ -81,6 +86,10 @@ snp_pileup_define_opts()
     tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || exit 1
     define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
+    # -outcounts option
+    local outcounts="${process_outdir}"/snp-pileup-counts.csv
+    define_opt "-outcounts" "$outcounts" optlist || exit 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -93,6 +102,7 @@ snp_pileup()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local snpvcf=`read_opt_value_from_func_args "-sv" "$@"`
+    local outcounts=`read_opt_value_from_func_args "-outcounts" "$@"`
 
     # Activate conda environment if needed
     logmsg "* Activating conda environment..."
@@ -100,7 +110,7 @@ snp_pileup()
 
     # Execute snp-pileup
     logmsg "* Executing snp-pileup..."
-    snp-pileup ${snpvcf} "${process_outd}"/snp-pileup-counts.csv "${normalbam}" "${tumorbam}" 2>&1 || exit 1
+    snp-pileup ${snpvcf} "${outcounts}" "${normalbam}" "${tumorbam}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
     logmsg "* Dectivating conda environment..."
@@ -116,13 +126,17 @@ snp_pileup_conda_envs()
 #######
 facets_explain_opts()
 {
-    # -pileup-counts option
+    # -sp option
     description="SNP pileup file (required if pileup process has not been performed)"
-    explain_opt "-sp" "<string>" "$description"
+    explain_opt "-sp" "<file>" "$description"
 
     # -pileup-counts option
     local description="pile up counts file"
-    explain_opt "-pileup-counts" "<string>" "$description"
+    explain_opt "-pileup-counts" "<file>" "$description"
+
+    # -process-outd option
+    local description="output directory"
+    explain_opt "-process-outd" "<file>" "$description"
 }
 
 ########
@@ -136,21 +150,16 @@ facets_define_opts()
 {
     # Initialize variables
     local cmdline=$1
-    local jobspec=$2
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || exit 1
+    define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
-    local pileup_dep=`find_dependency_for_process "${jobspec}" snp_pileup`
-    if [ ${pileup_dep} != ${DEP_NOT_FOUND} ]; then
-        local pileup_outd=`get_default_outd_for_dep ${outd} "${pileup_dep}"`
-        local pileup_counts_file="${pileup_outd}"/snp-pileup-counts.csv
-        define_opt "-pileup-counts" "${pileup_counts_file}" optlist || exit 1
-    else
-        define_cmdline_infile_opt "${cmdline}" "-sp" optlist || exit 1
-    fi
+    # -pileup-counts option
+    define_opt_from_proc_out "-pileup-counts" "snp_pileup" "-outcounts" optlist || exit 1
 
     # Save option list
     save_opt_list optlist

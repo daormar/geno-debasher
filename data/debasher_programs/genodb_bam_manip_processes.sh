@@ -122,7 +122,7 @@ index_tum_bam_define_opts()
     local optlist=""
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}" "$@"`
+    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -192,11 +192,12 @@ sort_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -280,11 +281,12 @@ sort_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -362,6 +364,10 @@ samtools_mpileup_norm_bam_explain_opts()
     # -process-outd option
     local description="output directory"
     explain_opt "-process-outd" "<file>" "$description"
+
+    # -outfile option
+    local description="output pileup file"
+    explain_opt "-outfile" "<file>" "$description"
 }
 
 ########
@@ -378,11 +384,12 @@ samtools_mpileup_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -397,6 +404,10 @@ samtools_mpileup_norm_bam_define_opts()
     # -mpb option
     define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
 
+    # -outfile option
+    local outfile="${process_outdir}"/normal.pileup.gz
+    define_opt "-outfile" "$outfile" optlist || return 1
+
     # Save option list
     save_opt_list optlist
 }
@@ -406,7 +417,7 @@ get_samtools_mpileup_l_opt()
 {
     local mpbfile=$1
 
-    if [ "${mpbfile}" = ${OPT_NOT_FOUND} ]; then
+    if [ "${mpbfile}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         echo ""
     else
         echo "-l ${mpbfile}"
@@ -470,6 +481,10 @@ samtools_mpileup_tum_bam_explain_opts()
     # -process-outd option
     local description="output directory"
     explain_opt "-process-outd" "<file>" "$description"
+
+    # -outfile option
+    local description="output pileup file"
+    explain_opt "-outfile" "<file>" "$description"
 }
 
 ########
@@ -486,11 +501,12 @@ samtools_mpileup_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -r option
     local genref
@@ -504,6 +520,10 @@ samtools_mpileup_tum_bam_define_opts()
 
     # -mpb option
     define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
+    # -outfile option
+    local outfile="${process_outdir}"/tumor.pileup.gz
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -588,37 +608,47 @@ parallel_samtools_mpileup_norm_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
-
-    # Define the -out-processdir option, the output directory for the process
-    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
-    # -r option
+    # -r option value
     local genref
     genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
-
-    # -mpb option
-    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        normalbam="${abs_splitdir}"/normal_${contig}.bam
-        define_opt "-normalbam" "${normalbam}" specific_optlist || return 1
-        define_opt "-contig" $contig specific_optlist || return 1
-        define_opt "-outfile" "${process_outdir}"/normal_${contig}.pileup.gz specific_optlist || return 1
-        save_opt_list specific_optlist
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
+
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -out-processdir option, the output directory for the process
+        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+        # -r option
+        define_opt "-r" "$genref" optlist || return 1
+
+        # -mpb option
+        define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
+        # -normalbam option
+        local contig=${array[$idx]}
+        local normalbam="${abs_splitdir}"/normal_${contig}.bam
+        define_opt "-normalbam" "$normalbam" optlist || return 1
+
+        # -contig option
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # -outfile option
+        local outfile="${process_outdir}"/normal_${contig}.pileup.gz
+        define_opt "-outfile" "$outfile" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 
@@ -715,37 +745,47 @@ parallel_samtools_mpileup_tum_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
-
-    # Define the -out-processdir option, the output directory for the process
-    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
-    # -r option
+    # -r option value
     local genref
     genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
-
-    # -mpb option
-    define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        tumorbam="${abs_splitdir}"/tumor_${contig}.bam
-        define_opt "-tumorbam" "${tumorbam}" specific_optlist || return 1
-        define_opt "-contig" $contig specific_optlist || return 1
-        define_opt "-outfile" "${process_outdir}"/tumor_${contig}.pileup.gz specific_optlist || return 1
-        save_opt_list specific_optlist
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
+
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -out-processdir option, the output directory for the process
+        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+        # -r option
+        define_opt "-r" "$genref" optlist || return 1
+
+        # -mpb option
+        define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
+
+        # -tumorbam option
+        local contig=${array[$idx]}
+        local tumorbam="${abs_splitdir}"/tumor_${contig}.bam
+        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+
+        # -contig option
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # -outfile option
+        local outfile="${process_outdir}"/tumor_${contig}.pileup.gz
+        define_opt "-outfile" "$outfile" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 
@@ -832,29 +872,37 @@ parallel_split_norm_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
-    # -normalbam option
+    # -normalbam option value
     local normalbam
     normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        define_opt "-contig" $contig specific_optlist || return 1
-        define_opt "-outfile" "${abs_splitdir}"/normal_${contig}.bam specific_optlist || return 1
-        save_opt_list specific_optlist
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
+
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -normalbam option
+        define_opt "-normalbam" "$normalbam" optlist || return 1
+
+        # -contig option
+        local contig=${array[$idx]}
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # -outfile option
+        local outfile="${abs_splitdir}"/normal_${contig}.bam
+        define_opt "-outfile" "$outfile" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 
@@ -923,29 +971,37 @@ parallel_split_tum_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
-    # -tumorbam option
+    # -tumorbam option value
     local tumorbam
     tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        define_opt "-contig" $contig specific_optlist || return 1
-        define_opt "-outfile" "${abs_splitdir}"/tumor_${contig}.bam specific_optlist || return 1
-        save_opt_list specific_optlist
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
+
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -tumorbam option
+        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+
+        # -contig option
+        local contig=${array[$idx]}
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # -outfile option
+        local outfile="${abs_splitdir}"/tumor_${contig}.bam
+        define_opt "-outfile" "$outfile" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 
@@ -1156,13 +1212,15 @@ norm_bam_to_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -normalbam option
-    define_opt "-normalbam" "${abs_datadir}"/normal.bam optlist || return 1
+    local normalbam="${abs_datadir}"/normal.bam
+    define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/normal_unmapped.bam optlist || return 1
+    local outfile="${abs_datadir}"/normal_unmapped.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1175,6 +1233,9 @@ norm_bam_to_ubam()
     local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
+    fi
     local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
 
     # Create tmpdir for gatk
@@ -1244,13 +1305,15 @@ tum_bam_to_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -tumorbam option
-    define_opt "-tumorbam" "${abs_datadir}"/tumor.bam optlist || return 1
+    local tumorbam="${abs_datadir}"/tumor.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/tumor_unmapped.bam optlist || return 1
+    local outfile="${abs_datadir}"/tumor_unmapped.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1263,6 +1326,9 @@ tum_bam_to_ubam()
     local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
+    fi
     local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
 
     # Create tmpdir for gatk
@@ -1346,10 +1412,11 @@ align_norm_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -normalbam option
-    define_opt "-normalbam" "${abs_datadir}"/normal_unmapped.bam optlist || return 1
+    local normalbam="${abs_datadir}"/normal_unmapped.bam
+    define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
     local cpus
@@ -1357,7 +1424,8 @@ align_norm_ubam_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/normal_aligned.bam optlist || return 1
+    local outfile="${abs_datadir}"/normal_aligned.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1384,6 +1452,9 @@ align_norm_ubam()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local ref=`read_opt_value_from_func_args "-r" "$@"`
     local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
+    fi
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
     local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
 
@@ -1505,10 +1576,11 @@ align_tum_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -tumorbam option
-    define_opt "-tumorbam" "${abs_datadir}"/tumor_unmapped.bam optlist || return 1
+    local tumorbam="${abs_datadir}"/tumor_unmapped.bam
+    define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
     local cpus
@@ -1516,7 +1588,8 @@ align_tum_ubam_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/tumor_aligned.bam optlist || return 1
+    local outfile="${abs_datadir}"/tumor_aligned.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1530,6 +1603,9 @@ align_tum_ubam()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local ref=`read_opt_value_from_func_args "-r" "$@"`
     local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
+    fi
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
     local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
 

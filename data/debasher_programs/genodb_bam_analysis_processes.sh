@@ -88,7 +88,7 @@ manta_germline_define_opts()
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # -cr option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
     local cpus
@@ -120,6 +120,9 @@ manta_germline()
     local ref=`read_opt_value_from_func_args "-r" "$@"`
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local callregf=`read_opt_value_from_func_args "-cr" "$@"`
+    if [ "${callregf}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        callregf=${NOFILE}
+    fi
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
 
     # Define --callRegions option
@@ -220,7 +223,7 @@ manta_somatic_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -cr option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
     local cpus
@@ -240,6 +243,9 @@ manta_somatic()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local callregf=`read_opt_value_from_func_args "-cr" "$@"`
+    if [ "${callregf}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        callregf=${NOFILE}
+    fi
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
 
     # Define --callRegions option
@@ -334,7 +340,7 @@ strelka_germline_define_opts()
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # -cr option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # Get germline snvs summary directory
     local abs_sumdir=`get_absolute_shdirname ${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}`
@@ -359,6 +365,9 @@ strelka_germline()
     local ref=`read_opt_value_from_func_args "-r" "$@"`
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local callregf=`read_opt_value_from_func_args "-cr" "$@"`
+    if [ "${callregf}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        callregf=${NOFILE}
+    fi
     local summarydir=`read_opt_value_from_func_args "-summarydir" "$@"`
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
 
@@ -706,12 +715,10 @@ strelka_somatic_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -manta-outd option
-    local manta_outd
-    manta_outd=`debasher::_get_process_outdir manta_somatic`
-    define_opt "-manta-outd" "${manta_outd}" optlist || return 1
+    define_opt_from_proc_out "-manta-outd" "manta_somatic" "-out-processdir" optlist || return 1
 
     # -cr option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-cr" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
     local cpus
@@ -750,6 +757,9 @@ strelka_somatic()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local callregf=`read_opt_value_from_func_args "-cr" "$@"`
+    if [ "${callregf}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        callregf=${NOFILE}
+    fi
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
 
     # Define --indelCandidates option if output from Manta is available
@@ -1164,7 +1174,7 @@ snp_pileup_plus_facets_define_opts()
     define_cmdline_infile_opt "$cmdline" "-sv" optlist || return 1
 
     # -md option
-    define_cmdline_nonmandatory_opt "$cmdline" "-md" ${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-md" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1189,6 +1199,9 @@ snp_pileup_plus_facets()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local snpvcf=`read_opt_value_from_func_args "-sv" "$@"`
     local mindepth=`read_opt_value_from_func_args "-md" "$@"`
+    if [ "${mindepth}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        mindepth=${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC}
+    fi
 
     # Activate conda environment
     logmsg "* Activating conda environment (snp-pileup)..."
@@ -1330,8 +1343,8 @@ sequenza_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
-    local process_spec=$2
     local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -out-processdir option, the output directory for the process
@@ -1341,20 +1354,14 @@ sequenza_define_opts()
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -gcc option
-    local gccfile
-    gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
+    local gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
     define_opt "-gcc" "$gccfile" optlist || return 1
 
-    # Get normal pileup file
-    local npileupdir
-    npileupdir=`get_outd_for_dep_given_process_spec "${process_spec}" samtools_mpileup_norm_bam` || { errmsg "Error: dependency samtools_mpileup_norm_bam not defined for sequenza"; return 1; }
-    local npileup="${npileupdir}"/normal.pileup.gz
-    define_opt "-npileup" "${npileup}" optlist || return 1
+    # -npileup option
+    define_opt_from_proc_out "-npileup" "samtools_mpileup_norm_bam" "-outfile" optlist || return 1
 
-    # Get tumor pileup file
-    tpileupdir=`get_outd_for_dep_given_process_spec "${process_spec}" samtools_mpileup_tum_bam` || { errmsg "Error: dependency samtools_mpileup_tum_bam not defined for sequenza"; return 1; }
-    tpileup="${tpileupdir}"/tumor.pileup.gz
-    define_opt "-tpileup" "${tpileup}" optlist || return 1
+    # -tpileup option
+    define_opt_from_proc_out "-tpileup" "samtools_mpileup_tum_bam" "-outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1438,45 +1445,45 @@ parallel_bam2seqz_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
-
-    # Define the -out-processdir option, the output directory for the process
-    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
-    # -gcc option
-    local gccfile
-    gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
-    define_opt "-gcc" "$gccfile" optlist || return 1
-
-    # Get normal pileup directory
-    local npileupdir
-    npileupdir=`debasher::_get_process_outdir parallel_samtools_mpileup_norm_bam`
-
-    # Get tumor pileup directory
-    local tpileupdir
-    tpileupdir=`debasher::_get_process_outdir parallel_samtools_mpileup_tum_bam`
+    # -gcc option value
+    local gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        npileup="${npileupdir}"/normal_${contig}.pileup.gz
-        define_opt "-npileup" "${npileup}" specific_optlist || return 1
-        tpileup="${tpileupdir}"/tumor_${contig}.pileup.gz
-        define_opt "-tpileup" "${tpileup}" specific_optlist || return 1
-        define_opt "-contig" $contig specific_optlist || return 1
-        define_opt "-outfile" "${process_outdir}"/${contig}_seqz.gz specific_optlist || return 1
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
 
-        save_opt_list specific_optlist
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -out-processdir option, the output directory for the process
+        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+        # -gcc option
+        define_opt "-gcc" "$gccfile" optlist || return 1
+
+        # -npileup option
+        define_opt_from_proc_task_out "-npileup" "parallel_samtools_mpileup_norm_bam" "${idx}" "-outfile" optlist || return 1
+
+        # -tpileup option
+        define_opt_from_proc_task_out "-tpileup" "parallel_samtools_mpileup_tum_bam" "${idx}" "-outfile" optlist || return 1
+
+        # -contig option
+        local contig=${array[$idx]}
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # -outfile option
+        local outfile="${process_outdir}"/${contig}_seqz.gz
+        define_opt "-outfile" "$outfile" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 
@@ -1544,10 +1551,8 @@ seqzmerge_plus_sequenza_define_opts()
     # Define the -out-processdir option, the output directory for the process
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
-    # Get seqz directory
-    local seqzdir
-    seqzdir=`debasher::_get_process_outdir parallel_bam2seqz`
-    define_opt "-seqzdir" "${seqzdir}" optlist || return 1
+    # -seqzdir option
+    define_opt_from_proc_out "-seqzdir" "parallel_bam2seqz" "-out-processdir" optlist || return 1
 
     # -lc option
     define_cmdline_infile_opt "$cmdline" "-lc" optlist || return 1
@@ -1668,7 +1673,7 @@ lumpy_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -lx option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1694,6 +1699,9 @@ lumpy()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local exclude=`read_opt_value_from_func_args "-lx" "$@"`
+    if [ "${exclude}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        exclude=${NOFILE}
+    fi
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
@@ -1765,35 +1773,44 @@ parallel_lumpy_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
-
-    # Define the -out-processdir option, the output directory for the process
-    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
-
-    # -lx option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || return 1
+    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        normalbam="${abs_splitdir}"/normal_${contig}.bam
-        define_opt "-normalbam" "${normalbam}" specific_optlist || return 1
-        tumorbam="${abs_splitdir}"/tumor_${contig}.bam
-        define_opt "-tumorbam" "${tumorbam}" specific_optlist || return 1
-        define_opt "-contig" ${contig} specific_optlist || return 1
-        define_opt "-outfile" "${process_outdir}"/out${contig}.vcf specific_optlist || return 1
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
 
-        save_opt_list specific_optlist
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -out-processdir option, the output directory for the process
+        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+        # -lx option
+        define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
+
+        # -normalbam option
+        local contig=${array[$idx]}
+        local normalbam="${abs_splitdir}"/normal_${contig}.bam
+        define_opt "-normalbam" "$normalbam" optlist || return 1
+
+        # -tumorbam option
+        local tumorbam="${abs_splitdir}"/tumor_${contig}.bam
+        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+
+        # -contig option
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # -outfile option
+        local outfile="${process_outdir}"/out${contig}.vcf
+        define_opt "-outfile" "$outfile" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 
@@ -1806,6 +1823,9 @@ parallel_lumpy()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local contig=`read_opt_value_from_func_args "-contig" "$@"`
     local exclude=`read_opt_value_from_func_args "-lx" "$@"`
+    if [ "${exclude}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        exclude=${NOFILE}
+    fi
     local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
@@ -1899,7 +1919,7 @@ smoove_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -lx option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-lx" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
 
     # -cpus option
     local cpus
@@ -1931,6 +1951,9 @@ smoove()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local exclude=`read_opt_value_from_func_args "-lx" "$@"`
+    if [ "${exclude}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        exclude=${NOFILE}
+    fi
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
 
     # Activate conda environment
@@ -2016,7 +2039,7 @@ delly_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -dx option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-dx" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-dx" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -2043,6 +2066,9 @@ delly()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local exclude=`read_opt_value_from_func_args "-dx" "$@"`
+    if [ "${exclude}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        exclude=${NOFILE}
+    fi
 
     # Activate conda environment
     logmsg "* Activating conda environment (delly)..."
@@ -2128,38 +2154,47 @@ parallel_delly_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
-
-    # Define the -out-processdir option, the output directory for the process
-    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Obtain splitdir directory
-    abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
 
-    # -r option
+    # -r option value
     local genref
     genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
-
-    # -dx option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-dx" ${NOFILE} optlist || return 1
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        normalbam="${abs_splitdir}"/normal_${contig}.bam
-        define_opt "-normalbam" "${normalbam}" specific_optlist || return 1
-        tumorbam="${abs_splitdir}"/tumor_${contig}.bam
-        define_opt "-tumorbam" "${tumorbam}" specific_optlist || return 1
-        define_opt "-contig" $contig specific_optlist || return 1
-        save_opt_list specific_optlist
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
+
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -out-processdir option, the output directory for the process
+        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+        # -r option
+        define_opt "-r" "$genref" optlist || return 1
+
+        # -dx option
+        define_cmdline_infile_opt_if_given "$cmdline" "-dx" optlist || return 1
+
+        # -normalbam option
+        local contig=${array[$idx]}
+        local normalbam="${abs_splitdir}"/normal_${contig}.bam
+        define_opt "-normalbam" "$normalbam" optlist || return 1
+
+        # -tumorbam option
+        local tumorbam="${abs_splitdir}"/tumor_${contig}.bam
+        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+
+        # -contig option
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 
@@ -2173,6 +2208,9 @@ parallel_delly()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local contig=`read_opt_value_from_func_args "-contig" "$@"`
     local exclude=`read_opt_value_from_func_args "-dx" "$@"`
+    if [ "${exclude}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        exclude=${NOFILE}
+    fi
 
     # Activate conda environment
     logmsg "* Activating conda environment (delly)..."
@@ -2248,37 +2286,44 @@ parallel_svtyper_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-    local optlist=""
 
-    # -normalbam option
+    # -normalbam option value
     local normalbam
     normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
 
-    # -tumorbam option
+    # -tumorbam option value
     local tumorbam
     tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
 
-    # Determine vcf directory
-    local vcfdir
-    vcfdir=`debasher::_get_process_outdir parallel_lumpy`
+    # Array of contigs to process, one task per contig
+    array=( `get_contig_list_from_file $clist` ) || return 1
 
-    # Generate option lists for each contig
-    local contigs
-    contigs=`get_contig_list_from_file $clist` || return 1
-    local contig
-    for contig in ${contigs}; do
-        local specific_optlist=${optlist}
-        define_opt "-contig" $contig specific_optlist || return 1
-        vcf="${vcfdir}"/out${contig}.vcf
-        define_opt "-vcf" "$vcf" specific_optlist || return 1
-        define_opt "-outfile"  "${process_outdir}"/out${contig}.vcf specific_optlist || return 1
-        save_opt_list specific_optlist
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -normalbam option
+        define_opt "-normalbam" "$normalbam" optlist || return 1
+
+        # -tumorbam option
+        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+
+        # -contig option
+        local contig=${array[$idx]}
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # -vcf option
+        define_opt_from_proc_task_out "-vcf" "parallel_lumpy" "${idx}" "-outfile" optlist || return 1
+
+        # -outfile option
+        local outfile="${process_outdir}"/out${contig}.vcf
+        define_opt "-outfile" "$outfile" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
     done
 }
 

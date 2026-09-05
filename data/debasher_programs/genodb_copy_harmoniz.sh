@@ -57,13 +57,14 @@ norm_bam_to_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -normalbam option
-    define_opt "-normalbam" "${abs_datadir}"/copy_normal.bam optlist || return 1
+    define_opt_from_proc_out "-normalbam" "copy_norm_bam" "-out-nb" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/normal_unmapped.bam optlist || return 1
+    local outfile="${abs_datadir}"/normal_unmapped.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -85,13 +86,14 @@ tum_bam_to_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -tumorbam option
-    define_opt "-tumorbam" "${abs_datadir}"/copy_tumor.bam optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "copy_tum_bam" "-out-tb" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/tumor_unmapped.bam optlist || return 1
+    local outfile="${abs_datadir}"/tumor_unmapped.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -118,10 +120,10 @@ align_norm_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -normalbam option
-    define_opt "-normalbam" "${abs_datadir}"/normal_unmapped.bam optlist || return 1
+    define_opt_from_proc_out "-normalbam" "norm_bam_to_ubam" "-outfile" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
     local cpus
@@ -129,7 +131,8 @@ align_norm_ubam_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/normal.bam optlist || return 1
+    local outfile="${abs_datadir}"/normal.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -156,10 +159,10 @@ align_tum_ubam_define_opts()
     local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
 
     # -tumorbam option
-    define_opt "-tumorbam" "${abs_datadir}"/tumor_unmapped.bam optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "tum_bam_to_ubam" "-outfile" optlist || return 1
 
     # -mrec option
-    define_cmdline_nonmandatory_opt "$cmdline" "-mrec" ${DEFAULT_MAX_RECORDS_IN_RAM_GATK} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
     local cpus
@@ -167,7 +170,8 @@ align_tum_ubam_define_opts()
     define_opt "-cpus" $cpus optlist
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/tumor.bam optlist || return 1
+    local outfile="${abs_datadir}"/tumor.bam
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist

@@ -157,11 +157,12 @@ scp_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
@@ -216,11 +217,12 @@ scp_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
@@ -290,23 +292,24 @@ download_ega_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -egastr option
-    define_cmdline_nonmandatory_opt "$cmdline" "-egastr" ${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-egastr" optlist || return 1
 
     # -egacred option
     define_cmdline_opt "$cmdline" "-egacred" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -364,8 +367,14 @@ download_ega_norm_bam()
     local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local egaid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
+    if [ "${egastr}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        egastr=${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS}
+    fi
     local egacred=`read_opt_value_from_func_args "-egacred" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment
@@ -432,23 +441,24 @@ download_ega_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -egastr option
-    define_cmdline_nonmandatory_opt "$cmdline" "-egastr" ${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-egastr" optlist || return 1
 
     # -egacred option
     define_cmdline_opt "$cmdline" "-egacred" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -466,8 +476,14 @@ download_ega_tum_bam()
     local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local egaid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
+    if [ "${egastr}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        egastr=${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS}
+    fi
     local egacred=`read_opt_value_from_func_args "-egacred" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment
@@ -559,11 +575,12 @@ download_ega_asp_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
@@ -581,7 +598,7 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -603,6 +620,9 @@ download_ega_asp_norm_bam()
     local aspera_server=`read_opt_value_from_func_args "-asperaserv" "$@"`
     local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
 
@@ -682,11 +702,12 @@ download_ega_asp_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
@@ -704,7 +725,7 @@ download_ega_asp_tum_bam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -726,6 +747,9 @@ download_ega_asp_tum_bam()
     local aspera_server=`read_opt_value_from_func_args "-asperaserv" "$@"`
     local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
 
@@ -786,11 +810,12 @@ decrypt_ega_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
@@ -866,11 +891,12 @@ decrypt_ega_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
@@ -945,11 +971,12 @@ decsingle_ega_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
@@ -1001,7 +1028,7 @@ decsingle_ega_tum_bam_explain_opts()
 }
 
 ########
-decsingle_ega_norm_bam_identify_cmdline_opts()
+decsingle_ega_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-tdecsinglepwd"
@@ -1013,11 +1040,12 @@ decsingle_ega_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
@@ -1081,17 +1109,18 @@ download_aws_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -1109,6 +1138,9 @@ download_aws_norm_bam()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
@@ -1160,17 +1192,18 @@ download_aws_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -1188,6 +1221,9 @@ download_aws_tum_bam()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
@@ -1239,17 +1275,18 @@ download_collab_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -1267,6 +1304,9 @@ download_collab_norm_bam()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
@@ -1318,17 +1358,18 @@ download_collab_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -1346,6 +1387,9 @@ download_collab_tum_bam()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Download file
@@ -1384,7 +1428,7 @@ download_gdc_norm_bam_explain_opts()
     explain_opt "-nt" "<int>" "$description"
 
     # -normalbam option
-    local description="Tumor bam file"
+    local description="Normal bam file"
     explain_opt "-normalbam" "<file>" "$description"
 
     # -process-outd option
@@ -1407,23 +1451,24 @@ download_gdc_norm_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -gdcprocs option
-    define_cmdline_nonmandatory_opt "$cmdline" "-gdcprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-gdcprocs" optlist || return 1
 
     # -gdctok option
     define_cmdline_opt "$cmdline" "-gdctok" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -1453,8 +1498,14 @@ download_gdc_norm_bam()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local gdcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
+    if [ "${gdcprocs}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        gdcprocs=${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS}
+    fi
     local gdctok=`read_opt_value_from_func_args "-gdctok" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment
@@ -1523,23 +1574,24 @@ download_gdc_tum_bam_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -gdcprocs option
-    define_cmdline_nonmandatory_opt "$cmdline" "-gdcprocs" ${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-gdcprocs" optlist || return 1
 
     # -gdctok option
     define_cmdline_opt "$cmdline" "-gdctok" optlist || return 1
 
     # -nt option
-    define_cmdline_nonmandatory_opt "$cmdline" "-nt" ${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} optlist || return 1
+    define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
@@ -1557,8 +1609,14 @@ download_gdc_tum_bam()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local gdcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
+    if [ "${gdcprocs}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        gdcprocs=${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS}
+    fi
     local gdctok=`read_opt_value_from_func_args "-gdctok" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
+    fi
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
     # Activate conda environment

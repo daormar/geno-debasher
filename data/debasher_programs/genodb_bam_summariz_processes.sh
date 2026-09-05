@@ -89,11 +89,12 @@ concat_germline_snvs_define_opts()
     # Initialize variables
     local cmdline=$1
     local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
     local optlist=""
 
     # Define the -process-outd option, the output directory for the process
-    local process_outd=`get_process_outdir_given_process_spec "$process_spec"`
-    define_opt "-process-outd" "${process_outd}" optlist || return 1
+    define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # Get germline snvs summary directory
     local abs_sumdir=`get_absolute_shdirname ${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}`

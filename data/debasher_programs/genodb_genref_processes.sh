@@ -49,7 +49,7 @@ create_genref_for_bam_explain_opts()
 ########
 create_genref_for_bam_identify_cmdline_opts()
 {
-    opt_is_cmdline "-bf"
+    opt_is_cmdline "-br"
     opt_is_cmdline "-bam"
     opt_is_cmdline "-cm"
     opt_is_cmdline "-fbr"
@@ -66,7 +66,7 @@ get_bam_filename()
     bam=`read_opt_value_from_line "$cmdline" "-bam"` && given=1
     if [ $given -eq 1 ]; then
         # -bam option was given
-        file_exists "$bam" || { errmsg "file $bam does not exist" ; return 1; }
+        [ -f "$bam" ] || { errmsg "file $bam does not exist" ; return 1; }
         echo "$bam"
         return 0
     fi
@@ -75,13 +75,13 @@ get_bam_filename()
     local normalbam
     normalbam=`read_opt_value_from_line "$cmdline" "-n"` && given=1
     if [ $given -eq 1 ]; then
-        file_exists "$normalbam" || { errmsg "file $normalbam does not exist" ; return 1; }
+        [ -f "$normalbam" ] || { errmsg "file $normalbam does not exist" ; return 1; }
         echo "$normalbam"
         return 0
     fi
 
     # Check -extn option
-    if check_opt_given "$cmdline" "-extn"; then
+    if [ "`read_opt_value_from_line "$cmdline" "-extn"`" != "${DEBASHER_OPT_NOT_FOUND}" ]; then
         local abs_datadir=`get_absolute_shdirname ${GENODB_BAM_COMMON_DATADIR_BASENAME}`
         normalbam="${abs_datadir}"/normal.bam
         echo "$normalbam"
@@ -92,13 +92,13 @@ get_bam_filename()
     local tumorbam
     tumorbam=`read_opt_value_from_line "$cmdline" "-t"` && given=1
     if [ $given -eq 1 ]; then
-        file_exists "$tumorbam" || { errmsg "file $tumorbam does not exist" ; return 1; }
+        [ -f "$tumorbam" ] || { errmsg "file $tumorbam does not exist" ; return 1; }
         echo "$tumorbam"
         return 0
     fi
 
     # Check -extt option
-    if check_opt_given "$cmdline" "-extt"; then
+    if [ "`read_opt_value_from_line "$cmdline" "-extt"`" != "${DEBASHER_OPT_NOT_FOUND}" ]; then
         local abs_datadir=`get_absolute_shdirname ${GENODB_BAM_COMMON_DATADIR_BASENAME}`
         tumorbam="${abs_datadir}"/tumor.bam
         echo "$tumorbam"
@@ -132,19 +132,21 @@ create_genref_for_bam_define_opts()
 
     # -bam-idx option (it is defined for process synchronization
     # -purposes)
-    define_opt "-bam-idx" "$bam".bai optlist || return 1
+    local bam_idx="$bam".bai
+    define_opt "-bam-idx" "$bam_idx" optlist || return 1
 
     # -cm option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-cm" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-cm" optlist || return 1
 
     # -fbr option
-    define_cmdline_infile_nonmand_opt "$cmdline" "-fbr" ${NOFILE} optlist || return 1
+    define_cmdline_infile_opt_if_given "$cmdline" "-fbr" optlist || return 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
 
     # -outfile option
-    define_opt "-outfile" "${abs_datadir}"/genref.fa optlist || return 1
+    local outfile="${abs_datadir}"/genref.fa
+    define_opt "-outfile" "$outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -191,7 +193,13 @@ create_genref_for_bam()
     local bam=`read_opt_value_from_func_args "-bam" "$@"`
     local bam_idx=`read_opt_value_from_func_args "-bam-idx" "$@"`
     local contig_mapping=`read_opt_value_from_func_args "-cm" "$@"`
+    if [ "$contig_mapping" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        contig_mapping=${NOFILE}
+    fi
     local fallback_genref=`read_opt_value_from_func_args "-fbr" "$@"`
+    if [ "$fallback_genref" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
+        fallback_genref=${NOFILE}
+    fi
     local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
 
     # Create genome reference
@@ -236,7 +244,7 @@ create_genref_for_bam_conda_envs()
 get_contig_list_from_file()
 {
     local file=$1
-    file_exists "$file" || { errmsg "file $file containing contig list does not exist" ; return 1; }
+    [ -f "$file" ] || { errmsg "file $file containing contig list does not exist" ; return 1; }
     cat "$file"
 }
 
@@ -263,11 +271,11 @@ get_ref_filename()
     ref=`read_opt_value_from_line "$cmdline" "-r"` && given=1
     if [ $given -eq 1 ]; then
         # -r option was given
-        file_exists "$ref" || { errmsg "file $ref does not exist" ; return 1; }
+        [ -f "$ref" ] || { errmsg "file $ref does not exist" ; return 1; }
         echo "$ref"
     else
         # Check -br option
-        if check_opt_given "$cmdline" "-br"; then
+        if [ "`read_opt_value_from_line "$cmdline" "-br"`" != "${DEBASHER_OPT_NOT_FOUND}" ]; then
             local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
             ref="${abs_datadir}"/genref.fa
             echo "$ref"

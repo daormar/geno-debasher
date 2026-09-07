@@ -17,7 +17,7 @@
 # *- bash -*
 
 # INCLUDE BASH LIBRARY
-. "${DEBASHER_HOME_DIR}"/debasher_lib || exit 1
+. "${DEBASHER_HOME_DIR}"/lib/debasher/debasher_lib || exit 1
 
 ########
 print_desc()

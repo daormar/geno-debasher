@@ -20,10 +20,6 @@
 # CONSTANTS #
 #############
 
-GENODB_BAM_COMMON_DATADIR_BASENAME="data"
-GENODB_BAM_COMMON_SPLITDIR_BASENAME="split"
-GENODB_BAM_COMMON_SUMMARYDIR_BASENAME="summary"
-GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME="summary/germline_snvs"
 GENODB_BAM_COMMON_SUMMARY_FILE_EXT="sum"
 
 #############
@@ -44,7 +40,7 @@ genodb_bam_common::get_normal_bam_filename()
     else
         # Check -extn option
         check_opt_given "$cmdline" "-extn" || { errmsg "-n or -extn option should be given" ; return 1; }
-        local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+        local abs_datadir=`get_absolute_shdirname "data"`
         normalbam="${abs_datadir}"/normal.bam
         echo "$normalbam"
     fi
@@ -64,7 +60,7 @@ genodb_bam_common::get_tumor_bam_filename()
     else
         # Check -extt option
         check_opt_given "$cmdline" "-extt" || { errmsg "-t or -extt option should be given" ; return 1; }
-        local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+        local abs_datadir=`get_absolute_shdirname "data"`
         tumorbam="${abs_datadir}"/tumor.bam
         echo "$tumorbam"
     fi

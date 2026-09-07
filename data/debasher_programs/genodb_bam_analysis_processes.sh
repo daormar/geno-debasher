@@ -343,7 +343,7 @@ strelka_germline_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -summarydir option
-    define_opt_from_shared_dir "-summarydir" "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}" optlist || return 1
+    define_opt_from_shared_dir "-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
     local cpus
@@ -454,7 +454,7 @@ platypus_germline_define_opts()
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # -summarydir option
-    define_opt_from_shared_dir "-summarydir" "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}" optlist || return 1
+    define_opt_from_shared_dir "-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
     local cpus
@@ -1270,7 +1270,7 @@ gen_sequenza_gcc_define_opts()
     define_opt "-r" "$genref" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
 
     # -outfile option
     define_opt "-outfile" "${abs_datadir}"/sequenza_gccfile.txt.gz optlist || return 1
@@ -1345,7 +1345,7 @@ sequenza_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
 
     # -gcc option
     local gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
@@ -1441,7 +1441,7 @@ parallel_bam2seqz_define_opts()
     local process_outdir=$4
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
 
     # -gcc option value
     local gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
@@ -1769,7 +1769,7 @@ parallel_lumpy_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "split"`
 
     # Get name of contig list file
     local clist
@@ -2150,7 +2150,7 @@ parallel_delly_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "split"`
 
     # -r option value
     local genref

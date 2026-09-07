@@ -97,7 +97,7 @@ concat_germline_snvs_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -summarydir option
-    define_opt_from_shared_dir "-summarydir" "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}" optlist || return 1
+    define_opt_from_shared_dir "-summarydir" "summary/germline_snvs" optlist || return 1
 
     # Save option list
     save_opt_list optlist

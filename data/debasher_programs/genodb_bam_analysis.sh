@@ -1,3 +1,5 @@
+genodebasher_pkglibdir="/home/dortiz/bio/software/geno-debasher/lib/geno-debasher"
+genodebasher_debasher_programs_dir="/home/dortiz/bio/software/geno-debasher/share/geno-debasher/debasher_programs"
 # Geno-DeBasher package
 # Copyright (C) 2019-2024 Daniel Ortiz-Mart\'inez
 #

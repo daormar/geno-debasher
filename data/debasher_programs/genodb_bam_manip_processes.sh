@@ -53,7 +53,7 @@ index_norm_bam_define_opts()
     local optlist=""
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -122,7 +122,7 @@ index_tum_bam_define_opts()
     local optlist=""
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -200,7 +200,7 @@ sort_norm_bam_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -289,7 +289,7 @@ sort_tum_bam_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -610,7 +610,7 @@ parallel_samtools_mpileup_norm_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "split"`
 
     # -r option value
     local genref
@@ -747,7 +747,7 @@ parallel_samtools_mpileup_tum_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "split"`
 
     # -r option value
     local genref
@@ -874,7 +874,7 @@ parallel_split_norm_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "split"`
 
     # -normalbam option value
     local normalbam
@@ -973,7 +973,7 @@ parallel_split_tum_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_SPLITDIR_BASENAME}"`
+    local abs_splitdir=`get_absolute_shdirname "split"`
 
     # -tumorbam option value
     local tumorbam
@@ -1209,7 +1209,7 @@ norm_bam_to_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
 
     # -normalbam option
     local normalbam="${abs_datadir}"/normal.bam
@@ -1302,7 +1302,7 @@ tum_bam_to_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
 
     # -tumorbam option
     local tumorbam="${abs_datadir}"/tumor.bam
@@ -1409,7 +1409,7 @@ align_norm_ubam_define_opts()
     define_opt "-r" "$genref" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
 
     # -normalbam option
     local normalbam="${abs_datadir}"/normal_unmapped.bam
@@ -1573,7 +1573,7 @@ align_tum_ubam_define_opts()
     define_opt "-r" "$genref" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${GENODB_BAM_COMMON_DATADIR_BASENAME}"`
+    local abs_datadir=`get_absolute_shdirname "data"`
 
     # -tumorbam option
     local tumorbam="${abs_datadir}"/tumor_unmapped.bam

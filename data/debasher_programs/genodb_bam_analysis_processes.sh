@@ -342,11 +342,8 @@ strelka_germline_define_opts()
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
-    # Get germline snvs summary directory
-    local abs_sumdir=`get_absolute_shdirname ${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}`
-
     # -summarydir option
-    define_opt "-summarydir" "${abs_sumdir}" optlist || return 1
+    define_opt_from_shared_dir "-summarydir" "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}" optlist || return 1
 
     # -cpus option
     local cpus
@@ -456,11 +453,8 @@ platypus_germline_define_opts()
     normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
-    # Get germline snvs summary directory
-    local abs_sumdir=`get_absolute_shdirname "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}"`
-
     # -summarydir option
-    define_opt "-summarydir" "${abs_sumdir}" optlist || return 1
+    define_opt_from_shared_dir "-summarydir" "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}" optlist || return 1
 
     # -cpus option
     local cpus

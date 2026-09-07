@@ -96,11 +96,8 @@ concat_germline_snvs_define_opts()
     # Define the -process-outd option, the output directory for the process
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
-    # Get germline snvs summary directory
-    local abs_sumdir=`get_absolute_shdirname ${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}`
-
     # -summarydir option
-    define_opt "-summarydir" "${abs_sumdir}" optlist || return 1
+    define_opt_from_shared_dir "-summarydir" "${GENODB_BAM_COMMON_GERM_SNVS_SUM_DIR_BASENAME}" optlist || return 1
 
     # Save option list
     save_opt_list optlist

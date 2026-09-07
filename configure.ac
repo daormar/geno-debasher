@@ -437,7 +437,7 @@ AC_PATH_PROG(DOXYGEN,doxygen)
 AC_MSG_CHECKING(whether to enable debasher library)
 AC_ARG_WITH([debasher],
  [AS_HELP_STRING([--with-debasher=DIR],
-   [installs the package with the necessary code to combine it with the debasher library @<:@default=no@:>@])],
+   [installs the package with the necessary code to combine it with the debasher library, where DIR is the debasher home directory (containing bin/ and lib/debasher/) @<:@default=no@:>@])],
  [with_debasher=$withval],
  [with_debasher=""])
 if test "$with_debasher" = ""; then

@@ -36,6 +36,10 @@ index_norm_bam_explain_opts()
     # -out-nbidx option
     local description="output file"
     explain_opt "-out-nbidx" "<file>" "$description"
+
+    # -out-nb option
+    local description="indexed normal bam file"
+    explain_opt "-out-nb" "<file>" "$description"
 }
 
 ########
@@ -59,6 +63,10 @@ index_norm_bam_define_opts()
 
     # -out-nbidx option
     define_opt "-out-nbidx" "$normalbam".bai optlist || return 1
+
+    # -out-nb option (republished once indexed, so downstream processes
+    # can connect to it and depend on indexing having completed)
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -105,6 +113,10 @@ index_tum_bam_explain_opts()
     # -out-tbidx option
     local description="output file"
     explain_opt "-out-tbidx" "<file>" "$description"
+
+    # -out-tb option
+    local description="indexed tumor bam file"
+    explain_opt "-out-tb" "<file>" "$description"
 }
 
 ########
@@ -128,6 +140,10 @@ index_tum_bam_define_opts()
 
     # -out-tbidx option
     define_opt "-out-tbidx" "$tumorbam".bai optlist || return 1
+
+    # -out-tb option (republished once indexed, so downstream processes
+    # can connect to it and depend on indexing having completed)
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist

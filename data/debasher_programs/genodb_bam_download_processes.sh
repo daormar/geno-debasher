@@ -108,7 +108,7 @@ copy_tum_bam_define_opts()
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
@@ -136,9 +136,9 @@ scp_norm_bam_explain_opts()
     description="Path to local normal bam file to be copied"
     explain_opt "-extn" "<file>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -167,10 +167,10 @@ scp_norm_bam_define_opts()
     # -extn option
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -180,7 +180,7 @@ scp_norm_bam_define_opts()
 scp_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local remote_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
@@ -196,9 +196,9 @@ scp_tum_bam_explain_opts()
     description="Path to local tumor bam file to be copied"
     explain_opt "-extt" "<file>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -227,10 +227,10 @@ scp_tum_bam_define_opts()
     # -extt option
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -240,7 +240,7 @@ scp_tum_bam_define_opts()
 scp_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local remote_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
 
@@ -268,9 +268,9 @@ download_ega_norm_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -311,7 +311,7 @@ download_ega_norm_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
@@ -417,9 +417,9 @@ download_ega_tum_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -460,7 +460,7 @@ download_ega_tum_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
@@ -549,9 +549,9 @@ download_ega_asp_norm_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -600,10 +600,10 @@ download_ega_asp_norm_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -613,7 +613,7 @@ download_ega_asp_norm_bam_define_opts()
 download_ega_asp_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
     local aspera_user=`read_opt_value_from_func_args "-asperausr" "$@"`
     local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" "$@"`
@@ -676,9 +676,9 @@ download_ega_asp_tum_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -727,10 +727,10 @@ download_ega_asp_tum_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -740,7 +740,7 @@ download_ega_asp_tum_bam_define_opts()
 download_ega_asp_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
     local aspera_user=`read_opt_value_from_func_args "-asperausr" "$@"`
     local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" "$@"`
@@ -787,9 +787,9 @@ decrypt_ega_norm_bam_explain_opts()
     description="File with EGA decryptor password"
     explain_opt "-egadecrpwd" "<file>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -801,7 +801,6 @@ decrypt_ega_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-egadecrpwd"
-    opt_is_cmdline "-normalbam"
 }
 
 ########
@@ -823,10 +822,10 @@ decrypt_ega_norm_bam_define_opts()
     # -egadecrpwd option
     define_cmdline_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -836,7 +835,7 @@ decrypt_ega_norm_bam_define_opts()
 decrypt_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
     local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
@@ -868,9 +867,9 @@ decrypt_ega_tum_bam_explain_opts()
     description="File with EGA decryptor password"
     explain_opt "-egadecrpwd" "<file>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -882,7 +881,6 @@ decrypt_ega_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-egadecrpwd"
-    opt_is_cmdline "-normalbam"
 }
 
 ########
@@ -904,10 +902,10 @@ decrypt_ega_tum_bam_define_opts()
     # -egadecrpwd option
     define_cmdline_infile_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -917,7 +915,7 @@ decrypt_ega_tum_bam_define_opts()
 decrypt_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
     local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
@@ -949,9 +947,9 @@ decsingle_ega_norm_bam_explain_opts()
     description="Password for bam file to be processed with decSINGLE tool"
     explain_opt "-ndecsinglepwd" "<string>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -984,10 +982,10 @@ decsingle_ega_norm_bam_define_opts()
     # -ndecsinglepwd option
     define_cmdline_opt "$cmdline" "-ndecsinglepwd" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -997,7 +995,7 @@ decsingle_ega_norm_bam_define_opts()
 decsingle_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
     local decsingle_pwd=`read_opt_value_from_func_args "-ndecsinglepwd" "$@"`
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
@@ -1018,9 +1016,9 @@ decsingle_ega_tum_bam_explain_opts()
     description="Password for bam file to be processed with decSINGLE tool"
     explain_opt "-tdecsinglepwd" "<string>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -1053,10 +1051,10 @@ decsingle_ega_tum_bam_define_opts()
     # -tdecsinglepwd option
     define_cmdline_opt "$cmdline" "-tdecsinglepwd" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1066,7 +1064,7 @@ decsingle_ega_tum_bam_define_opts()
 decsingle_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
     local decsingle_pwd=`read_opt_value_from_func_args "-tdecsinglepwd" "$@"`
     local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
@@ -1087,9 +1085,9 @@ download_aws_norm_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -1122,10 +1120,10 @@ download_aws_norm_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1135,7 +1133,7 @@ download_aws_norm_bam_define_opts()
 download_aws_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
@@ -1170,9 +1168,9 @@ download_aws_tum_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -1205,10 +1203,10 @@ download_aws_tum_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1218,7 +1216,7 @@ download_aws_tum_bam_define_opts()
 download_aws_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
@@ -1253,9 +1251,9 @@ download_collab_norm_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -1288,10 +1286,10 @@ download_collab_norm_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1301,7 +1299,7 @@ download_collab_norm_bam_define_opts()
 download_collab_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
@@ -1336,9 +1334,9 @@ download_collab_tum_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -1371,10 +1369,10 @@ download_collab_tum_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1384,7 +1382,7 @@ download_collab_tum_bam_define_opts()
 download_collab_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
@@ -1427,9 +1425,9 @@ download_gdc_norm_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -normalbam option
+    # -out-nb option
     local description="Normal bam file"
-    explain_opt "-normalbam" "<file>" "$description"
+    explain_opt "-out-nb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -1470,10 +1468,10 @@ download_gdc_norm_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -normalbam option
+    # -out-nb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local normalbam="${abs_datadir}"/normal.bam
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_opt "-out-nb" "$normalbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1495,7 +1493,7 @@ get_gdc_bamfname()
 download_gdc_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
     local gdcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
     local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
     if [ "${gdcprocs}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
@@ -1550,9 +1548,9 @@ download_gdc_tum_bam_explain_opts()
     description="Number of download tries per file (${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES} by default)"
     explain_opt "-nt" "<int>" "$description"
 
-    # -tumorbam option
+    # -out-tb option
     local description="Tumor bam file"
-    explain_opt "-tumorbam" "<file>" "$description"
+    explain_opt "-out-tb" "<file>" "$description"
 
     # -process-outd option
     local description="output directory"
@@ -1593,10 +1591,10 @@ download_gdc_tum_bam_define_opts()
     # -nt option
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
-    # -tumorbam option
+    # -out-tb option
     local abs_datadir=`get_absolute_shdirname "data"`
     local tumorbam="${abs_datadir}"/tumor.bam
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_opt "-out-tb" "$tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1606,7 +1604,7 @@ download_gdc_tum_bam_define_opts()
 download_gdc_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
     local gdcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
     local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
     if [ "${gdcprocs}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then

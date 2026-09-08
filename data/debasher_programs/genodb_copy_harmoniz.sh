@@ -177,6 +177,346 @@ align_tum_ubam_define_opts()
     save_opt_list optlist
 }
 
+########
+index_norm_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local optlist=""
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "align_norm_ubam" "-outfile" optlist || return 1
+
+    # -out-nbidx option
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    define_opt "-out-nbidx" "${abs_datadir}/normal.bam.bai" optlist || return 1
+
+    # -out-nb option (republished once indexed, so downstream processes
+    # can connect to it and depend on indexing having completed)
+    define_opt "-out-nb" "${abs_datadir}/normal.bam" optlist || return 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+index_tum_bam_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local optlist=""
+
+    # -tumorbam option
+    define_opt_from_proc_out "-tumorbam" "align_tum_ubam" "-outfile" optlist || return 1
+
+    # -out-tbidx option
+    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    define_opt "-out-tbidx" "${abs_datadir}/tumor.bam.bai" optlist || return 1
+
+    # -out-tb option (republished once indexed, so downstream processes
+    # can connect to it and depend on indexing having completed)
+    define_opt "-out-tb" "${abs_datadir}/tumor.bam" optlist || return 1
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+strelka_germline_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -cr option
+    define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
+
+    # -out-summarydir option
+    define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+platypus_germline_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -out-summarydir option
+    define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+gatk_haplotypecaller_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -sample-name option
+    define_cmdline_opt "$cmdline" "-sample-name" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # -mem option
+    local mem
+    mem=`extract_mem_from_process_spec "$process_spec"` || return 1
+    mem=`genodb_bam_common::slurm_to_java_mem_spec ${mem}` || return 1
+    define_opt "-mem" $mem optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+manta_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -tumorbam option
+    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+
+    # -cr option
+    define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+strelka_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -tumorbam option
+    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+
+    # -manta-outd option
+    define_opt_from_proc_out "-manta-outd" "manta_somatic" "-out-processdir" optlist || return 1
+
+    # -cr option
+    define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+mutect2_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -tumorbam option
+    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+
+    # -norm-sample-name option
+    define_cmdline_opt "$cmdline" "-norm-sample-name" optlist || return 1
+
+    # -panel-of-normals option
+    define_cmdline_opt "$cmdline" "-panel-of-normals" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # -mem option
+    local mem
+    mem=`extract_mem_from_process_spec "$process_spec"` || return 1
+    mem=`genodb_bam_common::slurm_to_java_mem_spec ${mem}` || return 1
+    define_opt "-mem" $mem optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+lofreq_somatic_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -tumorbam option
+    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
+########
+msisensor_pro_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+    local optlist=""
+
+    # Define the -out-processdir option, the output directory for the process
+    define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+    # -r option
+    local genref
+    genref=`get_ref_filename "$cmdline"` || return 1
+    define_opt "-r" "$genref" optlist || return 1
+
+    # -normalbam option
+    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+
+    # -tumorbam option
+    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+
+    # -cpus option
+    local cpus
+    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
+    define_opt "-cpus" $cpus optlist
+
+    # Save option list
+    save_opt_list optlist
+}
+
 genodb_copy_harmoniz_program()
 {
     add_debasher_process "copy_norm_bam"         "cpus=1  mem=2048 time=48:00:00"

@@ -303,9 +303,9 @@ strelka_germline_explain_opts()
     local description="number of cpus"
     explain_opt "-cpus" "<int>" "$description"
 
-    # -summarydir option
+    # -out-summarydir option
     local description="summary directory"
-    explain_opt "-summarydir" "<file>" "$description"
+    explain_opt "-out-summarydir" "<file>" "$description"
 }
 
 ########
@@ -342,8 +342,8 @@ strelka_germline_define_opts()
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
-    # -summarydir option
-    define_opt_from_shared_dir "-summarydir" "summary/germline_snvs" optlist || return 1
+    # -out-summarydir option
+    define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
     local cpus
@@ -365,7 +365,7 @@ strelka_germline()
     if [ "${callregf}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         callregf=${NOFILE}
     fi
-    local summarydir=`read_opt_value_from_func_args "-summarydir" "$@"`
+    local summarydir=`read_opt_value_from_func_args "-out-summarydir" "$@"`
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
 
     # Define --callRegions option
@@ -418,9 +418,9 @@ platypus_germline_explain_opts()
     local description="number of cpus"
     explain_opt "-cpus" "<int>" "$description"
 
-    # -summarydir option
+    # -out-summarydir option
     local description="summary directory"
-    explain_opt "-summarydir" "<file>" "$description"
+    explain_opt "-out-summarydir" "<file>" "$description"
 }
 
 ########
@@ -453,8 +453,8 @@ platypus_germline_define_opts()
     normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
-    # -summarydir option
-    define_opt_from_shared_dir "-summarydir" "summary/germline_snvs" optlist || return 1
+    # -out-summarydir option
+    define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
     local cpus
@@ -520,7 +520,7 @@ platypus_germline()
     local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
     local ref=`read_opt_value_from_func_args "-r" "$@"`
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local summarydir=`read_opt_value_from_func_args "-summarydir" "$@"`
+    local summarydir=`read_opt_value_from_func_args "-out-summarydir" "$@"`
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
 
     if [ -z "${PLATYPUS_HOME_DIR}" ]; then
@@ -2247,9 +2247,9 @@ parallel_svtyper_explain_opts()
     description="Normal bam file (required if no downloading processes have been defined)"
     explain_opt "-normalbam" "<file>" "$description"
 
-    # -t option
+    # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-t" "<file>" "$description"
+    explain_opt "-tumorbam" "<file>" "$description"
 
     # -lc option
     description="File with list of contig names to process"
@@ -2268,7 +2268,7 @@ parallel_svtyper_explain_opts()
 parallel_svtyper_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-t"
+    opt_is_cmdline "-tumorbam"
     opt_is_cmdline "-lc"
 }
 

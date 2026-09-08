@@ -126,9 +126,7 @@ align_norm_ubam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -outfile option
     local outfile="${abs_datadir}"/normal.bam
@@ -165,9 +163,7 @@ align_tum_ubam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -outfile option
     local outfile="${abs_datadir}"/tumor.bam
@@ -251,9 +247,7 @@ strelka_germline_define_opts()
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -284,9 +278,7 @@ platypus_germline_define_opts()
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -317,15 +309,10 @@ gatk_haplotypecaller_define_opts()
     define_cmdline_opt "$cmdline" "-sample-name" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -mem option
-    local mem
-    mem=`extract_mem_from_process_spec "$process_spec"` || return 1
-    mem=`genodb_bam_common::slurm_to_java_mem_spec ${mem}` || return 1
-    define_opt "-mem" $mem optlist
+    define_procspec_opt "${process_spec}" "-mem" "mem" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -359,9 +346,7 @@ manta_somatic_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -398,9 +383,7 @@ strelka_somatic_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -437,15 +420,10 @@ mutect2_somatic_define_opts()
     define_cmdline_opt "$cmdline" "-panel-of-normals" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -mem option
-    local mem
-    mem=`extract_mem_from_process_spec "$process_spec"` || return 1
-    mem=`genodb_bam_common::slurm_to_java_mem_spec ${mem}` || return 1
-    define_opt "-mem" $mem optlist
+    define_procspec_opt "${process_spec}" "-mem" "mem" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -476,9 +454,7 @@ lofreq_somatic_define_opts()
     define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -509,9 +485,7 @@ msisensor_pro_define_opts()
     define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist

@@ -91,9 +91,7 @@ manta_germline_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -226,9 +224,7 @@ manta_somatic_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -346,9 +342,7 @@ strelka_germline_define_opts()
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -457,9 +451,7 @@ platypus_germline_define_opts()
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -560,8 +552,8 @@ gatk_haplotypecaller_explain_opts()
     explain_opt "-cpus" "<int>" "$description"
 
     # -mem option
-    local description="available memory"
-    explain_opt "-mem" "<int>" "$description"
+    local description="available memory, in SLURM format (e.g. 4096 or 8G)"
+    explain_opt "-mem" "<string>" "$description"
 }
 
 ########
@@ -599,15 +591,10 @@ gatk_haplotypecaller_define_opts()
     define_cmdline_opt "$cmdline" "-sample-name" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -mem option
-    local mem
-    mem=`extract_mem_from_process_spec "$process_spec"` || return 1
-    mem=`genodb_bam_common::slurm_to_java_mem_spec ${mem}` || return 1
-    define_opt "-mem" $mem optlist
+    define_procspec_opt "${process_spec}" "-mem" "mem" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -622,7 +609,9 @@ gatk_haplotypecaller()
     local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
     local sample_name=`read_opt_value_from_func_args "-sample-name" "$@"`
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
-    local mem=`read_opt_value_from_func_args "-mem" "$@"`
+    local mem
+    mem=`read_opt_value_from_func_args "-mem" "$@"`
+    mem=`genodb_bam_common::slurm_to_java_mem_spec "${mem}"` || return 1
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -715,9 +704,7 @@ strelka_somatic_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -817,8 +804,8 @@ mutect2_somatic_explain_opts()
     explain_opt "-cpus" "<int>" "$description"
 
     # -mem option
-    local description="available memory"
-    explain_opt "-mem" "<int>" "$description"
+    local description="available memory, in SLURM format (e.g. 4096 or 8G)"
+    explain_opt "-mem" "<string>" "$description"
 }
 
 ########
@@ -866,15 +853,10 @@ mutect2_somatic_define_opts()
     define_cmdline_opt "$cmdline" "-panel-of-normals" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -mem option
-    local mem
-    mem=`extract_mem_from_process_spec "$process_spec"` || return 1
-    mem=`genodb_bam_common::slurm_to_java_mem_spec ${mem}` || return 1
-    define_opt "-mem" $mem optlist
+    define_procspec_opt "${process_spec}" "-mem" "mem" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -891,7 +873,9 @@ mutect2_somatic()
     local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
     local panel_of_normals=`read_opt_value_from_func_args "-panel-of-normals" "$@"`
     local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
-    local mem=`read_opt_value_from_func_args "-mem" "$@"`
+    local mem
+    mem=`read_opt_value_from_func_args "-mem" "$@"`
+    mem=`genodb_bam_common::slurm_to_java_mem_spec "${mem}"` || return 1
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -973,9 +957,7 @@ lofreq_somatic_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1077,9 +1059,7 @@ cnvkit_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1916,9 +1896,7 @@ smoove_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -2411,9 +2389,7 @@ msisensor_pro_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist

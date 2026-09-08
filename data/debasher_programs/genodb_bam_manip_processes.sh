@@ -221,9 +221,7 @@ sort_norm_bam_define_opts()
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -310,9 +308,7 @@ sort_tum_bam_define_opts()
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1435,9 +1431,7 @@ align_norm_ubam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -outfile option
     local outfile="${abs_datadir}"/normal_aligned.bam
@@ -1599,9 +1593,7 @@ align_tum_ubam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-mrec" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # -outfile option
     local outfile="${abs_datadir}"/tumor_aligned.bam

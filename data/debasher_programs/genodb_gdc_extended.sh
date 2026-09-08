@@ -473,9 +473,7 @@ strelka_germline_define_opts()
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -507,9 +505,7 @@ manta_somatic_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -544,9 +540,7 @@ strelka_somatic_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -575,9 +569,7 @@ msisensor_pro_define_opts()
     define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -635,9 +627,7 @@ cnvkit_define_opts()
     define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -666,9 +656,7 @@ platypus_germline_define_opts()
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
 
     # -cpus option
-    local cpus
-    cpus=`extract_cpus_from_process_spec "$process_spec"` || return 1
-    define_opt "-cpus" $cpus optlist
+    define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
 
     # Save option list
     save_opt_list optlist

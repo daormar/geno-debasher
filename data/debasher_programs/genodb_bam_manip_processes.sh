@@ -404,9 +404,7 @@ samtools_mpileup_norm_bam_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -521,9 +519,7 @@ samtools_mpileup_tum_bam_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -tumorbam option
     local tumorbam
@@ -624,10 +620,6 @@ parallel_samtools_mpileup_norm_bam_define_opts()
     # Obtain splitdir directory
     local abs_splitdir=`get_absolute_shdirname "split"`
 
-    # -r option value
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
@@ -642,7 +634,7 @@ parallel_samtools_mpileup_norm_bam_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -r option
-        define_opt "-r" "$genref" optlist || return 1
+        define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
         # -mpb option
         define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
@@ -761,10 +753,6 @@ parallel_samtools_mpileup_tum_bam_define_opts()
     # Obtain splitdir directory
     local abs_splitdir=`get_absolute_shdirname "split"`
 
-    # -r option value
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
@@ -779,7 +767,7 @@ parallel_samtools_mpileup_tum_bam_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -r option
-        define_opt "-r" "$genref" optlist || return 1
+        define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
         # -mpb option
         define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
@@ -1416,9 +1404,7 @@ align_norm_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname "data"`
@@ -1578,9 +1564,7 @@ align_tum_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname "data"`

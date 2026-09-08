@@ -56,9 +56,7 @@ filter_norm_bam_contigs_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || exit 1
-    define_opt "-r" "$genref" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -normalbam option
     local abs_datadir=`get_absolute_shdirname data`
@@ -185,9 +183,7 @@ filter_tum_bam_contigs_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || exit 1
-    define_opt "-r" "$genref" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -tumorbam option
     local abs_datadir=`get_absolute_shdirname "data"`

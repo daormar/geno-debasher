@@ -62,9 +62,7 @@ manta_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
@@ -96,9 +94,7 @@ strelka_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
@@ -133,9 +129,7 @@ msisensor_pro_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1

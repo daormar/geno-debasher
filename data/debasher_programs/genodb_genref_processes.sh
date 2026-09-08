@@ -263,31 +263,6 @@ get_ref_contig_list()
 }
 
 ########
-get_ref_filename()
-{
-    local cmdline=$1
-    local given=0
-    local ref
-    ref=`read_opt_value_from_line "$cmdline" "-r"` && given=1
-    if [ $given -eq 1 ]; then
-        # -r option was given
-        [ -f "$ref" ] || { errmsg "file $ref does not exist" ; return 1; }
-        echo "$ref"
-    else
-        # Check -br option
-        if [ "`read_opt_value_from_line "$cmdline" "-br"`" != "${DEBASHER_OPT_NOT_FOUND}" ]; then
-            local abs_datadir=`get_absolute_shdirname "data"`
-            ref="${abs_datadir}"/genref.fa
-            echo "$ref"
-            return 0
-        fi
-
-        errmsg "-r or -br options should be given"
-        return 1
-    fi
-}
-
-########
 filter_bam_stats()
 {
     "${AWK}" '{if($3>0 || $4>0) printf" %s",$1}'

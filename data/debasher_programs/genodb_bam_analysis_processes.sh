@@ -78,9 +78,7 @@ manta_germline_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -206,9 +204,7 @@ manta_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -326,9 +322,7 @@ strelka_germline_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -438,9 +432,7 @@ platypus_germline_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -578,9 +570,7 @@ gatk_haplotypecaller_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -683,9 +673,7 @@ strelka_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -832,9 +820,7 @@ mutect2_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -942,9 +928,7 @@ lofreq_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1044,9 +1028,7 @@ cnvkit_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1245,9 +1227,7 @@ gen_sequenza_gcc_define_opts()
     local optlist=""
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # Get data directory
     local abs_datadir=`get_absolute_shdirname "data"`
@@ -1878,9 +1858,7 @@ smoove_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -1996,9 +1974,7 @@ delly_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam
@@ -2130,10 +2106,6 @@ parallel_delly_define_opts()
     # Obtain splitdir directory
     local abs_splitdir=`get_absolute_shdirname "split"`
 
-    # -r option value
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
@@ -2148,7 +2120,7 @@ parallel_delly_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -r option
-        define_opt "-r" "$genref" optlist || return 1
+        define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
         # -dx option
         define_cmdline_infile_opt_if_given "$cmdline" "-dx" optlist || return 1
@@ -2374,9 +2346,7 @@ msisensor_pro_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    local genref
-    genref=`get_ref_filename "$cmdline"` || return 1
-    define_opt "-r" "$genref" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
     local normalbam

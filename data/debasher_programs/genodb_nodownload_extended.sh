@@ -157,9 +157,6 @@ parallel_delly_define_opts()
     local process_name=$3
     local process_outdir=$4
 
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
-
     # Get name of contig list file
     local clist
     clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
@@ -180,16 +177,65 @@ parallel_delly_define_opts()
         define_cmdline_infile_opt_if_given "$cmdline" "-dx" optlist || return 1
 
         # -normalbam option
-        local contig=${array[$idx]}
-        local normalbam="${abs_splitdir}"/normal_${contig}.bam
-        define_opt "-normalbam" "$normalbam" optlist || return 1
+        define_opt_from_proc_task_out "-normalbam" "parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tumorbam option
-        local tumorbam="${abs_splitdir}"/tumor_${contig}.bam
-        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+        define_opt_from_proc_task_out "-tumorbam" "parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
+
+        # -contig option
+        local contig=${array[$idx]}
+        define_opt "-contig" "$contig" optlist || return 1
+
+        # Save option list
+        save_opt_list optlist
+    done
+}
+
+########
+parallel_lumpy_identify_cmdline_opts()
+{
+    opt_is_cmdline "-lc"
+    opt_is_cmdline "-lx"
+}
+
+########
+parallel_lumpy_define_opts()
+{
+    # Initialize variables
+    local cmdline=$1
+    local process_spec=$2
+    local process_name=$3
+    local process_outdir=$4
+
+    # Get name of contig list file
+    local clist
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
+
+    # Array of contigs to process, one task per contig
+    array=( $(get_contig_list_from_file $clist) ) || return 1
+
+    for idx in "${!array[@]}"; do
+        local optlist=""
+
+        # -out-processdir option, the output directory for the process
+        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+
+        # -lx option
+        define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
+
+        # -normalbam option
+        local contig=${array[$idx]}
+        define_opt_from_proc_task_out "-normalbam" "parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
+
+        # -tumorbam option
+        define_opt_from_proc_task_out "-tumorbam" "parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
+
+        # -outfile option
+        local outfile="${process_outdir}"/out${contig}.vcf
+        define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
         save_opt_list optlist

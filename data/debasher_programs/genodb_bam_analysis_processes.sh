@@ -1254,7 +1254,7 @@ sequenza_explain_opts()
 }
 
 ########
-gen_sequenza_gcc_identify_cmdline_opts()
+sequenza_identify_cmdline_opts()
 {
     opt_is_cmdline "-gcc"
 }
@@ -1272,12 +1272,8 @@ sequenza_define_opts()
     # Define the -out-processdir option, the output directory for the process
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
-    # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
-
     # -gcc option
-    local gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
-    define_opt "-gcc" "$gccfile" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-gcc" optlist || return 1
 
     # -npileup option
     define_opt_from_proc_out "-npileup" "samtools_mpileup_norm_bam" "-outfile" optlist || return 1
@@ -1368,12 +1364,6 @@ parallel_bam2seqz_define_opts()
     local process_name=$3
     local process_outdir=$4
 
-    # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
-
-    # -gcc option value
-    local gccfile="${abs_datadir}"/sequenza_gccfile.txt.gz
-
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
@@ -1388,7 +1378,7 @@ parallel_bam2seqz_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -gcc option
-        define_opt "-gcc" "$gccfile" optlist || return 1
+        define_cmdline_infile_opt "$cmdline" "-gcc" optlist || return 1
 
         # -npileup option
         define_opt_from_proc_task_out "-npileup" "parallel_samtools_mpileup_norm_bam" "${idx}" "-outfile" optlist || return 1

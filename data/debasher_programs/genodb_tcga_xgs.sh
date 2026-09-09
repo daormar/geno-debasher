@@ -49,6 +49,14 @@ index_tum_bam_define_opts()
 }
 
 ########
+create_genref_for_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-br"
+    opt_is_cmdline "-cm"
+    opt_is_cmdline "-fbr"
+}
+
+########
 create_genref_for_bam_define_opts()
 {
     # Initialize variables
@@ -85,6 +93,12 @@ create_genref_for_bam_define_opts()
 }
 
 ########
+bedtools_genomecov_norm_bam_identify_cmdline_opts()
+{
+    :
+}
+
+########
 bedtools_genomecov_norm_bam_define_opts()
 {
     # Initialize variables
@@ -105,6 +119,12 @@ bedtools_genomecov_norm_bam_define_opts()
 }
 
 ########
+bedtools_genomecov_tum_bam_identify_cmdline_opts()
+{
+    :
+}
+
+########
 bedtools_genomecov_tum_bam_define_opts()
 {
     # Initialize variables
@@ -122,6 +142,12 @@ bedtools_genomecov_tum_bam_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+strelka_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -157,6 +183,12 @@ strelka_germline_define_opts()
 }
 
 ########
+manta_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-cr"
+}
+
+########
 manta_somatic_define_opts()
 {
     # Initialize variables
@@ -186,6 +218,12 @@ manta_somatic_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+strelka_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -224,6 +262,12 @@ strelka_somatic_define_opts()
 }
 
 ########
+msisensor_pro_identify_cmdline_opts()
+{
+    :
+}
+
+########
 msisensor_pro_define_opts()
 {
     # Initialize variables
@@ -253,6 +297,13 @@ msisensor_pro_define_opts()
 }
 
 ########
+snp_pileup_plus_facets_identify_cmdline_opts()
+{
+    opt_is_cmdline "-sv"
+    opt_is_cmdline "-md"
+}
+
+########
 snp_pileup_plus_facets_define_opts()
 {
     # Initialize variables
@@ -279,6 +330,12 @@ snp_pileup_plus_facets_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+platypus_germline_identify_cmdline_opts()
+{
+    :
 }
 
 ########

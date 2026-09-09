@@ -49,6 +49,13 @@ index_tum_bam_define_opts()
 }
 
 ########
+manta_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-cr"
+}
+
+########
 manta_somatic_define_opts()
 {
     # Initialize variables
@@ -78,6 +85,13 @@ manta_somatic_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+strelka_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -113,6 +127,12 @@ strelka_somatic_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+msisensor_pro_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
 }
 
 ########

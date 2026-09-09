@@ -49,6 +49,14 @@ index_tum_bam_define_opts()
 }
 
 ########
+create_genref_for_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-br"
+    opt_is_cmdline "-cm"
+    opt_is_cmdline "-fbr"
+}
+
+########
 create_genref_for_bam_define_opts()
 {
     # Initialize variables

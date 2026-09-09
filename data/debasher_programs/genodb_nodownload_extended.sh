@@ -3,6 +3,13 @@
 load_debasher_module "genodb_bam_analysis"
 
 ########
+parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-mpb"
+    opt_is_cmdline "-lc"
+}
+
+########
 parallel_samtools_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
@@ -48,6 +55,13 @@ parallel_samtools_mpileup_norm_bam_define_opts()
         # Save option list
         save_opt_list optlist
     done
+}
+
+########
+parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-mpb"
+    opt_is_cmdline "-lc"
 }
 
 ########
@@ -99,6 +113,12 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 }
 
 ########
+gen_sequenza_gcc_identify_cmdline_opts()
+{
+    :
+}
+
+########
 gen_sequenza_gcc_define_opts()
 {
     # Initialize variables
@@ -119,6 +139,13 @@ gen_sequenza_gcc_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+parallel_delly_identify_cmdline_opts()
+{
+    opt_is_cmdline "-dx"
+    opt_is_cmdline "-lc"
 }
 
 ########
@@ -170,6 +197,13 @@ parallel_delly_define_opts()
 }
 
 ########
+strelka_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-cr"
+}
+
+########
 strelka_germline_define_opts()
 {
     # Initialize variables
@@ -202,6 +236,14 @@ strelka_germline_define_opts()
 }
 
 ########
+manta_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-cr"
+}
+
+########
 manta_somatic_define_opts()
 {
     # Initialize variables
@@ -231,6 +273,14 @@ manta_somatic_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+strelka_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -269,6 +319,13 @@ strelka_somatic_define_opts()
 }
 
 ########
+msisensor_pro_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+}
+
+########
 msisensor_pro_define_opts()
 {
     # Initialize variables
@@ -298,6 +355,13 @@ msisensor_pro_define_opts()
 }
 
 ########
+cnvkit_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
+}
+
+########
 cnvkit_define_opts()
 {
     # Initialize variables
@@ -324,6 +388,12 @@ cnvkit_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+platypus_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-normalbam"
 }
 
 ########

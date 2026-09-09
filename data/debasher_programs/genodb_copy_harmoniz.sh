@@ -41,6 +41,12 @@ copy_tum_bam_define_opts()
     save_opt_list optlist
 }
 
+########
+norm_bam_to_ubam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-mrec"
+}
+
 norm_bam_to_ubam_define_opts()
 {
     # Initialize variables
@@ -70,6 +76,12 @@ norm_bam_to_ubam_define_opts()
     save_opt_list optlist
 }
 
+########
+tum_bam_to_ubam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-mrec"
+}
+
 tum_bam_to_ubam_define_opts()
 {
     # Initialize variables
@@ -97,6 +109,13 @@ tum_bam_to_ubam_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+align_norm_ubam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-mrec"
 }
 
 align_norm_ubam_define_opts()
@@ -132,6 +151,13 @@ align_norm_ubam_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+align_tum_ubam_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-mrec"
 }
 
 align_tum_ubam_define_opts()
@@ -216,6 +242,13 @@ index_tum_bam_define_opts()
 }
 
 ########
+strelka_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-cr"
+}
+
+########
 strelka_germline_define_opts()
 {
     # Initialize variables
@@ -248,6 +281,12 @@ strelka_germline_define_opts()
 }
 
 ########
+platypus_germline_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+}
+
+########
 platypus_germline_define_opts()
 {
     # Initialize variables
@@ -274,6 +313,13 @@ platypus_germline_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+gatk_haplotypecaller_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-sample-name"
 }
 
 ########
@@ -309,6 +355,13 @@ gatk_haplotypecaller_define_opts()
 }
 
 ########
+manta_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-cr"
+}
+
+########
 manta_somatic_define_opts()
 {
     # Initialize variables
@@ -338,6 +391,13 @@ manta_somatic_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+strelka_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-cr"
 }
 
 ########
@@ -373,6 +433,14 @@ strelka_somatic_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+mutect2_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+    opt_is_cmdline "-norm-sample-name"
+    opt_is_cmdline "-panel-of-normals"
 }
 
 ########
@@ -414,6 +482,12 @@ mutect2_somatic_define_opts()
 }
 
 ########
+lofreq_somatic_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
+}
+
+########
 lofreq_somatic_define_opts()
 {
     # Initialize variables
@@ -440,6 +514,12 @@ lofreq_somatic_define_opts()
 
     # Save option list
     save_opt_list optlist
+}
+
+########
+msisensor_pro_identify_cmdline_opts()
+{
+    opt_is_cmdline "-r"
 }
 
 ########

@@ -97,7 +97,7 @@ check_pars()
 process_pars()
 {
     # Initialize variables
-    TMPDIR=`${MKTEMP} -d /tmp/convsnp.XXXXX`
+    TMPDIR=$(${MKTEMP} -d /tmp/convsnp.XXXXX)
 
     # Create temporary directories
     mkdir "${TMPDIR}"/splitPos "${TMPDIR}"/splitGc "${TMPDIR}"/splitGcLogs
@@ -127,7 +127,7 @@ process_pars()
     
     # Process fragments
     echo "* Processing fragments..." >&2
-    for file in `ls "${TMPDIR}"/splitPos/`; do
+    for file in $(ls "${TMPDIR}"/splitPos/); do
         "${ASCAT_GCC_UTIL}" "${ref}" "${TMPDIR}"/splitPos/"${file}" > "${TMPDIR}"/splitGc/"${file}" 2> "${TMPDIR}"/splitGcLogs/"${file}".log &
     done
 

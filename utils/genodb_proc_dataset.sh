@@ -203,19 +203,19 @@ check_pars()
 absolutize_file_paths()
 {
     if [ ${pfile_given} -eq 1 ]; then
-        pfile=`get_absolute_path "${pfile}"`
+        pfile=$(get_absolute_path "${pfile}")
     fi
 
     if [ ${outdir_given} -eq 1 ]; then
-        outd=`get_absolute_path "${outd}"`
+        outd=$(get_absolute_path "${outd}")
     fi
 
     if [ ${metadata_given} -eq 1 ]; then
-        metadata=`get_absolute_path "${metadata}"`
+        metadata=$(get_absolute_path "${metadata}")
     fi
 
     if [ ${prg_opts_given} -eq 1 ]; then
-        prg_opts=`get_absolute_path "${prg_opts}"`
+        prg_opts=$(get_absolute_path "${prg_opts}")
     fi
 }
 
@@ -257,8 +257,8 @@ filter_normal_sample()
 extract_normal_sample_info()
 {
     local entry=$1
-    local sample1=`echo ${entry} | "$AWK" -F ";" '{print $1}' | filter_normal_sample`
-    local sample2=`echo ${entry} | "$AWK" -F ";" '{print $2}' | filter_normal_sample`
+    local sample1=$(echo ${entry} | "$AWK" -F ";" '{print $1}' | filter_normal_sample)
+    local sample2=$(echo ${entry} | "$AWK" -F ";" '{print $2}' | filter_normal_sample)
 
     if [ ! -z "${sample1}" ]; then
         echo "${sample1}"
@@ -281,8 +281,8 @@ filter_tumor_sample()
 extract_tumor_sample_info()
 {
     local entry=$1
-    local sample1=`echo ${entry} | "$AWK" -F ";" '{print $1}' | filter_tumor_sample`
-    local sample2=`echo ${entry} | "$AWK" -F ";" '{print $2}' | filter_tumor_sample`
+    local sample1=$(echo ${entry} | "$AWK" -F ";" '{print $1}' | filter_tumor_sample)
+    local sample2=$(echo ${entry} | "$AWK" -F ";" '{print $2}' | filter_tumor_sample)
 
     if [ ! -z "${sample1}" ]; then
         echo "${sample1}"
@@ -299,8 +299,8 @@ extract_tumor_sample_info()
 entry_is_ok()
 {
     local entry=$1
-    local nsample=`extract_normal_sample_info "${entry}"`
-    local tsample=`extract_tumor_sample_info "${entry}"`
+    local nsample=$(extract_normal_sample_info "${entry}")
+    local tsample=$(extract_tumor_sample_info "${entry}")
 
     if [ ! -z "${nsample}" -a ! -z "${tsample}" ]; then
         echo "yes"
@@ -320,7 +320,7 @@ extract_id_from_sample_info()
 extract_gender_from_sample_info()
 {
     local sample_info=$1
-    local tmp=`echo ${sample_info} | "$GREP" 'Female\|female'`
+    local tmp=$(echo ${sample_info} | "$GREP" 'Female\|female')
     if [ ! -z "${tmp}" ]; then
         echo "female"
     else
@@ -335,8 +335,8 @@ get_outd_name()
     local tum_id=$2
 
     # If id contains a file path, retain file name only
-    local norm_id_wo_pathinfo=`"$BASENAME" "${norm_id}"`
-    local tum_id_wo_pathinfo=`"$BASENAME" "${tum_id}"`
+    local norm_id_wo_pathinfo=$("$BASENAME" "${norm_id}")
+    local tum_id_wo_pathinfo=$("$BASENAME" "${tum_id}")
 
     echo "${norm_id_wo_pathinfo}_${tum_id_wo_pathinfo}"
 }
@@ -385,26 +385,26 @@ esc_dq()
 process_pars()
 {
     # Set options
-    prg_opts_str=`get_prg_opts_str`
+    prg_opts_str=$(get_prg_opts_str)
 
     # Get pipe_exec path
     local pipe_exec_path
-    debasher_exec_path=`get_debasher_exec_path`
+    debasher_exec_path=$(get_debasher_exec_path)
 
     # Read metadata file
     entry_num=1
     while read entry; do
-        entry_ok=`entry_is_ok "$entry"`
+        entry_ok=$(entry_is_ok "$entry")
         if [ ${entry_ok} = "yes" ]; then
 
             # Extract sample info
-            normal_sample_info=`extract_normal_sample_info "$entry"`
-            normal_id=`extract_id_from_sample_info "${normal_sample_info}"`
+            normal_sample_info=$(extract_normal_sample_info "$entry")
+            normal_id=$(extract_id_from_sample_info "${normal_sample_info}")
 
-            tumor_sample_info=`extract_tumor_sample_info "$entry"`
-            tumor_id=`extract_id_from_sample_info "${tumor_sample_info}"`
+            tumor_sample_info=$(extract_tumor_sample_info "$entry")
+            tumor_id=$(extract_id_from_sample_info "${tumor_sample_info}")
 
-            gender=`extract_gender_from_sample_info "${normal_sample_info}"`
+            gender=$(extract_gender_from_sample_info "${normal_sample_info}")
 
             # Obtain value for -g option
             if [ ${gender} = "male" ]; then
@@ -414,13 +414,13 @@ process_pars()
             fi
 
             # Obtain value for -lc option
-            lc_opt=`get_lc_opt ${gender_opt} ${lcxx} ${lcxy}`
+            lc_opt=$(get_lc_opt ${gender_opt} ${lcxx} ${lcxy})
 
             # Set name of output directory for analysis
-            analysis_outd=`get_outd_name "${normal_id}" "${tumor_id}"`
+            analysis_outd=$(get_outd_name "${normal_id}" "${tumor_id}")
 
             # Obtain --dflt-nodes option
-            dflt_nodes_opt=`get_dflt_nodes_opt`
+            dflt_nodes_opt=$(get_dflt_nodes_opt)
 
             # Determine whether the normal and tumor ids correspond to
             # locally stored file names or not

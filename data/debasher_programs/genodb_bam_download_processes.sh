@@ -59,7 +59,7 @@ copy_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -71,8 +71,8 @@ copy_norm_bam_define_opts()
 copy_norm_bam()
 {
     # Initialize variables
-    local local_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
-    local out_normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
+    local local_normalbam=$(read_opt_value_from_func_args "-extn" "$@")
+    local out_normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
 
     # Copy file
     logmsg "* Copying file..."
@@ -109,7 +109,7 @@ copy_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -121,8 +121,8 @@ copy_tum_bam_define_opts()
 copy_tum_bam()
 {
     # Initialize variables
-    local local_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
-    local out_tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
+    local local_tumorbam=$(read_opt_value_from_func_args "-extt" "$@")
+    local out_tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
 
     # Copy file
     logmsg "* Copying file..."
@@ -168,7 +168,7 @@ scp_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -180,9 +180,9 @@ scp_norm_bam_define_opts()
 scp_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local remote_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local remote_normalbam=$(read_opt_value_from_func_args "-extn" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Copy file
     logmsg "* Copying file..."
@@ -228,7 +228,7 @@ scp_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -240,9 +240,9 @@ scp_tum_bam_define_opts()
 scp_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local remote_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local remote_tumorbam=$(read_opt_value_from_func_args "-extt" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Copy file
     logmsg "* Copying file..."
@@ -312,7 +312,7 @@ download_ega_norm_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -364,18 +364,18 @@ ega_download_retry()
 download_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local egaid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
-    local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local egaid_normalbam=$(read_opt_value_from_func_args "-extn" "$@")
+    local egastr=$(read_opt_value_from_func_args "-egastr" "$@")
     if [ "${egastr}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         egastr=${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS}
     fi
-    local egacred=`read_opt_value_from_func_args "-egacred" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local egacred=$(read_opt_value_from_func_args "-egacred" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -461,7 +461,7 @@ download_ega_tum_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -473,18 +473,18 @@ download_ega_tum_bam_define_opts()
 download_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local egaid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
-    local egastr=`read_opt_value_from_func_args "-egastr" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local egaid_tumorbam=$(read_opt_value_from_func_args "-extt" "$@")
+    local egastr=$(read_opt_value_from_func_args "-egastr" "$@")
     if [ "${egastr}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         egastr=${DEFAULT_NUMBER_OF_EGA_DOWNLOAD_STREAMS}
     fi
-    local egacred=`read_opt_value_from_func_args "-egacred" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local egacred=$(read_opt_value_from_func_args "-egacred" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -601,7 +601,7 @@ download_ega_asp_norm_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -613,17 +613,17 @@ download_ega_asp_norm_bam_define_opts()
 download_ega_asp_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
-    local aspera_user=`read_opt_value_from_func_args "-asperausr" "$@"`
-    local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" "$@"`
-    local aspera_server=`read_opt_value_from_func_args "-asperaserv" "$@"`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local normalbam_file=$(read_opt_value_from_func_args "-extn" "$@")
+    local aspera_user=$(read_opt_value_from_func_args "-asperausr" "$@")
+    local aspera_passwd=$(read_opt_value_from_func_args "-asperapwd" "$@")
+    local aspera_server=$(read_opt_value_from_func_args "-asperaserv" "$@")
+    local egadecrypt_pwd=$(read_opt_value_from_func_args "-egadecrpwd" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
 
     # Download file
@@ -635,7 +635,7 @@ download_ega_asp_norm_bam()
     $JAVA -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} "${process_outd}"/normal.bam.crypt 2>&1 || return 1
 
     # Obtain file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -728,7 +728,7 @@ download_ega_asp_tum_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -740,17 +740,17 @@ download_ega_asp_tum_bam_define_opts()
 download_ega_asp_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
-    local aspera_user=`read_opt_value_from_func_args "-asperausr" "$@"`
-    local aspera_passwd=`read_opt_value_from_func_args "-asperapwd" "$@"`
-    local aspera_server=`read_opt_value_from_func_args "-asperaserv" "$@"`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local tumorbam_file=$(read_opt_value_from_func_args "-extt" "$@")
+    local aspera_user=$(read_opt_value_from_func_args "-asperausr" "$@")
+    local aspera_passwd=$(read_opt_value_from_func_args "-asperapwd" "$@")
+    local aspera_server=$(read_opt_value_from_func_args "-asperaserv" "$@")
+    local egadecrypt_pwd=$(read_opt_value_from_func_args "-egadecrpwd" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
     local max_trans_rate=${DEFAULT_ASP_MAX_TRANS_RATE}
 
     # Download file
@@ -762,7 +762,7 @@ download_ega_asp_tum_bam()
     $JAVA -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} "${process_outd}"/tumor.bam.crypt 2>&1 || return 1
 
     # Obtain file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -823,7 +823,7 @@ decrypt_ega_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -835,17 +835,17 @@ decrypt_ega_norm_bam_define_opts()
 decrypt_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local normalbam_file=$(read_opt_value_from_func_args "-extn" "$@")
+    local egadecrypt_pwd=$(read_opt_value_from_func_args "-egadecrpwd" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
     "$JAVA" -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} --output-folder "${process_outd}" ${normalbam_file} 2>&1 || return 1
 
     # Obtain file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after decryption process was completed"
@@ -903,7 +903,7 @@ decrypt_ega_tum_bam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-egadecrpwd" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -915,17 +915,17 @@ decrypt_ega_tum_bam_define_opts()
 decrypt_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
-    local egadecrypt_pwd=`read_opt_value_from_func_args "-egadecrpwd" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local tumorbam_file=$(read_opt_value_from_func_args "-extt" "$@")
+    local egadecrypt_pwd=$(read_opt_value_from_func_args "-egadecrpwd" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
     "$JAVA" -jar "${EGADECRYPT_HOME_DIR}"/decryptor.jar ${egadecrypt_pwd} --output-folder "${process_outd}" ${tumorbam_file} 2>&1 || return 1
 
     # Obtain file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after decryption process was completed"
@@ -983,7 +983,7 @@ decsingle_ega_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-ndecsinglepwd" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -995,10 +995,10 @@ decsingle_ega_norm_bam_define_opts()
 decsingle_ega_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local normalbam_file=`read_opt_value_from_func_args "-extn" "$@"`
-    local decsingle_pwd=`read_opt_value_from_func_args "-ndecsinglepwd" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local normalbam_file=$(read_opt_value_from_func_args "-extn" "$@")
+    local decsingle_pwd=$(read_opt_value_from_func_args "-ndecsinglepwd" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
@@ -1052,7 +1052,7 @@ decsingle_ega_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-tdecsinglepwd" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -1064,10 +1064,10 @@ decsingle_ega_tum_bam_define_opts()
 decsingle_ega_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local tumorbam_file=`read_opt_value_from_func_args "-extt" "$@"`
-    local decsingle_pwd=`read_opt_value_from_func_args "-tdecsinglepwd" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local tumorbam_file=$(read_opt_value_from_func_args "-extt" "$@")
+    local decsingle_pwd=$(read_opt_value_from_func_args "-tdecsinglepwd" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Decrypt file
     logmsg "* Executing decryptor.jar..."
@@ -1121,7 +1121,7 @@ download_aws_norm_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -1133,20 +1133,20 @@ download_aws_norm_bam_define_opts()
 download_aws_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local icgcid_normalbam=$(read_opt_value_from_func_args "-extn" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Download file
     logmsg "* Executing score-client..."
     "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile aws download --object-id "${icgcid_normalbam}" --output-dir "${process_outd}" 2>&1 || return 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -1204,7 +1204,7 @@ download_aws_tum_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -1216,20 +1216,20 @@ download_aws_tum_bam_define_opts()
 download_aws_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local icgcid_tumorbam=$(read_opt_value_from_func_args "-extt" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Download file
     logmsg "* Executing score-client..."
     "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile aws download --object-id "${icgcid_tumorbam}" --output-dir "${process_outd}" 2>&1 || return 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -1287,7 +1287,7 @@ download_collab_norm_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -1299,20 +1299,20 @@ download_collab_norm_bam_define_opts()
 download_collab_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local icgcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local icgcid_normalbam=$(read_opt_value_from_func_args "-extn" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Download file
     logmsg "* Executing score-client..."
     "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile collab download --object-id "${icgcid_normalbam}" --output-dir "${process_outd}" 2>&1 || return 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -1370,7 +1370,7 @@ download_collab_tum_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -1382,20 +1382,20 @@ download_collab_tum_bam_define_opts()
 download_collab_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local icgcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local icgcid_tumorbam=$(read_opt_value_from_func_args "-extt" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Download file
     logmsg "* Executing score-client..."
     "${ICGCSTOR_HOME_DIR}"/bin/score-client --profile collab download --object-id "${icgcid_tumorbam}" --output-dir "${process_outd}" 2>&1 || return 1
 
     # Find bam file name
-    local bam_file_name=`find_bam_filename "${process_outd}"`
+    local bam_file_name=$(find_bam_filename "${process_outd}")
 
     if [ -z "${bam_file_name}" ]; then
         logmsg "Error: bam file not found after download process was completed"
@@ -1469,7 +1469,7 @@ download_gdc_norm_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -1484,7 +1484,7 @@ get_gdc_bamfname()
     local outd=$2
     local outf
 
-    outf=`find ${outd} -name "*.bam"` || return 1
+    outf=$(find ${outd} -name "*.bam") || return 1
 
     echo "${outf}"
 }
@@ -1493,18 +1493,18 @@ get_gdc_bamfname()
 download_gdc_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-out-nb" "$@"`
-    local gdcid_normalbam=`read_opt_value_from_func_args "-extn" "$@"`
-    local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
+    local gdcid_normalbam=$(read_opt_value_from_func_args "-extn" "$@")
+    local gdcprocs=$(read_opt_value_from_func_args "-gdcprocs" "$@")
     if [ "${gdcprocs}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         gdcprocs=${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS}
     fi
-    local gdctok=`read_opt_value_from_func_args "-gdctok" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local gdctok=$(read_opt_value_from_func_args "-gdctok" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1519,7 +1519,7 @@ download_gdc_norm_bam()
 
     # Move file
     local gdc_bamfname
-    gdc_bamfname=`get_gdc_bamfname "${gdcid_normalbam}" "${process_outd}"` || return 1
+    gdc_bamfname=$(get_gdc_bamfname "${gdcid_normalbam}" "${process_outd}") || return 1
     "${MV}" "${gdc_bamfname}" "${normalbam}" || return 1
 }
 
@@ -1592,7 +1592,7 @@ download_gdc_tum_bam_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-nt" optlist || return 1
 
     # -out-tb option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -1604,18 +1604,18 @@ download_gdc_tum_bam_define_opts()
 download_gdc_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-out-tb" "$@"`
-    local gdcid_tumorbam=`read_opt_value_from_func_args "-extt" "$@"`
-    local gdcprocs=`read_opt_value_from_func_args "-gdcprocs" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
+    local gdcid_tumorbam=$(read_opt_value_from_func_args "-extt" "$@")
+    local gdcprocs=$(read_opt_value_from_func_args "-gdcprocs" "$@")
     if [ "${gdcprocs}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         gdcprocs=${DEFAULT_NUMBER_OF_GDC_DOWNLOAD_PROCS}
     fi
-    local gdctok=`read_opt_value_from_func_args "-gdctok" "$@"`
-    local download_tries=`read_opt_value_from_func_args "-nt" "$@"`
+    local gdctok=$(read_opt_value_from_func_args "-gdctok" "$@")
+    local download_tries=$(read_opt_value_from_func_args "-nt" "$@")
     if [ "${download_tries}" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         download_tries=${DEFAULT_NUMBER_OF_DOWNLOAD_TRIES}
     fi
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1630,7 +1630,7 @@ download_gdc_tum_bam()
 
     # Move file
     local gdc_bamfname
-    gdc_bamfname=`get_gdc_bamfname "${gdcid_tumorbam}" "${process_outd}"` || return 1
+    gdc_bamfname=$(get_gdc_bamfname "${gdcid_tumorbam}" "${process_outd}") || return 1
     "${MV}" "${gdc_bamfname}" "${tumorbam}" || return 1
 }
 

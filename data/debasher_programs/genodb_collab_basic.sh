@@ -14,7 +14,7 @@ index_norm_bam_define_opts()
     define_opt_from_proc_out "-normalbam" "download_collab_norm_bam" "-out-nb" optlist || return 1
 
     # -out-nbidx option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     define_opt "-out-nbidx" "${abs_datadir}/normal.bam.bai" optlist || return 1
 
     # -out-nb option (republished once indexed, so downstream processes
@@ -37,7 +37,7 @@ index_tum_bam_define_opts()
     define_opt_from_proc_out "-tumorbam" "download_collab_tum_bam" "-out-tb" optlist || return 1
 
     # -out-tbidx option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     define_opt "-out-tbidx" "${abs_datadir}/tumor.bam.bai" optlist || return 1
 
     # -out-tb option (republished once indexed, so downstream processes

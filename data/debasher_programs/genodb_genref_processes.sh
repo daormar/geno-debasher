@@ -81,7 +81,7 @@ create_genref_for_bam_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-fbr" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
 
     # -outfile option
     local outfile="${abs_datadir}"/genref.fa
@@ -127,21 +127,21 @@ index_ref()
 create_genref_for_bam()
 {
     # Initialize variables
-    local baseref=`read_opt_value_from_func_args "-br" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local bam=`read_opt_value_from_func_args "-bam" "$@"`
-    local contig_mapping=`read_opt_value_from_func_args "-cm" "$@"`
+    local baseref=$(read_opt_value_from_func_args "-br" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local bam=$(read_opt_value_from_func_args "-bam" "$@")
+    local contig_mapping=$(read_opt_value_from_func_args "-cm" "$@")
     if [ "$contig_mapping" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         contig_mapping=${NOFILE}
     fi
-    local fallback_genref=`read_opt_value_from_func_args "-fbr" "$@"`
+    local fallback_genref=$(read_opt_value_from_func_args "-fbr" "$@")
     if [ "$fallback_genref" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         fallback_genref=${NOFILE}
     fi
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Create genome reference
-    local cm_opt=`get_create_genref_for_bam_cm_opt ${contig_mapping}`
+    local cm_opt=$(get_create_genref_for_bam_cm_opt ${contig_mapping})
     if "${genodebasher_bindir}"/genodb_create_genref_for_bam -r "${baseref}" -b "${bam}" ${cm_opt} -o "${process_outd}"; then
         # Move resulting files
         "${MV}" "${process_outd}"/genref_for_bam.fa "${outfile}"

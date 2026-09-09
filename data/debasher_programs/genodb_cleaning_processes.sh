@@ -62,8 +62,8 @@ delete_bam_files_define_opts()
 delete_bam_files()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
-    local abs_datadir=`read_opt_value_from_func_args "-datadir" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
+    local abs_datadir=$(read_opt_value_from_func_args "-datadir" "$@")
 
     # Delete bam files
     "${RM}" -f "${abs_datadir}"/*.bam || return 1
@@ -111,8 +111,8 @@ clear_datadir_define_opts()
 clear_datadir()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
-    local abs_datadir=`read_opt_value_from_func_args "-datadir" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
+    local abs_datadir=$(read_opt_value_from_func_args "-datadir" "$@")
 
     # Delete bam files
     "${RM}" -rf "${abs_datadir}"/* || return 1

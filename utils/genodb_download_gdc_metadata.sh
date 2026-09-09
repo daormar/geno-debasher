@@ -81,7 +81,7 @@ obtain_file_ids()
     local file_ids=""
     while read entry; do
         if [ ${lineno} -gt 1 ]; then
-            local file_id=`extract_file_id "$entry"` || return 1
+            local file_id=$(extract_file_id "$entry") || return 1
             file_id="\"${file_id}\""
             if [ -z "${file_ids}" ]; then
                 file_ids=${file_id}
@@ -99,7 +99,7 @@ obtain_file_ids()
 obtain_filters()
 {
     local manifest=$1
-    local file_ids=`obtain_file_ids $manifest`
+    local file_ids=$(obtain_file_ids $manifest)
 
     echo "\"op\":\"in\", \"content\": {\"field\":\"files.file_id\", \"value\": [${file_ids} ] }"
 }
@@ -121,10 +121,10 @@ obtain_fields()
 obtain_payload()
 {
     local manifest=$1
-    local filters=`obtain_filters "${manifest}"`
+    local filters=$(obtain_filters "${manifest}")
     local format="TSV"
-    local fields=`obtain_fields`
-    local size=`obtain_num_ids "${manifest}"`
+    local fields=$(obtain_fields)
+    local size=$(obtain_num_ids "${manifest}")
 
     echo "{\"filters\": { ${filters} }, \"format\":\"${format}\" , \"fields\":\"${fields}\" , \"size\":\"${size}\"}"
 }
@@ -132,7 +132,7 @@ obtain_payload()
 ########
 process_pars()
 {
-    tmpfile=`"${MKTEMP}"`
+    tmpfile=$("${MKTEMP}")
     trap "rm -f ${tmpfile} 2>/dev/null" EXIT
     obtain_payload "${manifest}" > "${tmpfile}"
     "${WGET}" -O - --header='Content-Type:application/json' --post-file="${tmpfile}" 'https://api.gdc.cancer.gov/files' || return 1

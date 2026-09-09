@@ -14,7 +14,7 @@ index_norm_bam_define_opts()
     define_opt_from_proc_out "-normalbam" "decsingle_ega_norm_bam" "-out-nb" optlist || return 1
 
     # -out-nbidx option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     define_opt "-out-nbidx" "${abs_datadir}/normal.bam.bai" optlist || return 1
 
     # -out-nb option (republished once indexed, so downstream processes
@@ -37,7 +37,7 @@ index_tum_bam_define_opts()
     define_opt_from_proc_out "-tumorbam" "decsingle_ega_tum_bam" "-out-tb" optlist || return 1
 
     # -out-tbidx option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     define_opt "-out-tbidx" "${abs_datadir}/tumor.bam.bai" optlist || return 1
 
     # -out-tb option (republished once indexed, so downstream processes
@@ -134,7 +134,7 @@ create_genref_for_bam_define_opts()
     define_cmdline_infile_opt_if_given "$cmdline" "-fbr" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
 
     # -outfile option
     local outfile="${abs_datadir}"/genref.fa
@@ -160,14 +160,14 @@ parallel_split_norm_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "split"`
+    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -204,14 +204,14 @@ parallel_split_tum_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "split"`
+    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -250,10 +250,10 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -301,10 +301,10 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -354,7 +354,7 @@ gen_sequenza_gcc_define_opts()
     define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
 
     # -outfile option
     define_opt "-outfile" "${abs_datadir}"/sequenza_gccfile.txt.gz optlist || return 1
@@ -380,10 +380,10 @@ parallel_bam2seqz_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -431,10 +431,10 @@ parallel_delly_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -481,10 +481,10 @@ parallel_lumpy_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -531,10 +531,10 @@ parallel_svtyper_define_opts()
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""

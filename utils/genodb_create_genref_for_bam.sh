@@ -276,12 +276,12 @@ map_contig_using_file()
     local contiglen=$3
 
     # Try to map contig taking into account contig length
-    mapping=`map_contig_with_len_using_file "${contig_mapping}" ${contig} ${contiglen}`
+    mapping=$(map_contig_with_len_using_file "${contig_mapping}" ${contig} ${contiglen})
     if [ "${mapping}" != "" ]; then
         echo ${mapping}
     else
         # Try to map contig without taking into account contig length
-        mapping=`map_contig_without_len_using_file "${contig_mapping}" ${contig}`
+        mapping=$(map_contig_without_len_using_file "${contig_mapping}" ${contig})
         if [ "${mapping}" != "" ]; then
             echo ${mapping}
         fi
@@ -329,7 +329,7 @@ get_contigs()
     local contiglist=$2
 
     while read contig contiglen; do
-        local mapping=`map_contig "${contig_mapping}" ${contig} ${contiglen}` || return 1
+        local mapping=$(map_contig "${contig_mapping}" ${contig} ${contiglen}) || return 1
         if [ "$mapping" = "" ]; then
             echo "Error: contig $contig is not a valid accession nor there were mappings for it" >&2
             return 1
@@ -402,7 +402,7 @@ process_pars()
     # Check created reference
     echo "* Checking created reference..." >&2
     get_uniq_contigs "${outd}"/bamcontigs "${outd}"/created_ref_contigs > "${outd}"/uniq_contigs
-    num_uniq_contigs=`"$WC" -l ${outd}/uniq_contigs | "$AWK" '{print $1}'`
+    num_uniq_contigs=$("$WC" -l ${outd}/uniq_contigs | "$AWK" '{print $1}')
     if [ ${num_uniq_contigs} -gt 0 ]; then
         echo "Bam file and created genome reference do not have the exact same contigs (see ${outd}/uniq_contigs file)" >&2
         return 1

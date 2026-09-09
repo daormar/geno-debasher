@@ -53,8 +53,8 @@ reheader_vcf_list()
 
     # Generate vcf list
     for file in "${summarydir}"/*.${extension}; do
-        local vcf=`"${CAT}" "${file}"`
-        local vcf_basen=`basename "${vcf}"`
+        local vcf=$("${CAT}" "${file}")
+        local vcf_basen=$(basename "${vcf}")
         bcftools reheader -s "${summarydir}"/snames.txt ${vcf} > "${summarydir}/${vcf_basen}.${REHEADERED_VCF_EXT}"
     done
 }
@@ -107,8 +107,8 @@ concat_germline_snvs_define_opts()
 concat_germline_snvs()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
-    local summarydir=`read_opt_value_from_func_args "-summarydir" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
+    local summarydir=$(read_opt_value_from_func_args "-summarydir" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."

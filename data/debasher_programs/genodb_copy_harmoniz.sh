@@ -13,7 +13,7 @@ copy_norm_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extn" optlist || return 1
 
     # -out-nb option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
     local normalbam="${abs_datadir}"/copy_normal.bam
     define_opt "-out-nb" "$normalbam" optlist || return 1
 
@@ -33,7 +33,7 @@ copy_tum_bam_define_opts()
     define_cmdline_opt "$cmdline" "-extt" optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
     local tumorbam="${abs_datadir}"/copy_tumor.bam
     define_opt "-out-tb" "$tumorbam" optlist || return 1
 
@@ -60,7 +60,7 @@ norm_bam_to_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
 
     # -normalbam option
     define_opt_from_proc_out "-normalbam" "copy_norm_bam" "-out-nb" optlist || return 1
@@ -95,7 +95,7 @@ tum_bam_to_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
 
     # -tumorbam option
     define_opt_from_proc_out "-tumorbam" "copy_tum_bam" "-out-tb" optlist || return 1
@@ -134,7 +134,7 @@ align_norm_ubam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
 
     # -normalbam option
     define_opt_from_proc_out "-normalbam" "norm_bam_to_ubam" "-outfile" optlist || return 1
@@ -176,7 +176,7 @@ align_tum_ubam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
 
     # -tumorbam option
     define_opt_from_proc_out "-tumorbam" "tum_bam_to_ubam" "-outfile" optlist || return 1
@@ -207,7 +207,7 @@ index_norm_bam_define_opts()
     define_opt_from_proc_out "-normalbam" "align_norm_ubam" "-outfile" optlist || return 1
 
     # -out-nbidx option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
     define_opt "-out-nbidx" "${abs_datadir}/normal.bam.bai" optlist || return 1
 
     # -out-nb option (republished once indexed, so downstream processes
@@ -230,7 +230,7 @@ index_tum_bam_define_opts()
     define_opt_from_proc_out "-tumorbam" "align_tum_ubam" "-outfile" optlist || return 1
 
     # -out-tbidx option
-    local abs_datadir=`get_absolute_shdirname "${DATADIR_BASENAME}"`
+    local abs_datadir=$(get_absolute_shdirname "${DATADIR_BASENAME}")
     define_opt "-out-tbidx" "${abs_datadir}/tumor.bam.bai" optlist || return 1
 
     # -out-tb option (republished once indexed, so downstream processes

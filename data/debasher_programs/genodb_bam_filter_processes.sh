@@ -59,7 +59,7 @@ filter_norm_bam_contigs_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname data`
+    local abs_datadir=$(get_absolute_shdirname data)
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || exit 1
 
@@ -79,7 +79,7 @@ get_ref_contigs()
 remove_line_breaks_from_file()
 {
     local file=$1
-    echo `cat "${file}"`
+    echo $(cat "${file}")
 }
 
 ########
@@ -104,9 +104,9 @@ get_contigs_from_header()
 filter_norm_bam_contigs()
 {
     # Initialize variables
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -129,7 +129,7 @@ filter_norm_bam_contigs()
         cat "${process_outd}"/new_header
 
         # Print contig information
-        contigs=`get_contigs_from_header "${process_outd}"/new_header`
+        contigs=$(get_contigs_from_header "${process_outd}"/new_header)
         samtools view "${normalbam}" "${contigs}" | "${genodebasher_libexecdir}"/genodb_get_filtered_sam_align -l "${process_outd}"/refcontigs
     } | samtools view -bo "${process_outd}"/filtered.bam -
 
@@ -186,7 +186,7 @@ filter_tum_bam_contigs_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || exit 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || exit 1
 
@@ -198,9 +198,9 @@ filter_tum_bam_contigs_define_opts()
 filter_tum_bam_contigs()
 {
     # Initialize variables
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -223,7 +223,7 @@ filter_tum_bam_contigs()
         cat "${process_outd}"/new_header
 
         # Print contig information
-        contigs=`get_contigs_from_header "${process_outd}"/new_header`
+        contigs=$(get_contigs_from_header "${process_outd}"/new_header)
         samtools view "${tumorbam}" ${contigs} | "${genodebasher_bindir}"/get_filtered_sam_align -l "${process_outd}"/refcontigs
     } | samtools view -bo "${process_outd}"/filtered.bam -
 

@@ -57,7 +57,7 @@ index_norm_bam_define_opts()
     local optlist=""
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -76,8 +76,8 @@ index_norm_bam_define_opts()
 index_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local idx_file=`read_opt_value_from_func_args "-out-nbidx" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local idx_file=$(read_opt_value_from_func_args "-out-nbidx" "$@")
 
     # Remove previous index if one was created
     if [ -f "${idx_file}" ]; then
@@ -134,7 +134,7 @@ index_tum_bam_define_opts()
     local optlist=""
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -153,8 +153,8 @@ index_tum_bam_define_opts()
 index_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local idx_file=`read_opt_value_from_func_args "-out-tbidx" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local idx_file=$(read_opt_value_from_func_args "-out-tbidx" "$@")
 
     # Remove previous index if one was created
     if [ -f "${idx_file}" ]; then
@@ -216,7 +216,7 @@ sort_norm_bam_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -normalbam option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local normalbam="${abs_datadir}"/normal.bam
     define_opt "-normalbam" "$normalbam" optlist || return 1
 
@@ -231,16 +231,16 @@ sort_norm_bam_define_opts()
 sort_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
-    local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
+    local cpus=$(read_opt_value_from_func_args "-cpus" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || return 1
 
     # Verify if bam file is already sorted
-    local bam_is_sorted=`samtools view -H "${normalbam}" | $GREP SO:coordinate | wc -l` || return 1
+    local bam_is_sorted=$(samtools view -H "${normalbam}" | $GREP SO:coordinate | wc -l) || return 1
     if [ ${bam_is_sorted} -eq 1 ]; then
         echo "Warning: bam file is already sorted"
     else
@@ -303,7 +303,7 @@ sort_tum_bam_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || return 1
 
     # -tumorbam option
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
     local tumorbam="${abs_datadir}"/tumor.bam
     define_opt "-tumorbam" "$tumorbam" optlist || return 1
 
@@ -318,16 +318,16 @@ sort_tum_bam_define_opts()
 sort_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
-    local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
+    local cpus=$(read_opt_value_from_func_args "-cpus" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
     conda activate samtools 2>&1 || return 1
 
     # Verify if bam file is already sorted
-    local bam_is_sorted=`samtools view -H "${tumorbam}" | $GREP SO:coordinate | wc -l` || return 1
+    local bam_is_sorted=$(samtools view -H "${tumorbam}" | $GREP SO:coordinate | wc -l) || return 1
     if [ ${bam_is_sorted} -eq 1 ]; then
         echo "Warning: bam file is already sorted"
     else
@@ -432,17 +432,17 @@ get_samtools_mpileup_l_opt()
 samtools_mpileup_norm_bam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local mpbfile=`read_opt_value_from_func_args "-mpb" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local mpbfile=$(read_opt_value_from_func_args "-mpb" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
     conda activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
+    local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
@@ -529,17 +529,17 @@ samtools_mpileup_tum_bam_define_opts()
 samtools_mpileup_tum_bam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-process-outd" "$@"`
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local mpbfile=`read_opt_value_from_func_args "-mpb" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local mpbfile=$(read_opt_value_from_func_args "-mpb" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
     conda activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
+    local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
 
     # Generate pileup file
     logmsg "* Generating pileup file..."
@@ -606,14 +606,14 @@ parallel_samtools_mpileup_norm_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "split"`
+    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -648,19 +648,19 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 parallel_samtools_mpileup_norm_bam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local mpbfile=`read_opt_value_from_func_args "-mpb" "$@"`
-    local contig=`read_opt_value_from_func_args "-contig" "$@"`
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local mpbfile=$(read_opt_value_from_func_args "-mpb" "$@")
+    local contig=$(read_opt_value_from_func_args "-contig" "$@")
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
     conda activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
+    local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
@@ -679,8 +679,8 @@ parallel_samtools_mpileup_norm_bam()
 parallel_samtools_mpileup_norm_bam_reset_outdir()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local contig=`read_opt_value_from_func_args "-contig" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local contig=$(read_opt_value_from_func_args "-contig" "$@")
 
     # Remove files
     logmsg "* Resetting output directory..."
@@ -739,14 +739,14 @@ parallel_samtools_mpileup_tum_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "split"`
+    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -781,19 +781,19 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 parallel_samtools_mpileup_tum_bam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local mpbfile=`read_opt_value_from_func_args "-mpb" "$@"`
-    local contig=`read_opt_value_from_func_args "-contig" "$@"`
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local mpbfile=$(read_opt_value_from_func_args "-mpb" "$@")
+    local contig=$(read_opt_value_from_func_args "-contig" "$@")
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
     conda activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
-    local smp_l_opt=`get_samtools_mpileup_l_opt ${mpbfile}`
+    local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
@@ -812,8 +812,8 @@ parallel_samtools_mpileup_tum_bam()
 parallel_samtools_mpileup_tum_bam_reset_outdir()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local contig=`read_opt_value_from_func_args "-contig" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local contig=$(read_opt_value_from_func_args "-contig" "$@")
 
     # Remove files
     logmsg "* Resetting output directory..."
@@ -863,14 +863,14 @@ parallel_split_norm_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "split"`
+    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -895,9 +895,9 @@ parallel_split_norm_bam_define_opts()
 parallel_split_norm_bam()
 {
     # Initialize variables
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local contig=`read_opt_value_from_func_args "-contig" "$@"`
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local contig=$(read_opt_value_from_func_args "-contig" "$@")
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
@@ -959,14 +959,14 @@ parallel_split_tum_bam_define_opts()
     local process_outdir=$4
 
     # Obtain splitdir directory
-    local abs_splitdir=`get_absolute_shdirname "split"`
+    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
-    clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
 
     # Array of contigs to process, one task per contig
-    array=( `get_contig_list_from_file $clist` ) || return 1
+    array=( $(get_contig_list_from_file $clist) ) || return 1
 
     for idx in "${!array[@]}"; do
         local optlist=""
@@ -991,9 +991,9 @@ parallel_split_tum_bam_define_opts()
 parallel_split_tum_bam()
 {
     # Initialize variables
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local contig=`read_opt_value_from_func_args "-contig" "$@"`
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local contig=$(read_opt_value_from_func_args "-contig" "$@")
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
@@ -1060,8 +1060,8 @@ bedtools_genomecov_norm_bam_define_opts()
 bedtools_genomecov_norm_bam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1124,8 +1124,8 @@ bedtools_genomecov_tum_bam_define_opts()
 bedtools_genomecov_tum_bam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -1187,7 +1187,7 @@ norm_bam_to_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
 
     # -normalbam option
     local normalbam="${abs_datadir}"/normal.bam
@@ -1208,13 +1208,13 @@ norm_bam_to_ubam_define_opts()
 norm_bam_to_ubam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local max_records=$(read_opt_value_from_func_args "-mrec" "$@")
     if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
     fi
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp
@@ -1280,7 +1280,7 @@ tum_bam_to_ubam_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
 
     # -tumorbam option
     local tumorbam="${abs_datadir}"/tumor.bam
@@ -1301,13 +1301,13 @@ tum_bam_to_ubam_define_opts()
 tum_bam_to_ubam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local max_records=$(read_opt_value_from_func_args "-mrec" "$@")
     if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
     fi
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp
@@ -1385,7 +1385,7 @@ align_norm_ubam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
 
     # -normalbam option
     local normalbam="${abs_datadir}"/normal_unmapped.bam
@@ -1422,15 +1422,15 @@ gatk_dict_exists()
 align_norm_ubam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local normalbam=`read_opt_value_from_func_args "-normalbam" "$@"`
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local max_records=$(read_opt_value_from_func_args "-mrec" "$@")
     if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
     fi
-    local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local cpus=$(read_opt_value_from_func_args "-cpus" "$@")
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp
@@ -1545,7 +1545,7 @@ align_tum_ubam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # Get data directory
-    local abs_datadir=`get_absolute_shdirname "data"`
+    local abs_datadir=$(get_absolute_shdirname "data")
 
     # -tumorbam option
     local tumorbam="${abs_datadir}"/tumor_unmapped.bam
@@ -1569,15 +1569,15 @@ align_tum_ubam_define_opts()
 align_tum_ubam()
 {
     # Initialize variables
-    local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
-    local tumorbam=`read_opt_value_from_func_args "-tumorbam" "$@"`
-    local ref=`read_opt_value_from_func_args "-r" "$@"`
-    local max_records=`read_opt_value_from_func_args "-mrec" "$@"`
+    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
+    local ref=$(read_opt_value_from_func_args "-r" "$@")
+    local max_records=$(read_opt_value_from_func_args "-mrec" "$@")
     if [ "$max_records" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         max_records=${DEFAULT_MAX_RECORDS_IN_RAM_GATK}
     fi
-    local cpus=`read_opt_value_from_func_args "-cpus" "$@"`
-    local outfile=`read_opt_value_from_func_args "-outfile" "$@"`
+    local cpus=$(read_opt_value_from_func_args "-cpus" "$@")
+    local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Create tmpdir for gatk
     tmpdir="${process_outd}"/tmp

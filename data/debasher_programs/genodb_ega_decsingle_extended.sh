@@ -449,13 +449,13 @@ parallel_delly_define_opts()
         define_cmdline_infile_opt_if_given "$cmdline" "-dx" optlist || return 1
 
         # -normalbam option
-        local contig=${array[$idx]}
         define_opt_from_proc_task_out "-normalbam" "parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tumorbam option
         define_opt_from_proc_task_out "-tumorbam" "parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
+        local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
         # Save option list

@@ -107,9 +107,6 @@ create_genref_for_bam_define_opts()
     # -bam option
     define_opt_from_proc_out "-bam" "index_norm_bam" "-out-nb" optlist || return 1
 
-    # -bam-idx option (it is defined for process synchronization purposes)
-    define_opt_from_proc_out "-bam-idx" "index_norm_bam" "-out-nbidx" optlist || return 1
-
     # -cm option
     define_cmdline_infile_opt_if_given "$cmdline" "-cm" optlist || return 1
 

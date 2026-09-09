@@ -23,14 +23,6 @@
 ########
 snp_pileup_explain_opts()
 {
-    # -n option
-    description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-n" "<file>" "$description"
-
-    # -t option
-    description="Tumor bam file (required if no downloading processes have been defined)"
-    explain_opt "-t" "<file>" "$description"
-
     # -sv option
     description="SNP vcf file"
     explain_opt "-sv" "<file>" "$description"
@@ -55,8 +47,8 @@ snp_pileup_explain_opts()
 ########
 snp_pileup_identify_cmdline_opts()
 {
-    opt_is_cmdline "-n"
-    opt_is_cmdline "-t"
+    opt_is_cmdline "-normalbam"
+    opt_is_cmdline "-tumorbam"
     opt_is_cmdline "-sv"
 }
 
@@ -77,14 +69,10 @@ snp_pileup_define_opts()
     define_cmdline_infile_opt "$cmdline" "-sv" optlist || exit 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || exit 1
-    define_opt "-normalbam" "$normalbam" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || exit 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || exit 1
-    define_opt "-tumorbam" "$tumorbam" optlist || exit 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || exit 1
 
     # -outcounts option
     local outcounts="${process_outdir}"/snp-pileup-counts.csv

@@ -56,60 +56,6 @@ create_genref_for_bam_identify_cmdline_opts()
 }
 
 ########
-get_bam_filename()
-{
-    local cmdline=$1
-    local given=0
-
-    # Check -bam option
-    local bam
-    bam=`read_opt_value_from_line "$cmdline" "-bam"` && given=1
-    if [ $given -eq 1 ]; then
-        # -bam option was given
-        [ -f "$bam" ] || { errmsg "file $bam does not exist" ; return 1; }
-        echo "$bam"
-        return 0
-    fi
-
-    # Check -n option
-    local normalbam
-    normalbam=`read_opt_value_from_line "$cmdline" "-n"` && given=1
-    if [ $given -eq 1 ]; then
-        [ -f "$normalbam" ] || { errmsg "file $normalbam does not exist" ; return 1; }
-        echo "$normalbam"
-        return 0
-    fi
-
-    # Check -extn option
-    if [ "`read_opt_value_from_line "$cmdline" "-extn"`" != "${DEBASHER_OPT_NOT_FOUND}" ]; then
-        local abs_datadir=`get_absolute_shdirname data`
-        normalbam="${abs_datadir}"/normal.bam
-        echo "$normalbam"
-        return 0
-    fi
-
-    # Check -t option
-    local tumorbam
-    tumorbam=`read_opt_value_from_line "$cmdline" "-t"` && given=1
-    if [ $given -eq 1 ]; then
-        [ -f "$tumorbam" ] || { errmsg "file $tumorbam does not exist" ; return 1; }
-        echo "$tumorbam"
-        return 0
-    fi
-
-    # Check -extt option
-    if [ "`read_opt_value_from_line "$cmdline" "-extt"`" != "${DEBASHER_OPT_NOT_FOUND}" ]; then
-        local abs_datadir=`get_absolute_shdirname data`
-        tumorbam="${abs_datadir}"/tumor.bam
-        echo "$tumorbam"
-        return 0
-    fi
-
-    errmsg "-bam, -n, -extn, -t or -extt options should be given"
-    return 1
-}
-
-########
 create_genref_for_bam_define_opts()
 {
     # Initialize variables
@@ -126,14 +72,7 @@ create_genref_for_bam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-br" optlist || return 1
 
     # -bam option
-    local bam
-    bam=`get_bam_filename "$cmdline"` || return 1
-    define_opt "-bam" "$bam" optlist || return 1
-
-    # -bam-idx option (it is defined for process synchronization
-    # -purposes)
-    local bam_idx="$bam".bai
-    define_opt "-bam-idx" "$bam_idx" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-bam" optlist || return 1
 
     # -cm option
     define_cmdline_infile_opt_if_given "$cmdline" "-cm" optlist || return 1
@@ -191,7 +130,6 @@ create_genref_for_bam()
     local baseref=`read_opt_value_from_func_args "-br" "$@"`
     local process_outd=`read_opt_value_from_func_args "-out-processdir" "$@"`
     local bam=`read_opt_value_from_func_args "-bam" "$@"`
-    local bam_idx=`read_opt_value_from_func_args "-bam-idx" "$@"`
     local contig_mapping=`read_opt_value_from_func_args "-cm" "$@"`
     if [ "$contig_mapping" = "${DEBASHER_OPT_NOT_FOUND}" ]; then
         contig_mapping=${NOFILE}

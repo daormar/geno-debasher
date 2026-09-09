@@ -186,9 +186,7 @@ strelka_germline_define_opts()
     define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -220,14 +218,10 @@ manta_somatic_define_opts()
     define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -256,14 +250,10 @@ strelka_somatic_define_opts()
     define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -manta-outd option
     define_opt_from_proc_out "-manta-outd" "manta_somatic" "-out-processdir" optlist || return 1
@@ -295,14 +285,10 @@ msisensor_pro_define_opts()
     define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
@@ -328,14 +314,10 @@ cnvkit_define_opts()
     define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
@@ -361,9 +343,7 @@ platypus_germline_define_opts()
     define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -out-summarydir option
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1

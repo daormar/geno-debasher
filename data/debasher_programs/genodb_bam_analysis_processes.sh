@@ -81,9 +81,7 @@ manta_germline_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -207,14 +205,10 @@ manta_somatic_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -325,9 +319,7 @@ strelka_germline_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -435,9 +427,7 @@ platypus_germline_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -out-summarydir option
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
@@ -573,9 +563,7 @@ gatk_haplotypecaller_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -sample-name option
     define_cmdline_opt "$cmdline" "-sample-name" optlist || return 1
@@ -676,14 +664,10 @@ strelka_somatic_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -manta-outd option
     define_opt_from_proc_out "-manta-outd" "manta_somatic" "-out-processdir" optlist || return 1
@@ -767,9 +751,9 @@ mutect2_somatic_explain_opts()
     description="Reference genome file"
     explain_opt "-r" "<file>" "$description"
 
-    # -n option
+    # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
-    explain_opt "-n" "<file>" "$description"
+    explain_opt "-normalbam" "<file>" "$description"
 
     # -norm-sample-name option
     description="Normal sample name"
@@ -800,7 +784,7 @@ mutect2_somatic_explain_opts()
 mutect2_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-n"
+    opt_is_cmdline "-normalbam"
     opt_is_cmdline "-norm-sample-name"
     opt_is_cmdline "-panel-of-normals"
     opt_is_cmdline "-tumorbam"
@@ -823,14 +807,10 @@ mutect2_somatic_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -norm-sample-name option
     define_cmdline_opt "$cmdline" "-norm-sample-name" optlist || return 1
@@ -931,14 +911,10 @@ lofreq_somatic_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
@@ -1031,14 +1007,10 @@ cnvkit_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
@@ -1133,14 +1105,10 @@ snp_pileup_plus_facets_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-md" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # Save option list
     save_opt_list optlist
@@ -1617,14 +1585,10 @@ lumpy_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -lx option
     define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
@@ -1861,14 +1825,10 @@ smoove_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -lx option
     define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
@@ -1977,14 +1937,10 @@ delly_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -dx option
     define_cmdline_infile_opt_if_given "$cmdline" "-dx" optlist || return 1
@@ -2231,14 +2187,6 @@ parallel_svtyper_define_opts()
     local process_name=$3
     local process_outdir=$4
 
-    # -normalbam option value
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-
-    # -tumorbam option value
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-
     # Get name of contig list file
     local clist
     clist=`read_opt_value_from_line "$cmdline" "-lc"` || { errmsg "Error: -lc option not found"; return 1; }
@@ -2250,10 +2198,10 @@ parallel_svtyper_define_opts()
         local optlist=""
 
         # -normalbam option
-        define_opt "-normalbam" "$normalbam" optlist || return 1
+        define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
         # -tumorbam option
-        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+        define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
         # -contig option
         local contig=${array[$idx]}
@@ -2349,14 +2297,10 @@ msisensor_pro_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    local normalbam
-    normalbam=`genodb_bam_common::get_normal_bam_filename "$cmdline"` || return 1
-    define_opt "-normalbam" "$normalbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-normalbam" optlist || return 1
 
     # -tumorbam option
-    local tumorbam
-    tumorbam=`genodb_bam_common::get_tumor_bam_filename "$cmdline"` || return 1
-    define_opt "-tumorbam" "$tumorbam" optlist || return 1
+    define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1

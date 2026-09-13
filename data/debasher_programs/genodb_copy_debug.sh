@@ -3,7 +3,7 @@
 load_debasher_module "genodb_bam_analysis"
 
 ########
-index_norm_bam_define_opts()
+genodb.index_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -11,7 +11,7 @@ index_norm_bam_define_opts()
     local optlist=""
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "copy_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.copy_norm_bam" "-out-nb" optlist || return 1
 
     # -out-nbidx option
     local abs_datadir=$(get_absolute_shdirname "data")
@@ -26,7 +26,7 @@ index_norm_bam_define_opts()
 }
 
 ########
-index_tum_bam_define_opts()
+genodb.index_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -34,7 +34,7 @@ index_tum_bam_define_opts()
     local optlist=""
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "copy_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.copy_tum_bam" "-out-tb" optlist || return 1
 
     # -out-tbidx option
     local abs_datadir=$(get_absolute_shdirname "data")
@@ -49,7 +49,7 @@ index_tum_bam_define_opts()
 }
 
 ########
-create_genref_for_bam_identify_cmdline_opts()
+genodb.create_genref_for_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-br"
     opt_is_cmdline "-cm"
@@ -57,7 +57,7 @@ create_genref_for_bam_identify_cmdline_opts()
 }
 
 ########
-create_genref_for_bam_define_opts()
+genodb.create_genref_for_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -73,7 +73,7 @@ create_genref_for_bam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-br" optlist || return 1
 
     # -bam option
-    define_opt_from_proc_out "-bam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-bam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -cm option
     define_cmdline_infile_opt_if_given "$cmdline" "-cm" optlist || return 1
@@ -94,9 +94,9 @@ create_genref_for_bam_define_opts()
 
 genodb_copy_debug_program()
 {
-    add_debasher_process "copy_norm_bam"         "cpus=1  mem=2048    time=24:00:00"
-    add_debasher_process "copy_tum_bam"          "cpus=1  mem=2048    time=24:00:00"
-    add_debasher_process "index_norm_bam"        "cpus=1  mem=1024    time=4:00:00"
-    add_debasher_process "index_tum_bam"         "cpus=1  mem=1024    time=4:00:00"
-    add_debasher_process "create_genref_for_bam" "cpus=1  mem=8G      time=4:00:00"
+    add_debasher_process "genodb.copy_norm_bam"         "cpus=1  mem=2048    time=24:00:00"
+    add_debasher_process "genodb.copy_tum_bam"          "cpus=1  mem=2048    time=24:00:00"
+    add_debasher_process "genodb.index_norm_bam"        "cpus=1  mem=1024    time=4:00:00"
+    add_debasher_process "genodb.index_tum_bam"         "cpus=1  mem=1024    time=4:00:00"
+    add_debasher_process "genodb.create_genref_for_bam" "cpus=1  mem=8G      time=4:00:00"
 }

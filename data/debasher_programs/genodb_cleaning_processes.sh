@@ -21,7 +21,7 @@
 ######################
 
 ########
-delete_bam_files_explain_opts()
+genodb.delete_bam_files_explain_opts()
 {
     # -process-outd option
     local description="output directory"
@@ -33,13 +33,13 @@ delete_bam_files_explain_opts()
 }
 
 ########
-delete_bam_files_identify_cmdline_opts()
+genodb.delete_bam_files_identify_cmdline_opts()
 {
     :
 }
 
 ########
-delete_bam_files_define_opts()
+genodb.delete_bam_files_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -59,7 +59,7 @@ delete_bam_files_define_opts()
 }
 
 ########
-delete_bam_files()
+genodb.delete_bam_files()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -70,7 +70,7 @@ delete_bam_files()
 }
 
 ########
-clear_datadir_explain_opts()
+genodb.clear_datadir_explain_opts()
 {
     # -process-outd option
     local description="output directory"
@@ -82,13 +82,13 @@ clear_datadir_explain_opts()
 }
 
 ########
-clear_datadir_identify_cmdline_opts()
+genodb.clear_datadir_identify_cmdline_opts()
 {
     :
 }
 
 ########
-clear_datadir_define_opts()
+genodb.clear_datadir_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -108,7 +108,7 @@ clear_datadir_define_opts()
 }
 
 ########
-clear_datadir()
+genodb.clear_datadir()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -118,5 +118,5 @@ clear_datadir()
     "${RM}" -rf "${abs_datadir}"/* || return 1
 
     # Print README.txt file
-    echo "NOTE: This directory was cleared by means of the 'clear_datadir' process" > "${abs_datadir}"/README.txt || return 1
+    echo "NOTE: This directory was cleared by means of the 'genodb.clear_datadir' process" > "${abs_datadir}"/README.txt || return 1
 }

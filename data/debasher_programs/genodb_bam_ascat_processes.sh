@@ -69,7 +69,7 @@ postproc_allelecounter_output()
 }
 
 ########
-allele_counter_norm_explain_opts()
+genodb.allele_counter_norm_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
@@ -101,7 +101,7 @@ allele_counter_norm_explain_opts()
 }
 
 ########
-allele_counter_norm_identify_cmdline_opts()
+genodb.allele_counter_norm_identify_cmdline_opts()
 {
     opt_is_cmdline "-l"
     opt_is_cmdline "-r"
@@ -110,7 +110,7 @@ allele_counter_norm_identify_cmdline_opts()
 }
 
 ########
-allele_counter_norm_define_opts()
+genodb.allele_counter_norm_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -147,7 +147,7 @@ allele_counter_norm_define_opts()
 }
 
 ########
-allele_counter_norm()
+genodb.allele_counter_norm()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -167,7 +167,7 @@ allele_counter_norm()
 
     # Create file for alleleCounter, mapping contigs if required
     logmsg "* Preprocessing locis..."
-    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${process_outd}"/allele_counter_norm.preproc_locis
+    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${process_outd}"/genodb.allele_counter_norm.preproc_locis
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -175,7 +175,7 @@ allele_counter_norm()
 
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
-    alleleCounter -l "${process_outd}"/allele_counter_norm.preproc_locis -r "${ref}" -b "${normalbam}" -o "${process_outd}"/allele_counter_norm.csv 2>&1 || exit 1
+    alleleCounter -l "${process_outd}"/genodb.allele_counter_norm.preproc_locis -r "${ref}" -b "${normalbam}" -o "${process_outd}"/genodb.allele_counter_norm.csv 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Dectivating conda environment..."
@@ -183,17 +183,17 @@ allele_counter_norm()
 
     # Postprocess alleleCounter output
     logmsg "* Postprocessing alleleCounter output..."
-    postproc_allelecounter_output "${process_outd}"/allele_counter_norm.csv "${contig_mapping}" > "${outcsv}"
+    postproc_allelecounter_output "${process_outd}"/genodb.allele_counter_norm.csv "${contig_mapping}" > "${outcsv}"
 }
 
 ########
-allele_counter_norm_conda_envs()
+genodb.allele_counter_norm_conda_envs()
 {
     define_conda_env allelecount allelecount.yml
 }
 
 ########
-allele_counter_tumor_explain_opts()
+genodb.allele_counter_tumor_explain_opts()
 {
     # -l option
     description="Loci (SNP position) file. IMPORTANT: Chromosome ids should not contain the 'chr' string prefix, first field represents the SNP id"
@@ -221,7 +221,7 @@ allele_counter_tumor_explain_opts()
 }
 
 ########
-allele_counter_tumor_identify_cmdline_opts()
+genodb.allele_counter_tumor_identify_cmdline_opts()
 {
     opt_is_cmdline "-l"
     opt_is_cmdline "-r"
@@ -230,7 +230,7 @@ allele_counter_tumor_identify_cmdline_opts()
 }
 
 ########
-allele_counter_tumor_define_opts()
+genodb.allele_counter_tumor_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -263,7 +263,7 @@ allele_counter_tumor_define_opts()
 }
 
 ########
-allele_counter_tumor()
+genodb.allele_counter_tumor()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -282,7 +282,7 @@ allele_counter_tumor()
 
     # Create file for alleleCounter, mapping contigs if required
     logmsg "* Preprocessing locis..."
-    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${process_outd}"/allele_counter_tumor.preproc_locis
+    preproc_allelecounter_locis "${locis}" "${contig_mapping}" > "${process_outd}"/genodb.allele_counter_tumor.preproc_locis
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
@@ -290,7 +290,7 @@ allele_counter_tumor()
 
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
-    alleleCounter -l "${process_outd}"/allele_counter_tumor.preproc_locis -r "${ref}" -b "${tumorbam}" -o "${process_outd}"/allele_counter_tumor.csv 2>&1 || exit 1
+    alleleCounter -l "${process_outd}"/genodb.allele_counter_tumor.preproc_locis -r "${ref}" -b "${tumorbam}" -o "${process_outd}"/genodb.allele_counter_tumor.csv 2>&1 || exit 1
 
     # Deactivate conda environment
     logmsg "* Dectivating conda environment..."
@@ -298,17 +298,17 @@ allele_counter_tumor()
 
     # Postprocess alleleCounter output
     logmsg "* Postprocessing alleleCounter output..."
-    postproc_allelecounter_output "${process_outd}"/allele_counter_tumor.csv "${contig_mapping}" > "${outcsv}"
+    postproc_allelecounter_output "${process_outd}"/genodb.allele_counter_tumor.csv "${contig_mapping}" > "${outcsv}"
 }
 
 ########
-allele_counter_tumor_conda_envs()
+genodb.allele_counter_tumor_conda_envs()
 {
     define_conda_env allelecount allelecount.yml
 }
 
 ########
-ascat_explain_opts()
+genodb.ascat_explain_opts()
 {
     # -acn option
     description="alleleCounter normal file"
@@ -336,7 +336,7 @@ ascat_explain_opts()
 }
 
 ########
-ascat_identify_cmdline_opts()
+genodb.ascat_identify_cmdline_opts()
 {
     opt_is_cmdline "-acn"
     opt_is_cmdline "-act"
@@ -346,7 +346,7 @@ ascat_identify_cmdline_opts()
 }
 
 ########
-ascat_define_opts()
+genodb.ascat_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -359,13 +359,13 @@ ascat_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
     # -acn option
-    define_opt_from_proc_out "-acn" "allele_counter_norm" "-outcsv" optlist || exit 1
+    define_opt_from_proc_out "-acn" "genodb.allele_counter_norm" "-outcsv" optlist || exit 1
 
     # -act option
-    define_opt_from_proc_out "-act" "allele_counter_tumor" "-outcsv" optlist || exit 1
+    define_opt_from_proc_out "-act" "genodb.allele_counter_tumor" "-outcsv" optlist || exit 1
 
     # -snpids option
-    define_opt_from_proc_out "-snpids" "allele_counter_norm" "-outsnpids" optlist || exit 1
+    define_opt_from_proc_out "-snpids" "genodb.allele_counter_norm" "-outsnpids" optlist || exit 1
 
     # -g option
     define_cmdline_opt "$cmdline" "-g" optlist || exit 1
@@ -388,7 +388,7 @@ add_snpids_to_convert_allele_counts_outfile()
 }
 
 ########
-ascat()
+genodb.ascat()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -400,7 +400,7 @@ ascat()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate ascat 2>&1 || exit 1
+    conda activate genodb.ascat 2>&1 || exit 1
 
     # Convert allele counts
     logmsg "* Executing convert_allele_counts..."
@@ -413,8 +413,8 @@ ascat()
     add_snpids_to_convert_allele_counts_outfile "${snpids}" "${process_outd}"/normal.BAF > "${process_outd}"/normal_snpids.BAF
     add_snpids_to_convert_allele_counts_outfile "${snpids}" "${process_outd}"/normal.LogR > "${process_outd}"/normal_snpids.LogR
 
-    # Run ascat
-    logmsg "* Executing ascat..."
+    # Run genodb.ascat
+    logmsg "* Executing genodb.ascat..."
     Rscript "${genodebasher_libexecdir}"/genodb_run_ascat --tumor_baf="${process_outd}/tumor_snpids.BAF" --tumor_logr="${process_outd}/tumor_snpids.LogR" --normal_baf="${process_outd}/normal_snpids.BAF" --normal_logr="${process_outd}/tumor_snpids.LogR" --tumor_name="sample" --gc_correction=${snpgccorr} --out_dir="${process_outd}/" || exit 1
 
     # Deactivate conda environment
@@ -423,7 +423,7 @@ ascat()
 }
 
 ########
-ascat_conda_envs()
+genodb.ascat_conda_envs()
 {
-    define_conda_env ascat ascat.yml
+    define_conda_env genodb.ascat genodb.ascat.yml
 }

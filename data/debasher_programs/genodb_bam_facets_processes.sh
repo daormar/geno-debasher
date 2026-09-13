@@ -21,7 +21,7 @@
 #################################
 
 ########
-snp_pileup_explain_opts()
+genodb.snp_pileup_explain_opts()
 {
     # -sv option
     description="SNP vcf file"
@@ -45,7 +45,7 @@ snp_pileup_explain_opts()
 }
 
 ########
-snp_pileup_identify_cmdline_opts()
+genodb.snp_pileup_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-tumorbam"
@@ -53,7 +53,7 @@ snp_pileup_identify_cmdline_opts()
 }
 
 ########
-snp_pileup_define_opts()
+genodb.snp_pileup_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -83,7 +83,7 @@ snp_pileup_define_opts()
 }
 
 ########
-snp_pileup()
+genodb.snp_pileup()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -106,13 +106,13 @@ snp_pileup()
 }
 
 ########
-snp_pileup_conda_envs()
+genodb.snp_pileup_conda_envs()
 {
     define_conda_env snp-pileup snp-pileup.yml
 }
 
 #######
-facets_explain_opts()
+genodb.facets_explain_opts()
 {
     # -sp option
     description="SNP pileup file (required if pileup process has not been performed)"
@@ -128,13 +128,13 @@ facets_explain_opts()
 }
 
 ########
-facets_identify_cmdline_opts()
+genodb.facets_identify_cmdline_opts()
 {
     opt_is_cmdline "-sp"
 }
 
 ########
-facets_define_opts()
+genodb.facets_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -147,14 +147,14 @@ facets_define_opts()
     define_opt "-process-outd" "${process_outdir}" optlist || exit 1
 
     # -pileup-counts option
-    define_opt_from_proc_out "-pileup-counts" "snp_pileup" "-outcounts" optlist || exit 1
+    define_opt_from_proc_out "-pileup-counts" "genodb.snp_pileup" "-outcounts" optlist || exit 1
 
     # Save option list
     save_opt_list optlist
 }
 
 ########
-facets()
+genodb.facets()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -162,13 +162,13 @@ facets()
 
     # Activate conda environment if needed
     logmsg "* Activating conda environment..."
-    conda activate facets 2>&1 || exit 1
+    conda activate genodb.facets 2>&1 || exit 1
 
-    # Execute facets
+    # Execute genodb.facets
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
-    logmsg "* Executing facets..."
+    logmsg "* Executing genodb.facets..."
     Rscript "${genodebasher_libexecdir}"/genodb_run_facets -c "${pileup_counts}" -o "${process_outd}" 2>&1 || exit 1
 
     # Deactivate conda environment if needed
@@ -177,7 +177,7 @@ facets()
 }
 
 ########
-facets_conda_envs()
+genodb.facets_conda_envs()
 {
-    define_conda_env facets facets.yml
+    define_conda_env genodb.facets genodb.facets.yml
 }

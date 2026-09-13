@@ -30,7 +30,7 @@ DEFAULT_ASP_MAX_TRANS_RATE=100m
 ##########################
 
 #######
-copy_norm_bam_explain_opts()
+genodb.copy_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
@@ -42,13 +42,13 @@ copy_norm_bam_explain_opts()
 }
 
 ########
-copy_norm_bam_identify_cmdline_opts()
+genodb.copy_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
 }
 
 ########
-copy_norm_bam_define_opts()
+genodb.copy_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -68,7 +68,7 @@ copy_norm_bam_define_opts()
 }
 
 ########
-copy_norm_bam()
+genodb.copy_norm_bam()
 {
     # Initialize variables
     local local_normalbam=$(read_opt_value_from_func_args "-extn" "$@")
@@ -80,7 +80,7 @@ copy_norm_bam()
 }
 
 ########
-copy_tum_bam_explain_opts()
+genodb.copy_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
@@ -92,13 +92,13 @@ copy_tum_bam_explain_opts()
 }
 
 ########
-copy_tum_bam_identify_cmdline_opts()
+genodb.copy_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
 }
 
 ########
-copy_tum_bam_define_opts()
+genodb.copy_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -118,7 +118,7 @@ copy_tum_bam_define_opts()
 }
 
 ########
-copy_tum_bam()
+genodb.copy_tum_bam()
 {
     # Initialize variables
     local local_tumorbam=$(read_opt_value_from_func_args "-extt" "$@")
@@ -130,7 +130,7 @@ copy_tum_bam()
 }
 
 ########
-scp_norm_bam_explain_opts()
+genodb.scp_norm_bam_explain_opts()
 {
     # -extn option
     description="Path to local normal bam file to be copied"
@@ -146,13 +146,13 @@ scp_norm_bam_explain_opts()
 }
 
 ########
-scp_norm_bam_identify_cmdline_opts()
+genodb.scp_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
 }
 
 ########
-scp_norm_bam_define_opts()
+genodb.scp_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -177,7 +177,7 @@ scp_norm_bam_define_opts()
 }
 
 ########
-scp_norm_bam()
+genodb.scp_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -190,7 +190,7 @@ scp_norm_bam()
 }
 
 ########
-scp_tum_bam_explain_opts()
+genodb.scp_tum_bam_explain_opts()
 {
     # -extt option
     description="Path to local tumor bam file to be copied"
@@ -206,13 +206,13 @@ scp_tum_bam_explain_opts()
 }
 
 ########
-scp_tum_bam_identify_cmdline_opts()
+genodb.scp_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
 }
 
 ########
-scp_tum_bam_define_opts()
+genodb.scp_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -237,7 +237,7 @@ scp_tum_bam_define_opts()
 }
 
 ########
-scp_tum_bam()
+genodb.scp_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -250,7 +250,7 @@ scp_tum_bam()
 }
 
 ########
-download_ega_norm_bam_explain_opts()
+genodb.download_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -278,7 +278,7 @@ download_ega_norm_bam_explain_opts()
 }
 
 ########
-download_ega_norm_bam_identify_cmdline_opts()
+genodb.download_ega_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-egastr"
@@ -287,7 +287,7 @@ download_ega_norm_bam_identify_cmdline_opts()
 }
 
 ########
-download_ega_norm_bam_define_opts()
+genodb.download_ega_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -361,7 +361,7 @@ ega_download_retry()
 }
 
 ########
-download_ega_norm_bam()
+genodb.download_ega_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -393,13 +393,13 @@ download_ega_norm_bam()
 }
 
 ########
-download_ega_norm_bam_conda_envs()
+genodb.download_ega_norm_bam_conda_envs()
 {
     define_conda_env pyega3 pyega3.yml
 }
 
 ########
-download_ega_tum_bam_explain_opts()
+genodb.download_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -427,7 +427,7 @@ download_ega_tum_bam_explain_opts()
 }
 
 ########
-download_ega_tum_bam_identify_cmdline_opts()
+genodb.download_ega_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-egastr"
@@ -436,7 +436,7 @@ download_ega_tum_bam_identify_cmdline_opts()
 }
 
 ########
-download_ega_tum_bam_define_opts()
+genodb.download_ega_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -470,7 +470,7 @@ download_ega_tum_bam_define_opts()
 }
 
 ########
-download_ega_tum_bam()
+genodb.download_ega_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -502,7 +502,7 @@ download_ega_tum_bam()
 }
 
 ########
-download_ega_tum_bam_conda_envs()
+genodb.download_ega_tum_bam_conda_envs()
 {
     define_conda_env pyega3 pyega3.yml
 }
@@ -523,7 +523,7 @@ find_bam_filename()
 }
 
 ########
-download_ega_asp_norm_bam_explain_opts()
+genodb.download_ega_asp_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -559,7 +559,7 @@ download_ega_asp_norm_bam_explain_opts()
 }
 
 ########
-download_ega_asp_norm_bam_identify_cmdline_opts()
+genodb.download_ega_asp_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-asperausr"
@@ -570,7 +570,7 @@ download_ega_asp_norm_bam_identify_cmdline_opts()
 }
 
 ########
-download_ega_asp_norm_bam_define_opts()
+genodb.download_ega_asp_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -610,7 +610,7 @@ download_ega_asp_norm_bam_define_opts()
 }
 
 ########
-download_ega_asp_norm_bam()
+genodb.download_ega_asp_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -650,7 +650,7 @@ download_ega_asp_norm_bam()
 }
 
 ########
-download_ega_asp_tum_bam_explain_opts()
+genodb.download_ega_asp_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -686,7 +686,7 @@ download_ega_asp_tum_bam_explain_opts()
 }
 
 ########
-download_ega_asp_tum_bam_identify_cmdline_opts()
+genodb.download_ega_asp_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-asperausr"
@@ -697,7 +697,7 @@ download_ega_asp_tum_bam_identify_cmdline_opts()
 }
 
 ########
-download_ega_asp_tum_bam_define_opts()
+genodb.download_ega_asp_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -737,7 +737,7 @@ download_ega_asp_tum_bam_define_opts()
 }
 
 ########
-download_ega_asp_tum_bam()
+genodb.download_ega_asp_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -777,7 +777,7 @@ download_ega_asp_tum_bam()
 }
 
 ########
-decrypt_ega_norm_bam_explain_opts()
+genodb.decrypt_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
@@ -797,14 +797,14 @@ decrypt_ega_norm_bam_explain_opts()
 }
 
 ########
-decrypt_ega_norm_bam_identify_cmdline_opts()
+genodb.decrypt_ega_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-egadecrpwd"
 }
 
 ########
-decrypt_ega_norm_bam_define_opts()
+genodb.decrypt_ega_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -832,7 +832,7 @@ decrypt_ega_norm_bam_define_opts()
 }
 
 ########
-decrypt_ega_norm_bam()
+genodb.decrypt_ega_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -857,7 +857,7 @@ decrypt_ega_norm_bam()
 }
 
 ########
-decrypt_ega_tum_bam_explain_opts()
+genodb.decrypt_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
@@ -877,14 +877,14 @@ decrypt_ega_tum_bam_explain_opts()
 }
 
 ########
-decrypt_ega_tum_bam_identify_cmdline_opts()
+genodb.decrypt_ega_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-egadecrpwd"
 }
 
 ########
-decrypt_ega_tum_bam_define_opts()
+genodb.decrypt_ega_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -912,7 +912,7 @@ decrypt_ega_tum_bam_define_opts()
 }
 
 ########
-decrypt_ega_tum_bam()
+genodb.decrypt_ega_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -937,7 +937,7 @@ decrypt_ega_tum_bam()
 }
 
 ########
-decsingle_ega_norm_bam_explain_opts()
+genodb.decsingle_ega_norm_bam_explain_opts()
 {
     # -extn option
     description="File name of encrypted normal bam file to process"
@@ -957,14 +957,14 @@ decsingle_ega_norm_bam_explain_opts()
 }
 
 ########
-decsingle_ega_norm_bam_identify_cmdline_opts()
+genodb.decsingle_ega_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-ndecsinglepwd"
 }
 
 ########
-decsingle_ega_norm_bam_define_opts()
+genodb.decsingle_ega_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -992,7 +992,7 @@ decsingle_ega_norm_bam_define_opts()
 }
 
 ########
-decsingle_ega_norm_bam()
+genodb.decsingle_ega_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -1006,7 +1006,7 @@ decsingle_ega_norm_bam()
 }
 
 ########
-decsingle_ega_tum_bam_explain_opts()
+genodb.decsingle_ega_tum_bam_explain_opts()
 {
     # -extt option
     description="File name of encrypted tumor bam file to process"
@@ -1026,14 +1026,14 @@ decsingle_ega_tum_bam_explain_opts()
 }
 
 ########
-decsingle_ega_tum_bam_identify_cmdline_opts()
+genodb.decsingle_ega_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-tdecsinglepwd"
 }
 
 ########
-decsingle_ega_tum_bam_define_opts()
+genodb.decsingle_ega_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1061,7 +1061,7 @@ decsingle_ega_tum_bam_define_opts()
 }
 
 ########
-decsingle_ega_tum_bam()
+genodb.decsingle_ega_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -1075,7 +1075,7 @@ decsingle_ega_tum_bam()
 }
 
 ########
-download_aws_norm_bam_explain_opts()
+genodb.download_aws_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -1095,14 +1095,14 @@ download_aws_norm_bam_explain_opts()
 }
 
 ########
-download_aws_norm_bam_identify_cmdline_opts()
+genodb.download_aws_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-nt"
 }
 
 ########
-download_aws_norm_bam_define_opts()
+genodb.download_aws_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1130,7 +1130,7 @@ download_aws_norm_bam_define_opts()
 }
 
 ########
-download_aws_norm_bam()
+genodb.download_aws_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -1158,7 +1158,7 @@ download_aws_norm_bam()
 }
 
 ########
-download_aws_tum_bam_explain_opts()
+genodb.download_aws_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -1178,14 +1178,14 @@ download_aws_tum_bam_explain_opts()
 }
 
 ########
-download_aws_tum_bam_identify_cmdline_opts()
+genodb.download_aws_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-nt"
 }
 
 ########
-download_aws_tum_bam_define_opts()
+genodb.download_aws_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1213,7 +1213,7 @@ download_aws_tum_bam_define_opts()
 }
 
 ########
-download_aws_tum_bam()
+genodb.download_aws_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -1241,7 +1241,7 @@ download_aws_tum_bam()
 }
 
 ########
-download_collab_norm_bam_explain_opts()
+genodb.download_collab_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -1261,14 +1261,14 @@ download_collab_norm_bam_explain_opts()
 }
 
 ########
-download_collab_norm_bam_identify_cmdline_opts()
+genodb.download_collab_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-nt"
 }
 
 ########
-download_collab_norm_bam_define_opts()
+genodb.download_collab_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1296,7 +1296,7 @@ download_collab_norm_bam_define_opts()
 }
 
 ########
-download_collab_norm_bam()
+genodb.download_collab_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -1324,7 +1324,7 @@ download_collab_norm_bam()
 }
 
 ########
-download_collab_tum_bam_explain_opts()
+genodb.download_collab_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -1344,14 +1344,14 @@ download_collab_tum_bam_explain_opts()
 }
 
 ########
-download_collab_tum_bam_identify_cmdline_opts()
+genodb.download_collab_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-nt"
 }
 
 ########
-download_collab_tum_bam_define_opts()
+genodb.download_collab_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1379,7 +1379,7 @@ download_collab_tum_bam_define_opts()
 }
 
 ########
-download_collab_tum_bam()
+genodb.download_collab_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -1407,7 +1407,7 @@ download_collab_tum_bam()
 }
 
 ########
-download_gdc_norm_bam_explain_opts()
+genodb.download_gdc_norm_bam_explain_opts()
 {
     # -extn option
     description="External database id of normal bam file to download"
@@ -1435,7 +1435,7 @@ download_gdc_norm_bam_explain_opts()
 }
 
 ########
-download_gdc_norm_bam_identify_cmdline_opts()
+genodb.download_gdc_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
     opt_is_cmdline "-gdcprocs"
@@ -1444,7 +1444,7 @@ download_gdc_norm_bam_identify_cmdline_opts()
 }
 
 ########
-download_gdc_norm_bam_define_opts()
+genodb.download_gdc_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1490,7 +1490,7 @@ get_gdc_bamfname()
 }
 
 ########
-download_gdc_norm_bam()
+genodb.download_gdc_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-out-nb" "$@")
@@ -1524,13 +1524,13 @@ download_gdc_norm_bam()
 }
 
 ########
-download_gdc_norm_bam_conda_envs()
+genodb.download_gdc_norm_bam_conda_envs()
 {
     define_conda_env gdc-client gdc-client.yml
 }
 
 ########
-download_gdc_tum_bam_explain_opts()
+genodb.download_gdc_tum_bam_explain_opts()
 {
     # -extt option
     description="External database id of tumor bam file to download"
@@ -1558,7 +1558,7 @@ download_gdc_tum_bam_explain_opts()
 }
 
 ########
-download_gdc_tum_bam_identify_cmdline_opts()
+genodb.download_gdc_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
     opt_is_cmdline "-gdcprocs"
@@ -1567,7 +1567,7 @@ download_gdc_tum_bam_identify_cmdline_opts()
 }
 
 ########
-download_gdc_tum_bam_define_opts()
+genodb.download_gdc_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1601,7 +1601,7 @@ download_gdc_tum_bam_define_opts()
 }
 
 ########
-download_gdc_tum_bam()
+genodb.download_gdc_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-out-tb" "$@")
@@ -1635,7 +1635,7 @@ download_gdc_tum_bam()
 }
 
 ########
-download_gdc_tum_bam_conda_envs()
+genodb.download_gdc_tum_bam_conda_envs()
 {
     define_conda_env gdc-client gdc-client.yml
 }

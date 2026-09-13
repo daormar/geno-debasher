@@ -60,13 +60,13 @@ reheader_vcf_list()
 }
 
 ########
-concat_germline_snvs_document()
+genodb.concat_germline_snvs_document()
 {
     document_process "Concatenate generated germline vcfs."
 }
 
 ########
-concat_germline_snvs_explain_opts()
+genodb.concat_germline_snvs_explain_opts()
 {
     # -process-outd option
     local description="output directory"
@@ -78,13 +78,13 @@ concat_germline_snvs_explain_opts()
 }
 
 ########
-concat_germline_snvs_identify_cmdline_opts()
+genodb.concat_germline_snvs_identify_cmdline_opts()
 {
     :
 }
 
 ########
-concat_germline_snvs_define_opts()
+genodb.concat_germline_snvs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -104,7 +104,7 @@ concat_germline_snvs_define_opts()
 }
 
 ########
-concat_germline_snvs()
+genodb.concat_germline_snvs()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -133,7 +133,7 @@ concat_germline_snvs()
 }
 
 ########
-concat_germline_snvs_conda_envs()
+genodb.concat_germline_snvs_conda_envs()
 {
     define_conda_env bcftools bcftools.yml
 }

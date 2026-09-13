@@ -27,7 +27,7 @@ DEFAULT_MAX_RECORDS_IN_RAM_GATK=1000000
 ##############################
 
 ########
-index_norm_bam_explain_opts()
+genodb.index_norm_bam_explain_opts()
 {
     # -normalbam option
     local description="normal bam file"
@@ -43,13 +43,13 @@ index_norm_bam_explain_opts()
 }
 
 ########
-index_norm_bam_identify_cmdline_opts()
+genodb.index_norm_bam_identify_cmdline_opts()
 {
     :
 }
 
 ########
-index_norm_bam_define_opts()
+genodb.index_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -73,7 +73,7 @@ index_norm_bam_define_opts()
 }
 
 ########
-index_norm_bam()
+genodb.index_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
@@ -98,13 +98,13 @@ index_norm_bam()
 }
 
 ########
-index_norm_bam_conda_envs()
+genodb.index_norm_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-index_tum_bam_explain_opts()
+genodb.index_tum_bam_explain_opts()
 {
     # -tumorbam option
     local description="tumor bam file"
@@ -126,7 +126,7 @@ index_tum_bam_cmdline_opts()
 }
 
 ########
-index_tum_bam_define_opts()
+genodb.index_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -150,7 +150,7 @@ index_tum_bam_define_opts()
 }
 
 ########
-index_tum_bam()
+genodb.index_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
@@ -175,13 +175,13 @@ index_tum_bam()
 }
 
 ########
-index_tum_bam_conda_envs()
+genodb.index_tum_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-sort_norm_bam_explain_opts()
+genodb.sort_norm_bam_explain_opts()
 {
     # -normalbam option
     local description="normal bam file"
@@ -197,13 +197,13 @@ sort_norm_bam_explain_opts()
 }
 
 ########
-sort_norm_bam_identify_cmdline_opts()
+genodb.sort_norm_bam_identify_cmdline_opts()
 {
     :
 }
 
 ########
-sort_norm_bam_define_opts()
+genodb.sort_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -228,7 +228,7 @@ sort_norm_bam_define_opts()
 }
 
 ########
-sort_norm_bam()
+genodb.sort_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
@@ -262,13 +262,13 @@ sort_norm_bam()
 }
 
 ########
-sort_norm_bam_conda_envs()
+genodb.sort_norm_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-sort_tum_bam_explain_opts()
+genodb.sort_tum_bam_explain_opts()
 {
     # -tumorbam option
     local description="tumor bam file"
@@ -284,13 +284,13 @@ sort_tum_bam_explain_opts()
 }
 
 ########
-sort_tum_bam_identify_cmdline_opts()
+genodb.sort_tum_bam_identify_cmdline_opts()
 {
     :
 }
 
 ########
-sort_tum_bam_define_opts()
+genodb.sort_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -315,7 +315,7 @@ sort_tum_bam_define_opts()
 }
 
 ########
-sort_tum_bam()
+genodb.sort_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
@@ -349,13 +349,13 @@ sort_tum_bam()
 }
 
 ########
-sort_tum_bam_conda_envs()
+genodb.sort_tum_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-samtools_mpileup_norm_bam_explain_opts()
+genodb.samtools_mpileup_norm_bam_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -379,7 +379,7 @@ samtools_mpileup_norm_bam_explain_opts()
 }
 
 ########
-samtools_mpileup_norm_bam_identify_cmdline_opts()
+genodb.samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -387,7 +387,7 @@ samtools_mpileup_norm_bam_identify_cmdline_opts()
 }
 
 ########
-samtools_mpileup_norm_bam_define_opts()
+genodb.samtools_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -429,7 +429,7 @@ get_samtools_mpileup_l_opt()
 }
 
 ########
-samtools_mpileup_norm_bam()
+genodb.samtools_mpileup_norm_bam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -458,13 +458,13 @@ samtools_mpileup_norm_bam()
 }
 
 ########
-samtools_mpileup_norm_bam_conda_envs()
+genodb.samtools_mpileup_norm_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-samtools_mpileup_tum_bam_explain_opts()
+genodb.samtools_mpileup_tum_bam_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -488,7 +488,7 @@ samtools_mpileup_tum_bam_explain_opts()
 }
 
 ########
-samtools_mpileup_tum_bam_identify_cmdline_opts()
+genodb.samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-tumorbam"
@@ -496,7 +496,7 @@ samtools_mpileup_tum_bam_identify_cmdline_opts()
 }
 
 ########
-samtools_mpileup_tum_bam_define_opts()
+genodb.samtools_mpileup_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -526,7 +526,7 @@ samtools_mpileup_tum_bam_define_opts()
 }
 
 ########
-samtools_mpileup_tum_bam()
+genodb.samtools_mpileup_tum_bam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-process-outd" "$@")
@@ -555,13 +555,13 @@ samtools_mpileup_tum_bam()
 }
 
 ########
-samtools_mpileup_tum_bam_conda_envs()
+genodb.samtools_mpileup_tum_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-parallel_samtools_mpileup_norm_bam_explain_opts()
+genodb.parallel_samtools_mpileup_norm_bam_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -589,7 +589,7 @@ parallel_samtools_mpileup_norm_bam_explain_opts()
 }
 
 ########
-parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
+genodb.parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-mpb"
@@ -597,7 +597,7 @@ parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
 }
 
 ########
-parallel_samtools_mpileup_norm_bam_define_opts()
+genodb.parallel_samtools_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -645,7 +645,7 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 }
 
 ########
-parallel_samtools_mpileup_norm_bam()
+genodb.parallel_samtools_mpileup_norm_bam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -688,13 +688,13 @@ parallel_samtools_mpileup_norm_bam_reset_outdir()
 }
 
 ########
-parallel_samtools_mpileup_norm_bam_conda_envs()
+genodb.parallel_samtools_mpileup_norm_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-parallel_samtools_mpileup_tum_bam_explain_opts()
+genodb.parallel_samtools_mpileup_tum_bam_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -722,7 +722,7 @@ parallel_samtools_mpileup_tum_bam_explain_opts()
 }
 
 ########
-parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
+genodb.parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-mpb"
@@ -730,7 +730,7 @@ parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
 }
 
 ########
-parallel_samtools_mpileup_tum_bam_define_opts()
+genodb.parallel_samtools_mpileup_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -778,7 +778,7 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 }
 
 ########
-parallel_samtools_mpileup_tum_bam()
+genodb.parallel_samtools_mpileup_tum_bam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -821,13 +821,13 @@ parallel_samtools_mpileup_tum_bam_reset_outdir()
 }
 
 ########
-parallel_samtools_mpileup_tum_bam_conda_envs()
+genodb.parallel_samtools_mpileup_tum_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-parallel_split_norm_bam_explain_opts()
+genodb.parallel_split_norm_bam_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
@@ -847,14 +847,14 @@ parallel_split_norm_bam_explain_opts()
 }
 
 ########
-parallel_split_norm_bam_identify_cmdline_opts()
+genodb.parallel_split_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_split_norm_bam_define_opts()
+genodb.parallel_split_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -892,7 +892,7 @@ parallel_split_norm_bam_define_opts()
 }
 
 ########
-parallel_split_norm_bam()
+genodb.parallel_split_norm_bam()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
@@ -917,13 +917,13 @@ parallel_split_norm_bam()
 }
 
 ########
-parallel_split_norm_bam_conda_envs()
+genodb.parallel_split_norm_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-parallel_split_tum_bam_explain_opts()
+genodb.parallel_split_tum_bam_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
@@ -943,14 +943,14 @@ parallel_split_tum_bam_explain_opts()
 }
 
 ########
-parallel_split_tum_bam_identify_cmdline_opts()
+genodb.parallel_split_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-tumorbam"
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_split_tum_bam_define_opts()
+genodb.parallel_split_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -988,7 +988,7 @@ parallel_split_tum_bam_define_opts()
 }
 
 ########
-parallel_split_tum_bam()
+genodb.parallel_split_tum_bam()
 {
     # Initialize variables
     local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
@@ -1013,13 +1013,13 @@ parallel_split_tum_bam()
 }
 
 ########
-parallel_split_tum_bam_conda_envs()
+genodb.parallel_split_tum_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-bedtools_genomecov_norm_bam_explain_opts()
+genodb.bedtools_genomecov_norm_bam_explain_opts()
 {
     # -normalbam option
     local description="normal bam file"
@@ -1031,13 +1031,13 @@ bedtools_genomecov_norm_bam_explain_opts()
 }
 
 ########
-bedtools_genomecov_norm_bam_identify_cmdline_opts()
+genodb.bedtools_genomecov_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
 }
 
 ########
-bedtools_genomecov_norm_bam_define_opts()
+genodb.bedtools_genomecov_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1057,7 +1057,7 @@ bedtools_genomecov_norm_bam_define_opts()
 }
 
 ########
-bedtools_genomecov_norm_bam()
+genodb.bedtools_genomecov_norm_bam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1077,13 +1077,13 @@ bedtools_genomecov_norm_bam()
 }
 
 ########
-bedtools_genomecov_norm_bam_conda_envs()
+genodb.bedtools_genomecov_norm_bam_conda_envs()
 {
     define_conda_env bedtools bedtools.yml
 }
 
 ########
-bedtools_genomecov_tum_bam_explain_opts()
+genodb.bedtools_genomecov_tum_bam_explain_opts()
 {
     # -tumorbam option
     local description="tumor bam file"
@@ -1095,13 +1095,13 @@ bedtools_genomecov_tum_bam_explain_opts()
 }
 
 ########
-bedtools_genomecov_tum_bam_identify_cmdline_opts()
+genodb.bedtools_genomecov_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-tumorbam"
 }
 
 ########
-bedtools_genomecov_tum_bam_define_opts()
+genodb.bedtools_genomecov_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1121,7 +1121,7 @@ bedtools_genomecov_tum_bam_define_opts()
 }
 
 ########
-bedtools_genomecov_tum_bam()
+genodb.bedtools_genomecov_tum_bam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1141,13 +1141,13 @@ bedtools_genomecov_tum_bam()
 }
 
 ########
-bedtools_genomecov_tum_bam_conda_envs()
+genodb.bedtools_genomecov_tum_bam_conda_envs()
 {
     define_conda_env bedtools bedtools.yml
 }
 
 ########
-norm_bam_to_ubam_explain_opts()
+genodb.norm_bam_to_ubam_explain_opts()
 {
     # -normalbam option
     description="Normal unmapped bam file (required if no downloading processes have been defined)"
@@ -1167,14 +1167,14 @@ norm_bam_to_ubam_explain_opts()
 }
 
 ########
-norm_bam_to_ubam_identify_cmdline_opts()
+genodb.norm_bam_to_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-mrec"
 }
 
 ########
-norm_bam_to_ubam_define_opts()
+genodb.norm_bam_to_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1205,7 +1205,7 @@ norm_bam_to_ubam_define_opts()
 }
 
 ########
-norm_bam_to_ubam()
+genodb.norm_bam_to_ubam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1234,13 +1234,13 @@ norm_bam_to_ubam()
 }
 
 ########
-norm_bam_to_ubam_conda_envs()
+genodb.norm_bam_to_ubam_conda_envs()
 {
     define_conda_env gatk4 gatk4.yml
 }
 
 ########
-tum_bam_to_ubam_explain_opts()
+genodb.tum_bam_to_ubam_explain_opts()
 {
     # -tumorbam option
     description="Tumor bam file (required if no downloading processes have been defined)"
@@ -1260,14 +1260,14 @@ tum_bam_to_ubam_explain_opts()
 }
 
 ########
-tum_bam_to_ubam_identify_cmdline_opts()
+genodb.tum_bam_to_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-tumorbam"
     opt_is_cmdline "-mrec"
 }
 
 ########
-tum_bam_to_ubam_define_opts()
+genodb.tum_bam_to_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1298,7 +1298,7 @@ tum_bam_to_ubam_define_opts()
 }
 
 ########
-tum_bam_to_ubam()
+genodb.tum_bam_to_ubam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1327,13 +1327,13 @@ tum_bam_to_ubam()
 }
 
 ########
-tum_bam_to_ubam_conda_envs()
+genodb.tum_bam_to_ubam_conda_envs()
 {
     define_conda_env gatk4 gatk4.yml
 }
 
 ########
-align_norm_ubam_explain_opts()
+genodb.align_norm_ubam_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -1361,7 +1361,7 @@ align_norm_ubam_explain_opts()
 }
 
 ########
-align_norm_ubam_identify_cmdline_opts()
+genodb.align_norm_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -1369,7 +1369,7 @@ align_norm_ubam_identify_cmdline_opts()
 }
 
 ########
-align_norm_ubam_define_opts()
+genodb.align_norm_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1419,7 +1419,7 @@ gatk_dict_exists()
 }
 
 ########
-align_norm_ubam()
+genodb.align_norm_ubam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1486,14 +1486,14 @@ align_norm_ubam()
 }
 
 ########
-align_norm_ubam_conda_envs()
+genodb.align_norm_ubam_conda_envs()
 {
     define_conda_env bwa bwa.yml
     define_conda_env gatk4 gatk4.yml
 }
 
 ########
-align_tum_ubam_explain_opts()
+genodb.align_tum_ubam_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -1521,7 +1521,7 @@ align_tum_ubam_explain_opts()
 }
 
 ########
-align_tum_ubam_identify_cmdline_opts()
+genodb.align_tum_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-tumorbam"
@@ -1529,7 +1529,7 @@ align_tum_ubam_identify_cmdline_opts()
 }
 
 ########
-align_tum_ubam_define_opts()
+genodb.align_tum_ubam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1566,7 +1566,7 @@ align_tum_ubam_define_opts()
 }
 
 ########
-align_tum_ubam()
+genodb.align_tum_ubam()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1630,7 +1630,7 @@ align_tum_ubam()
 }
 
 ########
-align_tum_ubam_conda_envs()
+genodb.align_tum_ubam_conda_envs()
 {
     define_conda_env bwa bwa.yml
     define_conda_env gatk4 gatk4.yml

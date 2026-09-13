@@ -3,7 +3,7 @@
 load_debasher_module "genodb_bam_analysis"
 
 ########
-index_norm_bam_define_opts()
+genodb.index_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -11,7 +11,7 @@ index_norm_bam_define_opts()
     local optlist=""
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "download_ega_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.download_ega_norm_bam" "-out-nb" optlist || return 1
 
     # -out-nbidx option
     local abs_datadir=$(get_absolute_shdirname "data")
@@ -26,7 +26,7 @@ index_norm_bam_define_opts()
 }
 
 ########
-index_tum_bam_define_opts()
+genodb.index_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -34,7 +34,7 @@ index_tum_bam_define_opts()
     local optlist=""
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "download_ega_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.download_ega_tum_bam" "-out-tb" optlist || return 1
 
     # -out-tbidx option
     local abs_datadir=$(get_absolute_shdirname "data")
@@ -49,14 +49,14 @@ index_tum_bam_define_opts()
 }
 
 ########
-manta_somatic_identify_cmdline_opts()
+genodb.manta_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-cr"
 }
 
 ########
-manta_somatic_define_opts()
+genodb.manta_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -72,10 +72,10 @@ manta_somatic_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -88,14 +88,14 @@ manta_somatic_define_opts()
 }
 
 ########
-strelka_somatic_identify_cmdline_opts()
+genodb.strelka_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-cr"
 }
 
 ########
-strelka_somatic_define_opts()
+genodb.strelka_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -111,13 +111,13 @@ strelka_somatic_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # -manta-outd option
-    define_opt_from_proc_out "-manta-outd" "manta_somatic" "-out-processdir" optlist || return 1
+    define_opt_from_proc_out "-manta-outd" "genodb.manta_somatic" "-out-processdir" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -130,13 +130,13 @@ strelka_somatic_define_opts()
 }
 
 ########
-msisensor_pro_identify_cmdline_opts()
+genodb.msisensor_pro_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
 }
 
 ########
-msisensor_pro_define_opts()
+genodb.msisensor_pro_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -152,10 +152,10 @@ msisensor_pro_define_opts()
     define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
@@ -166,12 +166,12 @@ msisensor_pro_define_opts()
 
 genodb_ega_basic_program()
 {
-    add_debasher_process "download_ega_norm_bam" "cpus=1  mem=2048 time=48:00:00" "processdeps=none"
-    add_debasher_process "download_ega_tum_bam"  "cpus=1  mem=2048 time=48:00:00" "processdeps=none"
-    add_debasher_process "index_norm_bam"        "cpus=1  mem=1024 time=48:00:00"
-    add_debasher_process "index_tum_bam"         "cpus=1  mem=1024 time=48:00:00"
-    add_debasher_process "manta_somatic"         "cpus=2  mem=8G   time=48:00:00"
-    add_debasher_process "strelka_somatic"       "cpus=2  mem=4096 time=48:00:00"
-    add_debasher_process "msisensor_pro"         "cpus=2  mem=4096 time=48:00:00"
-    add_debasher_process "clear_datadir"         "cpus=1  mem=1024 time=48:00:00" "processdeps=afterok:manta_somatic,afterok:strelka_somatic,afterok:msisensor_pro"
+    add_debasher_process "genodb.download_ega_norm_bam" "cpus=1  mem=2048 time=48:00:00" "processdeps=none"
+    add_debasher_process "genodb.download_ega_tum_bam"  "cpus=1  mem=2048 time=48:00:00" "processdeps=none"
+    add_debasher_process "genodb.index_norm_bam"        "cpus=1  mem=1024 time=48:00:00"
+    add_debasher_process "genodb.index_tum_bam"         "cpus=1  mem=1024 time=48:00:00"
+    add_debasher_process "genodb.manta_somatic"         "cpus=2  mem=8G   time=48:00:00"
+    add_debasher_process "genodb.strelka_somatic"       "cpus=2  mem=4096 time=48:00:00"
+    add_debasher_process "genodb.msisensor_pro"         "cpus=2  mem=4096 time=48:00:00"
+    add_debasher_process "genodb.clear_datadir"         "cpus=1  mem=1024 time=48:00:00" "processdeps=afterok:genodb.manta_somatic,afterok:genodb.strelka_somatic,afterok:genodb.msisensor_pro"
 }

@@ -27,13 +27,13 @@ DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC=35
 ##########################
 
 ########
-manta_germline_document()
+genodb.manta_germline_document()
 {
     document_process "Analyzes a normal \`bam\` file using Manta."
 }
 
 ########
-manta_germline_explain_opts()
+genodb.manta_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -57,7 +57,7 @@ manta_germline_explain_opts()
 }
 
 ########
-manta_germline_identify_cmdline_opts()
+genodb.manta_germline_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -65,7 +65,7 @@ manta_germline_identify_cmdline_opts()
 }
 
 ########
-manta_germline_define_opts()
+genodb.manta_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -107,7 +107,7 @@ get_callreg_opt()
 }
 
 ########
-manta_germline()
+genodb.manta_germline()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -140,19 +140,19 @@ manta_germline()
 }
 
 ########
-manta_germline_conda_envs()
+genodb.manta_germline_conda_envs()
 {
     define_conda_env manta manta.yml
 }
 
 ########
-manta_somatic_document()
+genodb.manta_somatic_document()
 {
     document_process "Analyzes a pair of normal and tumor \`bam\` files using Manta."
 }
 
 ########
-manta_somatic_explain_opts()
+genodb.manta_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -180,7 +180,7 @@ manta_somatic_explain_opts()
 }
 
 ########
-manta_somatic_identify_cmdline_opts()
+genodb.manta_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -189,7 +189,7 @@ manta_somatic_identify_cmdline_opts()
 }
 
 ########
-manta_somatic_define_opts()
+genodb.manta_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -221,7 +221,7 @@ manta_somatic_define_opts()
 }
 
 ########
-manta_somatic()
+genodb.manta_somatic()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -255,19 +255,19 @@ manta_somatic()
 }
 
 ########
-manta_somatic_conda_envs()
+genodb.manta_somatic_conda_envs()
 {
     define_conda_env manta manta.yml
 }
 
 ########
-strelka_germline_document()
+genodb.strelka_germline_document()
 {
     document_process "Analyzes a normal \`bam\` files using Strelka."
 }
 
 ########
-strelka_germline_explain_opts()
+genodb.strelka_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -295,7 +295,7 @@ strelka_germline_explain_opts()
 }
 
 ########
-strelka_germline_identify_cmdline_opts()
+genodb.strelka_germline_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -303,7 +303,7 @@ strelka_germline_identify_cmdline_opts()
 }
 
 ########
-strelka_germline_define_opts()
+genodb.strelka_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -335,7 +335,7 @@ strelka_germline_define_opts()
 }
 
 ########
-strelka_germline()
+genodb.strelka_germline()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -368,19 +368,19 @@ strelka_germline()
     conda deactivate 2>&1
 
     # Create file in summary directory
-    local label=strelka_germline
+    local label=genodb.strelka_germline
     vcf="${process_outd}"/results/variants/variants.vcf.gz
     genodb_bam_common::create_summary_file "${summarydir}" ${label} "${vcf}"
 }
 
 ########
-strelka_germline_conda_envs()
+genodb.strelka_germline_conda_envs()
 {
     define_conda_env strelka strelka.yml
 }
 
 ########
-platypus_germline_explain_opts()
+genodb.platypus_germline_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -404,14 +404,14 @@ platypus_germline_explain_opts()
 }
 
 ########
-platypus_germline_identify_cmdline_opts()
+genodb.platypus_germline_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
 }
 
 ########
-platypus_germline_define_opts()
+genodb.platypus_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -462,7 +462,7 @@ platypus_germline_conda()
     conda deactivate 2>&1
 
     # Create file in summary directory
-    local label=platypus_germline
+    local label=genodb.platypus_germline
     vcf="${process_outd}"/output.vcf
     genodb_bam_common::create_summary_file "${summarydir}" ${label} "${vcf}"
 }
@@ -482,13 +482,13 @@ platypus_germline_local()
     python ${PLATYPUS_HOME_DIR}/bin/Platypus.py callVariants --bamFiles="${normalbam}" --refFile="${ref}" --nCPU=${cpus} --output="${process_outd}"/output.vcf --verbosity=1 2>&1 || return 1
 
     # Create file in summary directory
-    local label=platypus_germline
+    local label=genodb.platypus_germline
     vcf="${process_outd}"/output.vcf
     genodb_bam_common::create_summary_file "${summarydir}" ${label} "${vcf}"
 }
 
 ########
-platypus_germline()
+genodb.platypus_germline()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -505,13 +505,13 @@ platypus_germline()
 }
 
 ########
-platypus_germline_conda_envs()
+genodb.platypus_germline_conda_envs()
 {
     define_conda_env platypus platypus.yml
 }
 
 ########
-gatk_haplotypecaller_explain_opts()
+genodb.gatk_haplotypecaller_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -539,7 +539,7 @@ gatk_haplotypecaller_explain_opts()
 }
 
 ########
-gatk_haplotypecaller_identify_cmdline_opts()
+genodb.gatk_haplotypecaller_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -547,7 +547,7 @@ gatk_haplotypecaller_identify_cmdline_opts()
 }
 
 ########
-gatk_haplotypecaller_define_opts()
+genodb.gatk_haplotypecaller_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -579,7 +579,7 @@ gatk_haplotypecaller_define_opts()
 }
 
 ########
-gatk_haplotypecaller()
+genodb.gatk_haplotypecaller()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -605,13 +605,13 @@ gatk_haplotypecaller()
 }
 
 ########
-gatk_haplotypecaller_conda_envs()
+genodb.gatk_haplotypecaller_conda_envs()
 {
     define_conda_env gatk4 gatk4.yml
 }
 
 ########
-strelka_somatic_explain_opts()
+genodb.strelka_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -639,7 +639,7 @@ strelka_somatic_explain_opts()
 }
 
 ########
-strelka_somatic_identify_cmdline_opts()
+genodb.strelka_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -648,7 +648,7 @@ strelka_somatic_identify_cmdline_opts()
 }
 
 ########
-strelka_somatic_define_opts()
+genodb.strelka_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -670,7 +670,7 @@ strelka_somatic_define_opts()
     define_cmdline_infile_opt "$cmdline" "-tumorbam" optlist || return 1
 
     # -manta-outd option
-    define_opt_from_proc_out "-manta-outd" "manta_somatic" "-out-processdir" optlist || return 1
+    define_opt_from_proc_out "-manta-outd" "genodb.manta_somatic" "-out-processdir" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -701,7 +701,7 @@ get_indel_cand_opt()
 }
 
 ########
-strelka_somatic()
+genodb.strelka_somatic()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -739,13 +739,13 @@ strelka_somatic()
 }
 
 ########
-strelka_somatic_conda_envs()
+genodb.strelka_somatic_conda_envs()
 {
     define_conda_env strelka strelka.yml
 }
 
 ########
-mutect2_somatic_explain_opts()
+genodb.mutect2_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -781,7 +781,7 @@ mutect2_somatic_explain_opts()
 }
 
 ########
-mutect2_somatic_identify_cmdline_opts()
+genodb.mutect2_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -791,7 +791,7 @@ mutect2_somatic_identify_cmdline_opts()
 }
 
 ########
-mutect2_somatic_define_opts()
+genodb.mutect2_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -829,7 +829,7 @@ mutect2_somatic_define_opts()
 }
 
 ########
-mutect2_somatic()
+genodb.mutect2_somatic()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -857,13 +857,13 @@ mutect2_somatic()
 }
 
 ########
-mutect2_somatic_conda_envs()
+genodb.mutect2_somatic_conda_envs()
 {
     define_conda_env gatk4 gatk4.yml
 }
 
 ########
-lofreq_somatic_explain_opts()
+genodb.lofreq_somatic_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -887,7 +887,7 @@ lofreq_somatic_explain_opts()
 }
 
 ########
-lofreq_somatic_identify_cmdline_opts()
+genodb.lofreq_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -895,7 +895,7 @@ lofreq_somatic_identify_cmdline_opts()
 }
 
 ########
-lofreq_somatic_define_opts()
+genodb.lofreq_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -924,7 +924,7 @@ lofreq_somatic_define_opts()
 }
 
 ########
-lofreq_somatic()
+genodb.lofreq_somatic()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -947,19 +947,19 @@ lofreq_somatic()
 }
 
 ########
-lofreq_somatic_conda_envs()
+genodb.lofreq_somatic_conda_envs()
 {
     define_conda_env lofreq lofreq.yml
 }
 
 ########
-cnvkit_document()
+genodb.cnvkit_document()
 {
     document_process "Analyzes a pair of normal and tumor \`bam\` files using CNVkit."
 }
 
 ########
-cnvkit_explain_opts()
+genodb.cnvkit_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -983,7 +983,7 @@ cnvkit_explain_opts()
 }
 
 ########
-cnvkit_identify_cmdline_opts()
+genodb.cnvkit_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -991,7 +991,7 @@ cnvkit_identify_cmdline_opts()
 }
 
 ########
-cnvkit_define_opts()
+genodb.cnvkit_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1020,7 +1020,7 @@ cnvkit_define_opts()
 }
 
 ########
-cnvkit()
+genodb.cnvkit()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1031,15 +1031,15 @@ cnvkit()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate cnvkit 2>&1 || return 1
+    conda activate genodb.cnvkit 2>&1 || return 1
 
-    # Run cnvkit
-    logmsg "* Executing cnvkit.py..."
+    # Run genodb.cnvkit
+    logmsg "* Executing genodb.cnvkit.py..."
     cd "${process_outd}" # This is done since current implementation of
-                    # cnvkit generates a file in current directory
+                    # genodb.cnvkit generates a file in current directory
                     # (genref.bed). Changing directory avoids possible
                     # racing conditions
-    cnvkit.py batch "${tumorbam}" -n "${normalbam}" -m wgs -f "${ref}"  -d "${process_outd}" -p ${cpus} 2>&1 || return 1
+    genodb.cnvkit.py batch "${tumorbam}" -n "${normalbam}" -m wgs -f "${ref}"  -d "${process_outd}" -p ${cpus} 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1047,13 +1047,13 @@ cnvkit()
 }
 
 ########
-cnvkit_conda_envs()
+genodb.cnvkit_conda_envs()
 {
-    define_conda_env cnvkit cnvkit.yml
+    define_conda_env genodb.cnvkit genodb.cnvkit.yml
 }
 
 ########
-snp_pileup_plus_facets_explain_opts()
+genodb.snp_pileup_plus_facets_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
@@ -1077,7 +1077,7 @@ snp_pileup_plus_facets_explain_opts()
 }
 
 ########
-snp_pileup_plus_facets_identify_cmdline_opts()
+genodb.snp_pileup_plus_facets_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-tumorbam"
@@ -1086,7 +1086,7 @@ snp_pileup_plus_facets_identify_cmdline_opts()
 }
 
 ########
-snp_pileup_plus_facets_define_opts()
+genodb.snp_pileup_plus_facets_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1115,7 +1115,7 @@ snp_pileup_plus_facets_define_opts()
 }
 
 ########
-snp_pileup_plus_facets()
+genodb.snp_pileup_plus_facets()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1140,14 +1140,14 @@ snp_pileup_plus_facets()
     conda deactivate 2>&1
 
     # Activate conda environment if needed
-    logmsg "* Activating conda environment (facets)..."
-    conda activate facets 2>&1 || return 1
+    logmsg "* Activating conda environment (genodb.facets)..."
+    conda activate genodb.facets 2>&1 || return 1
 
-    # Execute facets
+    # Execute genodb.facets
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
-    logmsg "* Executing facets..."
+    logmsg "* Executing genodb.facets..."
     Rscript "${genodebasher_libexecdir}"/genodb_run_facets -c "${process_outd}"/snp-pileup-counts.csv -d ${mindepth} -o "${process_outd}" 2>&1 || return 1
 
     # Deactivate conda environment
@@ -1160,14 +1160,14 @@ snp_pileup_plus_facets()
 }
 
 ########
-snp_pileup_plus_facets_conda_envs()
+genodb.snp_pileup_plus_facets_conda_envs()
 {
     define_conda_env snp-pileup snp-pileup.yml
-    define_conda_env facets facets.yml
+    define_conda_env genodb.facets genodb.facets.yml
 }
 
 ########
-gen_sequenza_gcc_explain_opts()
+genodb.gen_sequenza_gcc_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -1179,13 +1179,13 @@ gen_sequenza_gcc_explain_opts()
 }
 
 ########
-gen_sequenza_gcc_identify_cmdline_opts()
+genodb.gen_sequenza_gcc_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
 }
 
 ########
-gen_sequenza_gcc_define_opts()
+genodb.gen_sequenza_gcc_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1208,7 +1208,7 @@ gen_sequenza_gcc_define_opts()
 }
 
 ########
-gen_sequenza_gcc()
+genodb.gen_sequenza_gcc()
 {
     # Initialize variables
     local ref=$(read_opt_value_from_func_args "-r" "$@")
@@ -1216,11 +1216,11 @@ gen_sequenza_gcc()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate sequenza 2>&1 || return 1
+    conda activate genodb.sequenza 2>&1 || return 1
 
     # Generate GC content file
     logmsg "* Generating GC content file..."
-    sequenza-utils gc_wiggle -w 50 -f "$ref" -o "$outfile" || return 1
+    genodb.sequenza-utils gc_wiggle -w 50 -f "$ref" -o "$outfile" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1228,16 +1228,16 @@ gen_sequenza_gcc()
 }
 
 ########
-gen_sequenza_gcc_conda_envs()
+genodb.gen_sequenza_gcc_conda_envs()
 {
-    define_conda_env sequenza sequenza.yml
+    define_conda_env genodb.sequenza genodb.sequenza.yml
 }
 
 ########
-sequenza_explain_opts()
+genodb.sequenza_explain_opts()
 {
     # -gcc option
-    description="GC content wiggle file for sequenza (required if no gen_sequenza_gcc process is defined)"
+    description="GC content wiggle file for genodb.sequenza (required if no genodb.gen_sequenza_gcc process is defined)"
     explain_opt "-gcc" "<file>" "$description"
 
     # -process-outd option
@@ -1254,13 +1254,13 @@ sequenza_explain_opts()
 }
 
 ########
-sequenza_identify_cmdline_opts()
+genodb.sequenza_identify_cmdline_opts()
 {
     opt_is_cmdline "-gcc"
 }
 
 ########
-sequenza_define_opts()
+genodb.sequenza_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1276,17 +1276,17 @@ sequenza_define_opts()
     define_cmdline_infile_opt "$cmdline" "-gcc" optlist || return 1
 
     # -npileup option
-    define_opt_from_proc_out "-npileup" "samtools_mpileup_norm_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-npileup" "genodb.samtools_mpileup_norm_bam" "-outfile" optlist || return 1
 
     # -tpileup option
-    define_opt_from_proc_out "-tpileup" "samtools_mpileup_tum_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-tpileup" "genodb.samtools_mpileup_tum_bam" "-outfile" optlist || return 1
 
     # Save option list
     save_opt_list optlist
 }
 
 ########
-sequenza()
+genodb.sequenza()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1295,18 +1295,18 @@ sequenza()
     local tpileup=$(read_opt_value_from_func_args "-tpileup" "$@")
 
     # Activate conda environment
-    logmsg "* Activating conda environment (sequenza)..."
-    conda activate sequenza 2>&1 || return 1
+    logmsg "* Activating conda environment (genodb.sequenza)..."
+    conda activate genodb.sequenza 2>&1 || return 1
 
     # Generate seqz file
     logmsg "* Generating seqz file..."
-    sequenza-utils bam2seqz --pileup -gc "${gccont}" -n "${npileup}" -t "${tpileup}" | "${GZIP}" > "${process_outd}"/seqz.gz ; pipe_fail || return 1
+    genodb.sequenza-utils bam2seqz --pileup -gc "${gccont}" -n "${npileup}" -t "${tpileup}" | "${GZIP}" > "${process_outd}"/seqz.gz ; pipe_fail || return 1
 
-    # Execute sequenza
+    # Execute genodb.sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
-    logmsg "* Executing sequenza..."
+    logmsg "* Executing genodb.sequenza..."
     Rscript "${genodebasher_bindir}"/run_sequenza -s "${process_outd}"/seqz.gz -o "${process_outd}" 2>&1 || return 1
 
     # Deactivate conda environment
@@ -1315,13 +1315,13 @@ sequenza()
 }
 
 ########
-sequenza_conda_envs()
+genodb.sequenza_conda_envs()
 {
-    define_conda_env sequenza sequenza.yml
+    define_conda_env genodb.sequenza genodb.sequenza.yml
 }
 
 ########
-parallel_bam2seqz_explain_opts()
+genodb.parallel_bam2seqz_explain_opts()
 {
     # -gcc option
     description="GC content wiggle file for bam2seqz"
@@ -1349,14 +1349,14 @@ parallel_bam2seqz_explain_opts()
 }
 
 ########
-parallel_bam2seqz_identify_cmdline_opts()
+genodb.parallel_bam2seqz_identify_cmdline_opts()
 {
     opt_is_cmdline "-gcc"
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_bam2seqz_define_opts()
+genodb.parallel_bam2seqz_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1381,10 +1381,10 @@ parallel_bam2seqz_define_opts()
         define_cmdline_infile_opt "$cmdline" "-gcc" optlist || return 1
 
         # -npileup option
-        define_opt_from_proc_task_out "-npileup" "parallel_samtools_mpileup_norm_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-npileup" "genodb.parallel_samtools_mpileup_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tpileup option
-        define_opt_from_proc_task_out "-tpileup" "parallel_samtools_mpileup_tum_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-tpileup" "genodb.parallel_samtools_mpileup_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         local contig=${array[$idx]}
@@ -1400,7 +1400,7 @@ parallel_bam2seqz_define_opts()
 }
 
 ########
-parallel_bam2seqz()
+genodb.parallel_bam2seqz()
 {
     # Initialize variables
     local gccont=$(read_opt_value_from_func_args "-gcc" "$@")
@@ -1410,12 +1410,12 @@ parallel_bam2seqz()
     local outfile=$(read_opt_value_from_func_args "-outfile" "$@")
 
     # Activate conda environment
-    logmsg "* Activating conda environment (sequenza)..."
-    conda activate sequenza 2>&1 || return 1
+    logmsg "* Activating conda environment (genodb.sequenza)..."
+    conda activate genodb.sequenza 2>&1 || return 1
 
     # Generate seqz file
     logmsg "* Generating seqz file (contig $contig)..."
-    sequenza-utils bam2seqz --pileup -gc "${gccont}" -n "${npileup}" -t "${tpileup}" | "${GZIP}" > "${outfile}" ; pipe_fail || return 1
+    genodb.sequenza-utils bam2seqz --pileup -gc "${gccont}" -n "${npileup}" -t "${tpileup}" | "${GZIP}" > "${outfile}" ; pipe_fail || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1423,13 +1423,13 @@ parallel_bam2seqz()
 }
 
 ########
-parallel_bam2seqz_conda_envs()
+genodb.parallel_bam2seqz_conda_envs()
 {
-    define_conda_env sequenza sequenza.yml
+    define_conda_env genodb.sequenza genodb.sequenza.yml
 }
 
 ########
-seqzmerge_plus_sequenza_explain_opts()
+genodb.seqzmerge_plus_sequenza_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
@@ -1445,13 +1445,13 @@ seqzmerge_plus_sequenza_explain_opts()
 }
 
 ########
-seqzmerge_plus_sequenza_identify_cmdline_opts()
+genodb.seqzmerge_plus_sequenza_identify_cmdline_opts()
 {
     opt_is_cmdline "-lc"
 }
 
 ########
-seqzmerge_plus_sequenza_define_opts()
+genodb.seqzmerge_plus_sequenza_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1464,7 +1464,7 @@ seqzmerge_plus_sequenza_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -seqzdir option
-    define_opt_from_proc_out "-seqzdir" "parallel_bam2seqz" "-out-processdir" optlist || return 1
+    define_opt_from_proc_out "-seqzdir" "genodb.parallel_bam2seqz" "-out-processdir" optlist || return 1
 
     # -lc option
     define_cmdline_infile_opt "$cmdline" "-lc" optlist || return 1
@@ -1491,13 +1491,13 @@ seqzmerge()
         fi
     done
 
-    # NOTE: the use of the bgzip command requires to have the sequenza
+    # NOTE: the use of the bgzip command requires to have the genodb.sequenza
     # environment activated (since it has tabix installed)
     "${ZCAT}" "${filenames}" | "$AWK" '{if (NR!=1 && $1 != "chromosome") {print $0}}' | bgzip ; pipe_fail || return 1
 }
 
 ########
-seqzmerge_plus_sequenza()
+genodb.seqzmerge_plus_sequenza()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1505,8 +1505,8 @@ seqzmerge_plus_sequenza()
     local clist=$(read_opt_value_from_func_args "-lc" "$@")
 
     # Activate conda environment
-    logmsg "* Activating conda environment (sequenza)..."
-    conda activate sequenza 2>&1 || return 1
+    logmsg "* Activating conda environment (genodb.sequenza)..."
+    conda activate genodb.sequenza 2>&1 || return 1
 
     # Merge seqz files
     logmsg "* Merging seqz files..."
@@ -1515,11 +1515,11 @@ seqzmerge_plus_sequenza()
     logmsg "* Applying tabix over merged seqz file..."
     tabix -f -s 1 -b 2 -e 2 -S 1 "${process_outd}"/merged_seqz.gz || return 1
 
-    # Execute sequenza
+    # Execute genodb.sequenza
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
     # installation is used (otherwise, general R installation given in
     # shebang directive would be executed)
-    logmsg "* Executing sequenza..."
+    logmsg "* Executing genodb.sequenza..."
     Rscript "${genodebasher_bindir}"/run_sequenza -s "${process_outd}"/merged_seqz.gz -o "${process_outd}" 2>&1 || return 1
 
     # Deactivate conda environment
@@ -1528,13 +1528,13 @@ seqzmerge_plus_sequenza()
 }
 
 ########
-seqzmerge_plus_sequenza_conda_envs()
+genodb.seqzmerge_plus_sequenza_conda_envs()
 {
-    define_conda_env sequenza sequenza.yml
+    define_conda_env genodb.sequenza genodb.sequenza.yml
 }
 
 ########
-lumpy_explain_opts()
+genodb.lumpy_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
@@ -1554,7 +1554,7 @@ lumpy_explain_opts()
 }
 
 ########
-lumpy_identify_cmdline_opts()
+genodb.lumpy_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-tumorbam"
@@ -1562,7 +1562,7 @@ lumpy_identify_cmdline_opts()
 }
 
 ########
-lumpy_define_opts()
+genodb.lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1600,7 +1600,7 @@ get_lumpyexpress_x_opt()
 }
 
 ########
-lumpy()
+genodb.lumpy()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1614,7 +1614,7 @@ lumpy()
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
         logmsg "* Activating conda environment..."
-        conda activate lumpy 2>&1 || return 1
+        conda activate genodb.lumpy 2>&1 || return 1
 
         logmsg "* Executing lumpyexpress..."
         local x_opt=$(get_lumpyexpress_x_opt ${exclude})
@@ -1631,13 +1631,13 @@ lumpy()
 }
 
 ########
-lumpy_conda_envs()
+genodb.lumpy_conda_envs()
 {
-    define_conda_env lumpy lumpy.yml
+    define_conda_env genodb.lumpy genodb.lumpy.yml
 }
 
 ########
-parallel_lumpy_explain_opts()
+genodb.parallel_lumpy_explain_opts()
 {
     # -lc option
     description="File with list of contig names to process"
@@ -1665,7 +1665,7 @@ parallel_lumpy_explain_opts()
 }
 
 ########
-parallel_lumpy_identify_cmdline_opts()
+genodb.parallel_lumpy_identify_cmdline_opts()
 {
     opt_is_cmdline "-lc"
     opt_is_cmdline "-lx"
@@ -1674,7 +1674,7 @@ parallel_lumpy_identify_cmdline_opts()
 }
 
 ########
-parallel_lumpy_define_opts()
+genodb.parallel_lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1723,7 +1723,7 @@ parallel_lumpy_define_opts()
 }
 
 ########
-parallel_lumpy()
+genodb.parallel_lumpy()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1738,8 +1738,8 @@ parallel_lumpy()
 
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
-        logmsg "* Activating conda environment (lumpy)..."
-        conda activate lumpy 2>&1 || return 1
+        logmsg "* Activating conda environment (genodb.lumpy)..."
+        conda activate genodb.lumpy 2>&1 || return 1
 
         logmsg "* Executing lumpyexpress (contig $contig)..."
         local x_opt=$(get_lumpyexpress_x_opt ${exclude})
@@ -1756,13 +1756,13 @@ parallel_lumpy()
 }
 
 ########
-parallel_lumpy_conda_envs()
+genodb.parallel_lumpy_conda_envs()
 {
-    define_conda_env lumpy lumpy.yml
+    define_conda_env genodb.lumpy genodb.lumpy.yml
 }
 
 ########
-smoove_explain_opts()
+genodb.smoove_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -1790,7 +1790,7 @@ smoove_explain_opts()
 }
 
 ########
-smoove_identify_cmdline_opts()
+genodb.smoove_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -1799,7 +1799,7 @@ smoove_identify_cmdline_opts()
 }
 
 ########
-smoove_define_opts()
+genodb.smoove_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1843,7 +1843,7 @@ get_smoove_exclude_opt()
 }
 
 ########
-smoove()
+genodb.smoove()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1858,13 +1858,13 @@ smoove()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate smoove 2>&1 || return 1
+    conda activate genodb.smoove 2>&1 || return 1
 
-    logmsg "* Executing smoove..."
+    logmsg "* Executing genodb.smoove..."
     export TMPDIR="${process_outd}"
     local exclude_opt=$(get_smoove_exclude_opt ${exclude})
-    local project_name="smoove"
-    command smoove call --outdir "${process_outd}" ${exclude_opt} --name ${project_name} --fasta "${ref}" -p ${cpus} --genotype "${normalbam}" "${tumorbam}" || return 1
+    local project_name="genodb.smoove"
+    command genodb.smoove call --outdir "${process_outd}" ${exclude_opt} --name ${project_name} --fasta "${ref}" -p ${cpus} --genotype "${normalbam}" "${tumorbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1872,13 +1872,13 @@ smoove()
 }
 
 ########
-smoove_conda_envs()
+genodb.smoove_conda_envs()
 {
-    define_conda_env smoove smoove.yml
+    define_conda_env genodb.smoove genodb.smoove.yml
 }
 
 ########
-delly_explain_opts()
+genodb.delly_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -1902,7 +1902,7 @@ delly_explain_opts()
 }
 
 ########
-delly_identify_cmdline_opts()
+genodb.delly_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -1911,7 +1911,7 @@ delly_identify_cmdline_opts()
 }
 
 ########
-delly_define_opts()
+genodb.delly_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -1952,7 +1952,7 @@ get_delly_x_opt()
 }
 
 ########
-delly()
+genodb.delly()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -1965,14 +1965,14 @@ delly()
     fi
 
     # Activate conda environment
-    logmsg "* Activating conda environment (delly)..."
-    conda activate delly 2>&1 || return 1
+    logmsg "* Activating conda environment (genodb.delly)..."
+    conda activate genodb.delly 2>&1 || return 1
 
-    logmsg "* Executing delly..."
-    # "command" built-in is used here to execute the "delly" program
-    # instead of the "delly" function
+    logmsg "* Executing genodb.delly..."
+    # "command" built-in is used here to execute the "genodb.delly" program
+    # instead of the "genodb.delly" function
     local x_opt=$(get_delly_x_opt ${exclude})
-    command delly call -g "${ref}" ${x_opt} -o "${process_outd}"/out.bcf "${tumorbam}" "${normalbam}" || return 1
+    command genodb.delly call -g "${ref}" ${x_opt} -o "${process_outd}"/out.bcf "${tumorbam}" "${normalbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -1992,14 +1992,14 @@ delly()
 }
 
 ########
-parallel_delly_conda_envs()
+genodb.parallel_delly_conda_envs()
 {
     define_conda_env bcftools bcftools.yml
-    define_conda_env delly delly.yml
+    define_conda_env genodb.delly genodb.delly.yml
 }
 
 ########
-parallel_delly_explain_opts()
+genodb.parallel_delly_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -2031,7 +2031,7 @@ parallel_delly_explain_opts()
 }
 
 ########
-parallel_delly_identify_cmdline_opts()
+genodb.parallel_delly_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-dx"
@@ -2041,7 +2041,7 @@ parallel_delly_identify_cmdline_opts()
 }
 
 ########
-parallel_delly_define_opts()
+genodb.parallel_delly_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -2089,7 +2089,7 @@ parallel_delly_define_opts()
 }
 
 ########
-parallel_delly()
+genodb.parallel_delly()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -2103,14 +2103,14 @@ parallel_delly()
     fi
 
     # Activate conda environment
-    logmsg "* Activating conda environment (delly)..."
-    conda activate delly 2>&1 || return 1
+    logmsg "* Activating conda environment (genodb.delly)..."
+    conda activate genodb.delly 2>&1 || return 1
 
-    logmsg "* Executing delly (contig $contig)..."
-    # "command" built-in is used here to execute the "delly" program
-    # instead of the "delly" function
+    logmsg "* Executing genodb.delly (contig $contig)..."
+    # "command" built-in is used here to execute the "genodb.delly" program
+    # instead of the "genodb.delly" function
     local x_opt=$(get_delly_x_opt ${exclude})
-    command delly call -g "$ref" ${x_opt} -o "${process_outd}"/out${contig}.bcf "${tumorbam}" "${normalbam}" || return 1
+    command genodb.delly call -g "$ref" ${x_opt} -o "${process_outd}"/out${contig}.bcf "${tumorbam}" "${normalbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2130,14 +2130,14 @@ parallel_delly()
 }
 
 ########
-parallel_delly_conda_envs()
+genodb.parallel_delly_conda_envs()
 {
     define_conda_env bcftools bcftools.yml
-    define_conda_env delly delly.yml
+    define_conda_env genodb.delly genodb.delly.yml
 }
 
 ########
-parallel_svtyper_explain_opts()
+genodb.parallel_svtyper_explain_opts()
 {
     # -normalbam option
     description="Normal bam file (required if no downloading processes have been defined)"
@@ -2161,7 +2161,7 @@ parallel_svtyper_explain_opts()
 }
 
 ########
-parallel_svtyper_identify_cmdline_opts()
+genodb.parallel_svtyper_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-tumorbam"
@@ -2169,7 +2169,7 @@ parallel_svtyper_identify_cmdline_opts()
 }
 
 ########
-parallel_svtyper_define_opts()
+genodb.parallel_svtyper_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -2198,7 +2198,7 @@ parallel_svtyper_define_opts()
         define_opt "-contig" "$contig" optlist || return 1
 
         # -vcf option
-        define_opt_from_proc_task_out "-vcf" "parallel_lumpy" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-vcf" "genodb.parallel_lumpy" "${idx}" "-outfile" optlist || return 1
 
         # -outfile option
         local outfile="${process_outdir}"/out${contig}.vcf
@@ -2210,7 +2210,7 @@ parallel_svtyper_define_opts()
 }
 
 ########
-parallel_svtyper()
+genodb.parallel_svtyper()
 {
     # Initialize variables
     local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
@@ -2233,13 +2233,13 @@ parallel_svtyper()
 }
 
 ########
-parallel_svtyper_conda_envs()
+genodb.parallel_svtyper_conda_envs()
 {
     define_conda_env svtyper svtyper.yml
 }
 
 ########
-msisensor_pro_explain_opts()
+genodb.msisensor_pro_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -2263,7 +2263,7 @@ msisensor_pro_explain_opts()
 }
 
 ########
-msisensor_pro_identify_cmdline_opts()
+genodb.msisensor_pro_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
@@ -2271,7 +2271,7 @@ msisensor_pro_identify_cmdline_opts()
 }
 
 ########
-msisensor_pro_define_opts()
+genodb.msisensor_pro_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -2300,7 +2300,7 @@ msisensor_pro_define_opts()
 }
 
 ########
-msisensor_pro()
+genodb.msisensor_pro()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
@@ -2315,11 +2315,11 @@ msisensor_pro()
 
     # Create homopolymer and microsatellites file
     logmsg "* Executing msisensor-pro scan..."
-    msisensor-pro scan -d "${ref}" -o "${process_outd}"/msisensor_pro.list 2>&1 || return 1
+    msisensor-pro scan -d "${ref}" -o "${process_outd}"/genodb.msisensor_pro.list 2>&1 || return 1
 
     # Run Msisensor_Pro analysis
     logmsg "* Executing msisensor-pro msi..."
-    msisensor-pro msi -d "${process_outd}"/msisensor_pro.list -n "${normalbam}" -t "${tumorbam}" -o "${process_outd}"/output -l 1 -q 1 -b ${cpus} 2>&1 || return 1
+    msisensor-pro msi -d "${process_outd}"/genodb.msisensor_pro.list -n "${normalbam}" -t "${tumorbam}" -o "${process_outd}"/output -l 1 -q 1 -b ${cpus} 2>&1 || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2327,7 +2327,7 @@ msisensor_pro()
 }
 
 ########
-msisensor_pro_conda_envs()
+genodb.msisensor_pro_conda_envs()
 {
-    define_conda_env msisensor-pro msisensor_pro.yml
+    define_conda_env msisensor-pro genodb.msisensor_pro.yml
 }

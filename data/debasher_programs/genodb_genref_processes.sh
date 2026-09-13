@@ -21,13 +21,13 @@
 ##############################
 
 ########
-create_genref_for_bam_document()
+genodb.create_genref_for_bam_document()
 {
     document_process "Creates a genome reference file for a given \`bam\` file. For this purpose, the process starts from a basic genome reference file, removing those contigs not present in the \`bam\` file and downloading or copying missing ones from the Internet or from previously existing files."
 }
 
 ########
-create_genref_for_bam_explain_opts()
+genodb.create_genref_for_bam_explain_opts()
 {
     # -br option
     description="Base reference genome file"
@@ -47,7 +47,7 @@ create_genref_for_bam_explain_opts()
 }
 
 ########
-create_genref_for_bam_identify_cmdline_opts()
+genodb.create_genref_for_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-br"
     opt_is_cmdline "-bam"
@@ -56,7 +56,7 @@ create_genref_for_bam_identify_cmdline_opts()
 }
 
 ########
-create_genref_for_bam_define_opts()
+genodb.create_genref_for_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -124,7 +124,7 @@ index_ref()
 }
 
 ########
-create_genref_for_bam()
+genodb.create_genref_for_bam()
 {
     # Initialize variables
     local baseref=$(read_opt_value_from_func_args "-br" "$@")
@@ -173,7 +173,7 @@ create_genref_for_bam()
 }
 
 ########
-create_genref_for_bam_conda_envs()
+genodb.create_genref_for_bam_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }

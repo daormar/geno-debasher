@@ -21,7 +21,7 @@
 ########################
 
 ########
-filter_norm_bam_contigs_explain_opts()
+genodb.filter_norm_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -37,13 +37,13 @@ filter_norm_bam_contigs_explain_opts()
 }
 
 ########
-filter_norm_bam_contigs_identify_cmdline_opts()
+genodb.filter_norm_bam_contigs_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
 }
 
 ########
-filter_norm_bam_contigs_define_opts()
+genodb.filter_norm_bam_contigs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -101,7 +101,7 @@ get_contigs_from_header()
 }
 
 ########
-filter_norm_bam_contigs()
+genodb.filter_norm_bam_contigs()
 {
     # Initialize variables
     local ref=$(read_opt_value_from_func_args "-r" "$@")
@@ -142,13 +142,13 @@ filter_norm_bam_contigs()
 }
 
 ########
-filter_norm_bam_contigs_conda_envs()
+genodb.filter_norm_bam_contigs_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }
 
 ########
-filter_tum_bam_contigs_explain_opts()
+genodb.filter_tum_bam_contigs_explain_opts()
 {
     # -r option
     description="Reference genome file"
@@ -164,13 +164,13 @@ filter_tum_bam_contigs_explain_opts()
 }
 
 ########
-filter_tum_bam_contigs_identify_cmdline_opts()
+genodb.filter_tum_bam_contigs_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
 }
 
 ########
-filter_tum_bam_contigs_define_opts()
+genodb.filter_tum_bam_contigs_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -195,7 +195,7 @@ filter_tum_bam_contigs_define_opts()
 }
 
 ########
-filter_tum_bam_contigs()
+genodb.filter_tum_bam_contigs()
 {
     # Initialize variables
     local ref=$(read_opt_value_from_func_args "-r" "$@")
@@ -236,7 +236,7 @@ filter_tum_bam_contigs()
 }
 
 ########
-filter_tum_bam_contigs_conda_envs()
+genodb.filter_tum_bam_contigs_conda_envs()
 {
     define_conda_env samtools samtools.yml
 }

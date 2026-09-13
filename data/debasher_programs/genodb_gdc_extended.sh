@@ -3,7 +3,7 @@
 load_debasher_module "genodb_bam_analysis"
 
 ########
-index_norm_bam_define_opts()
+genodb.index_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -11,7 +11,7 @@ index_norm_bam_define_opts()
     local optlist=""
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "download_gdc_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.download_gdc_norm_bam" "-out-nb" optlist || return 1
 
     # -out-nbidx option
     local abs_datadir=$(get_absolute_shdirname "data")
@@ -26,7 +26,7 @@ index_norm_bam_define_opts()
 }
 
 ########
-index_tum_bam_define_opts()
+genodb.index_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -34,7 +34,7 @@ index_tum_bam_define_opts()
     local optlist=""
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "download_gdc_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.download_gdc_tum_bam" "-out-tb" optlist || return 1
 
     # -out-tbidx option
     local abs_datadir=$(get_absolute_shdirname "data")
@@ -49,7 +49,7 @@ index_tum_bam_define_opts()
 }
 
 ########
-create_genref_for_bam_identify_cmdline_opts()
+genodb.create_genref_for_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-br"
     opt_is_cmdline "-cm"
@@ -57,7 +57,7 @@ create_genref_for_bam_identify_cmdline_opts()
 }
 
 ########
-create_genref_for_bam_define_opts()
+genodb.create_genref_for_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -73,7 +73,7 @@ create_genref_for_bam_define_opts()
     define_cmdline_infile_opt "$cmdline" "-br" optlist || return 1
 
     # -bam option
-    define_opt_from_proc_out "-bam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-bam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -cm option
     define_cmdline_infile_opt_if_given "$cmdline" "-cm" optlist || return 1
@@ -93,13 +93,13 @@ create_genref_for_bam_define_opts()
 }
 
 ########
-parallel_split_norm_bam_identify_cmdline_opts()
+genodb.parallel_split_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_split_norm_bam_define_opts()
+genodb.parallel_split_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -121,7 +121,7 @@ parallel_split_norm_bam_define_opts()
         local optlist=""
 
         # -normalbam option
-        define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+        define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
         # -contig option
         local contig=${array[$idx]}
@@ -137,13 +137,13 @@ parallel_split_norm_bam_define_opts()
 }
 
 ########
-parallel_split_tum_bam_identify_cmdline_opts()
+genodb.parallel_split_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_split_tum_bam_define_opts()
+genodb.parallel_split_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -165,7 +165,7 @@ parallel_split_tum_bam_define_opts()
         local optlist=""
 
         # -tumorbam option
-        define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+        define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
         # -contig option
         local contig=${array[$idx]}
@@ -181,14 +181,14 @@ parallel_split_tum_bam_define_opts()
 }
 
 ########
-parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
+genodb.parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-mpb"
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_samtools_mpileup_norm_bam_define_opts()
+genodb.parallel_samtools_mpileup_norm_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -210,14 +210,14 @@ parallel_samtools_mpileup_norm_bam_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -r option
-        define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+        define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
         # -mpb option
         define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
 
         # -normalbam option
         local contig=${array[$idx]}
-        define_opt_from_proc_task_out "-normalbam" "parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-normalbam" "genodb.parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
@@ -232,14 +232,14 @@ parallel_samtools_mpileup_norm_bam_define_opts()
 }
 
 ########
-parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
+genodb.parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-mpb"
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_samtools_mpileup_tum_bam_define_opts()
+genodb.parallel_samtools_mpileup_tum_bam_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -261,14 +261,14 @@ parallel_samtools_mpileup_tum_bam_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -r option
-        define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+        define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
         # -mpb option
         define_cmdline_opt_if_given "$cmdline" "-mpb" optlist
 
         # -tumorbam option
         local contig=${array[$idx]}
-        define_opt_from_proc_task_out "-tumorbam" "parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-tumorbam" "genodb.parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
@@ -283,13 +283,13 @@ parallel_samtools_mpileup_tum_bam_define_opts()
 }
 
 ########
-gen_sequenza_gcc_identify_cmdline_opts()
+genodb.gen_sequenza_gcc_identify_cmdline_opts()
 {
     :
 }
 
 ########
-gen_sequenza_gcc_define_opts()
+genodb.gen_sequenza_gcc_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -299,7 +299,7 @@ gen_sequenza_gcc_define_opts()
     local optlist=""
 
     # -r option
-    define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
     # Get data directory
     local abs_datadir=$(get_absolute_shdirname "data")
@@ -312,13 +312,13 @@ gen_sequenza_gcc_define_opts()
 }
 
 ########
-parallel_bam2seqz_identify_cmdline_opts()
+genodb.parallel_bam2seqz_identify_cmdline_opts()
 {
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_bam2seqz_define_opts()
+genodb.parallel_bam2seqz_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -340,13 +340,13 @@ parallel_bam2seqz_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -gcc option
-        define_opt_from_proc_out "-gcc" "gen_sequenza_gcc" "-outfile" optlist || return 1
+        define_opt_from_proc_out "-gcc" "genodb.gen_sequenza_gcc" "-outfile" optlist || return 1
 
         # -npileup option
-        define_opt_from_proc_task_out "-npileup" "parallel_samtools_mpileup_norm_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-npileup" "genodb.parallel_samtools_mpileup_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tpileup option
-        define_opt_from_proc_task_out "-tpileup" "parallel_samtools_mpileup_tum_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-tpileup" "genodb.parallel_samtools_mpileup_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         local contig=${array[$idx]}
@@ -362,14 +362,14 @@ parallel_bam2seqz_define_opts()
 }
 
 ########
-parallel_delly_identify_cmdline_opts()
+genodb.parallel_delly_identify_cmdline_opts()
 {
     opt_is_cmdline "-dx"
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_delly_define_opts()
+genodb.parallel_delly_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -391,17 +391,17 @@ parallel_delly_define_opts()
         define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
         # -r option
-        define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+        define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
         # -dx option
         define_cmdline_infile_opt_if_given "$cmdline" "-dx" optlist || return 1
 
         # -normalbam option
         local contig=${array[$idx]}
-        define_opt_from_proc_task_out "-normalbam" "parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-normalbam" "genodb.parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tumorbam option
-        define_opt_from_proc_task_out "-tumorbam" "parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-tumorbam" "genodb.parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
@@ -412,14 +412,14 @@ parallel_delly_define_opts()
 }
 
 ########
-parallel_lumpy_identify_cmdline_opts()
+genodb.parallel_lumpy_identify_cmdline_opts()
 {
     opt_is_cmdline "-lc"
     opt_is_cmdline "-lx"
 }
 
 ########
-parallel_lumpy_define_opts()
+genodb.parallel_lumpy_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -445,10 +445,10 @@ parallel_lumpy_define_opts()
 
         # -normalbam option
         local contig=${array[$idx]}
-        define_opt_from_proc_task_out "-normalbam" "parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-normalbam" "genodb.parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tumorbam option
-        define_opt_from_proc_task_out "-tumorbam" "parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-tumorbam" "genodb.parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
@@ -463,13 +463,13 @@ parallel_lumpy_define_opts()
 }
 
 ########
-parallel_svtyper_identify_cmdline_opts()
+genodb.parallel_svtyper_identify_cmdline_opts()
 {
     opt_is_cmdline "-lc"
 }
 
 ########
-parallel_svtyper_define_opts()
+genodb.parallel_svtyper_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -489,17 +489,17 @@ parallel_svtyper_define_opts()
 
         # -normalbam option (the full bam, not the per-contig split: svtyper
         # needs whole-genome read evidence for breakpoint genotyping)
-        define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+        define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
         # -tumorbam option (full bam, same reason)
-        define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+        define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
         # -contig option
         local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
         # -vcf option
-        define_opt_from_proc_task_out "-vcf" "parallel_lumpy" "${idx}" "-outfile" optlist || return 1
+        define_opt_from_proc_task_out "-vcf" "genodb.parallel_lumpy" "${idx}" "-outfile" optlist || return 1
 
         # -outfile option
         local outfile="${process_outdir}"/out${contig}.vcf
@@ -511,13 +511,13 @@ parallel_svtyper_define_opts()
 }
 
 ########
-strelka_germline_identify_cmdline_opts()
+genodb.strelka_germline_identify_cmdline_opts()
 {
     opt_is_cmdline "-cr"
 }
 
 ########
-strelka_germline_define_opts()
+genodb.strelka_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -530,10 +530,10 @@ strelka_germline_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -549,13 +549,13 @@ strelka_germline_define_opts()
 }
 
 ########
-manta_somatic_identify_cmdline_opts()
+genodb.manta_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-cr"
 }
 
 ########
-manta_somatic_define_opts()
+genodb.manta_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -568,13 +568,13 @@ manta_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -587,13 +587,13 @@ manta_somatic_define_opts()
 }
 
 ########
-strelka_somatic_identify_cmdline_opts()
+genodb.strelka_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-cr"
 }
 
 ########
-strelka_somatic_define_opts()
+genodb.strelka_somatic_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -606,16 +606,16 @@ strelka_somatic_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # -manta-outd option
-    define_opt_from_proc_out "-manta-outd" "manta_somatic" "-out-processdir" optlist || return 1
+    define_opt_from_proc_out "-manta-outd" "genodb.manta_somatic" "-out-processdir" optlist || return 1
 
     # -cr option
     define_cmdline_infile_opt_if_given "$cmdline" "-cr" optlist || return 1
@@ -628,13 +628,13 @@ strelka_somatic_define_opts()
 }
 
 ########
-msisensor_pro_identify_cmdline_opts()
+genodb.msisensor_pro_identify_cmdline_opts()
 {
     :
 }
 
 ########
-msisensor_pro_define_opts()
+genodb.msisensor_pro_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -647,13 +647,13 @@ msisensor_pro_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
@@ -663,14 +663,14 @@ msisensor_pro_define_opts()
 }
 
 ########
-snp_pileup_plus_facets_identify_cmdline_opts()
+genodb.snp_pileup_plus_facets_identify_cmdline_opts()
 {
     opt_is_cmdline "-sv"
     opt_is_cmdline "-md"
 }
 
 ########
-snp_pileup_plus_facets_define_opts()
+genodb.snp_pileup_plus_facets_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -689,23 +689,23 @@ snp_pileup_plus_facets_define_opts()
     define_cmdline_opt_if_given "$cmdline" "-md" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # Save option list
     save_opt_list optlist
 }
 
 ########
-cnvkit_identify_cmdline_opts()
+genodb.cnvkit_identify_cmdline_opts()
 {
     :
 }
 
 ########
-cnvkit_define_opts()
+genodb.cnvkit_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -718,13 +718,13 @@ cnvkit_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -tumorbam option
-    define_opt_from_proc_out "-tumorbam" "index_tum_bam" "-out-tb" optlist || return 1
+    define_opt_from_proc_out "-tumorbam" "genodb.index_tum_bam" "-out-tb" optlist || return 1
 
     # -cpus option
     define_procspec_opt "${process_spec}" "-cpus" "cpus" optlist || return 1
@@ -734,13 +734,13 @@ cnvkit_define_opts()
 }
 
 ########
-platypus_germline_identify_cmdline_opts()
+genodb.platypus_germline_identify_cmdline_opts()
 {
     :
 }
 
 ########
-platypus_germline_define_opts()
+genodb.platypus_germline_define_opts()
 {
     # Initialize variables
     local cmdline=$1
@@ -753,10 +753,10 @@ platypus_germline_define_opts()
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
     # -r option
-    define_opt_from_proc_out "-r" "create_genref_for_bam" "-outfile" optlist || return 1
+    define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
 
     # -normalbam option
-    define_opt_from_proc_out "-normalbam" "index_norm_bam" "-out-nb" optlist || return 1
+    define_opt_from_proc_out "-normalbam" "genodb.index_norm_bam" "-out-nb" optlist || return 1
 
     # -out-summarydir option
     define_opt_from_shared_dir "-out-summarydir" "summary/germline_snvs" optlist || return 1
@@ -770,27 +770,27 @@ platypus_germline_define_opts()
 
 genodb_gdc_extended_program()
 {
-    add_debasher_process "download_gdc_norm_bam"     "cpus=1  mem=4096    time=24:00:00" "processdeps=none"
-    add_debasher_process "download_gdc_tum_bam"      "cpus=1  mem=4096    time=24:00:00" "processdeps=none"
-    add_debasher_process "index_norm_bam"            "cpus=1  mem=1024    time=4:00:00"
-    add_debasher_process "index_tum_bam"             "cpus=1  mem=1024    time=4:00:00"
-    add_debasher_process "create_genref_for_bam"     "cpus=1  mem=8G      time=4:00:00"
-    add_debasher_process "parallel_split_norm_bam"   "cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16"
-    add_debasher_process "parallel_split_tum_bam"    "cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16"
-    add_debasher_process "parallel_samtools_mpileup_norm_bam" "cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24"
-    add_debasher_process "parallel_samtools_mpileup_tum_bam"  "cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24"
-    add_debasher_process "gen_sequenza_gcc"          "cpus=1  mem=1G      time=01:00:00"
-    add_debasher_process "parallel_bam2seqz"         "cpus=1  mem=2G      time=5:00:00  throttle=16"
-    add_debasher_process "seqzmerge_plus_sequenza"   "cpus=1  mem=10G     time=5:00:00,10:00:00"
-    add_debasher_process "parallel_delly"            "cpus=1  mem=10G,30G time=5:00:00  throttle=16"
-    add_debasher_process "parallel_lumpy"            "cpus=2  mem=10G,30G time=5:00:00,10:00:00  throttle=16"
-    add_debasher_process "parallel_svtyper"          "cpus=1  mem=8G,16G  time=6:00:00,24:00:00  throttle=16"
-    add_debasher_process "strelka_germline"          "cpus=8  mem=6G      time=6:00:00,12:00:00"
-    add_debasher_process "manta_somatic"             "cpus=8  mem=8G      time=8:00:00,16:00:00"
-    add_debasher_process "strelka_somatic"           "cpus=8  mem=6G      time=8:00:00,16:00:00"
-    add_debasher_process "msisensor_pro"             "cpus=2  mem=10G,20G time=8:00:00,24:00:00"
-    add_debasher_process "snp_pileup_plus_facets"    "cpus=1  mem=25G     time=8:00:00,24:00:00"
-    add_debasher_process "cnvkit"                    "cpus=8  mem=30G     time=6:00:00,24:00:00"
-    add_debasher_process "platypus_germline"         "cpus=1  mem=4096    time=8:00:00,16:00:00"
-    add_debasher_process "clear_datadir"             "cpus=1  mem=1024    time=0:10:00"  "processdeps=afterok:parallel_delly,afterok:parallel_lumpy,afterok:parallel_svtyper,afterok:manta_somatic,afterok:strelka_germline,afterok:strelka_somatic,afterok:msisensor_pro,afterok:cnvkit,afterok:snp_pileup_plus_facets,afterok:platypus_germline,afterok:seqzmerge_plus_sequenza"
+    add_debasher_process "genodb.download_gdc_norm_bam"     "cpus=1  mem=4096    time=24:00:00" "processdeps=none"
+    add_debasher_process "genodb.download_gdc_tum_bam"      "cpus=1  mem=4096    time=24:00:00" "processdeps=none"
+    add_debasher_process "genodb.index_norm_bam"            "cpus=1  mem=1024    time=4:00:00"
+    add_debasher_process "genodb.index_tum_bam"             "cpus=1  mem=1024    time=4:00:00"
+    add_debasher_process "genodb.create_genref_for_bam"     "cpus=1  mem=8G      time=4:00:00"
+    add_debasher_process "genodb.parallel_split_norm_bam"   "cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16"
+    add_debasher_process "genodb.parallel_split_tum_bam"    "cpus=1  mem=2G      time=5:00:00,10:00:00  throttle=16"
+    add_debasher_process "genodb.parallel_samtools_mpileup_norm_bam" "cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24"
+    add_debasher_process "genodb.parallel_samtools_mpileup_tum_bam"  "cpus=1  mem=4G  time=8:00:00,16:00:00 throttle=24"
+    add_debasher_process "genodb.gen_sequenza_gcc"          "cpus=1  mem=1G      time=01:00:00"
+    add_debasher_process "genodb.parallel_bam2seqz"         "cpus=1  mem=2G      time=5:00:00  throttle=16"
+    add_debasher_process "genodb.seqzmerge_plus_sequenza"   "cpus=1  mem=10G     time=5:00:00,10:00:00"
+    add_debasher_process "genodb.parallel_delly"            "cpus=1  mem=10G,30G time=5:00:00  throttle=16"
+    add_debasher_process "genodb.parallel_lumpy"            "cpus=2  mem=10G,30G time=5:00:00,10:00:00  throttle=16"
+    add_debasher_process "genodb.parallel_svtyper"          "cpus=1  mem=8G,16G  time=6:00:00,24:00:00  throttle=16"
+    add_debasher_process "genodb.strelka_germline"          "cpus=8  mem=6G      time=6:00:00,12:00:00"
+    add_debasher_process "genodb.manta_somatic"             "cpus=8  mem=8G      time=8:00:00,16:00:00"
+    add_debasher_process "genodb.strelka_somatic"           "cpus=8  mem=6G      time=8:00:00,16:00:00"
+    add_debasher_process "genodb.msisensor_pro"             "cpus=2  mem=10G,20G time=8:00:00,24:00:00"
+    add_debasher_process "genodb.snp_pileup_plus_facets"    "cpus=1  mem=25G     time=8:00:00,24:00:00"
+    add_debasher_process "genodb.cnvkit"                    "cpus=8  mem=30G     time=6:00:00,24:00:00"
+    add_debasher_process "genodb.platypus_germline"         "cpus=1  mem=4096    time=8:00:00,16:00:00"
+    add_debasher_process "genodb.clear_datadir"             "cpus=1  mem=1024    time=0:10:00"  "processdeps=afterok:genodb.parallel_delly,afterok:genodb.parallel_lumpy,afterok:genodb.parallel_svtyper,afterok:genodb.manta_somatic,afterok:genodb.strelka_germline,afterok:genodb.strelka_somatic,afterok:genodb.msisensor_pro,afterok:genodb.cnvkit,afterok:genodb.snp_pileup_plus_facets,afterok:genodb.platypus_germline,afterok:genodb.seqzmerge_plus_sequenza"
 }

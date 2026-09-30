@@ -60,6 +60,20 @@ if test x$BASH = "xno"; then
     AC_MSG_ERROR([bash is required])
 fi
 
+# Check the version of the bash found above, which runs every script of
+# the package (its path is their shebang), not that of the shell running
+# configure, which may be another shell or another bash. The libraries
+# of DeBasher, which the scripts may load, need 4.3.
+AC_MSG_CHECKING([whether $BASH is version 4.3 or newer])
+bash_major_version=`"$BASH" -c 'echo "${BASH_VERSINFO[[0]]}"'`
+bash_minor_version=`"$BASH" -c 'echo "${BASH_VERSINFO[[1]]}"'`
+if test "$bash_major_version" -lt 4 || { test "$bash_major_version" -eq 4 && test "$bash_minor_version" -lt 3; }; then
+   AC_MSG_RESULT([no, $bash_major_version.$bash_minor_version])
+   AC_MSG_ERROR([bash version 4.3 or above is required; put a newer bash first in the PATH])
+else
+   AC_MSG_RESULT([yes, $bash_major_version.$bash_minor_version])
+fi
+
 # Check conda (conda is defined as a function so AC_PATH_PROGS may be
 # inadequate for checking)
 AC_MSG_CHECKING(for conda)

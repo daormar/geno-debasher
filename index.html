@@ -37,28 +37,17 @@
 <a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
 <p>Geno-DeBasher is a software package designed to execute
-bioinformatics pipelines, with a particular focus on genome variant
-calling. Pipelines are implemented as modules that can be executed by
-means of the <a href="https://daormar.github.io/debasher/">DeBasher
-flow-based programming Bash extension</a>. Geno-DeBasher also provides
-some utilities useful to automate experiments on complete datasets.</p>
+bioinformatics pipelines, with a particular focus on cancer genomics
+and genome variant calling. Pipelines are implemented as modules that
+can be executed by means of
+the <a href="https://daormar.github.io/debasher/">DeBasher flow-based
+programming Bash extension</a>. Geno-DeBasher also provides some
+utilities useful to automate experiments on complete datasets.</p>
 
 <p>The Geno-DeBasher package was created and is currently maintained
-by <a href="http://daormar.github.io/">Daniel Ortiz-Martínez</a>.
+by <a href="https://daormar.github.io/">Daniel Ortiz-Martínez</a>.
 Daniel is an experienced machine learning researcher and also holds
 an MSc degree in Bioinformatics.</p>
-
-<!-- <h2> -->
-<!-- <a id="news" class="anchor" href="#news" aria-hidden="true"><span class="octicon octicon-link"></span></a>News</h2> -->
-<!-- <p>A new version of the toolkit has been released with several improvements and new features: -->
-<!-- <ul> -->
-<!-- <li>Ability to force translations for specific phrases of the source sentence</li> -->
-<!-- <li>Capability to access language and translation models from disk</li>   -->
-<!-- <li>Added functionality to use multiple language and translation models</li>   -->
-<!-- <li>Added tool to create empty models useful to perform online learning from scratch</li>   -->
-<!-- <li>Portability increased</li> -->
-<!-- <li>The Thot manual has been extended and revised</li> -->
-<!-- </ul> -->
 
 <h2>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
@@ -66,50 +55,50 @@ an MSc degree in Bioinformatics.</p>
 <p>The package incorporates the following features:</p>
 
 <ul>
-<li>Execution of pipelines processing normal-tumor <code></code> files.</li>
-<li>Automation of <code>bam</code> file downloading.</li>
-<li>Pipeline processes automating <code>bam</code> file manipulation.</li>
-<li>Processes implementing single nucleotide/copy number/structural variant calling.</li>
-<li>Processes implementing microsatellite instability (MSI) analysis.</li>
-<li>Parallel versions of multiple variant calling tools.</li>
+<li>Execution of pipelines processing normal-tumor pairs of <code>bam</code> files.</li>
+<li>Automation of <code>bam</code> file downloading from EGA, GDC (including TCGA), ICGC and AWS repositories, or use of <code>bam</code> files already present locally.</li>
+<li>Pipeline processes automating <code>bam</code> file manipulation, filtering and summarization, and the handling of reference genomes.</li>
+<li>Processes implementing single nucleotide, copy number and structural variant calling, with tools such as Manta, Strelka, Delly, Lumpy, Platypus, LoFreq, Facets, ASCAT, Sequenza and CNVkit.</li>
+<li>Processes implementing microsatellite instability (MSI) analysis, with MSIsensor-pro.</li>
+<li>Basic and extended versions of the pipelines, the latter processing each contig of the genome in parallel, for larger inputs.</li>
+<li>Automated installation of the tools that the pipelines use, as Conda environments, through the Conda support of DeBasher.</li>
 </ul>
 
 <h2>
 <a id="distribution-details" class="anchor" href="#distribution-details" aria-hidden="true"><span class="octicon octicon-link"></span></a>Distribution Details</h2>
 
-<p>Geno-DeBasher has been coded using shell-scripting. Geno-DeBasher is
-known to compile on Unix-like and Windows (using Cygwin) systems. See
-the "Documentation and Support" section of these instructions if you
-experience problems during compilation.</p>
+<p>Geno-DeBasher has been coded using Bash shell-scripting, Python and
+R. It runs wherever DeBasher does: it is developed and tested on Linux,
+and also runs on Windows through WSL2; macOS has not been tested yet
+(see the <a href="https://daormar.github.io/debasher/#installation">installation
+instructions of DeBasher</a>). See the "Documentation and Support"
+section of these instructions if you experience problems during
+compilation.</p>
 
-<p>It is released under the <a href="http://www.gnu.org/copyleft/lgpl.html">GNU Lesser General Public License (LGPL)</a>.</p>
+<p>It is released under the <a href="https://www.gnu.org/licenses/lgpl-3.0.html">GNU Lesser General Public License (LGPL), version 3</a>.</p>
 
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
-
 <h4>
-<a id="basic-installation-procedure" class="anchor" href="#basic-installation-procedure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Installation Procedure</h4>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h4>
 
-<p>To install Geno-DeBasher, first you need to install the autotools
-(autoconf, autoconf-archive, automake and libtool packages in
-Ubuntu). If you are planning to use Geno-DeBasher on a Windows platform,
-you also need to install
-the <a href="https://www.cygwin.com/">Cygwin</a>
-environment. Alternatively, the tool can also be installed on Mac OS X
-systems using <a href="https://www.macports.org/">MacPorts</a>.</p>
-
-<p>Pipeline modules provided by Geno-DeBasher are designed to be
+<p>The pipeline modules provided by Geno-DeBasher are designed to be
 executed by the <a href="https://daormar.github.io/debasher/">DeBasher
 software package</a>. Therefore, DeBasher and all of its requirements
-should also be installed before installing Geno-DeBasher.</p>
+should be installed first, following
+its <a href="https://daormar.github.io/debasher/#installation">installation
+instructions</a>, which also cover the autotools needed to configure
+this package and the setup on Linux, Windows (WSL2) and macOS.</p>
 
-<p>On the other hand, some of the functionality incorporated by
-Geno-DeBasher requires the previous installation of third-party software
+<p>Most pipelines also need Conda, from which DeBasher installs the
+tools that they use, and some of them need further third-party software
 (<a href="#third-party-software">see below</a>).</p>
 
-<p>Once the autotools are available (as well as other required software
-such as Cygwin or MacPorts), you can proceed with the installation of
-the tool by following the next sequence of steps:</p>
+<h4>
+<a id="building-and-installing" class="anchor" href="#building-and-installing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building and Installing</h4>
+
+<p>Once DeBasher is installed, you can proceed with the installation of
+Geno-DeBasher by following the next sequence of steps:</p>
 
 <ol>
 <li>
@@ -122,9 +111,10 @@ the tool by following the next sequence of steps:</p>
 </li>
 <li><p><code>cd</code> to the directory containing the package's source code and type
 <code>./reconf</code>.</p></li>
-<li><p>Type <code>./configure --with-debasher=&ltDIR&gt</code> to configure
-the package (where <code>&ltDIR&gt</code> is the build directory of the
-DeBasher package).</p></li>
+<li><p>Type <code>./configure --with-debasher=&lt;DIR&gt;</code> to configure
+the package, where <code>&lt;DIR&gt;</code> is the installation directory
+of DeBasher (the one that contains its <code>bin/</code>
+and <code>lib/debasher/</code> directories).</p></li>
 <li><p>Type <code>make</code> to compile the package.</p></li>
 <li><p>Type <code>make install</code> to install the programs and any data files and
 documentation.</p></li>
@@ -132,20 +122,22 @@ documentation.</p></li>
 code directory by typing <code>make clean</code>.</p></li>
 </ol>
 
-<p>By default the files are installed under the /usr/local/ directory (or
-similar, depending on the OS you use); however, since Step 5 requires
-root privileges, another directory can be specified during Step 3 by
-typing:</p>
+<p>By default the files are installed under the <code>/usr/local</code>
+directory (or similar, depending on the OS you use); however, since Step
+5 requires root privileges, another directory can be specified during
+Step 3 by typing:</p>
 
-<pre><code> $ configure --with-debasher=&ltDIR&gt --prefix=&lt;absolute-installation-path&gt;
+<pre><code> $ ./configure --with-debasher=&lt;DIR&gt; --prefix=&lt;absolute-installation-path&gt;
 </code></pre>
 
-<p>For example, if "user1" wants to install the Geno-DeBasher package in
-the directory /home/user1/geno-debasher, the sequence of commands to
-execute should be the following:</p>
+<p>For example, if <code>user1</code> has installed DeBasher
+in <code>/home/user1/debasher</code> and wants to install the
+Geno-DeBasher package in the
+directory <code>/home/user1/geno-debasher</code>, the sequence of
+commands to execute should be the following:</p>
 
 <pre><code> $ ./reconf
- $ configure --prefix=/home/user1/geno-debasher
+ $ ./configure --with-debasher=/home/user1/debasher --prefix=/home/user1/geno-debasher
  $ make
  $ make install
 </code></pre>
@@ -153,37 +145,31 @@ execute should be the following:</p>
 <p>The installation directory can be the same directory where the
 Geno-DeBasher package was decompressed.</p>
 
-<!-- <h4 id="checking-package-installation">Checking Package Installation</h4> -->
-
-<!-- <p>Once the package has been installed, it is possible to perform basic -->
-<!-- checkings in an automatic manner so as to detect portability errors. For -->
-<!-- this purpose, the following command can be used:</p> -->
-
-<!-- <pre><code> $ make installcheck</code></pre> -->
-
-<!-- <p>The tests performed by the previous command involve the execution of -->
-<!-- the main tasks present in a typical SMT pipeline, including training and -->
-<!-- tuning of model parameters as well as generating translations using the -->
-<!-- estimated models (see more on this in the Thot manual). The command -->
-<!-- internally uses the toy corpus provided with the Thot package to carry -->
-<!-- out the checkings.</p> -->
-
 <h4>
 <a id="alternative-installation-options" class="anchor" href="#alternative-installation-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Alternative Installation Options</h4>
 
 <p>The Geno-DeBasher configure script can be used to modify the toolkit
-behavior. Here is a list of current installation options:</p>
+behavior. Each of the following options gives the installation
+directory of an external tool, and is only needed by the processes that
+use that tool:</p>
 
 <ul>
-<li> <b><code>--with-icgcscor=&ltDIR&gt</code></b>: allows Geno-DeBasher
+<li> <b><code>--with-icgcscor=&lt;DIR&gt;</code></b>: allows Geno-DeBasher
 to use the ICGC score client. The ICGC score client can be used to
 interact with cloud repositories.</li>
-<li> <b><code>--with-aspera=&ltDIR&gt</code></b>: enables use of the
+<li> <b><code>--with-aspera=&lt;DIR&gt;</code></b>: enables use of the
 Aspera commercial file transfer protocol to download <code>bam</code>
 files.</li>
-<li> <b><code>--with-egadecrypt=&ltDIR&gt</code></b>: allows Geno-DeBasher
+<li> <b><code>--with-egadecrypt=&lt;DIR&gt;</code></b>: allows Geno-DeBasher
 to access decryption functionality provided by the EGACryptor
 client.</li>
+<li> <b><code>--with-decsingle=&lt;DIR&gt;</code></b> and
+<b><code>--with-decsingle-java=&lt;DIR&gt;</code></b>: allow Geno-DeBasher
+to use the decsingle tool, and the Java it runs with, to decrypt the
+files downloaded from EGA.</li>
+<li> <b><code>--with-platypus=&lt;DIR&gt;</code></b> and
+<b><code>--with-lumpy=&lt;DIR&gt;</code></b>: use an installation of the
+Platypus and Lumpy variant callers of your own.</li>
 </ul>
 
 <h4>
@@ -191,24 +177,28 @@ client.</li>
 aria-hidden="true"><span class="octicon octicon-link"></span></a>Third
 Party Software</h4>
 
+<h5>Conda</h5>
+<p><a href="https://conda.io/">Conda</a> is used by DeBasher to install,
+in environments of their own, the bioinformatics tools that the
+pipelines of Geno-DeBasher run.</p>
+
 <h5>ICGC Score Client</h5>
 <p>The <a href="https://docs.icgc.org/software/download/#score-client">ICGC
 score client</a> allows to download content, including <code>bam</code>
-files from cloud repositories. The client can be downloaded after
+files, from cloud repositories. The client can be downloaded after
 clicking
 in <a href="https://artifacts.oicr.on.ca/artifactory/dcc-release/bio/overture/score-client/[RELEASE]/score-client-[RELEASE]-dist.tar.gz">this
 link</a>.</p>
 
-<h5>ASPERA Connect</h5>
-<p><a href="https://asperasoft.com/">ASPERA Connect</a> is a file
-transfer protocol that may provide faster transfer speeds with respect
-to the standard FTP protocol. The ASPERA download client can be used by
-Geno-DeBasher to download <code>bam</code> files. The client can be
-downloaded <a href="https://downloads.asperasoft.com/downloads">here</a>.</p>
+<h5>Aspera Connect</h5>
+<p><a href="https://www.ibm.com/products/aspera">Aspera Connect</a> is a
+file transfer protocol that may provide faster transfer speeds with
+respect to the standard FTP protocol. The Aspera download client can be
+used by Geno-DeBasher to download <code>bam</code> files.</p>
 
 <h5>EGA Decryptor</h5>
-<p><a href="https://ega-archive.org/submission/tools/egacryptor">EGACryptor</a>
-is a JAVA based client providing encryption and decryption
+<p><a href="https://ega-archive.org/">EGACryptor</a>
+is a Java based client providing encryption and decryption
 functionality. It is used by Geno-DeBasher to decrypt information
 downloaded from EGA repositories.</p>
 
@@ -216,30 +206,7 @@ downloaded from EGA repositories.</p>
 <a id="current-status" class="anchor" href="#current-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current Status</h2>
 
 <p> The Geno-DeBasher package is under development. Basic usage
-  instructions are being added.
-  
-<!-- <p>Finally, here is a list of known issues with the Thot toolkit that are -->
-<!-- currently being addressed:</p> -->
-
-<!-- <ul> -->
-<!-- <li><p>Phrase model training is based on HMM-based word alignment models -->
-<!-- estimated by means of incremental EM. The current implementation is slow -->
-<!-- and currently constitutes a bottleneck when training phrase models from -->
-<!-- large corpora. One already implemented solution is to carry out the -->
-<!-- estimation in multiple processors.  Another solution is to replace -->
-<!-- HMM-based models by IBM 2 Models, which can be estimated very -->
-<!-- efficiently. However, we are also investigating alternative optimization -->
-<!-- techniques to efficiently execute the estimation process of HMM-based -->
-<!-- models in a single processor <small><b>[STATUS: under development -->
-<!-- although code is much faster now]</b></small></p></li> -->
-<!-- <li><p>Log-linear model weight adjustment is carried out by means of the -->
-<!-- downhill simplex algorithm, which is slow. Downhill simplex will be -->
-<!-- replaced by a more efficient technique <small><b>[STATUS: issue -->
-<!-- solved]</b></small></p></li> -->
-<!-- <li><p>Non-monotonic translation is not yet sufficiently tested, -->
-<!-- specially with complex corpora such as Europarl <small><b>[STATUS: under -->
-<!-- development]</b></small></p></li> -->
-<!-- </ul> -->
+  instructions are being added.</p>
 
 <h2>
 <a id="docsupport" class="anchor" href="#docsupport" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation and Support</h2>
@@ -249,100 +216,21 @@ downloaded from EGA repositories.</p>
 <ul>
 <li>These instructions.</li>
 <li>A set
-of <a href="http://daormar.github.io/geno-debasher/docsupport/slides.pdf">slides</a>
+of <a href="https://daormar.github.io/geno-debasher/docsupport/slides.pdf">slides</a>
 ("slides.pdf" under the "doc" directory).</li>
+<li>The <a href="https://debasher.readthedocs.io/en/latest/">technical
+documentation of DeBasher</a>, which explains how to execute the
+pipelines and how to write new ones.</li>
 </ul>
 
 <p>If you need additional help, you can:</p>
 
 <ul>
-<li>use the <a href="https://github.com/daormar/geno-debasher/issues">github issue tracker</a>.
-</li>
+<li>use the <a href="https://github.com/daormar/geno-debasher/issues">github issue tracker</a>.</li>
 <li><a href="mailto:daniel.ortiz.phd@gmail.com">send an e-mail to the author</a>.</li>
-</li>
 </ul>
 
-<!-- <p>Additional information about the theoretical foundations of Thot can be -->
-<!-- found in [Ortiz-Martínez, 2011]. One interesting feature of Thot, -->
-<!-- incremental (or online) estimation of statistical models, is also -->
-<!-- described in [Ortiz-Martínez et al., 2010]. Finally, phrase-level -->
-<!-- alignment generation functionality implemented in Thot was proposed in -->
-<!-- [Ortiz-Martínez et al., 2008].</p> -->
-
-<!-- <h2> -->
-<!-- <a id="citation" class="anchor" href="#citation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Citation</h2> -->
-
-<!-- <p>You are welcome to use the code under the terms of the license for -->
-<!-- research or commercial purposes, however please acknowledge its use with -->
-<!-- a citation:</p> -->
-
-<!-- <p>Daniel Ortiz-Martínez, Francisco Casacuberta. -->
-<!-- <em>"The New Thot Toolkit for Fully Automatic and Interactive Statistical Machine Translation"</em>. -->
-<!-- In Proc. of the European Association for Computational Linguistics (EACL): System Demonstrations, -->
-<!-- Gothenburg, Sweden, April 2014. pp. 45-48.</p> -->
-
-<!-- <p>Here is a BiBTeX entry:</p> -->
-
-<!-- <pre> -->
-<!-- @InProceedings{Ortiz2014, -->
-<!--   author    = {Daniel Ortiz-Mart\'{\i}nez and Francisco Casacuberta}, -->
-<!--   title     = {The New Thot Toolkit for Fully Automatic and Interactive Statistical Machine Translation}, -->
-<!--   booktitle = {Proc. of the European Association for Computational Linguistics (EACL): System Demonstrations}, -->
-<!--   year      = {2014}, -->
-<!--   month     = {April}, -->
-<!--   address   = {Gothenburg, Sweden}, -->
-<!--   pages     = "45--48", -->
-<!-- } -->
-<!-- </pre> -->
-
-<!-- <h2> -->
-<!-- <a id="literature" class="anchor" href="#literature" aria-hidden="true"><span class="octicon octicon-link"></span></a>Literature</h2> -->
-
-<!-- <p> Shlomi, T., M. N. Cabili, M. J. Herrgård, B. Ø. Palsson, and Eytan -->
-<!-- Ruppin (2008). “Network-based prediction of human tissue-specific -->
-<!-- metabolism”. In: Nat. Biotechnol. 26(9), pp. 1003–10.</p> -->
-
-<!-- <p>Gudmundsson, S. and I. Thiele (2010). “Computationally efficient flux -->
-<!-- variability analy- sis”. In: BMC Bioinformatics 11, p. 489.</p> -->
-
-<!-- <p> Hebenstreit, D., M. Fang, M. Gu, V. Charoensawan, A. van -->
-<!-- Oudenaarden, and S. A. Teichmann (2011). “RNA sequencing reveals two -->
-<!-- major classes of gene expression levels in metazoan cells”. In: -->
-<!-- Mol. Syst. Biol. 7, p. 497.</p> -->
-
-<!-- <p> Erdrich, P., R. Steuer, and S. Klamt (2015). “An algorithm for the -->
-<!-- reduction of genome-scale metabolic network models to -->
-<!-- meaningful core models”. In: BMC Syst Biol 9, p. 48.</p> -->
-
-<!-- <h2> -->
-<!-- <a id="sponsors" class="anchor" href="#sponsors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sponsors</h2> -->
-
-<!-- <p>Thot has been supported by the European Union under the <a href="http://www.casmacat.eu/">CasMaCat -->
-<!-- research project</a>. Thot has also received support from the Spanish -->
-<!-- Government in a number of research projects, such as the <a href="http://miprcv.iti.upv.es/">MIPRCV -->
-<!-- project</a> that belonged to the prestigious CONSOLIDER programme</a>.</p> -->
-
-<!--  <ul class="partner-logos"> -->
-<!--     <li><a href="http://cordis.europa.eu/fp7/home_en.html"><img src="http://daormar.github.io/thot/images/jaune.jpg" alt="EU" height="50" /></a></li> -->
-<!--     <li><a href="http://www.micinn.es/"><img src="http://daormar.github.io/thot/images/logo-mci.jpg" alt="MCINN" /></a></li> -->
-<!--     <li><a href="http://www.vlc-campus.com"><img height="50" src="http://daormar.github.io/thot/images/vlc-campus.png" alt="VLC-CAMPUS" /></a></li> -->
-<!--     <li><a href="http://www.upv.es"><img src="http://daormar.github.io/thot/images/logo-upv-hor.png" alt="UPV" height="50" /></a></li> -->
-<!--   </ul> -->
-
-<!-- <p>Last updated: 25 July 2017</p> -->
-<!--       </section> -->
-<!--     </div> -->
-<!--     <script src="javascripts/scale.fix.js"></script> -->
-<!--               <script type="text/javascript"> -->
-<!--             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www."); -->
-<!--             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E")); -->
-<!--           </script> -->
-<!--           <script type="text/javascript"> -->
-<!--             try { -->
-<!--               var pageTracker = _gat._getTracker("UA-60880705-1"); -->
-<!--             pageTracker._trackPageview(); -->
-<!--             } catch(err) {} -->
-<!--           </script> -->
-
+      </section>
+    </div>
   </body>
 </html>

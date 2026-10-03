@@ -110,7 +110,7 @@ genodb.filter_norm_bam_contigs()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate samtools 2>&1 || exit 1
+    conda_activate samtools 2>&1 || exit 1
 
     # Obtain contigs given in reference
     get_ref_contigs "${ref}".fai > "${process_outd}"/refcontigs
@@ -204,7 +204,7 @@ genodb.filter_tum_bam_contigs()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate samtools 2>&1 || exit 1
+    conda_activate samtools 2>&1 || exit 1
 
     # Obtain contigs given in reference
     get_ref_contigs "${ref}".fai > "${process_outd}"/refcontigs

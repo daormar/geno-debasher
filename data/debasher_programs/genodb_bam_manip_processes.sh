@@ -86,7 +86,7 @@ genodb.index_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Execute samtools
     logmsg "* Executing samtools index..."
@@ -163,7 +163,7 @@ genodb.index_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Execute samtools
     logmsg "* Executing samtools index..."
@@ -237,7 +237,7 @@ genodb.sort_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Verify if bam file is already sorted
     local bam_is_sorted=$(samtools view -H "${normalbam}" | $GREP SO:coordinate | wc -l) || return 1
@@ -324,7 +324,7 @@ genodb.sort_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Verify if bam file is already sorted
     local bam_is_sorted=$(samtools view -H "${tumorbam}" | $GREP SO:coordinate | wc -l) || return 1
@@ -439,7 +439,7 @@ genodb.samtools_mpileup_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
     local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
@@ -536,7 +536,7 @@ genodb.samtools_mpileup_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
     local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
@@ -657,7 +657,7 @@ genodb.parallel_samtools_mpileup_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
     local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
@@ -790,7 +790,7 @@ genodb.parallel_samtools_mpileup_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Obtain samtools mpileup -L opt
     local smp_l_opt=$(get_samtools_mpileup_l_opt ${mpbfile})
@@ -901,7 +901,7 @@ genodb.parallel_split_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
@@ -997,7 +997,7 @@ genodb.parallel_split_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (samtools)..."
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
 
     # Extract contig
     logmsg "* Extracting contig (contig $contig)..."
@@ -1065,7 +1065,7 @@ genodb.bedtools_genomecov_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate bedtools 2>&1 || return 1
+    conda_activate bedtools 2>&1 || return 1
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
@@ -1129,7 +1129,7 @@ genodb.bedtools_genomecov_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate bedtools 2>&1 || return 1
+    conda_activate bedtools 2>&1 || return 1
 
     # Execute samtools
     logmsg "* Executing bedtools coverage..."
@@ -1222,7 +1222,7 @@ genodb.norm_bam_to_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
@@ -1315,7 +1315,7 @@ genodb.tum_bam_to_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Execute gatk RevertSam
     logmsg "* Executing gatk RevertSam..."
@@ -1438,7 +1438,7 @@ genodb.align_norm_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
@@ -1450,7 +1450,7 @@ genodb.align_norm_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (bwa)..."
-    conda activate bwa 2>&1 || return 1
+    conda_activate bwa 2>&1 || return 1
 
     # Execute bwa
     logmsg "* Executing bwa index..."
@@ -1468,7 +1468,7 @@ genodb.align_norm_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Create dictionary
     if ! gatk_dict_exists "${ref}"; then
@@ -1585,7 +1585,7 @@ genodb.align_tum_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Execute gatk SamToFastq
     logmsg "* Executing gatk SamToFastq..."
@@ -1597,7 +1597,7 @@ genodb.align_tum_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (bwa)..."
-    conda activate bwa 2>&1 || return 1
+    conda_activate bwa 2>&1 || return 1
 
     # Execute bwa
     logmsg "* Executing bwa mem..."
@@ -1612,7 +1612,7 @@ genodb.align_tum_ubam()
 
     # Activate conda environment
     logmsg "* Activating conda environment (gatk)..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Create dictionary
     if ! gatk_dict_exists "${ref}"; then

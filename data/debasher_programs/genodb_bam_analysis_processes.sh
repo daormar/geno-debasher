@@ -124,7 +124,7 @@ genodb.manta_germline()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate manta 2>&1 || return 1
+    conda_activate manta 2>&1 || return 1
 
     # Configure Manta
     logmsg "* Executing configManta.py..."
@@ -239,7 +239,7 @@ genodb.manta_somatic()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate manta 2>&1 || return 1
+    conda_activate manta 2>&1 || return 1
 
     # Configure Manta
     logmsg "* Executing configManta.py..."
@@ -353,7 +353,7 @@ genodb.strelka_germline()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate strelka 2>&1 || return 1
+    conda_activate strelka 2>&1 || return 1
 
     # Configure Strelka
     logmsg "* Executing configureStrelkaGermlineWorkflow.py..."
@@ -451,7 +451,7 @@ platypus_germline_conda()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate platypus 2>&1 || return 1
+    conda_activate platypus 2>&1 || return 1
 
     # Run Platypus
     logmsg "* Executing Platypus.py..."
@@ -593,7 +593,7 @@ genodb.gatk_haplotypecaller()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Run gatk HaplotypeCaller
     logmsg "* Executing gatk HaplotypeCaller..."
@@ -723,7 +723,7 @@ genodb.strelka_somatic()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate strelka 2>&1 || return 1
+    conda_activate strelka 2>&1 || return 1
 
     # Configure Strelka
     logmsg "* Executing configureStrelkaSomaticWorkflow.py..."
@@ -845,7 +845,7 @@ genodb.mutect2_somatic()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
 
     # Run Mutect2
     logmsg "* Executing gatk Mutect2..."
@@ -935,7 +935,7 @@ genodb.lofreq_somatic()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate lofreq 2>&1 || return 1
+    conda_activate lofreq 2>&1 || return 1
 
     # Run lofreq somatic
     logmsg "* Executing lofeq somatic..."
@@ -1031,7 +1031,7 @@ genodb.cnvkit()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate genodb.cnvkit 2>&1 || return 1
+    conda_activate genodb.cnvkit 2>&1 || return 1
 
     # Run genodb.cnvkit
     logmsg "* Executing genodb.cnvkit.py..."
@@ -1129,7 +1129,7 @@ genodb.snp_pileup_plus_facets()
 
     # Activate conda environment
     logmsg "* Activating conda environment (snp-pileup)..."
-    conda activate snp-pileup 2>&1 || return 1
+    conda_activate snp-pileup 2>&1 || return 1
 
     # Execute snp-pileup
     logmsg "* Executing snp-pileup..."
@@ -1141,7 +1141,7 @@ genodb.snp_pileup_plus_facets()
 
     # Activate conda environment if needed
     logmsg "* Activating conda environment (genodb.facets)..."
-    conda activate genodb.facets 2>&1 || return 1
+    conda_activate genodb.facets 2>&1 || return 1
 
     # Execute genodb.facets
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R
@@ -1216,7 +1216,7 @@ genodb.gen_sequenza_gcc()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate genodb.sequenza 2>&1 || return 1
+    conda_activate genodb.sequenza 2>&1 || return 1
 
     # Generate GC content file
     logmsg "* Generating GC content file..."
@@ -1296,7 +1296,7 @@ genodb.sequenza()
 
     # Activate conda environment
     logmsg "* Activating conda environment (genodb.sequenza)..."
-    conda activate genodb.sequenza 2>&1 || return 1
+    conda_activate genodb.sequenza 2>&1 || return 1
 
     # Generate seqz file
     logmsg "* Generating seqz file..."
@@ -1411,7 +1411,7 @@ genodb.parallel_bam2seqz()
 
     # Activate conda environment
     logmsg "* Activating conda environment (genodb.sequenza)..."
-    conda activate genodb.sequenza 2>&1 || return 1
+    conda_activate genodb.sequenza 2>&1 || return 1
 
     # Generate seqz file
     logmsg "* Generating seqz file (contig $contig)..."
@@ -1506,7 +1506,7 @@ genodb.seqzmerge_plus_sequenza()
 
     # Activate conda environment
     logmsg "* Activating conda environment (genodb.sequenza)..."
-    conda activate genodb.sequenza 2>&1 || return 1
+    conda_activate genodb.sequenza 2>&1 || return 1
 
     # Merge seqz files
     logmsg "* Merging seqz files..."
@@ -1614,7 +1614,7 @@ genodb.lumpy()
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
         logmsg "* Activating conda environment..."
-        conda activate genodb.lumpy 2>&1 || return 1
+        conda_activate genodb.lumpy 2>&1 || return 1
 
         logmsg "* Executing lumpyexpress..."
         local x_opt=$(get_lumpyexpress_x_opt ${exclude})
@@ -1739,7 +1739,7 @@ genodb.parallel_lumpy()
     if [ -z "${LUMPY_HOME_DIR}" ]; then
         # Activate conda environment
         logmsg "* Activating conda environment (genodb.lumpy)..."
-        conda activate genodb.lumpy 2>&1 || return 1
+        conda_activate genodb.lumpy 2>&1 || return 1
 
         logmsg "* Executing lumpyexpress (contig $contig)..."
         local x_opt=$(get_lumpyexpress_x_opt ${exclude})
@@ -1858,7 +1858,7 @@ genodb.smoove()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate genodb.smoove 2>&1 || return 1
+    conda_activate genodb.smoove 2>&1 || return 1
 
     logmsg "* Executing genodb.smoove..."
     export TMPDIR="${process_outd}"
@@ -1966,7 +1966,7 @@ genodb.delly()
 
     # Activate conda environment
     logmsg "* Activating conda environment (genodb.delly)..."
-    conda activate genodb.delly 2>&1 || return 1
+    conda_activate genodb.delly 2>&1 || return 1
 
     logmsg "* Executing genodb.delly..."
     # "command" built-in is used here to execute the "genodb.delly" program
@@ -1980,7 +1980,7 @@ genodb.delly()
 
     # Activate conda environment
     logmsg "* Activating conda environment (bcftools)..."
-    conda activate bcftools 2>&1 || return 1
+    conda_activate bcftools 2>&1 || return 1
 
     # Convert bcf output to vcf
     logmsg "* Converting bcf output into vcf..."
@@ -2104,7 +2104,7 @@ genodb.parallel_delly()
 
     # Activate conda environment
     logmsg "* Activating conda environment (genodb.delly)..."
-    conda activate genodb.delly 2>&1 || return 1
+    conda_activate genodb.delly 2>&1 || return 1
 
     logmsg "* Executing genodb.delly (contig $contig)..."
     # "command" built-in is used here to execute the "genodb.delly" program
@@ -2118,7 +2118,7 @@ genodb.parallel_delly()
 
     # Activate conda environment
     logmsg "* Activating conda environment (bcftools)..."
-    conda activate bcftools 2>&1 || return 1
+    conda_activate bcftools 2>&1 || return 1
 
     # Convert bcf output to vcf
     logmsg "* Converting bcf output into vcf..."
@@ -2221,7 +2221,7 @@ genodb.parallel_svtyper()
 
     # Activate conda environment
     logmsg "* Activating conda environment (svtyper)..."
-    conda activate svtyper 2>&1 || return 1
+    conda_activate svtyper 2>&1 || return 1
 
     # Execute svtyper
     logmsg "* Executing svtyper (contig $contig)..."
@@ -2311,7 +2311,7 @@ genodb.msisensor_pro()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate msisensor-pro 2>&1 || return 1
+    conda_activate msisensor-pro 2>&1 || return 1
 
     # Create homopolymer and microsatellites file
     logmsg "* Executing msisensor-pro scan..."

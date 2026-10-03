@@ -94,7 +94,7 @@ genodb.snp_pileup()
 
     # Activate conda environment if needed
     logmsg "* Activating conda environment..."
-    conda activate snp-pileup 2>&1 || exit 1
+    conda_activate snp-pileup 2>&1 || exit 1
 
     # Execute snp-pileup
     logmsg "* Executing snp-pileup..."
@@ -162,7 +162,7 @@ genodb.facets()
 
     # Activate conda environment if needed
     logmsg "* Activating conda environment..."
-    conda activate genodb.facets 2>&1 || exit 1
+    conda_activate genodb.facets 2>&1 || exit 1
 
     # Execute genodb.facets
     # IMPORTANT NOTE: Rscript is used here to ensure that conda's R

@@ -112,7 +112,7 @@ genodb.concat_germline_snvs()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate bcftools 2>&1 || return 1
+    conda_activate bcftools 2>&1 || return 1
 
     # Reheader vcfs
     logmsg "* Reheadering list of vcfs..."

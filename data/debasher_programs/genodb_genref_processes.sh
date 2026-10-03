@@ -108,7 +108,7 @@ create_seq_dict_for_ref()
 {
     local ref=$1
 
-    conda activate gatk4 2>&1 || return 1
+    conda_activate gatk4 2>&1 || return 1
     gatk CreateSequenceDictionary -R "${ref}" || return 1
     conda deactivate
 }
@@ -118,7 +118,7 @@ index_ref()
 {
     local ref=$1
 
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
     samtools faidx "${ref}" || return 1
     conda deactivate
 }
@@ -192,7 +192,7 @@ get_ref_contig_list()
     local ref=$1
 
     if [ ! -f "${ref}".fai ]; then
-        conda activate samtools 2>&1 || return 1
+        conda_activate samtools 2>&1 || return 1
         samtools faidx "${ref}"
         conda deactivate
     fi
@@ -211,7 +211,7 @@ get_bam_contig_list()
 {
     local bam=$1
 
-    conda activate samtools 2>&1 || return 1
+    conda_activate samtools 2>&1 || return 1
     samtools idxstats "$bam" | filter_bam_stats
     conda deactivate
 }

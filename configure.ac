@@ -74,20 +74,6 @@ else
    AC_MSG_RESULT([yes, $bash_major_version.$bash_minor_version])
 fi
 
-# Check conda (conda is defined as a function so AC_PATH_PROGS may be
-# inadequate for checking)
-AC_MSG_CHECKING(for conda)
-if command -v conda > /dev/null 2>&1; then
-  AC_MSG_RESULT(yes)
-else
-  if ! test -z "$_CONDA_EXE"; then
-    AC_MSG_RESULT(yes)
-  else
-    AC_MSG_RESULT(no)
-    AC_MSG_WARN([conda may not be available, check that there is a working conda installation])
-  fi      
-fi
-
 # check that qsub works
 if test ! -z "$QSUB"; then
  echo -n "checking whether qsub works... "
@@ -462,6 +448,31 @@ else
  AC_MSG_RESULT(yes)
 fi
 AC_SUBST(DEBASHER_HOME_DIR,$with_debasher)
+
+# Check the conda of DeBasher: the processes activate their conda
+# environments with conda_activate, which loads the shell functions of
+# conda from the conda executable that DeBasher was configured with
+# (CONDA_CMD in its debasher_lib), whatever shell runs them. A DeBasher
+# without conda_activate, or without a conda executable, leaves them
+# unable to activate any environment.
+if test "$enable_debasher_lib" = "yes"; then
+ debasher_lib_dir="$with_debasher/lib/debasher"
+ AC_MSG_CHECKING([whether DeBasher provides conda_activate])
+ if grep -q "^conda_activate()" "$debasher_lib_dir/debasher_lib_conda" 2>/dev/null; then
+  AC_MSG_RESULT(yes)
+ else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([the DeBasher in $with_debasher does not provide conda_activate, which the processes use; install a newer DeBasher])
+ fi
+ AC_MSG_CHECKING([for the conda executable of DeBasher])
+ debasher_conda_cmd=`sed -n 's/^CONDA_CMD="\(.*\)"$/\1/p' "$debasher_lib_dir/debasher_lib"`
+ if test -n "$debasher_conda_cmd" && test -x "$debasher_conda_cmd"; then
+  AC_MSG_RESULT([$debasher_conda_cmd])
+ else
+  AC_MSG_RESULT(no)
+  AC_MSG_WARN([DeBasher has no conda executable: the processes cannot activate their conda environments; reconfigure DeBasher with ./configure CONDA_CMD=<conda executable>])
+ fi
+fi
 
 # Adds an extra argument to configure (enable use of Platypus)
 AC_MSG_CHECKING(whether to enable platypus library)

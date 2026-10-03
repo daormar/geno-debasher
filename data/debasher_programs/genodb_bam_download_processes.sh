@@ -379,7 +379,7 @@ genodb.download_ega_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate pyega3 2>&1 || return 1
+    conda_activate pyega3 2>&1 || return 1
 
     # Download file (with multiple tries)
     ega_download_retry ${egastr} "${egacred}" "${egaid_normalbam}" "${process_outd}" "normal.bam" ${download_tries} || return 1
@@ -488,7 +488,7 @@ genodb.download_ega_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate pyega3 2>&1 || return 1
+    conda_activate pyega3 2>&1 || return 1
 
     # Download file (with multiple tries)
     ega_download_retry ${egastr} "${egacred}" "${egaid_tumorbam}" "${process_outd}" "tumor.bam" ${download_tries} || return 1
@@ -1508,7 +1508,7 @@ genodb.download_gdc_norm_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gdc-client 2>&1 || return 1
+    conda_activate gdc-client 2>&1 || return 1
 
     # Download file (with multiple tries)
     gdc-client download -n ${gdcprocs} -t "${gdctok}" -d "${process_outd}" --retry-amount ${download_tries} "${gdcid_normalbam}" 2>/dev/null || return 1
@@ -1619,7 +1619,7 @@ genodb.download_gdc_tum_bam()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate gdc-client 2>&1 || return 1
+    conda_activate gdc-client 2>&1 || return 1
 
     # Download file (with multiple tries)
     gdc-client download -n ${gdcprocs} -t "${gdctok}" -d "${process_outd}" --retry-amount ${download_tries} "${gdcid_tumorbam}" 2>/dev/null || return 1

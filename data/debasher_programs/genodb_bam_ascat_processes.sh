@@ -171,7 +171,7 @@ genodb.allele_counter_norm()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate allelecount 2>&1 || exit 1
+    conda_activate allelecount 2>&1 || exit 1
 
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
@@ -286,7 +286,7 @@ genodb.allele_counter_tumor()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate allelecount 2>&1 || exit 1
+    conda_activate allelecount 2>&1 || exit 1
 
     # Execute alleleCounter
     logmsg "* Executing alleleCounter..."
@@ -400,7 +400,7 @@ genodb.ascat()
 
     # Activate conda environment
     logmsg "* Activating conda environment..."
-    conda activate genodb.ascat 2>&1 || exit 1
+    conda_activate genodb.ascat 2>&1 || exit 1
 
     # Convert allele counts
     logmsg "* Executing convert_allele_counts..."

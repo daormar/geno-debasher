@@ -363,7 +363,7 @@ process_pars()
 
     # Activate conda environment
     echo "* Activating conda environment (samtools)..." >&2
-    conda activate samtools || return 1
+    conda_activate samtools || return 1
 
     # Get reference contigs
     echo "* Obtaining list of current reference contig names and their lengths..." >&2

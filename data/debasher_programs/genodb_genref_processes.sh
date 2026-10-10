@@ -44,6 +44,14 @@ genodb.create_genref_for_bam_explain_opts()
     # -fbr option
     description="Name of fallback genome reference file. If creation process fails, this file is copied as reference output file instead"
     explain_opt "-fbr" "<file>" "$description"
+
+    # -out-processdir option
+    local description="output directory"
+    explain_opt "-out-processdir" "<file>" "$description"
+
+    # -outfile option
+    local description="reference genome file for the bam file"
+    explain_opt "-outfile" "<file>" "$description"
 }
 
 ########

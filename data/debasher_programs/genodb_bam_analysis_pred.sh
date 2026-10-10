@@ -27,7 +27,6 @@
 genodb_bam_analysis_shared_dirs()
 {
     define_shared_dir "data"
-    define_shared_dir "split"
     define_shared_dir "summary/germline_snvs"
 }
 

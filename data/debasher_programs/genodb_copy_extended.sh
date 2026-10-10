@@ -147,7 +147,7 @@ genodb.create_genref_for_bam_define_opts()
 ########
 genodb.parallel_split_norm_bam_identify_cmdline_opts()
 {
-    opt_is_cmdline "-lc"
+    :
 }
 
 ########
@@ -158,9 +158,6 @@ genodb.parallel_split_norm_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
@@ -179,8 +176,9 @@ genodb.parallel_split_norm_bam_define_opts()
         local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${abs_splitdir}"/normal_${contig}.bam
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
+        local outfile="${process_outdir}"/normal_${contig}.bam
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -191,7 +189,7 @@ genodb.parallel_split_norm_bam_define_opts()
 ########
 genodb.parallel_split_tum_bam_identify_cmdline_opts()
 {
-    opt_is_cmdline "-lc"
+    :
 }
 
 ########
@@ -202,9 +200,6 @@ genodb.parallel_split_tum_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
@@ -223,8 +218,9 @@ genodb.parallel_split_tum_bam_define_opts()
         local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${abs_splitdir}"/tumor_${contig}.bam
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
+        local outfile="${process_outdir}"/tumor_${contig}.bam
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -236,7 +232,6 @@ genodb.parallel_split_tum_bam_define_opts()
 genodb.parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-mpb"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -258,8 +253,10 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -r option
         define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
@@ -274,8 +271,8 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${process_outdir}"/normal_${contig}.pileup.gz
+        # -outfile option, under a fixed name in the directory of the task
+        local outfile="${process_outdir}"/${idx}/normal.pileup.gz
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -287,7 +284,6 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
 genodb.parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-mpb"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -309,8 +305,10 @@ genodb.parallel_samtools_mpileup_tum_bam_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -r option
         define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
@@ -325,8 +323,8 @@ genodb.parallel_samtools_mpileup_tum_bam_define_opts()
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${process_outdir}"/tumor_${contig}.pileup.gz
+        # -outfile option, under a fixed name in the directory of the task
+        local outfile="${process_outdir}"/${idx}/tumor.pileup.gz
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -366,7 +364,7 @@ genodb.gen_sequenza_gcc_define_opts()
 ########
 genodb.parallel_bam2seqz_identify_cmdline_opts()
 {
-    opt_is_cmdline "-lc"
+    :
 }
 
 ########
@@ -388,9 +386,6 @@ genodb.parallel_bam2seqz_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
-
         # -gcc option
         define_opt_from_proc_out "-gcc" "genodb.gen_sequenza_gcc" "-outfile" optlist || return 1
 
@@ -404,7 +399,8 @@ genodb.parallel_bam2seqz_define_opts()
         local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
         local outfile="${process_outdir}"/${contig}_seqz.gz
         define_opt "-outfile" "$outfile" optlist || return 1
 
@@ -417,7 +413,6 @@ genodb.parallel_bam2seqz_define_opts()
 genodb.parallel_delly_identify_cmdline_opts()
 {
     opt_is_cmdline "-dx"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -439,8 +434,10 @@ genodb.parallel_delly_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -r option
         define_opt_from_proc_out "-r" "genodb.create_genref_for_bam" "-outfile" optlist || return 1
@@ -466,7 +463,6 @@ genodb.parallel_delly_define_opts()
 ########
 genodb.parallel_lumpy_identify_cmdline_opts()
 {
-    opt_is_cmdline "-lc"
     opt_is_cmdline "-lx"
 }
 
@@ -489,8 +485,10 @@ genodb.parallel_lumpy_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -lx option
         define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
@@ -505,8 +503,8 @@ genodb.parallel_lumpy_define_opts()
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${process_outdir}"/out${contig}.vcf
+        # -outfile option, under a fixed name in the directory of the task
+        local outfile="${process_outdir}"/${idx}/out.vcf
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -517,7 +515,7 @@ genodb.parallel_lumpy_define_opts()
 ########
 genodb.parallel_svtyper_identify_cmdline_opts()
 {
-    opt_is_cmdline "-lc"
+    :
 }
 
 ########
@@ -553,7 +551,8 @@ genodb.parallel_svtyper_define_opts()
         # -vcf option
         define_opt_from_proc_task_out "-vcf" "genodb.parallel_lumpy" "${idx}" "-outfile" optlist || return 1
 
-        # -outfile option
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
         local outfile="${process_outdir}"/out${contig}.vcf
         define_opt "-outfile" "$outfile" optlist || return 1
 

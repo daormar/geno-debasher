@@ -571,13 +571,13 @@ genodb.parallel_samtools_mpileup_norm_bam_explain_opts()
     description="BED file for mpileup"
     explain_opt "-mpb" "<file>" "$description"
 
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
     # -normalbam option
-    local description="normal bam file"
+    local description="normal bam file of the contig"
     explain_opt "-normalbam" "<file>" "$description"
+
+    # -outd option
+    local description="directory of the task, below the output directory of the process"
+    explain_opt "-outd" "<file>" "$description"
 
     # -outfile option
     local description="output file"
@@ -589,11 +589,18 @@ genodb.parallel_samtools_mpileup_norm_bam_explain_opts()
 }
 
 ########
+genodb.parallel_samtools_mpileup_norm_bam_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-mpb"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -605,9 +612,6 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
     local process_name=$3
     local process_outdir=$4
 
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
-
     # Get name of contig list file
     local clist
     clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
@@ -618,8 +622,10 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -r option
         define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
@@ -629,14 +635,13 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
 
         # -normalbam option
         local contig=${array[$idx]}
-        local normalbam="${abs_splitdir}"/normal_${contig}.bam
-        define_opt "-normalbam" "$normalbam" optlist || return 1
+        define_opt_from_proc_task_out "-normalbam" "genodb.parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${process_outdir}"/normal_${contig}.pileup.gz
+        # -outfile option, under a fixed name in the directory of the task
+        local outfile="${process_outdir}"/${idx}/normal.pileup.gz
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -648,7 +653,7 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
 genodb.parallel_samtools_mpileup_norm_bam()
 {
     # Initialize variables
-    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local outd=$(read_opt_value_from_func_args "-outd" "$@")
     local ref=$(read_opt_value_from_func_args "-r" "$@")
     local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
     local mpbfile=$(read_opt_value_from_func_args "-mpb" "$@")
@@ -664,7 +669,7 @@ genodb.parallel_samtools_mpileup_norm_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    samtools mpileup ${smp_l_opt} -f "${ref}" -o "${process_outd}"/normal_${contig}.pileup "$normalbam" || return 1
+    samtools mpileup ${smp_l_opt} -f "${ref}" -o "${outd}"/normal.pileup "$normalbam" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -672,19 +677,7 @@ genodb.parallel_samtools_mpileup_norm_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" -c "${process_outd}"/normal_${contig}.pileup > "${outfile}" || return 1
-}
-
-########
-parallel_samtools_mpileup_norm_bam_reset_outdir()
-{
-    # Initialize variables
-    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
-    local contig=$(read_opt_value_from_func_args "-contig" "$@")
-
-    # Remove files
-    logmsg "* Resetting output directory..."
-    "${RM}" -f "${process_outd}"/normal_${contig}.*
+    "${GZIP}" -c "${outd}"/normal.pileup > "${outfile}" || return 1
 }
 
 ########
@@ -704,13 +697,13 @@ genodb.parallel_samtools_mpileup_tum_bam_explain_opts()
     description="BED file for mpileup"
     explain_opt "-mpb" "<file>" "$description"
 
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
     # -tumorbam option
-    local description="tumor bam file"
+    local description="tumor bam file of the contig"
     explain_opt "-tumorbam" "<file>" "$description"
+
+    # -outd option
+    local description="directory of the task, below the output directory of the process"
+    explain_opt "-outd" "<file>" "$description"
 
     # -outfile option
     local description="output file"
@@ -722,11 +715,18 @@ genodb.parallel_samtools_mpileup_tum_bam_explain_opts()
 }
 
 ########
+genodb.parallel_samtools_mpileup_tum_bam_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-mpb"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -738,9 +738,6 @@ genodb.parallel_samtools_mpileup_tum_bam_define_opts()
     local process_name=$3
     local process_outdir=$4
 
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
-
     # Get name of contig list file
     local clist
     clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
@@ -751,8 +748,10 @@ genodb.parallel_samtools_mpileup_tum_bam_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -r option
         define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
@@ -762,14 +761,13 @@ genodb.parallel_samtools_mpileup_tum_bam_define_opts()
 
         # -tumorbam option
         local contig=${array[$idx]}
-        local tumorbam="${abs_splitdir}"/tumor_${contig}.bam
-        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+        define_opt_from_proc_task_out "-tumorbam" "genodb.parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${process_outdir}"/tumor_${contig}.pileup.gz
+        # -outfile option, under a fixed name in the directory of the task
+        local outfile="${process_outdir}"/${idx}/tumor.pileup.gz
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -781,7 +779,7 @@ genodb.parallel_samtools_mpileup_tum_bam_define_opts()
 genodb.parallel_samtools_mpileup_tum_bam()
 {
     # Initialize variables
-    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local outd=$(read_opt_value_from_func_args "-outd" "$@")
     local ref=$(read_opt_value_from_func_args "-r" "$@")
     local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
     local mpbfile=$(read_opt_value_from_func_args "-mpb" "$@")
@@ -797,7 +795,7 @@ genodb.parallel_samtools_mpileup_tum_bam()
 
     # Generate pileup file
     logmsg "* Generating pileup file (contig $contig)..."
-    samtools mpileup ${smp_l_opt} -f "${ref}" -o "${process_outd}"/tumor_${contig}.pileup "${tumorbam}" || return 1
+    samtools mpileup ${smp_l_opt} -f "${ref}" -o "${outd}"/tumor.pileup "${tumorbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -805,19 +803,7 @@ genodb.parallel_samtools_mpileup_tum_bam()
 
     # Compress pileup file
     logmsg "* Compressing pileup file..."
-    "${GZIP}" -c "${process_outd}"/tumor_${contig}.pileup > "${outfile}" || return 1
-}
-
-########
-parallel_samtools_mpileup_tum_bam_reset_outdir()
-{
-    # Initialize variables
-    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
-    local contig=$(read_opt_value_from_func_args "-contig" "$@")
-
-    # Remove files
-    logmsg "* Resetting output directory..."
-    "${RM}" -f "${process_outd}"/tumor_${contig}.*
+    "${GZIP}" -c "${outd}"/tumor.pileup > "${outfile}" || return 1
 }
 
 ########
@@ -829,10 +815,6 @@ genodb.parallel_samtools_mpileup_tum_bam_conda_envs()
 ########
 genodb.parallel_split_norm_bam_explain_opts()
 {
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
     # -normalbam option
     local description="normal bam file"
     explain_opt "-normalbam" "<file>" "$description"
@@ -847,10 +829,17 @@ genodb.parallel_split_norm_bam_explain_opts()
 }
 
 ########
+genodb.parallel_split_norm_bam_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_split_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -861,9 +850,6 @@ genodb.parallel_split_norm_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
@@ -882,8 +868,9 @@ genodb.parallel_split_norm_bam_define_opts()
         local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${abs_splitdir}"/normal_${contig}.bam
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
+        local outfile="${process_outdir}"/normal_${contig}.bam
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -925,10 +912,6 @@ genodb.parallel_split_norm_bam_conda_envs()
 ########
 genodb.parallel_split_tum_bam_explain_opts()
 {
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
     # -tumorbam option
     local description="tumor bam file"
     explain_opt "-tumorbam" "<file>" "$description"
@@ -943,10 +926,17 @@ genodb.parallel_split_tum_bam_explain_opts()
 }
 
 ########
+genodb.parallel_split_tum_bam_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_split_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -957,9 +947,6 @@ genodb.parallel_split_tum_bam_define_opts()
     local process_spec=$2
     local process_name=$3
     local process_outdir=$4
-
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
 
     # Get name of contig list file
     local clist
@@ -978,8 +965,9 @@ genodb.parallel_split_tum_bam_define_opts()
         local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${abs_splitdir}"/tumor_${contig}.bam
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
+        local outfile="${process_outdir}"/tumor_${contig}.bam
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -1025,9 +1013,9 @@ genodb.bedtools_genomecov_norm_bam_explain_opts()
     local description="normal bam file"
     explain_opt "-normalbam" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 }
 
 ########
@@ -1089,9 +1077,9 @@ genodb.bedtools_genomecov_tum_bam_explain_opts()
     local description="tumor bam file"
     explain_opt "-tumorbam" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 }
 
 ########
@@ -1157,9 +1145,9 @@ genodb.norm_bam_to_ubam_explain_opts()
     description="Maximum number of records stored in RAM required by GATK. The higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
     explain_opt "-mrec" "<int>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1250,9 +1238,9 @@ genodb.tum_bam_to_ubam_explain_opts()
     description="Maximum number of records stored in RAM required by GATK. The higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
     explain_opt "-mrec" "<int>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1347,9 +1335,9 @@ genodb.align_norm_ubam_explain_opts()
     description="Maximum number of records stored in RAM required by GATK. The higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
     explain_opt "-mrec" "<int>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1507,9 +1495,9 @@ genodb.align_tum_ubam_explain_opts()
     description="Maximum number of records stored in RAM required by GATK. The higher the number, the more RAM is required but the lower the number of files created for external sorting (${DEFAULT_MAX_RECORDS_IN_RAM_GATK} by default)"
     explain_opt "-mrec" "<int>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -outfile option
     local description="output file"

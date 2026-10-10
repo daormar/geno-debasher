@@ -29,7 +29,6 @@ genodebasher_debasher_programs_dir="/home/dortiz/bio/software/geno-debasher/shar
 genodb_bam_analysis_shared_dirs()
 {
     define_shared_dir "data"
-    define_shared_dir "split"
     define_shared_dir "summary/germline_snvs"
 }
 

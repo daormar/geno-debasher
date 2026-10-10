@@ -47,9 +47,9 @@ genodb.manta_germline_explain_opts()
     description="bgzipped and tabixed bed file to specify regions to call"
     explain_opt "-cr" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -170,9 +170,9 @@ genodb.manta_somatic_explain_opts()
     description="bgzipped and tabixed bed file to specify regions to call"
     explain_opt "-cr" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -281,9 +281,9 @@ genodb.strelka_germline_explain_opts()
     description="bgzipped and tabixed bed file to specify regions to call"
     explain_opt "-cr" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -390,9 +390,9 @@ genodb.platypus_germline_explain_opts()
     description="Normal bam file (required if no downloading processes have been defined)"
     explain_opt "-normalbam" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -525,9 +525,9 @@ genodb.gatk_haplotypecaller_explain_opts()
     description="Sample name"
     explain_opt "-sample-name" "<string>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -629,9 +629,13 @@ genodb.strelka_somatic_explain_opts()
     description="bgzipped and tabixed bed file to specify regions to call"
     explain_opt "-cr" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
+
+    # -manta-outd option
+    local description="output directory of manta_somatic"
+    explain_opt "-manta-outd" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -767,9 +771,9 @@ genodb.mutect2_somatic_explain_opts()
     description="Tumor bam file (required if no downloading processes have been defined)"
     explain_opt "-tumorbam" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -877,9 +881,9 @@ genodb.lofreq_somatic_explain_opts()
     description="Tumor bam file (required if no downloading processes have been defined)"
     explain_opt "-tumorbam" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -973,9 +977,9 @@ genodb.cnvkit_explain_opts()
     description="Tumor bam file (required if no downloading processes have been defined)"
     explain_opt "-tumorbam" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -1071,9 +1075,9 @@ genodb.snp_pileup_plus_facets_explain_opts()
     description="Minimum sequencing depth to keep when preprocessing sample (${DEFAULT_MIN_SEQ_DEPTH_FACETS_PREPROC} by default)"
     explain_opt "-md" "<int>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 }
 
 ########
@@ -1240,9 +1244,9 @@ genodb.sequenza_explain_opts()
     description="GC content wiggle file for genodb.sequenza (required if no genodb.gen_sequenza_gcc process is defined)"
     explain_opt "-gcc" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -npileup
     local description="normal pileup file"
@@ -1327,14 +1331,6 @@ genodb.parallel_bam2seqz_explain_opts()
     description="GC content wiggle file for bam2seqz"
     explain_opt "-gcc" "<file>" "$description"
 
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
-    # -process-outd option
-    local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
-
     # -npileup
     local description="normal pileup file"
     explain_opt "-npileup" "<file>" "$description"
@@ -1343,16 +1339,27 @@ genodb.parallel_bam2seqz_explain_opts()
     local description="tumor pileup file"
     explain_opt "-tpileup" "<file>" "$description"
 
+    # -outfile option
+    local description="output file"
+    explain_opt "-outfile" "<file>" "$description"
+
     # -contig
     local description="contig id"
     explain_opt "-contig" "<string>" "$description"
 }
 
 ########
+genodb.parallel_bam2seqz_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_bam2seqz_identify_cmdline_opts()
 {
     opt_is_cmdline "-gcc"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -1374,9 +1381,6 @@ genodb.parallel_bam2seqz_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
-
         # -gcc option
         define_cmdline_infile_opt "$cmdline" "-gcc" optlist || return 1
 
@@ -1390,7 +1394,8 @@ genodb.parallel_bam2seqz_define_opts()
         local contig=${array[$idx]}
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
         local outfile="${process_outdir}"/${contig}_seqz.gz
         define_opt "-outfile" "$outfile" optlist || return 1
 
@@ -1435,13 +1440,13 @@ genodb.seqzmerge_plus_sequenza_explain_opts()
     description="File with list of contig names to process"
     explain_opt "-lc" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
-    # -seqzdir
-    local description="seqz directory"
-    explain_opt "-seqzdir" "<file>" "$description"
+    # -seqz-ith options
+    local description="seqz file of the i'th contig of the contig list"
+    explain_opt "-seqz-ith" "<file>" "$description"
 }
 
 ########
@@ -1463,11 +1468,19 @@ genodb.seqzmerge_plus_sequenza_define_opts()
     # Define the -out-processdir option, the output directory for the process
     define_opt "-out-processdir" "${process_outdir}" optlist || return 1
 
-    # -seqzdir option
-    define_opt_from_proc_out "-seqzdir" "genodb.parallel_bam2seqz" "-out-processdir" optlist || return 1
-
     # -lc option
     define_cmdline_infile_opt "$cmdline" "-lc" optlist || return 1
+
+    # -seqz-ith options: the seqz file of every task of
+    # genodb.parallel_bam2seqz, which has one task per contig
+    local clist
+    clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
+    local contigs
+    contigs=( $(get_contig_list_from_file $clist) ) || return 1
+    local idx
+    for idx in "${!contigs[@]}"; do
+        define_opt_from_proc_task_out "-seqz${idx}" "genodb.parallel_bam2seqz" "${idx}" "-outfile" optlist || return 1
+    done
 
     save_opt_list optlist
 }
@@ -1475,25 +1488,10 @@ genodb.seqzmerge_plus_sequenza_define_opts()
 ########
 seqzmerge()
 {
-    local clist=$1
-    local seqzdir=$2
-
-    local contigs
-    contigs=$(get_contig_list_from_file $clist) || return 1
-    local filenames=""
-    local contig
-    for contig in ${contigs}; do
-        local seqzfname="${seqzdir}"/${contig}_seqz.gz
-        if [ "$filenames" = "" ]; then
-            filenames="${seqzfname}"
-        else
-            filenames="${filenames} ${seqzfname}"
-        fi
-    done
-
+    # Merge the seqz files given as arguments, in their order
     # NOTE: the use of the bgzip command requires to have the genodb.sequenza
     # environment activated (since it has tabix installed)
-    "${ZCAT}" "${filenames}" | "$AWK" '{if (NR!=1 && $1 != "chromosome") {print $0}}' | bgzip ; pipe_fail || return 1
+    "${ZCAT}" "$@" | "$AWK" '{if (NR!=1 && $1 != "chromosome") {print $0}}' | bgzip ; pipe_fail || return 1
 }
 
 ########
@@ -1501,8 +1499,17 @@ genodb.seqzmerge_plus_sequenza()
 {
     # Initialize variables
     local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
-    local seqzdir=$(read_opt_value_from_func_args "-seqzdir" "$@")
     local clist=$(read_opt_value_from_func_args "-lc" "$@")
+
+    # Collect the seqz file of every contig, in the order of the
+    # contig list
+    local contigs
+    contigs=( $(get_contig_list_from_file "${clist}") ) || return 1
+    local seqzfiles=()
+    local idx
+    for idx in "${!contigs[@]}"; do
+        seqzfiles+=( "$(read_opt_value_from_func_args "-seqz${idx}" "$@")" )
+    done
 
     # Activate conda environment
     logmsg "* Activating conda environment (genodb.sequenza)..."
@@ -1510,7 +1517,7 @@ genodb.seqzmerge_plus_sequenza()
 
     # Merge seqz files
     logmsg "* Merging seqz files..."
-    seqzmerge "${clist}" "${seqzdir}"  > "${process_outd}"/merged_seqz.gz || return 1
+    seqzmerge "${seqzfiles[@]}" > "${process_outd}"/merged_seqz.gz || return 1
 
     logmsg "* Applying tabix over merged seqz file..."
     tabix -f -s 1 -b 2 -e 2 -S 1 "${process_outd}"/merged_seqz.gz || return 1
@@ -1548,9 +1555,9 @@ genodb.lumpy_explain_opts()
     description="File with regions to exclude in bed format"
     explain_opt "-lx" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 }
 
 ########
@@ -1639,21 +1646,21 @@ genodb.lumpy_conda_envs()
 ########
 genodb.parallel_lumpy_explain_opts()
 {
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
     # -lx option
     description="File with regions to exclude in bed format"
     explain_opt "-lx" "<file>" "$description"
 
     # -normalbam option
-    description="Normal bam file (required if no downloading processes have been defined)"
+    description="Normal bam file of the contig"
     explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
-    description="Tumor bam file (required if no downloading processes have been defined)"
+    description="Tumor bam file of the contig"
     explain_opt "-tumorbam" "<file>" "$description"
+
+    # -outd option
+    local description="directory of the task, below the output directory of the process"
+    explain_opt "-outd" "<file>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1665,12 +1672,17 @@ genodb.parallel_lumpy_explain_opts()
 }
 
 ########
+genodb.parallel_lumpy_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_lumpy_identify_cmdline_opts()
 {
-    opt_is_cmdline "-lc"
     opt_is_cmdline "-lx"
-    opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-tumorbam"
 }
 
 ########
@@ -1682,9 +1694,6 @@ genodb.parallel_lumpy_define_opts()
     local process_name=$3
     local process_outdir=$4
 
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
-
     # Get name of contig list file
     local clist
     clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
@@ -1695,26 +1704,26 @@ genodb.parallel_lumpy_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -lx option
         define_cmdline_infile_opt_if_given "$cmdline" "-lx" optlist || return 1
 
         # -normalbam option
         local contig=${array[$idx]}
-        local normalbam="${abs_splitdir}"/normal_${contig}.bam
-        define_opt "-normalbam" "$normalbam" optlist || return 1
+        define_opt_from_proc_task_out "-normalbam" "genodb.parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tumorbam option
-        local tumorbam="${abs_splitdir}"/tumor_${contig}.bam
-        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+        define_opt_from_proc_task_out "-tumorbam" "genodb.parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
 
-        # -outfile option
-        local outfile="${process_outdir}"/out${contig}.vcf
+        # -outfile option, under a fixed name in the directory of the task
+        local outfile="${process_outdir}"/${idx}/out.vcf
         define_opt "-outfile" "$outfile" optlist || return 1
 
         # Save option list
@@ -1726,7 +1735,7 @@ genodb.parallel_lumpy_define_opts()
 genodb.parallel_lumpy()
 {
     # Initialize variables
-    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local outd=$(read_opt_value_from_func_args "-outd" "$@")
     local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
     local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
     local contig=$(read_opt_value_from_func_args "-contig" "$@")
@@ -1743,7 +1752,7 @@ genodb.parallel_lumpy()
 
         logmsg "* Executing lumpyexpress (contig $contig)..."
         local x_opt=$(get_lumpyexpress_x_opt ${exclude})
-        lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${process_outd}"/tmp_${contig} -o "${outfile}" || return 1
+        lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${outd}"/tmp -o "${outfile}" || return 1
 
         # Deactivate conda environment
         logmsg "* Deactivating conda environment..."
@@ -1751,7 +1760,7 @@ genodb.parallel_lumpy()
     else
         logmsg "* Executing lumpyexpress (contig $contig)..."
         local x_opt=$(get_lumpyexpress_x_opt ${exclude})
-        "${LUMPY_HOME_DIR}"/bin/lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${process_outd}"/tmp_${contig} -o "${outfile}" || return 1
+        "${LUMPY_HOME_DIR}"/bin/lumpyexpress -B "${tumorbam}","${normalbam}" ${x_opt} -T "${outd}"/tmp -o "${outfile}" || return 1
     fi
 }
 
@@ -1780,9 +1789,9 @@ genodb.smoove_explain_opts()
     description="File with regions to exclude in bed format"
     explain_opt "-lx" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus
     local description="number of cpus"
@@ -1896,9 +1905,9 @@ genodb.delly_explain_opts()
     description="File with regions to exclude in bed format"
     explain_opt "-dx" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 }
 
 ########
@@ -2009,21 +2018,17 @@ genodb.parallel_delly_explain_opts()
     description="File with regions to exclude in bed format"
     explain_opt "-dx" "<file>" "$description"
 
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
     # -normalbam option
-    description="Normal bam file (required if no downloading processes have been defined)"
+    description="Normal bam file of the contig"
     explain_opt "-normalbam" "<file>" "$description"
 
     # -tumorbam option
-    description="Tumor bam file (required if no downloading processes have been defined)"
+    description="Tumor bam file of the contig"
     explain_opt "-tumorbam" "<file>" "$description"
 
-    # -process-outd option
-    local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    # -outd option
+    local description="directory of the task, below the output directory of the process"
+    explain_opt "-outd" "<file>" "$description"
 
     # -contig option
     local description="contig id"
@@ -2031,13 +2036,18 @@ genodb.parallel_delly_explain_opts()
 }
 
 ########
+genodb.parallel_delly_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_delly_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-dx"
-    opt_is_cmdline "-lc"
-    opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-tumorbam"
 }
 
 ########
@@ -2049,9 +2059,6 @@ genodb.parallel_delly_define_opts()
     local process_name=$3
     local process_outdir=$4
 
-    # Obtain splitdir directory
-    local abs_splitdir=$(get_absolute_shdirname "split")
-
     # Get name of contig list file
     local clist
     clist=$(read_opt_value_from_line "$cmdline" "-lc") || { errmsg "Error: -lc option not found"; return 1; }
@@ -2062,8 +2069,10 @@ genodb.parallel_delly_define_opts()
     for idx in "${!array[@]}"; do
         local optlist=""
 
-        # -out-processdir option, the output directory for the process
-        define_opt "-out-processdir" "${process_outdir}" optlist || return 1
+        # -outd option, a directory of the task's own below the output
+        # directory of the process, which the engine creates and empties
+        # before the task runs
+        define_opt_from_process_outdir "-outd" optlist --subdir "${idx}" || return 1
 
         # -r option
         define_cmdline_infile_opt "$cmdline" "-r" optlist || return 1
@@ -2073,12 +2082,10 @@ genodb.parallel_delly_define_opts()
 
         # -normalbam option
         local contig=${array[$idx]}
-        local normalbam="${abs_splitdir}"/normal_${contig}.bam
-        define_opt "-normalbam" "$normalbam" optlist || return 1
+        define_opt_from_proc_task_out "-normalbam" "genodb.parallel_split_norm_bam" "${idx}" "-outfile" optlist || return 1
 
         # -tumorbam option
-        local tumorbam="${abs_splitdir}"/tumor_${contig}.bam
-        define_opt "-tumorbam" "$tumorbam" optlist || return 1
+        define_opt_from_proc_task_out "-tumorbam" "genodb.parallel_split_tum_bam" "${idx}" "-outfile" optlist || return 1
 
         # -contig option
         define_opt "-contig" "$contig" optlist || return 1
@@ -2092,7 +2099,7 @@ genodb.parallel_delly_define_opts()
 genodb.parallel_delly()
 {
     # Initialize variables
-    local process_outd=$(read_opt_value_from_func_args "-out-processdir" "$@")
+    local outd=$(read_opt_value_from_func_args "-outd" "$@")
     local ref=$(read_opt_value_from_func_args "-r" "$@")
     local normalbam=$(read_opt_value_from_func_args "-normalbam" "$@")
     local tumorbam=$(read_opt_value_from_func_args "-tumorbam" "$@")
@@ -2110,7 +2117,7 @@ genodb.parallel_delly()
     # "command" built-in is used here to execute the "genodb.delly" program
     # instead of the "genodb.delly" function
     local x_opt=$(get_delly_x_opt ${exclude})
-    command genodb.delly call -g "$ref" ${x_opt} -o "${process_outd}"/out${contig}.bcf "${tumorbam}" "${normalbam}" || return 1
+    command genodb.delly call -g "$ref" ${x_opt} -o "${outd}"/out.bcf "${tumorbam}" "${normalbam}" || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2122,7 +2129,7 @@ genodb.parallel_delly()
 
     # Convert bcf output to vcf
     logmsg "* Converting bcf output into vcf..."
-    bcftools view "${process_outd}"/out${contig}.bcf > "${process_outd}"/out${contig}.vcf || return 1
+    bcftools view "${outd}"/out.bcf > "${outd}"/out.vcf || return 1
 
     # Deactivate conda environment
     logmsg "* Deactivating conda environment..."
@@ -2147,13 +2154,13 @@ genodb.parallel_svtyper_explain_opts()
     description="Tumor bam file (required if no downloading processes have been defined)"
     explain_opt "-tumorbam" "<file>" "$description"
 
-    # -lc option
-    description="File with list of contig names to process"
-    explain_opt "-lc" "<file>" "$description"
-
     # -vcf option
     local description="vcf name"
     explain_opt "-vcf" "<file>" "$description"
+
+    # -contig option
+    local description="contig id"
+    explain_opt "-contig" "<string>" "$description"
 
     # -outfile option
     local description="output file"
@@ -2161,11 +2168,18 @@ genodb.parallel_svtyper_explain_opts()
 }
 
 ########
+genodb.parallel_svtyper_explain_task_shaping_opts()
+{
+    # -lc option
+    local description="File with list of contig names to process, one task per contig"
+    explain_task_shaping_opt "-lc" "<file>" "$description"
+}
+
+########
 genodb.parallel_svtyper_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-lc"
 }
 
 ########
@@ -2200,7 +2214,8 @@ genodb.parallel_svtyper_define_opts()
         # -vcf option
         define_opt_from_proc_task_out "-vcf" "genodb.parallel_lumpy" "${idx}" "-outfile" optlist || return 1
 
-        # -outfile option
+        # -outfile option, an output of the task's own in the output
+        # directory of the process
         local outfile="${process_outdir}"/out${contig}.vcf
         define_opt "-outfile" "$outfile" optlist || return 1
 
@@ -2253,9 +2268,9 @@ genodb.msisensor_pro_explain_opts()
     description="Tumor bam file (required if no downloading processes have been defined)"
     explain_opt "-tumorbam" "<file>" "$description"
 
-    # -process-outd option
+    # -out-processdir option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-out-processdir" "<file>" "$description"
 
     # -cpus option
     local description="number of cpus"

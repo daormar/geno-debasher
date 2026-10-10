@@ -457,6 +457,13 @@ AC_SUBST(DEBASHER_HOME_DIR,$with_debasher)
 # unable to activate any environment.
 if test "$enable_debasher_lib" = "yes"; then
  debasher_lib_dir="$with_debasher/lib/debasher"
+ AC_MSG_CHECKING([whether $with_debasher is a DeBasher home directory])
+ if test -f "$debasher_lib_dir/debasher_lib"; then
+  AC_MSG_RESULT(yes)
+ else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([$with_debasher holds no lib/debasher/debasher_lib; give --with-debasher the DeBasher home directory, the one that contains bin/ and lib/debasher/, not its bin/])
+ fi
  AC_MSG_CHECKING([whether DeBasher provides conda_activate])
  if grep -q "^conda_activate()" "$debasher_lib_dir/debasher_lib_conda" 2>/dev/null; then
   AC_MSG_RESULT(yes)

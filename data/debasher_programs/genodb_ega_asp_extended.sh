@@ -52,8 +52,8 @@ genodb.index_tum_bam_define_opts()
 genodb.create_genref_for_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-br"
-    opt_is_cmdline "-cm"
-    opt_is_cmdline "-fbr"
+    opt_is_non_mandatory_cmdline "-cm"
+    opt_is_non_mandatory_cmdline "-fbr"
 }
 
 ########
@@ -179,7 +179,7 @@ genodb.parallel_split_tum_bam_define_opts()
 ########
 genodb.parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
-    opt_is_cmdline "-mpb"
+    opt_is_non_mandatory_cmdline "-mpb"
 }
 
 ########
@@ -231,7 +231,7 @@ genodb.parallel_samtools_mpileup_norm_bam_define_opts()
 ########
 genodb.parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
-    opt_is_cmdline "-mpb"
+    opt_is_non_mandatory_cmdline "-mpb"
 }
 
 ########
@@ -360,7 +360,7 @@ genodb.parallel_bam2seqz_define_opts()
 ########
 genodb.parallel_delly_identify_cmdline_opts()
 {
-    opt_is_cmdline "-dx"
+    opt_is_non_mandatory_cmdline "-dx"
 }
 
 ########
@@ -411,7 +411,7 @@ genodb.parallel_delly_define_opts()
 ########
 genodb.parallel_lumpy_identify_cmdline_opts()
 {
-    opt_is_cmdline "-lx"
+    opt_is_non_mandatory_cmdline "-lx"
 }
 
 ########
@@ -512,7 +512,7 @@ genodb.parallel_svtyper_define_opts()
 ########
 genodb.strelka_germline_identify_cmdline_opts()
 {
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -550,7 +550,7 @@ genodb.strelka_germline_define_opts()
 ########
 genodb.manta_somatic_identify_cmdline_opts()
 {
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -588,7 +588,7 @@ genodb.manta_somatic_define_opts()
 ########
 genodb.strelka_somatic_identify_cmdline_opts()
 {
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -665,7 +665,7 @@ genodb.msisensor_pro_define_opts()
 genodb.snp_pileup_plus_facets_identify_cmdline_opts()
 {
     opt_is_cmdline "-sv"
-    opt_is_cmdline "-md"
+    opt_is_non_mandatory_cmdline "-md"
 }
 
 ########

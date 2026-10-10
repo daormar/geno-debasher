@@ -383,7 +383,7 @@ genodb.samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-mpb"
+    opt_is_non_mandatory_cmdline "-mpb"
 }
 
 ########
@@ -492,7 +492,7 @@ genodb.samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-mpb"
+    opt_is_non_mandatory_cmdline "-mpb"
 }
 
 ########
@@ -600,7 +600,7 @@ genodb.parallel_samtools_mpileup_norm_bam_explain_task_shaping_opts()
 genodb.parallel_samtools_mpileup_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-mpb"
+    opt_is_non_mandatory_cmdline "-mpb"
 }
 
 ########
@@ -726,7 +726,7 @@ genodb.parallel_samtools_mpileup_tum_bam_explain_task_shaping_opts()
 genodb.parallel_samtools_mpileup_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-mpb"
+    opt_is_non_mandatory_cmdline "-mpb"
 }
 
 ########
@@ -1158,7 +1158,7 @@ genodb.norm_bam_to_ubam_explain_opts()
 genodb.norm_bam_to_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 ########
@@ -1251,7 +1251,7 @@ genodb.tum_bam_to_ubam_explain_opts()
 genodb.tum_bam_to_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 ########
@@ -1353,7 +1353,7 @@ genodb.align_norm_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 ########
@@ -1513,7 +1513,7 @@ genodb.align_tum_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 ########

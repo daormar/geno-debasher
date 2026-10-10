@@ -52,7 +52,7 @@ genodb.index_tum_bam_define_opts()
 genodb.manta_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -91,7 +91,7 @@ genodb.manta_somatic_define_opts()
 genodb.strelka_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########

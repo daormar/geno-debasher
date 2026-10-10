@@ -52,8 +52,8 @@ genodb.index_tum_bam_define_opts()
 genodb.create_genref_for_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-br"
-    opt_is_cmdline "-cm"
-    opt_is_cmdline "-fbr"
+    opt_is_non_mandatory_cmdline "-cm"
+    opt_is_non_mandatory_cmdline "-fbr"
 }
 
 ########

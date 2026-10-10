@@ -44,7 +44,7 @@ genodb.copy_tum_bam_define_opts()
 ########
 genodb.norm_bam_to_ubam_identify_cmdline_opts()
 {
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 genodb.norm_bam_to_ubam_define_opts()
@@ -79,7 +79,7 @@ genodb.norm_bam_to_ubam_define_opts()
 ########
 genodb.tum_bam_to_ubam_identify_cmdline_opts()
 {
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 genodb.tum_bam_to_ubam_define_opts()
@@ -115,7 +115,7 @@ genodb.tum_bam_to_ubam_define_opts()
 genodb.align_norm_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 genodb.align_norm_ubam_define_opts()
@@ -157,7 +157,7 @@ genodb.align_norm_ubam_define_opts()
 genodb.align_tum_ubam_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-mrec"
+    opt_is_non_mandatory_cmdline "-mrec"
 }
 
 genodb.align_tum_ubam_define_opts()
@@ -245,7 +245,7 @@ genodb.index_tum_bam_define_opts()
 genodb.strelka_germline_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -358,7 +358,7 @@ genodb.gatk_haplotypecaller_define_opts()
 genodb.manta_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -397,7 +397,7 @@ genodb.manta_somatic_define_opts()
 genodb.strelka_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-r"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########

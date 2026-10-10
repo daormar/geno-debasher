@@ -281,9 +281,9 @@ genodb.download_ega_norm_bam_explain_opts()
 genodb.download_ega_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
-    opt_is_cmdline "-egastr"
+    opt_is_non_mandatory_cmdline "-egastr"
     opt_is_cmdline "-egacred"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -430,9 +430,9 @@ genodb.download_ega_tum_bam_explain_opts()
 genodb.download_ega_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
-    opt_is_cmdline "-egastr"
+    opt_is_non_mandatory_cmdline "-egastr"
     opt_is_cmdline "-egacred"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -566,7 +566,7 @@ genodb.download_ega_asp_norm_bam_identify_cmdline_opts()
     opt_is_cmdline "-asperapwd"
     opt_is_cmdline "-asperaserv"
     opt_is_cmdline "-egadecrpwd"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -693,7 +693,7 @@ genodb.download_ega_asp_tum_bam_identify_cmdline_opts()
     opt_is_cmdline "-asperapwd"
     opt_is_cmdline "-asperaserv"
     opt_is_cmdline "-egadecrpwd"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -1098,7 +1098,7 @@ genodb.download_aws_norm_bam_explain_opts()
 genodb.download_aws_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -1181,7 +1181,7 @@ genodb.download_aws_tum_bam_explain_opts()
 genodb.download_aws_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -1264,7 +1264,7 @@ genodb.download_collab_norm_bam_explain_opts()
 genodb.download_collab_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -1347,7 +1347,7 @@ genodb.download_collab_tum_bam_explain_opts()
 genodb.download_collab_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -1438,9 +1438,9 @@ genodb.download_gdc_norm_bam_explain_opts()
 genodb.download_gdc_norm_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extn"
-    opt_is_cmdline "-gdcprocs"
+    opt_is_non_mandatory_cmdline "-gdcprocs"
     opt_is_cmdline "-gdctok"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########
@@ -1561,9 +1561,9 @@ genodb.download_gdc_tum_bam_explain_opts()
 genodb.download_gdc_tum_bam_identify_cmdline_opts()
 {
     opt_is_cmdline "-extt"
-    opt_is_cmdline "-gdcprocs"
+    opt_is_non_mandatory_cmdline "-gdcprocs"
     opt_is_cmdline "-gdctok"
-    opt_is_cmdline "-nt"
+    opt_is_non_mandatory_cmdline "-nt"
 }
 
 ########

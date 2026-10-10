@@ -106,7 +106,7 @@ genodb.allele_counter_norm_identify_cmdline_opts()
     opt_is_cmdline "-l"
     opt_is_cmdline "-r"
     opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-ma"
+    opt_is_non_mandatory_cmdline "-ma"
 }
 
 ########
@@ -226,7 +226,7 @@ genodb.allele_counter_tumor_identify_cmdline_opts()
     opt_is_cmdline "-l"
     opt_is_cmdline "-r"
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-ma"
+    opt_is_non_mandatory_cmdline "-ma"
 }
 
 ########

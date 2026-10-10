@@ -6,7 +6,7 @@ load_debasher_module "genodb_bam_analysis"
 genodb.strelka_germline_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -46,7 +46,7 @@ genodb.manta_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########
@@ -86,7 +86,7 @@ genodb.strelka_somatic_identify_cmdline_opts()
 {
     opt_is_cmdline "-normalbam"
     opt_is_cmdline "-tumorbam"
-    opt_is_cmdline "-cr"
+    opt_is_non_mandatory_cmdline "-cr"
 }
 
 ########

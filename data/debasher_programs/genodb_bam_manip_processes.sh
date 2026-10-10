@@ -813,6 +813,30 @@ genodb.parallel_samtools_mpileup_tum_bam_conda_envs()
 }
 
 ########
+filter_bam_contig_samtools()
+{
+    # Writes into outbam the reads of inbam that map to contig, with the
+    # header of inbam. A contig that the header of inbam does not list
+    # gives a warning and an outbam with the header and no reads: the
+    # normal and the tumor bam files share the contig list, and one of
+    # them may lack a contig that the other has
+    local inbam=$1
+    local contig=$2
+    local outbam=$3
+
+    local header
+    header=$(samtools view -H "${inbam}") || { errmsg "Error while reading the header of ${inbam}"; return 1; }
+    "${GREP}" -q "^@SQ" <<< "${header}" || { errmsg "Error: the header of ${inbam} lists no contig"; return 1; }
+
+    if "${AWK}" -v contig="${contig}" '$1 == "@SQ" { for (i = 2; i <= NF; i++) if ($i == "SN:" contig) found = 1 } END { exit !found }' <<< "${header}"; then
+        samtools view -h -O BAM "${inbam}" "${contig}" > "${outbam}" || { errmsg "Error while extracting contig ${contig} from ${inbam}"; return 1; }
+    else
+        errmsg "Warning: contig ${contig} does not exist in ${inbam}, the output has no reads"
+        samtools view -H -O BAM "${inbam}" > "${outbam}" || { errmsg "Error while writing the header of ${inbam}"; return 1; }
+    fi
+}
+
+########
 genodb.parallel_split_norm_bam_explain_opts()
 {
     # -normalbam option

@@ -33,7 +33,7 @@ genodb.filter_norm_bam_contigs_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 }
 
 ########
@@ -160,7 +160,7 @@ genodb.filter_tum_bam_contigs_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 }
 
 ########

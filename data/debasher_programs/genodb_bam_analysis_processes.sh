@@ -49,7 +49,7 @@ genodb.manta_germline_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -172,7 +172,7 @@ genodb.manta_somatic_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -283,7 +283,7 @@ genodb.strelka_germline_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -291,7 +291,7 @@ genodb.strelka_germline_explain_opts()
 
     # -out-summarydir option
     local description="summary directory"
-    explain_opt "-out-summarydir" "<file>" "$description"
+    explain_opt "-out-summarydir" "<dir>" "$description"
 }
 
 ########
@@ -392,7 +392,7 @@ genodb.platypus_germline_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -400,7 +400,7 @@ genodb.platypus_germline_explain_opts()
 
     # -out-summarydir option
     local description="summary directory"
-    explain_opt "-out-summarydir" "<file>" "$description"
+    explain_opt "-out-summarydir" "<dir>" "$description"
 }
 
 ########
@@ -527,7 +527,7 @@ genodb.gatk_haplotypecaller_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -631,11 +631,11 @@ genodb.strelka_somatic_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -manta-outd option
     local description="output directory of manta_somatic"
-    explain_opt "-manta-outd" "<file>" "$description"
+    explain_opt "-manta-outd" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -773,7 +773,7 @@ genodb.mutect2_somatic_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -883,7 +883,7 @@ genodb.lofreq_somatic_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -979,7 +979,7 @@ genodb.cnvkit_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -1077,7 +1077,7 @@ genodb.snp_pileup_plus_facets_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 }
 
 ########
@@ -1246,7 +1246,7 @@ genodb.sequenza_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -npileup
     local description="normal pileup file"
@@ -1442,7 +1442,7 @@ genodb.seqzmerge_plus_sequenza_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -seqz-ith options
     local description="seqz file of the i'th contig of the contig list"
@@ -1557,7 +1557,7 @@ genodb.lumpy_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 }
 
 ########
@@ -1660,7 +1660,7 @@ genodb.parallel_lumpy_explain_opts()
 
     # -outd option
     local description="directory of the task, below the output directory of the process"
-    explain_opt "-outd" "<file>" "$description"
+    explain_opt "-outd" "<dir>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1791,7 +1791,7 @@ genodb.smoove_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus
     local description="number of cpus"
@@ -1907,7 +1907,7 @@ genodb.delly_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 }
 
 ########
@@ -2028,7 +2028,7 @@ genodb.parallel_delly_explain_opts()
 
     # -outd option
     local description="directory of the task, below the output directory of the process"
-    explain_opt "-outd" "<file>" "$description"
+    explain_opt "-outd" "<dir>" "$description"
 
     # -contig option
     local description="contig id"
@@ -2270,7 +2270,7 @@ genodb.msisensor_pro_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"

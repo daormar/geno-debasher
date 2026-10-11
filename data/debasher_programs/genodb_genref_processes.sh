@@ -47,7 +47,7 @@ genodb.create_genref_for_bam_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -outfile option
     local description="reference genome file for the bam file"

@@ -25,11 +25,11 @@ genodb.delete_bam_files_explain_opts()
 {
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -datadir option
     local description="data directory"
-    explain_opt "-datadir" "<file>" "$description"
+    explain_opt "-datadir" "<dir>" "$description"
 }
 
 ########
@@ -74,11 +74,11 @@ genodb.clear_datadir_explain_opts()
 {
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -datadir option
     local description="data directory"
-    explain_opt "-datadir" "<file>" "$description"
+    explain_opt "-datadir" "<dir>" "$description"
 }
 
 ########

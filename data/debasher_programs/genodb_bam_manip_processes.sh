@@ -189,7 +189,7 @@ genodb.sort_norm_bam_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -276,7 +276,7 @@ genodb.sort_tum_bam_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -cpus option
     local description="number of cpus"
@@ -371,7 +371,7 @@ genodb.samtools_mpileup_norm_bam_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -outfile option
     local description="output pileup file"
@@ -480,7 +480,7 @@ genodb.samtools_mpileup_tum_bam_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -outfile option
     local description="output pileup file"
@@ -577,7 +577,7 @@ genodb.parallel_samtools_mpileup_norm_bam_explain_opts()
 
     # -outd option
     local description="directory of the task, below the output directory of the process"
-    explain_opt "-outd" "<file>" "$description"
+    explain_opt "-outd" "<dir>" "$description"
 
     # -outfile option
     local description="output file"
@@ -703,7 +703,7 @@ genodb.parallel_samtools_mpileup_tum_bam_explain_opts()
 
     # -outd option
     local description="directory of the task, below the output directory of the process"
-    explain_opt "-outd" "<file>" "$description"
+    explain_opt "-outd" "<dir>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1039,7 +1039,7 @@ genodb.bedtools_genomecov_norm_bam_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 }
 
 ########
@@ -1103,7 +1103,7 @@ genodb.bedtools_genomecov_tum_bam_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 }
 
 ########
@@ -1171,7 +1171,7 @@ genodb.norm_bam_to_ubam_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1264,7 +1264,7 @@ genodb.tum_bam_to_ubam_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1361,7 +1361,7 @@ genodb.align_norm_ubam_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -outfile option
     local description="output file"
@@ -1521,7 +1521,7 @@ genodb.align_tum_ubam_explain_opts()
 
     # -out-processdir option
     local description="output directory"
-    explain_opt "-out-processdir" "<file>" "$description"
+    explain_opt "-out-processdir" "<dir>" "$description"
 
     # -outfile option
     local description="output file"

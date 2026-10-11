@@ -70,11 +70,11 @@ genodb.concat_germline_snvs_explain_opts()
 {
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -summarydir option
     local description="summary directory"
-    explain_opt "-summarydir" "<file>" "$description"
+    explain_opt "-summarydir" "<dir>" "$description"
 }
 
 ########

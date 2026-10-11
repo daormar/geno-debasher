@@ -37,7 +37,7 @@ genodb.snp_pileup_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -outcounts option
     local description="pile up counts file"
@@ -124,7 +124,7 @@ genodb.facets_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 }
 
 ########

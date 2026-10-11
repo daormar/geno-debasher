@@ -89,7 +89,7 @@ genodb.allele_counter_norm_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -outcsv option
     description="Postprocessed alleleCounter output for the normal sample"
@@ -213,7 +213,7 @@ genodb.allele_counter_tumor_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 
     # -outcsv option
     description="Postprocessed alleleCounter output for the tumor sample"
@@ -332,7 +332,7 @@ genodb.ascat_explain_opts()
 
     # -process-outd option
     local description="output directory"
-    explain_opt "-process-outd" "<file>" "$description"
+    explain_opt "-process-outd" "<dir>" "$description"
 }
 
 ########
